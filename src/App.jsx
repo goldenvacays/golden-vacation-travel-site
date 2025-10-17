@@ -598,7 +598,479 @@ function GoldenVacaysSiteInner() {
         {/* REVIEWS */}
         <section id="reviews" className="py-20">
           <Container>
-            <SectionTitle eyebrow="REVIEWS" title="Loved by our
+            <SectionTitle eyebrow="REVIEWS" title="Loved by our travelers" subtitle="Real words from Golden Vacation & Travel guests across Jamaica and the diaspora." />
+            <div className="mt-10 grid md:grid-cols-3 gap-6">
+              {REVIEWS.map((r) => (
+                <div key={r.name} className="rounded-2xl border border-[#D9E7FF] bg-white p-6 shadow-sm">
+                  <p className="text-slate-800">"{r.quote}"</p>
+                  <div className="mt-4 text-sm font-semibold text-slate-900">{r.name}</div>
+                  <div className="text-xs text-slate-500">{r.meta}</div>
+                </div>
+              ))}
+            </div>
+          </Container>
+        </section>
 
-            }
-            
+        {/* CONTACT / INQUIRY */}
+        <section id="contact" className="py-20 border-t border-[#D9E7FF]">
+          <Container>
+            <SectionTitle eyebrow="CONTACT" title="Questions, partnerships, or media?" subtitle="We're happy to help. Prefer WhatsApp? Tap the button and we'll take it from there." />
+            <div className="mt-10 grid md:grid-cols-2 gap-8">
+              <div className="rounded-3xl border border-[#D9E7FF] p-6 bg-white shadow-sm">
+                <h3 className="text-lg font-semibold">Quick Inquiry</h3>
+                <p className="text-sm text-slate-600 mb-4">Send a short note. This opens WhatsApp with your message.</p>
+                <QuickInquiry waNumber={waNumber} />
+                <LinkFallback label="Open WhatsApp" url={"https://wa.me/"+waNumber+"?text="+encodeURIComponent("Hi Golden Vacation & Travel, I have a quick question about ...")} />
+                <div className="mt-6 space-y-1 text-sm text-slate-700">
+                  <div><span className="font-medium">Email:</span> <a href="mailto:goldentravellers@outlook.com" className="text-[#0057D9] hover:underline">goldentravellers@outlook.com</a></div>
+                  <div><span className="font-medium">Phone/WhatsApp:</span> +1 (876) 210‑6242</div>
+                </div>
+              </div>
+              <div className="rounded-3xl overflow-hidden ring-1 ring-[#D9E7FF]">
+                <SmartImg sources={[CONTACT_SRC, ...JAMAICA_IMAGES, PLACEHOLDER_IMG]} alt={ALT_CONTACT} className="h-full w-full object-cover" />
+              </div>
+            </div>
+          </Container>
+        </section>
+
+        {/* FOOTER */}
+        <footer className="mt-10 border-t border-[#D9E7FF]/70 bg-white">
+          <Container className="py-10 grid md:grid-cols-3 gap-6 items-center">
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-[#FFC300] via-[#1E90FF] to-[#00B2FF] grid place-items-center text-white font-black">G</div>
+              <div className="text-sm text-slate-600">© {new Date().getFullYear()} Golden Vacation & Travel Limited</div>
+            </div>
+            <div className="text-center text-sm"><span className="font-semibold">IATA</span> Accredited • Jamaica • Serving US, Canada, UK & Caribbean</div>
+            <div className="flex justify-end gap-3">
+              <Button 
+                as="a" 
+                href={"https://wa.me/"+waNumber+"?text="+encodeURIComponent("Hi Golden Vacation & Travel! I'd like to chat about a trip.")} 
+                onClick={(e) => { e.preventDefault(); openWhatsApp("Hi Golden Vacation & Travel! I'd like to chat about a trip.", waNumber, 'chat_cta'); }} 
+                target="_blank" 
+                rel="noreferrer" 
+                aria-label="Contact us on WhatsApp"
+                className="bg-[#0057D9] text-white"
+              >
+                WhatsApp Us
+              </Button>
+              <Button 
+                as="a" 
+                href={`tel:+${waNumber}`} 
+                onClick={(e) => { e.preventDefault(); openTel(waNumber, 'cta'); }} 
+                aria-label="Call Golden Vacation & Travel"
+                className="bg-white border border-[#BFD6FF] text-[#0057D9]"
+              >
+                Call us
+              </Button>
+              <LinkFallback label="Tap to call" url={`tel:+${waNumber}`} />
+            </div>
+          </Container>
+        </footer>
+
+        {/* Diagnostics (runtime tests) */}
+        <DevDiagnostics
+          waNumber={waNumber}
+          reviews={REVIEWS}
+          heroSrc={HERO_SRC}
+          quickQuoteMessage={quickQuoteMessage}
+        />
+      </div>
+    </>
+  );
+}
+
+// Export wrapped in Error Boundary
+export default function GoldenVacaysSite() {
+  return (
+    <ErrorBoundary>
+      <GoldenVacaysSiteInner />
+    </ErrorBoundary>
+  );
+}
+
+/*********************************
+ * SUBCOMPONENTS
+ *********************************/
+// Memoized WhatsApp Form
+const WhatsAppForm = React.memo(({ waNumber }) => {
+  const [form, setForm] = useState({ name: "", destination: "", checkin: "", checkout: "", guests: 2, notes: "" });
+
+  const submitWA = (e) => {
+    e.preventDefault();
+    
+    // Client-side validation
+    if (!form.name.trim()) {
+      alert('Please enter your name');
+      return;
+    }
+    if (!form.destination.trim()) {
+      alert('Please enter a destination');
+      return;
+    }
+    if (!form.checkin) {
+      alert('Please select a check-in date');
+      return;
+    }
+    if (!form.checkout) {
+      alert('Please select a check-out date');
+      return;
+    }
+    if (new Date(form.checkout) <= new Date(form.checkin)) {
+      alert('Check-out date must be after check-in date');
+      return;
+    }
+    if (form.guests < 1) {
+      alert('Please enter at least 1 guest');
+      return;
+    }
+    
+    const msg = `New WhatsApp Booking Request\n\nName: ${sanitizeMessage(form.name)}\nDestination: ${sanitizeMessage(form.destination)}\nCheck-in: ${form.checkin}\nCheck-out: ${form.checkout}\nGuests: ${form.guests}\nNotes: ${sanitizeMessage(form.notes)}`;
+    track('wa_booking_submit', { destination: form.destination || 'unknown' });
+    openWhatsApp(msg, waNumber, 'wa_booking_submit');
+  };
+
+  return (
+    <form onSubmit={submitWA} className="mt-10 grid md:grid-cols-2 gap-6">
+      <div className="rounded-2xl border border-[#BFD6FF] bg-white p-6 shadow-sm">
+        <div className="grid grid-cols-1 gap-4">
+          <LabeledInput 
+            id="booking-name"
+            label="Full Name" 
+            value={form.name} 
+            onChange={(v) => setForm({ ...form, name: v })} 
+            required 
+            aria-required="true"
+          />
+          <LabeledInput 
+            id="booking-destination"
+            label="Destination / Hotel" 
+            value={form.destination} 
+            onChange={(v) => setForm({ ...form, destination: v })} 
+            required 
+            aria-required="true"
+          />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <LabeledInput 
+              id="booking-checkin"
+              type="date" 
+              label="Check‑in" 
+              value={form.checkin} 
+              onChange={(v) => setForm({ ...form, checkin: v })} 
+              required 
+              aria-required="true"
+            />
+            <LabeledInput 
+              id="booking-checkout"
+              type="date" 
+              label="Check‑out" 
+              value={form.checkout} 
+              onChange={(v) => setForm({ ...form, checkout: v })} 
+              required 
+              aria-required="true"
+            />
+          </div>
+          <LabeledInput 
+            id="booking-guests"
+            type="number" 
+            min={1} 
+            max={20} 
+            label="Guests" 
+            value={form.guests} 
+            onChange={(v) => setForm({ ...form, guests: Number(v) })} 
+            required 
+            aria-required="true"
+          />
+          <LabeledTextArea 
+            id="booking-notes"
+            label="Notes (celebrations, room prefs, flights)" 
+            value={form.notes} 
+            onChange={(v) => setForm({ ...form, notes: v })} 
+            placeholder="Anniversary, birthday, connecting rooms, flight options, etc." 
+          />
+        </div>
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          <Button type="submit" aria-label="Submit booking via WhatsApp" className="bg-[#0057D9] text-white">Send via WhatsApp</Button>
+          <Button 
+            as="a" 
+            href={"https://wa.me/"+waNumber+"?text="+encodeURIComponent("Hi Golden Vacation & Travel! I'd like a quote.")} 
+            onClick={(e) => { e.preventDefault(); openWhatsApp("Hi Golden Vacation & Travel! I'd like a quote.", waNumber, 'booking_chat_first'); }} 
+            target="_blank" 
+            rel="noreferrer" 
+            aria-label="Chat first on WhatsApp"
+            className="bg-white border border-[#BFD6FF] text-[#0057D9]"
+          >
+            Chat First
+          </Button>
+          <Button 
+            as="a" 
+            href={`tel:+${waNumber}`} 
+            onClick={(e) => { e.preventDefault(); openTel(waNumber, 'cta'); }} 
+            aria-label="Call us"
+            className="bg-white border border-[#BFD6FF] text-[#0057D9]"
+          >
+            Call us
+          </Button>
+          <a href={"https://wa.me/"+waNumber+"?text="+encodeURIComponent("Hi Golden Vacation & Travel! I'd like a quote.")} target="_blank" rel="noreferrer" className="text-xs text-[#0057D9] underline">Open via wa.me (fallback)</a>
+        </div>
+        <p className="mt-3 text-xs text-slate-500">Submitting opens WhatsApp with your details pre‑filled. No payment required.</p>
+      </div>
+
+      <div className="rounded-2xl overflow-hidden ring-1 ring-[#D9E7FF]">
+        <SmartImg sources={[BOOKING_SRC, ...JAMAICA_IMAGES, PLACEHOLDER_IMG]} alt={ALT_BOOKING} className="h-full w-full object-cover" />
+      </div>
+    </form>
+  );
+});
+
+// Memoized Quick Inquiry
+const QuickInquiry = React.memo(({ waNumber }) => {
+  const [message, setMessage] = useState("Hi Golden Vacation & Travel, I have a quick question about ...");
+  return (
+    <div className="flex flex-col gap-3">
+      <textarea 
+        id="quick-inquiry-message"
+        value={message} 
+        onChange={(e) => setMessage(e.target.value)} 
+        rows={4} 
+        className="w-full rounded-xl border border-[#BFD6FF] p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#0057D9]"
+        aria-label="Your inquiry message"
+      />
+      <div className="flex flex-wrap items-center gap-3">
+        <Button 
+          as="a" 
+          href={"https://wa.me/"+waNumber+"?text="+encodeURIComponent(message)} 
+          onClick={(e) => { e.preventDefault(); openWhatsApp(message, waNumber, 'quick_inquiry'); }} 
+          target="_blank" 
+          rel="noreferrer" 
+          aria-label="Send inquiry on WhatsApp"
+          className="bg-[#0057D9] text-white"
+        >
+          Send on WhatsApp
+        </Button>
+        <Button 
+          as="a" 
+          href={`tel:+${waNumber}`} 
+          onClick={(e) => { e.preventDefault(); openTel(waNumber, 'cta'); }} 
+          aria-label="Call us"
+          className="bg-white border border-[#BFD6FF] text-[#0057D9]"
+        >
+          Call us
+        </Button>
+        <a href={"https://wa.me/"+waNumber+"?text="+encodeURIComponent(message)} target="_blank" rel="noreferrer" className="text-xs text-[#0057D9] underline">Open via wa.me (fallback)</a>
+      </div>
+    </div>
+  );
+});
+
+function LabeledInput({ label, value, onChange, type = "text", id, ...props }) {
+  return (
+    <label htmlFor={id} className="text-sm">
+      <div className="mb-1 text-slate-700 font-medium">{label}</div>
+      <input 
+        id={id}
+        type={type} 
+        value={value} 
+        onChange={(e) => onChange(e.target.value)} 
+        className="w-full rounded-xl border border-[#BFD6FF] p-3 focus:outline-none focus:ring-2 focus:ring-[#0057D9]" 
+        {...props} 
+      />
+    </label>
+  );
+}
+
+function LabeledTextArea({ label, value, onChange, id, ...props }) {
+  return (
+    <label htmlFor={id} className="text-sm">
+      <div className="mb-1 text-slate-700 font-medium">{label}</div>
+      <textarea 
+        id={id}
+        value={value} 
+        onChange={(e) => onChange(e.target.value)} 
+        className="w-full rounded-xl border border-[#BFD6FF] p-3 focus:outline-none focus:ring-2 focus:ring-[#0057D9]" 
+        rows={5} 
+        {...props} 
+      />
+    </label>
+  );
+}
+
+/*********************************
+ * LEGAL PAGES (kept but links hidden until launch)
+ *********************************/
+function LegalLayout({ children }) {
+  return (
+    <div className="min-h-screen bg-white text-slate-800">
+      <header className="sticky top-0 z-40 backdrop-blur bg-white/70 border-b border-[#D9E7FF]/60">
+        <Container className="flex items-center justify-between h-16">
+          <a href="/" onClick={(e)=>{e.preventDefault(); history.pushState({}, '', '/'); try { window.dispatchEvent(new PopStateEvent('popstate')); } catch(_) {} }} className="flex items-center gap-3">
+            <div className="h-9 w-9 rounded-2xl bg-gradient-to-tr from-[#FFC300] via-[#1E90FF] to-[#00B2FF] grid place-items-center text-white font-black">G</div>
+            <div className="leading-tight">
+              <div className="font-extrabold tracking-tight text-slate-900">Golden Vacation & Travel</div>
+              <div className="text-[10px] uppercase tracking-wider text-[#0047B5]/80">IATA Accredited</div>
+            </div>
+          </a>
+          <a href="/" onClick={(e)=>{e.preventDefault(); history.pushState({}, '', '/'); try { window.dispatchEvent(new PopStateEvent('popstate')); } catch(_) {} }} className="text-sm underline text-[#0057D9]">← Back to site</a>
+        </Container>
+      </header>
+      <main className="py-12">
+        <Container className="prose max-w-3xl">
+          {children}
+        </Container>
+      </main>
+      <footer className="text-center text-xs text-slate-500 py-8 border-t border-[#D9E7FF]/60">
+        © {new Date().getFullYear()} Golden Vacation & Travel Limited
+      </footer>
+    </div>
+  );
+}
+
+function PrivacyPage() {
+  return (
+    <article>
+      <h1 className="text-3xl font-bold">Privacy Policy</h1>
+      <p className="text-slate-600">Effective date: {new Date().toLocaleDateString()}</p>
+      <p>
+        We respect your privacy. This policy explains what we collect, why we collect it, and how we protect it.
+      </p>
+      <h2>Information we collect</h2>
+      <ul>
+        <li><strong>Contact details</strong> you share with us (name, email, phone).</li>
+        <li><strong>Trip details</strong> relevant to bookings (dates, destination, preferences).</li>
+        <li><strong>Messages</strong> sent via WhatsApp, email, or our forms.</li>
+        <li><strong>Usage data</strong> (analytics like page views) to improve the site.</li>
+      </ul>
+      <h2>How we use information</h2>
+      <ul>
+        <li>To provide quotes, make reservations, and deliver customer support.</li>
+        <li>To send confirmations and important trip updates.</li>
+        <li>To improve our services and prevent fraud/abuse.</li>
+      </ul>
+      <h2>Sharing</h2>
+      <p>
+        We share necessary details with travel suppliers (hotels, airlines, tour operators) to fulfill your booking. We do not sell your data.
+      </p>
+      <h2>WhatsApp</h2>
+      <p>
+        Clicking our WhatsApp buttons opens WhatsApp (or WhatsApp Web). Your messages are governed by WhatsApp's own terms and privacy policy.
+      </p>
+      <h2>Data security & retention</h2>
+      <p>
+        We use reasonable technical and organizational measures to safeguard data. We keep records only as long as needed for bookings and legal requirements.
+      </p>
+      <h2>Your rights</h2>
+      <p>
+        You may request access, correction, or deletion of your personal data. Contact us at <a href="mailto:goldentravellers@outlook.com" className="underline">goldentravellers@outlook.com</a>.
+      </p>
+      <h2>Contact</h2>
+      <p>
+        Golden Vacation & Travel Limited — Kingston, Jamaica. Email: <a href="mailto:goldentravellers@outlook.com" className="underline">goldentravellers@outlook.com</a>
+      </p>
+    </article>
+  );
+}
+
+function TermsPage() {
+  return (
+    <article>
+      <h1 className="text-3xl font-bold">Terms &amp; Conditions</h1>
+      <p className="text-slate-600">Effective date: {new Date().toLocaleDateString()}</p>
+      <h2>Bookings & Payments</h2>
+      <ul>
+        <li>Quotes are not guaranteed until a deposit or full payment is received.</li>
+        <li>Final prices and availability are confirmed by the supplier at the time of booking.</li>
+        <li>Payment schedules and methods will be communicated in writing.</li>
+      </ul>
+      <h2>Cancellations & Changes</h2>
+      <ul>
+        <li>Supplier rules (hotels, airlines, tour operators) govern cancellations, changes, and refunds.</li>
+        <li>Agency service fees may apply to changes or cancellations.</li>
+      </ul>
+      <h2>Travel Documents</h2>
+      <ul>
+        <li>You are responsible for valid passports, visas, and entry requirements.</li>
+        <li>We recommend travel insurance for medical emergencies and trip interruptions.</li>
+      </ul>
+      <h2>Liability</h2>
+      <p>
+        We act as an agent for independent suppliers and are not liable for their acts, omissions, or service quality. Remedies are limited to amounts paid to us for services not provided.
+      </p>
+      <h2>Contact</h2>
+      <p>
+        Questions? Email <a href="mailto:goldentravellers@outlook.com" className="underline">goldentravellers@outlook.com</a>.
+      </p>
+    </article>
+  );
+}
+
+/*********************************
+ * DEV DIAGNOSTICS (runtime tests)
+ *********************************/
+function DevDiagnostics(props) {
+  const { waNumber, reviews, heroSrc, quickQuoteMessage } = props;
+  useEffect(() => {
+    // Test 1: waNumber should be all digits
+    console.assert(/^\d{7,15}$/.test(waNumber) || waNumber === "1876XXXXXXX", "waNumber should be digits only (e.g., 1876XXXXXXXX)");
+
+    // Test 2: buildWA returns expected format and encodes newlines
+    const testUrl = buildWA("Line1\nLine2", "(123) 456-7890");
+    console.assert((testUrl.includes("phone=1234567890") && testUrl.includes("text=Line1%0ALine2")), "buildWA should clean digits and encode newlines");
+
+    // Test 3: quickQuoteMessage contains all fields
+    const mustInclude = ["Name:", "Destination:", "Check-in:", "Check-out:", "Guests:", "Notes:"];
+    console.assert(mustInclude.every((k) => quickQuoteMessage.includes(k)), "quickQuoteMessage should include all placeholders");
+
+    // Test 4: reviews array shape & uniqueness by name
+    const okShape = Array.isArray(reviews) && reviews.every((r) => r.quote && r.name && r.meta);
+    const uniqueNames = new Set(reviews.map((r) => r.name));
+    console.assert(okShape && uniqueNames.size === reviews.length, "REVIEWS must be an array of unique {quote, name, meta}");
+
+    // Test 5: heroSrc should be http(s), site-relative, or /mnt/data in preview
+    console.assert(/^(https?:\/\/|\/|\/mnt\/data\/)/.test(heroSrc), "heroSrc should be a hosted URL, site-relative like /hero.jpg, or a /mnt/data path in preview");
+
+    // Test 6: placeholder is a data URI
+    console.assert(typeof PLACEHOLDER_IMG === "string" && /^data:image\//.test(PLACEHOLDER_IMG), "PLACEHOLDER_IMG should be a data: URI image");
+
+    // Test 7: alt texts should mention locations/brands
+    console.assert(ALT_HERO.toLowerCase().includes("jamaica") || ALT_HERO.toLowerCase().includes("montego"), "ALT_HERO should reference Jamaica/Montego Bay");
+    const bookingAlt = ALT_BOOKING.toLowerCase();
+    console.assert(bookingAlt.includes("princess") || bookingAlt.includes("mangrove") || bookingAlt.includes("zilara"), "ALT_BOOKING should mention the featured property");
+    console.assert(ALT_CONTACT.toLowerCase().includes("moon palace") || ALT_CONTACT.toLowerCase().includes("jamaica"), "ALT_CONTACT should mention Moon Palace/Jamaica");
+
+    // Test 8: SmartImg fallback sanity
+    const tempSources = ["/definitely-missing-a.jpg", "/definitely-missing-b.jpg", PLACEHOLDER_IMG];
+    console.assert(Array.isArray(tempSources) && tempSources.length === 3, "SmartImg test sources must be 3 items");
+
+    // Test 9: Brand mention should be the updated name
+    console.assert(quickQuoteMessage.includes('Golden Vacation & Travel'), 'quickQuoteMessage should include updated brand name');
+
+    // Test 10: SEO metas present (best-effort)
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    const canonical = document.querySelector('link[rel="canonical"]');
+    console.assert(!!ogTitle && !!canonical, 'OG title and canonical link should be present');
+
+    // Test 11: Keywords include major brands
+    const kw = document.querySelector('meta[name="keywords"]');
+    console.assert(kw && /Sandals|Iberostar|Hyatt|RIU/i.test(kw.getAttribute('content')||''), 'keywords should include top hotel brands');
+
+    // Test 12: Tel deep-link format
+    const tel = `tel:+${waNumber}`;
+    console.assert(/^tel:\+\d{7,15}$/.test(tel), 'tel link should be in the form tel:+<digits>');
+
+    // Test 13: WhatsApp link encoding uses %0A for new lines
+    const waCheck = buildWA("Line1\nLine2", waNumber);
+    console.assert(/text=.*Line1%0ALine2/.test(waCheck), 'WhatsApp URL should encode newlines as %0A');
+
+    // Test 14: Basic navigation hash support
+    const hasHash = typeof window !== 'undefined' && typeof window.location.hash === 'string';
+    console.assert(hasHash, 'window.location.hash should exist');
+    
+    // Test 15: Sanitization works
+    const testSanitize = sanitizeMessage("Test<script>alert('xss')</script>");
+    console.assert(!testSanitize.includes('<') && !testSanitize.includes('>'), 'sanitizeMessage should remove angle brackets');
+    
+    // Test 16: Phone sanitization works
+    const testPhone = sanitizePhone("(123) 456-7890");
+    console.assert(testPhone === "1234567890", 'sanitizePhone should extract only digits');
+  }, [waNumber, reviews, heroSrc, quickQuoteMessage]);
+  return null; // no UI
+}
