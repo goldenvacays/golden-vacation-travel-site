@@ -599,3 +599,6 @@ function GoldenVacaysSiteInner() {
         <section id="reviews" className="py-20">
           <Container>
             <SectionTitle eyebrow="REVIEWS" title="Loved by our
+
+            }
+            
