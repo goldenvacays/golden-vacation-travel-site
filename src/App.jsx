@@ -412,7 +412,7 @@ function GoldenVacaysSiteInner() {
           <Container className="flex items-center justify-between h-16">
             {/* Brand */}
             <a href="#home" className="flex items-center gap-3 group">
-              <div className="h-9 w-9 rounded-2xl bg-gradient-to-tr from-[#FFC300] via-[#1E90FF] to-[#00B2FF] grid place-items-center text-white font-black">G</div>
+              <img src="https://i.ibb.co/sJCWLvsC/logo-golden.png" alt="Golden Vacation & Travel" className="h-9 w-9 object-contain" />
               <div className="leading-tight">
                 <div className="font-extrabold tracking-tight text-slate-900">Golden Vacation & Travel</div>
                 <div className="text-[10px] uppercase tracking-wider text-[#0047B5]/80">IATA Accredited</div>
@@ -637,7 +637,7 @@ function GoldenVacaysSiteInner() {
         <footer className="mt-10 border-t border-[#D9E7FF]/70 bg-white">
           <Container className="py-10 grid md:grid-cols-3 gap-6 items-center">
             <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-[#FFC300] via-[#1E90FF] to-[#00B2FF] grid place-items-center text-white font-black">G</div>
+              <img src="https://i.ibb.co/sJCWLvsC/logo-golden.png" alt="Golden Vacation & Travel" className="h-9 w-9 object-contain" />
               <div className="text-sm text-slate-600">© {new Date().getFullYear()} Golden Vacation & Travel Limited</div>
             </div>
             <div className="text-center text-sm"><span className="font-semibold">IATA</span> Accredited • Jamaica • Serving US, Canada, UK & Caribbean</div>
@@ -903,7 +903,7 @@ function LegalLayout({ children }) {
       <header className="sticky top-0 z-40 backdrop-blur bg-white/70 border-b border-[#D9E7FF]/60">
         <Container className="flex items-center justify-between h-16">
           <a href="/" onClick={(e)=>{e.preventDefault(); history.pushState({}, '', '/'); try { window.dispatchEvent(new PopStateEvent('popstate')); } catch(_) {} }} className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-2xl bg-gradient-to-tr from-[#FFC300] via-[#1E90FF] to-[#00B2FF] grid place-items-center text-white font-black">G</div>
+            <img src="https://i.ibb.co/sJCWLvsC/logo-golden.png" alt="Golden Vacation & Travel" className="h-9 w-9 object-contain" />
             <div className="leading-tight">
               <div className="font-extrabold tracking-tight text-slate-900">Golden Vacation & Travel</div>
               <div className="text-[10px] uppercase tracking-wider text-[#0047B5]/80">IATA Accredited</div>
