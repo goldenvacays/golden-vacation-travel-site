@@ -368,7 +368,7 @@ function GoldenVacaysSiteInner() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   // Replace with your real WhatsApp number (digits only, e.g., 1876XXXXXXXX)
-  const waNumber = "18762106242";
+  const waNumber = "18768173467";
 
   const quickQuoteMessage = useMemo(
     () =>
