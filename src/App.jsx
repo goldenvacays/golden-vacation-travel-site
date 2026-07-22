@@ -425,6 +425,7 @@ function GoldenVacaysSiteInner() {
               <a href="#about" className="hover:text-[#0057D9]">About</a>
               <a href="#booking" className="hover:text-[#0057D9]">WhatsApp Booking</a>
               <a href="/group-inquiry" className="hover:text-[#0057D9]">Group Inquiry</a>
+              <a href="/hotel-status" className="hover:text-[#0057D9]">Resort Status</a>
               <a href="#reviews" className="hover:text-[#0057D9]">Reviews</a>
               <a href="#contact" className="hover:text-[#0057D9]">Contact</a>
             </nav>
@@ -473,6 +474,7 @@ function GoldenVacaysSiteInner() {
                   { href: "#about", label: "About" },
                   { href: "#booking", label: "WhatsApp Booking" },
                   { href: "/group-inquiry", label: "Group Inquiry" },
+                  { href: "/hotel-status", label: "Resort Status" },
                   { href: "#reviews", label: "Reviews" },
                   { href: "#contact", label: "Contact" },
                 ].map((i) => (
