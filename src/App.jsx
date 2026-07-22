@@ -420,18 +420,18 @@ function GoldenVacaysSiteInner() {
             </a>
 
             {/* Desktop Nav */}
-            <nav className="hidden md:flex items-center gap-8">
+            <nav className="hidden lg:flex items-center gap-6 whitespace-nowrap">
               <a href="#home" className="hover:text-[#0057D9]">Home</a>
               <a href="#about" className="hover:text-[#0057D9]">About</a>
               <a href="#booking" className="hover:text-[#0057D9]">WhatsApp Booking</a>
               <a href="/group-inquiry" className="hover:text-[#0057D9]">Group Inquiry</a>
-              <a href="/hotel-status" className="hover:text-[#0057D9]">Resort Status</a>
+              <a href="/hotel-status-map" className="hover:text-[#0057D9] whitespace-nowrap">Status Map</a>
               <a href="#reviews" className="hover:text-[#0057D9]">Reviews</a>
               <a href="#contact" className="hover:text-[#0057D9]">Contact</a>
             </nav>
 
             {/* CTA (desktop) */}
-            <div className="hidden md:flex items-center gap-2">
+            <div className="hidden lg:flex items-center gap-2 whitespace-nowrap">
               <Button
                 as="a"
                 href={"https://wa.me/"+waNumber+"?text="+encodeURIComponent("Hi Golden Vacation & Travel! I'd like to chat about a trip.")}
@@ -459,7 +459,7 @@ function GoldenVacaysSiteInner() {
               aria-label="Toggle navigation menu"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((v) => !v)}
-              className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#BFD6FF] text-[#0057D9]"
+              className="lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#BFD6FF] text-[#0057D9]"
             >
               {menuOpen ? <span className="text-xl">✕</span> : <span className="text-xl">☰</span>}
             </button>
@@ -467,14 +467,14 @@ function GoldenVacaysSiteInner() {
 
           {/* Mobile Nav Drawer */}
           {menuOpen && (
-            <div className="md:hidden border-t border-[#D9E7FF] bg-white">
+            <div className="lg:hidden border-t border-[#D9E7FF] bg-white">
               <Container className="py-3 flex flex-col gap-3">
                 {[
                   { href: "#home", label: "Home" },
                   { href: "#about", label: "About" },
                   { href: "#booking", label: "WhatsApp Booking" },
                   { href: "/group-inquiry", label: "Group Inquiry" },
-                  { href: "/hotel-status", label: "Resort Status" },
+                  { href: "/hotel-status-map", label: "Status Map" },
                   { href: "#reviews", label: "Reviews" },
                   { href: "#contact", label: "Contact" },
                 ].map((i) => (
