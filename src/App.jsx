@@ -113,10 +113,10 @@ function HeadMeta({ title, description, keywords }) {
     // JSON‑LD for LocalBusiness + FAQ
     const ld = {
       '@context': 'https://schema.org', '@type': 'LocalBusiness',
-      name: 'Golden Vacation & Travel Limited',
+      name: 'Golden Vacation and Travel',
       areaServed: ['Jamaica','Caribbean','USA','Canada','UK'],
-      address: { '@type': 'PostalAddress', addressLocality: 'Kingston', addressCountry: 'JM' },
-      telephone: '+1 876 210 6242', email: 'goldentravellers@outlook.com',
+      address: { '@type': 'PostalAddress', streetAddress: 'Shop 3, Enfield Plaza, Enfield', addressLocality: 'Browns Town', addressRegion: 'Saint Ann', addressCountry: 'JM' },
+      telephone: '+1 876 817 3467', email: 'goldentravellers@outlook.com',
       knowsAbout: [
         'Jamaica hotels','Montego Bay hotels','Ocho Rios hotels','Negril hotels',
         'Sandals Resorts','Beaches Resorts','Hyatt Zilara/Ziva','Iberostar','RIU',
@@ -143,7 +143,7 @@ function HeadMeta({ title, description, keywords }) {
         },
         {
           '@type': 'Question',
-          name: 'How do I book with Golden Vacation & Travel?',
+          name: 'How do I book with Golden Vacation and Travel?',
           acceptedAnswer: {
             '@type': 'Answer',
             text: 'You can book via WhatsApp, phone, or email. Our WhatsApp booking is the fastest - just fill the form and send your details.'
@@ -154,7 +154,7 @@ function HeadMeta({ title, description, keywords }) {
           name: 'Are you IATA accredited?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'Yes, Golden Vacation & Travel Limited is IATA accredited, ensuring professional standards and reliable service.'
+            text: 'Yes, Golden Vacation and Travel is IATA accredited, ensuring professional standards and reliable service.'
           }
         }
       ]
@@ -341,8 +341,8 @@ function GoldenVacaysSiteInner() {
     return (
       <>
         <HeadMeta
-          title="Privacy Policy — Golden Vacation & Travel"
-          description="How Golden Vacation & Travel collects, uses, and protects your information."
+          title="Privacy Policy — Golden Vacation and Travel"
+          description="How Golden Vacation and Travel collects, uses, and protects your information."
           keywords="privacy, data protection, GDPR, Jamaica travel agency"
         />
         <LegalLayout>
@@ -355,8 +355,8 @@ function GoldenVacaysSiteInner() {
     return (
       <>
         <HeadMeta
-          title="Terms & Conditions — Golden Vacation & Travel"
-          description="Booking terms, payments, cancellations, and responsibilities for Golden Vacation & Travel."
+          title="Terms & Conditions — Golden Vacation and Travel"
+          description="Booking terms, payments, cancellations, and responsibilities for Golden Vacation and Travel."
           keywords="terms, conditions, booking policy, cancellations"
         />
         <LegalLayout>
@@ -372,7 +372,7 @@ function GoldenVacaysSiteInner() {
 
   const quickQuoteMessage = useMemo(
     () =>
-      `Hi Golden Vacation & Travel! I'd like a quote.\n\nName: \nDestination: \nCheck-in: \nCheck-out: \nGuests: \nNotes:`,
+      `Hi Golden Vacation and Travel! I'd like a quote.\n\nName: \nDestination: \nCheck-in: \nCheck-out: \nGuests: \nNotes:`,
     []
   );
 
@@ -401,7 +401,7 @@ function GoldenVacaysSiteInner() {
   return (
     <>
       <HeadMeta
-        title="Golden Vacation & Travel — Jamaica Hotels, Sandals, Hyatt Zilara, Iberostar, RIU & More"
+        title="Golden Vacation and Travel — Jamaica Hotels, Sandals, Hyatt Zilara, Iberostar, RIU & More"
         description="IATA‑accredited Jamaican travel agency. WhatsApp‑first bookings for Jamaica hotels & packages — Sandals, Beaches, Hyatt Zilara/Ziva, Iberostar, RIU, Moon Palace, Secrets, Half Moon, Couples & more."
         keywords="Jamaica hotels, Montego Bay hotels, Ocho Rios hotels, Negril resorts, Sandals Jamaica, Beaches Negril, Hyatt Zilara Rose Hall, Iberostar Rose Hall, RIU Ocho Rios, Moon Palace Jamaica, Secrets St. James, Breathless Montego Bay, Excellence Oyster Bay, Half Moon, Couples Swept Away, Bahia Principe, S Hotel, Ocean Eden Bay"
       />
@@ -412,9 +412,9 @@ function GoldenVacaysSiteInner() {
           <Container className="flex items-center justify-between h-16">
             {/* Brand */}
             <a href="#home" className="flex items-center gap-3 group">
-              <img src="https://i.ibb.co/sJCWLvsC/logo-golden.png" alt="Golden Vacation & Travel" className="h-9 w-9 object-contain" />
+              <img src="https://i.ibb.co/sJCWLvsC/logo-golden.png" alt="Golden Vacation and Travel" className="h-9 w-9 object-contain" />
               <div className="leading-tight">
-                <div className="font-extrabold tracking-tight text-slate-900">Golden Vacation & Travel</div>
+                <div className="font-extrabold tracking-tight text-slate-900">Golden Vacation and Travel</div>
                 <div className="text-[10px] uppercase tracking-wider text-[#0047B5]/80">IATA Accredited</div>
               </div>
             </a>
@@ -434,8 +434,8 @@ function GoldenVacaysSiteInner() {
             <div className="hidden lg:flex items-center gap-2 whitespace-nowrap">
               <Button
                 as="a"
-                href={"https://wa.me/"+waNumber+"?text="+encodeURIComponent("Hi Golden Vacation & Travel! I'd like to chat about a trip.")}
-                onClick={(e) => { e.preventDefault(); openWhatsApp("Hi Golden Vacation & Travel! I'd like to chat about a trip.", waNumber, 'chat_cta'); }}
+                href={"https://wa.me/"+waNumber+"?text="+encodeURIComponent("Hi Golden Vacation and Travel! I'd like to chat about a trip.")}
+                onClick={(e) => { e.preventDefault(); openWhatsApp("Hi Golden Vacation and Travel! I'd like to chat about a trip.", waNumber, 'chat_cta'); }}
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Chat with us on WhatsApp"
@@ -447,7 +447,7 @@ function GoldenVacaysSiteInner() {
                 as="a" 
                 href={`tel:+${waNumber}`} 
                 onClick={(e) => { e.preventDefault(); openTel(waNumber, 'cta'); }} 
-                aria-label="Call Golden Vacation & Travel"
+                aria-label="Call Golden Vacation and Travel"
                 className="bg-white border border-[#BFD6FF] text-[#0057D9]"
               >
                 Call us
@@ -489,8 +489,8 @@ function GoldenVacaysSiteInner() {
                 ))}
                 <Button
                   as="a"
-                  href={"https://wa.me/"+waNumber+"?text="+encodeURIComponent("Hi Golden Vacation & Travel! I'd like to chat about a trip.")}
-                  onClick={(e) => { e.preventDefault(); openWhatsApp("Hi Golden Vacation & Travel! I'd like to chat about a trip.", waNumber, 'chat_cta'); }}
+                  href={"https://wa.me/"+waNumber+"?text="+encodeURIComponent("Hi Golden Vacation and Travel! I'd like to chat about a trip.")}
+                  onClick={(e) => { e.preventDefault(); openWhatsApp("Hi Golden Vacation and Travel! I'd like to chat about a trip.", waNumber, 'chat_cta'); }}
                   target="_blank"
                   rel="noreferrer"
                   aria-label="Chat with us on WhatsApp"
@@ -517,7 +517,7 @@ function GoldenVacaysSiteInner() {
             <div className="space-y-6">
               <Badge><span className="text-xs">Trusted by 1,000+ Caribbean travelers</span></Badge>
               <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900">
-                Caribbean & International escapes, crafted by <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFC300] via-[#1E90FF] to-[#00B2FF]">Golden Vacation & Travel</span>
+                Caribbean & International escapes, crafted by <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFC300] via-[#1E90FF] to-[#00B2FF]">Golden Vacation and Travel</span>
               </h1>
               <p className="text-lg text-slate-700 max-w-xl">
                 Jamaican, IATA-accredited travel professionals. We design seamless stays, premium flights, and unforgettable moments, so you can simply arrive and exhale.
@@ -602,7 +602,7 @@ function GoldenVacaysSiteInner() {
         {/* REVIEWS */}
         <section id="reviews" className="py-20">
           <Container>
-            <SectionTitle eyebrow="REVIEWS" title="Loved by our travelers" subtitle="Real words from Golden Vacation & Travel guests across Jamaica and the diaspora." />
+            <SectionTitle eyebrow="REVIEWS" title="Loved by our travelers" subtitle="Real words from Golden Vacation and Travel guests across Jamaica and the diaspora." />
             <div className="mt-10 grid md:grid-cols-3 gap-6">
               {REVIEWS.map((r) => (
                 <div key={r.name} className="rounded-2xl border border-[#D9E7FF] bg-white p-6 shadow-sm">
@@ -624,10 +624,10 @@ function GoldenVacaysSiteInner() {
                 <h3 className="text-lg font-semibold">Quick Inquiry</h3>
                 <p className="text-sm text-slate-600 mb-4">Send a short note. This opens WhatsApp with your message.</p>
                 <QuickInquiry waNumber={waNumber} />
-                <LinkFallback label="Open WhatsApp" url={"https://wa.me/"+waNumber+"?text="+encodeURIComponent("Hi Golden Vacation & Travel, I have a quick question about ...")} />
+                <LinkFallback label="Open WhatsApp" url={"https://wa.me/"+waNumber+"?text="+encodeURIComponent("Hi Golden Vacation and Travel, I have a quick question about ...")} />
                 <div className="mt-6 space-y-1 text-sm text-slate-700">
                   <div><span className="font-medium">Email:</span> <a href="mailto:goldentravellers@outlook.com" className="text-[#0057D9] hover:underline">goldentravellers@outlook.com</a></div>
-                  <div><span className="font-medium">Phone/WhatsApp:</span> +1 (876) 210‑6242</div>
+                  <div><span className="font-medium">Phone/WhatsApp:</span> +1 (876) 817-3467</div>
                 </div>
               </div>
               <div className="rounded-3xl overflow-hidden ring-1 ring-[#D9E7FF]">
@@ -641,8 +641,8 @@ function GoldenVacaysSiteInner() {
         <footer className="mt-10 border-t border-[#D9E7FF]/70 bg-white">
           <Container className="py-10 grid md:grid-cols-3 gap-6 items-center">
             <div className="flex items-center gap-3">
-              <img src="https://i.ibb.co/sJCWLvsC/logo-golden.png" alt="Golden Vacation & Travel" className="h-9 w-9 object-contain" />
-              <div className="text-sm text-slate-600">© {new Date().getFullYear()} Golden Vacation & Travel Limited</div>
+              <img src="https://i.ibb.co/sJCWLvsC/logo-golden.png" alt="Golden Vacation and Travel" className="h-9 w-9 object-contain" />
+              <div className="text-sm text-slate-600">© {new Date().getFullYear()} Golden Vacation and Travel</div>
             </div>
             <div className="text-center">
            <div className="text-sm mb-3"><span className="font-semibold">IATA</span> Accredited • Jamaica • Serving US, Canada, UK & Caribbean</div>
@@ -658,8 +658,8 @@ function GoldenVacaysSiteInner() {
             <div className="flex justify-end gap-3">
               <Button 
                 as="a" 
-                href={"https://wa.me/"+waNumber+"?text="+encodeURIComponent("Hi Golden Vacation & Travel! I'd like to chat about a trip.")} 
-                onClick={(e) => { e.preventDefault(); openWhatsApp("Hi Golden Vacation & Travel! I'd like to chat about a trip.", waNumber, 'chat_cta'); }} 
+                href={"https://wa.me/"+waNumber+"?text="+encodeURIComponent("Hi Golden Vacation and Travel! I'd like to chat about a trip.")} 
+                onClick={(e) => { e.preventDefault(); openWhatsApp("Hi Golden Vacation and Travel! I'd like to chat about a trip.", waNumber, 'chat_cta'); }} 
                 target="_blank" 
                 rel="noreferrer" 
                 aria-label="Contact us on WhatsApp"
@@ -671,7 +671,7 @@ function GoldenVacaysSiteInner() {
                 as="a" 
                 href={`tel:+${waNumber}`} 
                 onClick={(e) => { e.preventDefault(); openTel(waNumber, 'cta'); }} 
-                aria-label="Call Golden Vacation & Travel"
+                aria-label="Call Golden Vacation and Travel"
                 className="bg-white border border-[#BFD6FF] text-[#0057D9]"
               >
                 Call us
@@ -806,8 +806,8 @@ const WhatsAppForm = React.memo(({ waNumber }) => {
           <Button type="submit" aria-label="Submit booking via WhatsApp" className="bg-[#0057D9] text-white">Send via WhatsApp</Button>
           <Button 
             as="a" 
-            href={"https://wa.me/"+waNumber+"?text="+encodeURIComponent("Hi Golden Vacation & Travel! I'd like a quote.")} 
-            onClick={(e) => { e.preventDefault(); openWhatsApp("Hi Golden Vacation & Travel! I'd like a quote.", waNumber, 'booking_chat_first'); }} 
+            href={"https://wa.me/"+waNumber+"?text="+encodeURIComponent("Hi Golden Vacation and Travel! I'd like a quote.")} 
+            onClick={(e) => { e.preventDefault(); openWhatsApp("Hi Golden Vacation and Travel! I'd like a quote.", waNumber, 'booking_chat_first'); }} 
             target="_blank" 
             rel="noreferrer" 
             aria-label="Chat first on WhatsApp"
@@ -824,7 +824,7 @@ const WhatsAppForm = React.memo(({ waNumber }) => {
           >
             Call us
           </Button>
-          <a href={"https://wa.me/"+waNumber+"?text="+encodeURIComponent("Hi Golden Vacation & Travel! I'd like a quote.")} target="_blank" rel="noreferrer" className="text-xs text-[#0057D9] underline">Open via wa.me (fallback)</a>
+          <a href={"https://wa.me/"+waNumber+"?text="+encodeURIComponent("Hi Golden Vacation and Travel! I'd like a quote.")} target="_blank" rel="noreferrer" className="text-xs text-[#0057D9] underline">Open via wa.me (fallback)</a>
         </div>
         <p className="mt-3 text-xs text-slate-500">Submitting opens WhatsApp with your details pre‑filled. No payment required.</p>
       </div>
@@ -838,7 +838,7 @@ const WhatsAppForm = React.memo(({ waNumber }) => {
 
 // Memoized Quick Inquiry
 const QuickInquiry = React.memo(({ waNumber }) => {
-  const [message, setMessage] = useState("Hi Golden Vacation & Travel, I have a quick question about ...");
+  const [message, setMessage] = useState("Hi Golden Vacation and Travel, I have a quick question about ...");
   return (
     <div className="flex flex-col gap-3">
       <textarea 
@@ -917,9 +917,9 @@ function LegalLayout({ children }) {
       <header className="sticky top-0 z-40 backdrop-blur bg-white/70 border-b border-[#D9E7FF]/60">
         <Container className="flex items-center justify-between h-16">
           <a href="/" onClick={(e)=>{e.preventDefault(); history.pushState({}, '', '/'); try { window.dispatchEvent(new PopStateEvent('popstate')); } catch(_) {} }} className="flex items-center gap-3">
-            <img src="https://i.ibb.co/sJCWLvsC/logo-golden.png" alt="Golden Vacation & Travel" className="h-9 w-9 object-contain" />
+            <img src="https://i.ibb.co/sJCWLvsC/logo-golden.png" alt="Golden Vacation and Travel" className="h-9 w-9 object-contain" />
             <div className="leading-tight">
-              <div className="font-extrabold tracking-tight text-slate-900">Golden Vacation & Travel</div>
+              <div className="font-extrabold tracking-tight text-slate-900">Golden Vacation and Travel</div>
               <div className="text-[10px] uppercase tracking-wider text-[#0047B5]/80">IATA Accredited</div>
             </div>
           </a>
@@ -932,7 +932,7 @@ function LegalLayout({ children }) {
         </Container>
       </main>
       <footer className="text-center text-xs text-slate-500 py-8 border-t border-[#D9E7FF]/60">
-        © {new Date().getFullYear()} Golden Vacation & Travel Limited
+        © {new Date().getFullYear()} Golden Vacation and Travel
       </footer>
     </div>
   );
@@ -977,7 +977,7 @@ function PrivacyPage() {
       </p>
       <h2>Contact</h2>
       <p>
-        Golden Vacation & Travel Limited — Kingston, Jamaica. Email: <a href="mailto:goldentravellers@outlook.com" className="underline">goldentravellers@outlook.com</a>
+        Golden Vacation and Travel — Shop 3, Enfield Plaza, Browns Town, Jamaica. Email: <a href="mailto:goldentravellers@outlook.com" className="underline">goldentravellers@outlook.com</a>
       </p>
     </article>
   );
@@ -1055,7 +1055,7 @@ function DevDiagnostics(props) {
     console.assert(Array.isArray(tempSources) && tempSources.length === 3, "SmartImg test sources must be 3 items");
 
     // Test 9: Brand mention should be the updated name
-    console.assert(quickQuoteMessage.includes('Golden Vacation & Travel'), 'quickQuoteMessage should include updated brand name');
+    console.assert(quickQuoteMessage.includes('Golden Vacation and Travel'), 'quickQuoteMessage should include updated brand name');
 
     // Test 10: SEO metas present (best-effort)
     const ogTitle = document.querySelector('meta[property="og:title"]');
