@@ -1,0 +1,3 @@
+# Pretty URL for the interactive resort map (served from /map)
+/hotel-status-map      /hotel-status-map/    301
+/hotel-status-map/*    /map/:splat           200
