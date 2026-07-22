@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jamaica All-Inclusive Resort Status — Golden Vacays</title>
+<style>
+:root{--blue:#0057D9;--blue-d:#0047B5;--gold:#FFC300;--sky:#00B2FF;
+--open:#0E8F5E;--openbg:#DCFCE7;--openbd:#86EFAC;--soon:#B45309;--soonbg:#FEF3C7;--soonbd:#FCD34D;
+--shut:#64748b;--shutbg:#F1F5F9;--shutbd:#CBD5E1;--new:#4338CA;--newbg:#EEF2FF;--newbd:#C7D2FE;
+--b1:#D9E7FF;--b2:#BFD6FF;--cream:#FFF9E6;--ink:#0f172a;--t7:#334155;--t6:#475569;--t5:#64748b;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--t7);background:#eef3fb;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}h1,h2,h3{color:var(--ink);letter-spacing:-.01em}
+.ribbon{max-width:1080px;margin:18px auto 0;border-radius:12px;background:linear-gradient(90deg,var(--blue-d),var(--blue));color:#fff;text-align:center;font-size:13px;padding:10px 16px;font-weight:600}.ribbon b{color:var(--gold)}
+.page{max-width:1080px;margin:14px auto 30px;background:#fff;border:1px solid #cdd9ee;border-radius:22px;overflow:hidden;box-shadow:0 24px 50px -30px rgba(2,32,71,.5)}
+.mnav{display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 22px;border-bottom:1px solid var(--b1)}
+.brand{display:flex;align-items:center;gap:10px}.logo{height:34px;width:34px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--blue) 60%,var(--sky));display:grid;place-items:center;color:#fff;font-weight:900;font-size:15px}
+.brand b{font-weight:800;color:var(--ink);font-size:15px;display:block;line-height:1}.brand span{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,71,181,.8)}
+.back{font-size:13px;color:var(--blue);font-weight:600}
+.hdr{padding:30px 24px 6px;background:radial-gradient(700px 300px at 10% -20%,rgba(0,87,217,.10),transparent 60%),linear-gradient(180deg,#fff,#f8fbff)}
+.hdr .eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:rgba(0,71,181,.9)}
+.hdr h1{font-size:clamp(24px,3.6vw,36px);font-weight:900;margin-top:6px}
+.hdr p{color:var(--t6);max-width:660px;margin-top:8px;font-size:15.5px}
+.updated{display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:var(--t6);background:#fff;border:1px solid var(--b1);border-radius:999px;padding:6px 12px}
+.live{width:8px;height:8px;border-radius:50%;background:var(--open);box-shadow:0 0 0 4px rgba(14,143,94,.18)}
+.stats{display:grid;gap:12px;grid-template-columns:repeat(4,1fr);padding:20px 24px 4px}
+.stat{border:1px solid var(--b1);border-radius:14px;padding:14px 16px;background:#fff}.stat .n{font-size:26px;font-weight:900;line-height:1}.stat .l{font-size:12px;color:var(--t6);margin-top:5px;font-weight:600}
+.stat.o{background:var(--openbg);border-color:var(--openbd)}.stat.o .n{color:var(--open)}
+.stat.s{background:var(--soonbg);border-color:var(--soonbd)}.stat.s .n{color:var(--soon)}
+.stat.n2{background:var(--newbg);border-color:var(--newbd)}.stat.n2 .n{color:var(--new)}
+.stat.c{background:var(--shutbg);border-color:var(--shutbd)}.stat.c .n{color:var(--shut)}
+.controls{padding:14px 24px 6px;position:sticky;top:0;background:#fff;z-index:5;border-bottom:1px solid var(--b1)}
+.search{width:100%;border:1px solid var(--b2);border-radius:12px;padding:12px 14px;font:inherit;font-size:15px}
+.search:focus{outline:2px solid var(--blue);border-color:transparent}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.chip{font-size:13px;font-weight:600;border:1px solid var(--b1);background:#fff;color:var(--t7);padding:6px 12px;border-radius:999px;cursor:pointer;user-select:none}
+.chip.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.showing{font-size:12.5px;color:var(--t5);padding:8px 24px 0}
+.grp{padding:8px 24px 4px}
+.grphd{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:800;color:var(--ink);padding:14px 0 8px}
+.grphd .gcount{font-size:12px;font-weight:700;color:#fff;border-radius:999px;padding:2px 9px}
+.gc-s{background:var(--soon)}.gc-o{background:var(--open)}.gc-c{background:var(--shut)}.gc-n{background:var(--new)}
+.rows{border:1px solid var(--b1);border-radius:16px;overflow:hidden}
+details.hotel{border-top:1px solid var(--b1)}details.hotel:first-child{border-top:0}
+details.hotel>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 16px}
+details.hotel>summary::-webkit-details-marker{display:none}
+details.hotel:hover>summary{background:#f8fbff}
+.rname{flex:1;min-width:0}.rname b{color:var(--ink);font-size:15px;font-weight:700}
+.rname .aka{font-size:12px;color:var(--blue-d);font-style:italic;margin-top:2px}
+.rname .meta{font-size:12.5px;color:var(--t5);margin-top:2px}
+.abadge{display:inline-block;font-size:10.5px;font-weight:700;color:var(--blue-d);background:var(--cream);border:1px solid var(--b1);border-radius:999px;padding:1px 7px;margin-right:6px;vertical-align:1px}
+.pill{font-size:12px;font-weight:800;padding:5px 11px;border-radius:999px;white-space:nowrap}
+.pill.o{background:var(--openbg);color:var(--open);border:1px solid var(--openbd)}
+.pill.s{background:var(--soonbg);color:var(--soon);border:1px solid var(--soonbd)}
+.pill.c{background:var(--shutbg);color:var(--shut);border:1px solid var(--shutbd)}
+.pill.n{background:var(--newbg);color:var(--new);border:1px solid var(--newbd)}
+.when{font-size:12px;color:var(--t6);width:112px;text-align:right;font-weight:700}
+@media(max-width:640px){.when{display:none}.stats{grid-template-columns:repeat(2,1fr)}}
+.xbody{padding:2px 16px 16px 16px;background:#f6faff;font-size:13.5px}
+.xbody .kv{display:flex;gap:10px;padding:7px 0;border-top:1px dashed #dbe6fb}.xbody .kv b{color:var(--ink);min-width:110px;flex-shrink:0}
+.btn-wa{display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;border-radius:12px;padding:9px 16px;font-weight:700;font-size:14px;margin-top:10px;cursor:pointer}
+.empty{padding:26px;text-align:center;color:var(--t5)}
+.ctaband{margin:18px 24px 26px;background:linear-gradient(120deg,var(--blue-d),var(--blue));color:#fff;border-radius:20px;padding:24px;text-align:center}
+.ctaband h2{color:#fff;font-size:21px;font-weight:800}.ctaband p{color:#dbe7ff;margin:8px auto 0;max-width:520px}
+.ctaband .btn-wa{margin:14px auto 0}
+.foot{background:var(--ink);color:#9fb6da;padding:18px 24px;text-align:center;font-size:12.5px;line-height:1.6}
+</style></head><body>
+<div class="ribbon">🔧 <b>MOCKUP — reorganized by status + search.</b> The area buttons are now filters, not sections. Try the search box &amp; chips.</div>
+<div class="page">
+  <div class="mnav"><a class="brand"><div class="logo">GV</div><div><b>Golden Vacation &amp; Travel</b><span>Jamaica Hotel Status</span></div></a><a class="back">← Back to site</a></div>
+  <div class="hdr">
+    <div class="eyebrow">Live Jamaica update · post-Hurricane Melissa</div>
+    <h1>Jamaica All-Inclusive Resort Status</h1>
+    <p>Search any resort to check its status, or scan the reopening timeline below. Most of Jamaica is open and booking now.</p>
+    <span class="updated"><span class="live"></span> Updated 20 Jul 2026 · <span id="trk"></span> resorts tracked</span>
+  </div>
+  <div class="stats" id="stats"></div>
+  <div class="controls">
+    <input class="search" id="q" placeholder="Search a resort or its old name…  e.g. Hyatt, Jewel, Sandals">
+    <div class="chips" id="statusChips">
+      <span class="chip on" data-s="">All statuses</span>
+      <span class="chip" data-s="Reopening">Reopening</span>
+      <span class="chip" data-s="Open">Open</span>
+      <span class="chip" data-s="Closed">Closed</span>
+      <span class="chip" data-s="new">New / coming</span>
+    </div>
+    <div class="chips" id="areaChips">
+      <span class="chip on" data-a="">All areas</span>
+      <span class="chip" data-a="Montego Bay">Montego Bay</span>
+      <span class="chip" data-a="Ocho Rios & Runaway Bay">Ocho Rios</span>
+      <span class="chip" data-a="Negril">Negril</span>
+      <span class="chip" data-a="South Coast">South Coast</span>
+    </div>
+  </div>
+  <div class="showing" id="showing"></div>
+  <div id="list"></div>
+  <div class="ctaband"><h2>Not sure what's open for your dates?</h2><p>Tell us where &amp; when — we'll match you to a great open resort at today's best rate.</p><a class="btn-wa">Ask us on WhatsApp</a></div>
+  <div class="foot">Information maintained by Golden Vacation &amp; Travel. Dates can change — always cross-check with your hotel or booking agent/agency (hopefully, that's us). Updated 20 Jul 2026.<br>© 2026 Golden Vacation &amp; Travel Limited</div>
+</div>
+<script>
+const HOTELS=[{"n": "JOIA Rose Hall by Iberostar", "f": "Iberostar Grand Rose Hall", "a": "Montego Bay", "cat": "All-inclusive", "s": "Reopening", "w": "1 Dec 2026", "note": "Closed for refurbishment · reopening", "wh": "", "bi": "", "v": ""}, {"n": "Royalton Blue Waters", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Reopening", "w": "15 Sep 2026", "note": "Family resort", "wh": "", "bi": "", "v": ""}, {"n": "Royalton Hideaway Blue Waters", "f": "Royalton White Sands Montego Bay", "a": "Montego Bay", "cat": "All-inclusive", "s": "Reopening", "w": "15 Sep 2026", "note": "Adults-only", "wh": "", "bi": "", "v": ""}, {"n": "Sandals Montego Bay", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Reopening", "w": "18 Dec 2026", "note": "200M \"Sandals 2.0\" reimagining", "wh": "Closed after Hurricane Melissa. Sandals is investing $200M across three Jamaica resorts (\"Sandals 2.0\") — elevated suites, redesigned pools, new dining concepts and refreshed public spaces.", "bi": "Sandals Ochi, Sandals Dunn's River, or Sandals Negril — all welcoming guests.", "v": "Sandals travel-advisor advisory · 20 Jul 2026"}, {"n": "Sandals Caribbean Cay", "f": "Sandals Royal Caribbean", "a": "Montego Bay", "cat": "All-inclusive", "s": "Reopening", "w": "18 Dec 2026", "note": "Rebranded & reimagined", "wh": "", "bi": "", "v": ""}, {"n": "Hyatt Zilara Rose Hall", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Reopening", "w": "Q1 2027", "note": "Adults-only", "wh": "", "bi": "", "v": ""}, {"n": "Hyatt Ziva Rose Hall", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Reopening", "w": "Q1 2027", "note": "Family resort", "wh": "", "bi": "", "v": ""}, {"n": "Breathless Montego Bay", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Reopening", "w": "Q1 2027", "note": "Adults-only", "wh": "", "bi": "", "v": ""}, {"n": "Secrets St. James Montego Bay", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Reopening", "w": "2027", "note": "Adults-only", "wh": "", "bi": "", "v": ""}, {"n": "Secrets Wild Orchid Montego Bay", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Reopening", "w": "2027", "note": "Adults-only", "wh": "", "bi": "", "v": ""}, {"n": "Dreams Rose Hall", "f": "Hilton Rose Hall Resort & Spa", "a": "Montego Bay", "cat": "All-inclusive", "s": "Reopening", "w": "2027", "note": "Family resort", "wh": "", "bi": "", "v": ""}, {"n": "Jewel Grande Montego Bay", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Reopening", "w": "2027", "note": "Suites & residences", "wh": "", "bi": "", "v": ""}, {"n": "Excellence Oyster Bay", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Adults-only", "wh": "", "bi": "", "v": ""}, {"n": "Iberostar Selection Rose Hall", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "All-inclusive", "wh": "", "bi": "", "v": ""}, {"n": "Iberostar Waves Rose Hall", "f": "Iberostar Rose Hall Beach", "a": "Montego Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "All-inclusive", "wh": "", "bi": "", "v": ""}, {"n": "RIU Palace Jamaica", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Reopening", "w": "12 Dec 2026", "note": "Closed for refurbishment · reopening", "wh": "", "bi": "", "v": ""}, {"n": "RIU Reggae", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Adults-only", "wh": "", "bi": "", "v": ""}, {"n": "RIU Palace Aquarelle", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Newly built", "wh": "", "bi": "", "v": ""}, {"n": "S Hotel Montego Bay", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Doctor's Cave Beach", "wh": "", "bi": "", "v": ""}, {"n": "Ocean Eden Bay", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Adults-only", "wh": "", "bi": "", "v": ""}, {"n": "Ocean Coral Spring", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Family resort", "wh": "", "bi": "", "v": ""}, {"n": "Deja Resort", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "All-inclusive", "wh": "", "bi": "", "v": ""}, {"n": "Zoetry Montego Bay", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Closed", "w": "TBD", "note": "Not accepting reservations · reopening TBD", "wh": "", "bi": "", "v": ""}, {"n": "Catalonia Montego Bay", "f": "Holiday Inn Resort Montego Bay All Inclusive", "a": "Montego Bay", "cat": "All-inclusive", "s": "Closed", "w": "TBD", "note": "Not accepting reservations · reopening TBD", "wh": "", "bi": "", "v": ""}, {"n": "Grand Decameron Montego Beach", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Closed", "w": "TBD", "note": "Now under MGM Muthu Hotels · rebrand expected", "wh": "Ownership & management transferred from Decameron to MGM Muthu Hotels (agreement announced Jan 2026). Currently not accepting reservations — a rebrand under the Muthu brand is expected.", "bi": "", "v": ""}, {"n": "Grand Decameron Cornwall Beach", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Closed", "w": "TBD", "note": "Now under MGM Muthu Hotels · rebrand expected", "wh": "Ownership & management transferred from Decameron to MGM Muthu Hotels (agreement announced Jan 2026). Currently not accepting reservations — a rebrand under the Muthu brand is expected.", "bi": "", "v": ""}, {"n": "Bahia Principe Explore Jamaica", "f": "Bahia Principe Grand Jamaica", "a": "Ocho Rios & Runaway Bay", "cat": "All-inclusive", "s": "Reopening", "w": "1 Dec 2026", "note": "Reopening after works", "wh": "", "bi": "", "v": ""}, {"n": "Royalton CHIC Jamaica Paradise Cove", "f": "Jewel Paradise Cove", "a": "Ocho Rios & Runaway Bay", "cat": "All-inclusive", "s": "Reopening", "w": "Summer 2027", "note": "Adults-only · reopening", "wh": "", "bi": "", "v": ""}, {"n": "Beaches Runaway Bay", "f": "Jewel Runaway Bay Beach Resort & Waterpark", "a": "Ocho Rios & Runaway Bay", "cat": "All-inclusive", "s": "Closed", "w": "—", "note": "Rebranded from Jewel but not yet opened · no date announced", "wh": "", "bi": "", "v": ""}, {"n": "Moon Palace Jamaica", "f": "Sunset Jamaica Grande", "a": "Ocho Rios & Runaway Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "All towers operating", "wh": "", "bi": "", "v": ""}, {"n": "Sandals Ochi", "f": "", "a": "Ocho Rios & Runaway Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Golf & butler suites", "wh": "", "bi": "", "v": ""}, {"n": "Sandals Dunn's River", "f": "Jewel Dunn's River", "a": "Ocho Rios & Runaway Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Newest Sandals", "wh": "", "bi": "", "v": ""}, {"n": "Sandals Royal Plantation", "f": "", "a": "Ocho Rios & Runaway Bay", "cat": "Boutique / Villa", "s": "Open", "w": "Now", "note": "Boutique all-inclusive", "wh": "", "bi": "", "v": ""}, {"n": "Bahia Principe Escape Runaway Bay", "f": "Bahia Principe Luxury Runaway Bay", "a": "Ocho Rios & Runaway Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "All-inclusive", "wh": "", "bi": "", "v": ""}, {"n": "Couples Tower Isle", "f": "", "a": "Ocho Rios & Runaway Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Adults-only", "wh": "", "bi": "", "v": ""}, {"n": "Couples Sans Souci", "f": "", "a": "Ocho Rios & Runaway Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Adults-only", "wh": "", "bi": "", "v": ""}, {"n": "FDR — Franklyn D. Resort", "f": "", "a": "Ocho Rios & Runaway Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Family all-inclusive, Runaway Bay", "wh": "", "bi": "", "v": ""}, {"n": "RIU Ocho Rios", "f": "", "a": "Ocho Rios & Runaway Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "All-inclusive", "wh": "", "bi": "", "v": ""}, {"n": "Jamaica Inn", "f": "", "a": "Ocho Rios & Runaway Bay", "cat": "Boutique / Villa", "s": "Open", "w": "Now", "note": "Boutique · EP", "wh": "", "bi": "", "v": ""}, {"n": "Beaches Ocho Rios", "f": "", "a": "Ocho Rios & Runaway Bay", "cat": "All-inclusive", "s": "Closed", "w": "Indefinite", "note": "Closed indefinitely", "wh": "", "bi": "", "v": ""}, {"n": "Grand Muthu", "f": "Decameron Club Caribbean", "a": "Ocho Rios & Runaway Bay", "cat": "All-inclusive", "s": "Closed", "w": "TBC", "note": "Closed — no date announced", "wh": "", "bi": "", "v": ""}, {"n": "Royalton Negril", "f": "", "a": "Negril", "cat": "All-inclusive", "s": "Reopening", "w": "25 Aug 2026", "note": "Family resort", "wh": "", "bi": "", "v": ""}, {"n": "Royalton Hideaway Negril", "f": "", "a": "Negril", "cat": "All-inclusive", "s": "Reopening", "w": "25 Aug 2026", "note": "Adults-only", "wh": "", "bi": "", "v": ""}, {"n": "Grand Lido Negril", "f": "", "a": "Negril", "cat": "All-inclusive", "s": "Reopening", "w": "25 Aug 2026", "note": "Adults-only", "wh": "", "bi": "", "v": ""}, {"n": "Sandals Negril", "f": "", "a": "Negril", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Seven Mile Beach · overwater suites", "wh": "", "bi": "", "v": ""}, {"n": "Beaches Negril", "f": "", "a": "Negril", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Family / all-ages", "wh": "", "bi": "", "v": ""}, {"n": "Couples Swept Away", "f": "", "a": "Negril", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Adults-only", "wh": "", "bi": "", "v": ""}, {"n": "Couples Negril", "f": "", "a": "Negril", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Adults-only", "wh": "", "bi": "", "v": ""}, {"n": "Azul Beach Resort Negril", "f": "", "a": "Negril", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Family resort", "wh": "", "bi": "", "v": ""}, {"n": "RIU Negril", "f": "", "a": "Negril", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "All-inclusive", "wh": "", "bi": "", "v": ""}, {"n": "RIU Palace Tropical Bay", "f": "", "a": "Negril", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "All-inclusive", "wh": "", "bi": "", "v": ""}, {"n": "Princess Grand Jamaica", "f": "", "a": "Negril", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Large all-inclusive", "wh": "", "bi": "", "v": ""}, {"n": "Princess Senses The Mangrove", "f": "", "a": "Negril", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Adults-only", "wh": "", "bi": "", "v": ""}, {"n": "Hedonism II", "f": "", "a": "Negril", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Adults-only", "wh": "", "bi": "", "v": ""}, {"n": "Sunset at the Palms", "f": "", "a": "Negril", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Eco all-inclusive", "wh": "", "bi": "", "v": ""}, {"n": "Sandals South Coast", "f": "", "a": "South Coast", "cat": "All-inclusive", "s": "Reopening", "w": "18 Nov 2026", "note": "Whitehouse · \"Sandals 2.0\" reimagining", "wh": "", "bi": "", "v": ""}, {"n": "Único 20°87° Jamaica", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "New", "w": "TBC", "note": "Brand-new adults-only resort (Karisma) · opening date to confirm", "wh": "", "bi": "", "v": ""}, {"n": "Grand Palladium Jamaica Resort & Spa", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Lucea/Hanover · all-inclusive", "wh": "", "bi": "", "v": ""}, {"n": "Grand Palladium Lady Hamilton Resort & Spa", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "Lucea/Hanover · all-inclusive", "wh": "", "bi": "", "v": ""}, {"n": "RIU Montego Bay", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Open", "w": "Now", "note": "All-inclusive", "wh": "", "bi": "", "v": ""}, {"n": "Sea Garden Hotel", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Reopening", "w": "1 Sep 2026", "note": "Montego Bay", "wh": "", "bi": "", "v": ""}, {"n": "Melia Braco Village", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Permanently closed", "w": "—", "note": "Trelawny · permanently closed", "wh": "", "bi": "", "v": ""}, {"n": "Oasis at Sunset Beach", "f": "Sunscape Splash & Sunscape Cove Montego Bay · Sunset Beach Resort, Spa & Waterpark", "a": "Montego Bay", "cat": "All-inclusive", "s": "Closed", "w": "—", "note": "Under new ownership · not yet reopened · no date", "wh": "Formerly Sunscape Splash & Sunscape Cove (the Sunset Beach complex). Acquired by new owners as Oasis at Sunset Beach / Sunset Beach Resort, Spa & Waterpark, but has not reopened — no date announced.", "bi": "", "v": ""}, {"n": "Moon Palace The Grand – Montego Bay", "f": "", "a": "Montego Bay", "cat": "All-inclusive", "s": "Coming soon", "w": "No date set", "note": "New Moon Palace resort · no opening date yet", "wh": "", "bi": "", "v": ""}, {"n": "Grand Pineapple Beach Negril", "f": "", "a": "Negril", "cat": "All-inclusive", "s": "Closed", "w": "—", "note": "Sandals-owned · closed / dormant since COVID · not reopened", "wh": "Sandals-family property but appears closed/dormant since COVID and is not on the Jamaica Tourist Board list. Booking aggregators still show it, but confirm directly before selling.", "bi": "", "v": ""}];
+const MO={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+function dkey(w){w=(w||'').trim();if(/^now$/i.test(w))return 0;let m=w.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);if(m)return +m[3]+(MO[m[2]]-1)/12+(+m[1]-1)/372;m=w.match(/Q(\d)\s*(\d{4})/);if(m)return +m[2]+(+m[1]-1)*0.24;if(/summer\s*2027/i.test(w))return 2027.5;m=w.match(/^(\d{4})$/);if(m)return +m[1]+0.9;return 9999;}
+function pcls(s){s=s.toLowerCase();if(s==='open')return'o';if(s==='reopening')return's';if(s.includes('closed'))return'c';return'n';}
+const GROUPS=[['Reopening','Reopening — soonest first','s'],['Coming soon','Coming soon','n'],['New','New &amp; noteworthy','n'],['Open','Open &amp; taking bookings','o'],['Closed','Closed / not booking','c'],['Permanently closed','Permanently closed','c']];
+let fS='',fA='',fQ='';
+function esc(x){return (x||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function render(){
+  const q=fQ.trim().toLowerCase();
+  let list=HOTELS.filter(h=>{
+    if(fA&&h.a!==fA)return false;
+    if(fS==='new'){if(!(h.s==='New'||h.s==='Coming soon'))return false;}
+    else if(fS&&!(h.s.toLowerCase().startsWith(fS.toLowerCase())||(fS==='Closed'&&h.s.toLowerCase().includes('closed'))))return false;
+    if(q&&!((h.n+' '+h.f).toLowerCase().includes(q)))return false;
+    return true;});
+  const el=document.getElementById('list');el.innerHTML='';
+  if(!list.length){el.innerHTML='<div class="empty">No resorts match — try a different search or clear the filters.</div>';}
+  GROUPS.forEach(([st,label,cls])=>{
+    let g=list.filter(h=>h.s===st);
+    if(!g.length)return;
+    if(st==='Reopening'||st==='Coming soon')g.sort((a,b)=>dkey(a.w)-dkey(b.w));
+    else if(st==='Open')g.sort((a,b)=>(a.a+a.n).localeCompare(b.a+b.n));
+    const wrap=document.createElement('div');wrap.className='grp';
+    wrap.innerHTML='<div class="grphd">'+label+' <span class="gcount gc-'+cls+'">'+g.length+'</span></div><div class="rows">'+g.map(h=>row(h)).join('')+'</div>';
+    el.appendChild(wrap);
+  });
+  const shown=list.length;document.getElementById('showing').textContent=(fS||fA||q)?('Showing '+shown+' of '+HOTELS.length+' resorts'):('');
+}
+function row(h){
+  const cls=pcls(h.s);
+  const aka=h.f?'<div class="aka">formerly '+esc(h.f)+'</div>':'';
+  const wh=h.wh?h.wh:(h.note||'');
+  const bi=h.bi?'<div class="kv"><b>Open now instead</b><span>'+esc(h.bi)+'</span></div>':'';
+  const v=h.v?'<div class="kv"><b>Verified</b><span>'+esc(h.v)+'</span></div>':'';
+  return '<details class="hotel"><summary>'
+    +'<div class="rname"><b>'+esc(h.n)+'</b>'+aka+'<div class="meta"><span class="abadge">'+esc(h.a)+'</span>'+esc(h.note)+'</div></div>'
+    +'<span class="pill '+cls+'">'+esc(h.s)+'</span><div class="when">'+esc(h.w)+'</div></summary>'
+    +'<div class="xbody">'
+    +'<div class="kv"><b>What\'s happening</b><span>'+esc(wh)+'</span></div>'
+    +'<div class="kv"><b>Status</b><span>'+esc(h.s)+(h.w&&h.w!=='—'?' · '+esc(h.w):'')+'</span></div>'
+    +bi+v
+    +'<a class="btn-wa">Ask us about '+esc(h.n)+'</a>'
+    +'</div></details>';
+}
+function counts(){
+  const c={o:0,s:0,n:0,c:0};HOTELS.forEach(h=>{const k=pcls(h.s);c[k]++;});
+  document.getElementById('trk').textContent=HOTELS.length;
+  document.getElementById('stats').innerHTML=
+   '<div class="stat o"><div class="n">'+c.o+'</div><div class="l">Open now</div></div>'
+  +'<div class="stat s"><div class="n">'+c.s+'</div><div class="l">Reopening</div></div>'
+  +'<div class="stat n2"><div class="n">'+c.n+'</div><div class="l">New / coming soon</div></div>'
+  +'<div class="stat c"><div class="n">'+c.c+'</div><div class="l">Closed</div></div>';
+}
+document.getElementById('q').addEventListener('input',e=>{fQ=e.target.value;render();});
+document.querySelectorAll('#statusChips .chip').forEach(c=>c.addEventListener('click',()=>{document.querySelectorAll('#statusChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');fS=c.dataset.s;render();}));
+document.querySelectorAll('#areaChips .chip').forEach(c=>c.addEventListener('click',()=>{document.querySelectorAll('#areaChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');fA=c.dataset.a;render();}));
+counts();render();
+</script></body></html>
