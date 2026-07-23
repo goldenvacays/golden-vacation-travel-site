@@ -77,7 +77,7 @@ a:hover{color:var(--gold)}
 .hero p{margin:0;font-size:16.5px;line-height:1.55;max-width:600px;color:rgba(255,255,255,.94)}
 
 /* stats */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:0 0 8px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:0 0 8px}
 .tile{position:relative;padding:20px 20px 17px;border-radius:20px;border:1px solid var(--line);
   background:var(--paper);box-shadow:var(--shadow);cursor:pointer;transition:.22s;overflow:hidden}
 .tile:hover{transform:translateY(-3px)}
@@ -353,7 +353,7 @@ const REGIONS = {
 };
 const AREA_TO_REGION = {"Montego Bay":"mobay","Lucea / Green Island":"lucea","Falmouth":"falmouth","Ocho Rios & Runaway Bay":"ocho","Negril":"negril","South Coast":"south"};
 const STATUS = [
-  {key:"Reopening",v:"--st-reopen",label:"Reopening"},
+  {key:"Reopening",v:"--st-reopen",label:"Reopening"},{key:"Closing soon",v:"--st-reopen",label:"Closing soon"},
   {key:"Coming soon",v:"--st-soon",label:"Coming soon"},
   {key:"New",v:"--st-new",label:"New"},
   {key:"Open",v:"--st-open",label:"Open"},
@@ -472,7 +472,7 @@ function renderStats(){
   const c=k=>RESORTS.filter(r=>r.status===k).length;
   const groups=[
     {label:"Open",n:c("Open"),v:"--st-open",statuses:["Open"]},
-    {label:"Reopening",n:c("Reopening"),v:"--st-reopen",statuses:["Reopening"]},
+    {label:"Reopening",n:c("Reopening"),v:"--st-reopen",statuses:["Reopening"]},{label:"Closing soon",n:c("Closing soon"),v:"--st-reopen",statuses:["Closing soon"]},
     {label:"New / Coming",n:c("New")+c("Coming soon"),v:"--st-new",statuses:["New","Coming soon"]},
     {label:"Closed",n:c("Closed")+c("Permanently closed"),v:"--st-closed",statuses:["Closed","Permanently closed"]},
   ];
