@@ -401,8 +401,8 @@ function GoldenVacaysSiteInner() {
   return (
     <>
       <HeadMeta
-        title="Golden Vacation and Travel — Jamaica Hotels, Sandals, Hyatt Zilara, Iberostar, RIU & More"
-        description="IATA‑accredited Jamaican travel agency. WhatsApp‑first bookings for Jamaica hotels & packages — Sandals, Beaches, Hyatt Zilara/Ziva, Iberostar, RIU, Moon Palace, Secrets, Half Moon, Couples & more."
+        title="Jamaica Hotels & All-Inclusive Resorts | Golden Vacation"
+        description="IATA‑accredited Jamaican travel agency. Book Jamaica hotels, all-inclusive resorts & packages by WhatsApp — Sandals, RIU, Iberostar, Hyatt & more."
         keywords="Jamaica hotels, Montego Bay hotels, Ocho Rios hotels, Negril resorts, Sandals Jamaica, Beaches Negril, Hyatt Zilara Rose Hall, Iberostar Rose Hall, RIU Ocho Rios, Moon Palace Jamaica, Secrets St. James, Breathless Montego Bay, Excellence Oyster Bay, Half Moon, Couples Swept Away, Bahia Principe, S Hotel, Ocean Eden Bay"
       />
       <Analytics />
