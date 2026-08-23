@@ -426,7 +426,6 @@ function GoldenVacaysSiteInner() {
               <a href="#booking" className="hover:text-[#0057D9]">WhatsApp Booking</a>
               <a href="/group-inquiry" className="hover:text-[#0057D9]">Group Inquiry</a>
               <a href="/hotel-status" className="hover:text-[#0057D9] whitespace-nowrap">Resort Status</a>
-              <a href="/hotel-status-map" className="hover:text-[#0057D9] whitespace-nowrap">Status Map</a>
               <a href="#reviews" className="hover:text-[#0057D9]">Reviews</a>
               <a href="#contact" className="hover:text-[#0057D9]">Contact</a>
             </nav>
@@ -476,7 +475,6 @@ function GoldenVacaysSiteInner() {
                   { href: "#booking", label: "WhatsApp Booking" },
                   { href: "/group-inquiry", label: "Group Inquiry" },
                   { href: "/hotel-status", label: "Resort Status" },
-                  { href: "/hotel-status-map", label: "Status Map" },
                   { href: "#reviews", label: "Reviews" },
                   { href: "#contact", label: "Contact" },
                 ].map((i) => (
@@ -592,8 +590,8 @@ function GoldenVacaysSiteInner() {
                 <Button as="a" href="/hotel-status" className="bg-[#0057D9] text-white">
                   Check your resort →
                 </Button>
-                <Button as="a" href="/hotel-status-map" className="bg-white border border-[#BFD6FF] text-[#0057D9]">
-                  View the map
+                <Button as="a" href="/group-inquiry" className="bg-white border border-[#BFD6FF] text-[#0057D9]">
+                  Planning for a group?
                 </Button>
               </div>
             </div>

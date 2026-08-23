@@ -4,15 +4,15 @@
 <meta charset="UTF-8">
 <base href="/map/">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jamaica Resort Map 2026 — Open & Reopening All-Inclusives by Coast | Golden Vacays</title>
+<title>Jamaica All-Inclusive Resort Status 2026 — Open, Reopening &amp; Closed Hotels | Golden Vacation and Travel</title>
 <meta name="description" content="Interactive map of Jamaica's all-inclusive resorts — see what's open, reopening, or closed by coast: Montego Bay, Negril, Ocho Rios and more. Tap any resort for its status and reopening date.">
 <meta name="robots" content="index,follow">
-<link rel="canonical" href="https://goldenvacays.com/hotel-status-map">
+<link rel="canonical" href="https://goldenvacays.com/hotel-status">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Golden Vacation & Travel">
 <meta property="og:title" content="Jamaica Resort Map — Open & Reopening All-Inclusives 2026">
 <meta property="og:description" content="Interactive map of every Jamaica all-inclusive by coast — open, reopening, or closed. Tap a resort for status and dates.">
-<meta property="og:url" content="https://goldenvacays.com/hotel-status-map">
+<meta property="og:url" content="https://goldenvacays.com/hotel-status">
 <meta property="og:image" content="https://goldenvacays.com/map/photos/riu-ocho-rios.jpg">
 <meta property="og:image:alt" content="Map of Jamaica all-inclusive resorts — Golden Vacation and Travel">
 <meta name="twitter:card" content="summary_large_image">
@@ -274,12 +274,29 @@ body.editing .editbar{display:flex}
   .chiprow .cl{position:sticky;left:0;background:var(--sand);min-width:0;margin:0;padding-right:6px;z-index:2;flex:none}
   .chip{flex:none;justify-content:center;padding:7px 13px;font-size:12px;white-space:nowrap;line-height:1.2}
 }
+
+/* --- merged status content (was /hotel-status) --- */
+.seoblock{max-width:1180px;margin:26px auto 0;padding:0 22px 46px}
+.seoblock .panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:24px 26px}
+.seoblock h2{font:400 26px/1.15 "DM Serif Display",Georgia,serif;color:var(--ink);margin:0 0 6px}
+.seoblock .cap{font:600 12.5px "Manrope",sans-serif;color:var(--muted);margin:0 0 18px}
+.azgrid{column-width:340px;column-gap:28px}
+.azrow{font:500 13.5px/1.55 "Manrope",sans-serif;color:var(--muted);padding:7px 0;
+  border-top:1px solid var(--line);break-inside:avoid;margin:0}
+.azrow:first-of-type{border-top:0}
+.azrow strong{color:var(--ink);font-weight:700}
+.qrow{padding:13px 0;border-top:1px solid var(--line)}
+.qrow:first-of-type{border-top:0}
+.qrow h3{font:700 15px "Manrope",sans-serif;color:var(--ink);margin:0 0 5px}
+.qrow p{font:500 13.6px/1.55 "Manrope",sans-serif;color:var(--muted);margin:0}
+.seoblock .foot{font:500 12.5px "Manrope",sans-serif;color:var(--muted);margin-top:18px}
+@media(max-width:640px){.seoblock{padding:0 16px 36px}.seoblock .panel{padding:18px}}
 </style>
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://goldenvacays.com/"}, {"@type": "ListItem", "position": 2, "name": "Jamaica Resort Map", "item": "https://goldenvacays.com/hotel-status-map"}]}
+{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://goldenvacays.com/"}, {"@type": "ListItem", "position": 2, "name": "Jamaica Resort Map", "item": "https://goldenvacays.com/hotel-status"}]}
 </script>
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "WebPage", "name": "Jamaica Resort Map", "url": "https://goldenvacays.com/hotel-status-map", "dateModified": "2026-07-26", "provider": {"@type": "TravelAgency", "name": "Golden Vacation and Travel", "telephone": "+1 876 817 3467", "areaServed": "Jamaica"}}
+{"@context": "https://schema.org", "@type": "WebPage", "name": "Jamaica Resort Map", "url": "https://goldenvacays.com/hotel-status", "dateModified": "2026-07-26", "provider": {"@type": "TravelAgency", "name": "Golden Vacation and Travel", "telephone": "+1 876 817 3467", "areaServed": "Jamaica"}}
 </script>
 </head>
 <body>
@@ -292,9 +309,9 @@ body.editing .editbar{display:flex}
 </template>
 <div class="wrap">
   <div class="topbar">
-    <a class="brand" href="/" title="Back to Golden Vacays home" style="text-decoration:none;color:inherit">
+    <a class="brand" href="/" title="Back to Golden Vacation and Travel home" style="text-decoration:none;color:inherit">
       <div class="mark">G</div>
-      <div><div class="bt">Golden Vacays</div><div class="bn">Jamaica Resorts</div></div>
+      <div><div class="bt">Golden Vacation and Travel</div><div class="bn">Jamaica Resorts</div></div>
     </a>
     <a href="/hotel-status" style="display:inline-flex;align-items:center;gap:7px;font:600 14px/1 'Manrope',sans-serif;text-decoration:none;padding:9px 16px;border-radius:999px;color:#fff;background:linear-gradient(140deg,#0FB6C7,#0057D9);box-shadow:0 4px 14px rgba(15,182,199,.35)">📋 Status list</a><a href="/" style="display:inline-flex;align-items:center;gap:7px;font:600 14px/1 'Manrope',sans-serif;color:#0F7C8A;text-decoration:none;padding:9px 16px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid rgba(15,124,138,.28);box-shadow:0 4px 14px rgba(18,56,74,.06)">&larr; Home</a>
     <div class="search">
@@ -533,7 +550,7 @@ function cardHTML(r){
   const happening=r.happening?`<div><h4>What's happening</h4><p>${esc(r.happening)}</p></div>`:(r.note?`<div><h4>Note</h4><p>${esc(r.note)}</p></div>`:"");
   const book=r.bookInstead?`<div><h4>Book instead</h4><p class="book">${esc(r.bookInstead)}</p></div>`:"";
   const verified=r.verifiedOn?`<div class="vr">✓ Verified ${esc(r.verifiedOn)}</div>`:"";
-  const wa=`https://wa.me/18768173467?text=${encodeURIComponent("Hi Golden Vacays — I'm interested in "+r.name+" ("+r.status+"). Can you help?")}`;
+  const wa=`https://wa.me/18768173467?text=${encodeURIComponent("Hi Golden Vacation and Travel — I'm interested in "+r.name+" ("+r.status+"). Can you help?")}`;
   return `<div class="card" data-id="${r._id}" style="--dc:${dc}">
     <div class="chead">
       <div class="thumb"><div class="ph">PHOTO</div><span>${esc(r.name)}</span>${r.photo?`<img src="${esc(r.photo)}" alt="${esc(r.name)}" onerror="this.remove()">`:""}</div>
@@ -606,6 +623,477 @@ document.getElementById("btnExport").onclick=()=>{
 renderStats(); renderChips(); renderList();
 if(window.L) initMap(); else window.addEventListener("load",initMap);
 window.addEventListener("resize",()=>{ if(map) map.invalidateSize(); });
+</script>
+
+<section class="seoblock" aria-label="Jamaica resort status in text">
+  <div class="panel">
+    <h2>Which Jamaica resorts are open right now?</h2>
+    <p class="cap">Every all-inclusive we track, in plain text — updated 23 Aug 2026.</p>
+    <div class="azgrid">
+<p class="azrow"><strong>Is Azul Beach Resort Negril open?</strong> Yes — Azul Beach Resort Negril is <strong>open</strong> and welcoming guests in Negril, Jamaica.</p>
+<p class="azrow"><strong>Is Bahia Principe Escape Runaway Bay open?</strong> Yes — Bahia Principe Escape Runaway Bay is <strong>open</strong> and welcoming guests in Ocho Rios &amp; Runaway Bay, Jamaica. Formerly known as Bahia Principe Luxury Runaway Bay.</p>
+<p class="azrow"><strong>Is Bahia Principe Explore Jamaica open?</strong> Bahia Principe Explore Jamaica is currently <strong>closed and reopening 1 Dec 2026</strong> in Ocho Rios &amp; Runaway Bay, Jamaica. Formerly known as Bahia Principe Grand Jamaica.</p>
+<p class="azrow"><strong>Is Beaches Negril open?</strong> Yes — Beaches Negril is <strong>open</strong> and welcoming guests in Negril, Jamaica.</p>
+<p class="azrow"><strong>Is Beaches Ocho Rios open?</strong> Beaches Ocho Rios is currently <strong>closed</strong> — Indefinite in Ocho Rios &amp; Runaway Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Beaches Runaway Bay open?</strong> Beaches Runaway Bay is currently <strong>closed</strong> in Ocho Rios &amp; Runaway Bay, Jamaica. Formerly known as Jewel Runaway Bay Beach Resort &amp; Waterpark.</p>
+<p class="azrow"><strong>Is Breathless Montego Bay open?</strong> Breathless Montego Bay is currently <strong>closed and reopening Q1 2027</strong> in Montego Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Catalonia Montego Bay open?</strong> Catalonia Montego Bay is currently <strong>closed</strong> — Reopens 2028 (Marriott) in Montego Bay, Jamaica. Formerly known as Holiday Inn Resort Montego Bay All Inclusive.</p>
+<p class="azrow"><strong>Is Couples Negril open?</strong> Yes — Couples Negril is <strong>open</strong> and welcoming guests in Negril, Jamaica.</p>
+<p class="azrow"><strong>Is Couples Sans Souci open?</strong> Yes — Couples Sans Souci is <strong>open</strong> and welcoming guests in Ocho Rios &amp; Runaway Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Couples Swept Away open?</strong> Yes — Couples Swept Away is <strong>open</strong> and welcoming guests in Negril, Jamaica.</p>
+<p class="azrow"><strong>Is Couples Tower Isle open?</strong> Yes — Couples Tower Isle is <strong>open</strong> and welcoming guests in Ocho Rios &amp; Runaway Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Deja Resort open?</strong> Yes — Deja Resort is <strong>open</strong> and welcoming guests in Montego Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Dreams Rose Hall open?</strong> Dreams Rose Hall is currently <strong>closed and reopening 2027</strong> in Montego Bay, Jamaica. Formerly known as Hilton Rose Hall Resort &amp; Spa.</p>
+<p class="azrow"><strong>Is Excellence Oyster Bay open?</strong> Yes — Excellence Oyster Bay is <strong>open</strong> and welcoming guests in Falmouth, Jamaica.</p>
+<p class="azrow"><strong>Is FDR — Franklyn D. Resort open?</strong> Yes — FDR — Franklyn D. Resort is <strong>open</strong> and welcoming guests in Ocho Rios &amp; Runaway Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Grand Decameron Cornwall Beach open?</strong> Grand Decameron Cornwall Beach is currently <strong>closed</strong> in Montego Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Grand Decameron Montego Beach open?</strong> Grand Decameron Montego Beach is currently <strong>closed</strong> in Montego Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Grand Lido Negril open?</strong> Grand Lido Negril is currently <strong>closed and reopening 25 Aug 2026</strong> in Negril, Jamaica.</p>
+<p class="azrow"><strong>Is Grand Muthu Runaway Bay Club Caribbean open?</strong> Grand Muthu Runaway Bay Club Caribbean is currently <strong>closed</strong> in Ocho Rios &amp; Runaway Bay, Jamaica. Formerly known as Decameron Club Caribbean.</p>
+<p class="azrow"><strong>Is Grand Palladium Jamaica Resort &amp; Spa open?</strong> Yes — Grand Palladium Jamaica Resort &amp; Spa is <strong>open</strong> and welcoming guests in Lucea / Green Island, Jamaica.</p>
+<p class="azrow"><strong>Is Grand Palladium Lady Hamilton Resort &amp; Spa open?</strong> Yes — Grand Palladium Lady Hamilton Resort &amp; Spa is <strong>open</strong> and welcoming guests in Lucea / Green Island, Jamaica.</p>
+<p class="azrow"><strong>Is Grand Pineapple Beach Negril open?</strong> Grand Pineapple Beach Negril is currently <strong>closed</strong> in Negril, Jamaica.</p>
+<p class="azrow"><strong>Is Hedonism II open?</strong> Yes — Hedonism II is <strong>open</strong> and welcoming guests in Negril, Jamaica.</p>
+<p class="azrow"><strong>Is Hyatt Zilara Rose Hall open?</strong> Hyatt Zilara Rose Hall is currently <strong>closed and reopening Q1 2027</strong> in Montego Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Hyatt Ziva Rose Hall open?</strong> Hyatt Ziva Rose Hall is currently <strong>closed and reopening Q1 2027</strong> in Montego Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Iberostar Selection Rose Hall open?</strong> Yes — Iberostar Selection Rose Hall is <strong>open</strong> and welcoming guests in Montego Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Iberostar Waves Rose Hall open?</strong> Yes — Iberostar Waves Rose Hall is <strong>open</strong> and welcoming guests in Montego Bay, Jamaica. Formerly known as Iberostar Rose Hall Beach.</p>
+<p class="azrow"><strong>Is Jewel Grande Montego Bay open?</strong> Jewel Grande Montego Bay is currently <strong>closed and reopening 2027</strong> in Montego Bay, Jamaica.</p>
+<p class="azrow"><strong>Is JOIA Rose Hall by Iberostar open?</strong> JOIA Rose Hall by Iberostar is currently <strong>closed and reopening 1 Dec 2026</strong> in Montego Bay, Jamaica. Formerly known as Iberostar Grand Rose Hall.</p>
+<p class="azrow"><strong>Is Melia Braco Village open?</strong> Melia Braco Village is <strong>permanently closed</strong>.</p>
+<p class="azrow"><strong>Is Moon Palace Jamaica open?</strong> Yes — Moon Palace Jamaica is <strong>open</strong> and welcoming guests in Ocho Rios &amp; Runaway Bay, Jamaica. Formerly known as Sunset Jamaica Grande.</p>
+<p class="azrow"><strong>Is Moon Palace The Grand – Montego Bay open?</strong> Moon Palace The Grand – Montego Bay is a <strong>new resort</strong> with no opening date announced, in Montego Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Oasis at Sunset Beach / Sunset Beach Resort open?</strong> Oasis at Sunset Beach / Sunset Beach Resort is currently <strong>closed</strong> in Montego Bay, Jamaica. Formerly known as Sunscape Cove &amp; Sunscape Splash.</p>
+<p class="azrow"><strong>Is Ocean Coral Spring open?</strong> Yes — Ocean Coral Spring is <strong>open</strong> and welcoming guests in Falmouth, Jamaica.</p>
+<p class="azrow"><strong>Is Ocean Eden Bay open?</strong> Yes — Ocean Eden Bay is <strong>open</strong> and welcoming guests in Falmouth, Jamaica.</p>
+<p class="azrow"><strong>Is Princess Grand Jamaica open?</strong> Yes — Princess Grand Jamaica is <strong>open</strong> and welcoming guests in Lucea / Green Island, Jamaica.</p>
+<p class="azrow"><strong>Is Princess Senses The Mangrove open?</strong> Yes — Princess Senses The Mangrove is <strong>open</strong> and welcoming guests in Lucea / Green Island, Jamaica.</p>
+<p class="azrow"><strong>Is RIU Montego Bay open?</strong> Yes — RIU Montego Bay is <strong>open</strong> and welcoming guests in Montego Bay, Jamaica.</p>
+<p class="azrow"><strong>Is RIU Negril open?</strong> Yes — RIU Negril is <strong>open</strong> and welcoming guests in Negril, Jamaica.</p>
+<p class="azrow"><strong>Is RIU Ocho Rios open?</strong> Yes — RIU Ocho Rios is <strong>open</strong> and welcoming guests in Ocho Rios &amp; Runaway Bay, Jamaica.</p>
+<p class="azrow"><strong>Is RIU Palace Aquarelle open?</strong> Yes — RIU Palace Aquarelle is <strong>open</strong> and welcoming guests in Falmouth, Jamaica.</p>
+<p class="azrow"><strong>Is RIU Palace Jamaica open?</strong> RIU Palace Jamaica is <strong>open now</strong> but closes Closes 31 Aug 2026 in Montego Bay, Jamaica.</p>
+<p class="azrow"><strong>Is RIU Palace Tropical Bay open?</strong> Yes — RIU Palace Tropical Bay is <strong>open</strong> and welcoming guests in Negril, Jamaica.</p>
+<p class="azrow"><strong>Is RIU Reggae open?</strong> Yes — RIU Reggae is <strong>open</strong> and welcoming guests in Montego Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Royalton Blue Waters open?</strong> Royalton Blue Waters is currently <strong>closed and reopening 15 Sep 2026</strong> in Falmouth, Jamaica.</p>
+<p class="azrow"><strong>Is Royalton CHIC Jamaica Paradise Cove open?</strong> Royalton CHIC Jamaica Paradise Cove is currently <strong>closed and reopening 15 Jul 2027</strong> in Ocho Rios &amp; Runaway Bay, Jamaica. Formerly known as Jewel Paradise Cove.</p>
+<p class="azrow"><strong>Is Royalton Hideaway Blue Waters open?</strong> Royalton Hideaway Blue Waters is currently <strong>closed and reopening 15 Sep 2026</strong> in Falmouth, Jamaica. Formerly known as Royalton White Sands Montego Bay.</p>
+<p class="azrow"><strong>Is Royalton Hideaway Negril open?</strong> Royalton Hideaway Negril is currently <strong>closed and reopening 25 Aug 2026</strong> in Negril, Jamaica.</p>
+<p class="azrow"><strong>Is Royalton Negril open?</strong> Royalton Negril is currently <strong>closed and reopening 25 Aug 2026</strong> in Negril, Jamaica.</p>
+<p class="azrow"><strong>Is S Hotel Montego Bay open?</strong> Yes — S Hotel Montego Bay is <strong>open</strong> and welcoming guests in Montego Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Sandals Caribbean Cay open?</strong> Sandals Caribbean Cay is currently <strong>closed and reopening 18 Dec 2026</strong> in Montego Bay, Jamaica. Formerly known as Sandals Royal Caribbean.</p>
+<p class="azrow"><strong>Is Sandals Dunn's River open?</strong> Yes — Sandals Dunn's River is <strong>open</strong> and welcoming guests in Ocho Rios &amp; Runaway Bay, Jamaica. Formerly known as Jewel Dunn's River.</p>
+<p class="azrow"><strong>Is Sandals Montego Bay open?</strong> Sandals Montego Bay is currently <strong>closed and reopening 18 Dec 2026</strong> in Montego Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Sandals Negril open?</strong> Yes — Sandals Negril is <strong>open</strong> and welcoming guests in Negril, Jamaica.</p>
+<p class="azrow"><strong>Is Sandals Ochi open?</strong> Yes — Sandals Ochi is <strong>open</strong> and welcoming guests in Ocho Rios &amp; Runaway Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Sandals Royal Plantation open?</strong> Yes — Sandals Royal Plantation is <strong>open</strong> and welcoming guests in Ocho Rios &amp; Runaway Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Sandals South Coast open?</strong> Sandals South Coast is currently <strong>closed and reopening 18 Nov 2026</strong> in South Coast, Jamaica.</p>
+<p class="azrow"><strong>Is Sea Garden Hotel open?</strong> Sea Garden Hotel is currently <strong>closed and reopening 1 Sep 2026</strong> in Montego Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Secrets St. James Montego Bay open?</strong> Secrets St. James Montego Bay is currently <strong>closed and reopening Q1 2027</strong> in Montego Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Secrets Wild Orchid Montego Bay open?</strong> Secrets Wild Orchid Montego Bay is currently <strong>closed and reopening Q1 2027</strong> in Montego Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Sunset at the Palms open?</strong> Yes — Sunset at the Palms is <strong>open</strong> and welcoming guests in Negril, Jamaica.</p>
+<p class="azrow"><strong>Is UNICO 18°77° Montego Bay open?</strong> UNICO 18°77° Montego Bay is a <strong>brand-new all-inclusive</strong> opening 1 Mar 2027 in Montego Bay, Jamaica.</p>
+<p class="azrow"><strong>Is Zoetry Montego Bay open?</strong> Zoetry Montego Bay is currently <strong>closed</strong> in Montego Bay, Jamaica.</p>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:16px">
+    <h2>Common questions</h2>
+    <div class="qrow"><h3>Is Jamaica open after Hurricane Melissa?</h3><p>Yes — most of Jamaica's all-inclusive resorts are open and welcoming guests. As of 26 July 2026, 32 of the 64 resorts we track are open now and 19 are reopening on set dates through 2026–2027. Jamaica's airports, attractions and the large majority of hotels are operating normally.</p></div>
+<div class="qrow"><h3>What resorts are open in Jamaica right now?</h3><p>32 Jamaica all-inclusives are open and booking now, across Montego Bay, Negril, Ocho Rios, Runaway Bay and the South Coast — including Sandals, Couples, RIU and Iberostar properties. Search any resort above to confirm, or message Golden Vacation and Travel on WhatsApp for an open resort that fits your dates.</p></div>
+<div class="qrow"><h3>Which hotels are open in Jamaica after Hurricane Melissa?</h3><p>Most major all-inclusives are open. A number are temporarily closed for refurbishment and reopening on confirmed dates — the full A–Z list below shows each resort's exact status. We verify and update this list regularly.</p></div>
+<div class="qrow"><h3>How are the resorts in Jamaica after Hurricane Melissa?</h3><p>Jamaica recovered quickly. The large majority of resorts are open and operating normally; most of the ones that closed did so for planned refurbishments and have confirmed reopening dates. Always confirm your specific resort's status before booking — we keep this page current.</p></div>
+<div class="qrow"><h3>Which Jamaica resorts are reopening in 2026?</h3><p>19 resorts are reopening across 2026 (a few into 2027), in Montego Bay, Negril, Ocho Rios and the South Coast. Each resort's confirmed reopening date is listed above and in the A–Z below.</p></div>
+<div class="qrow"><h3>How do I check if a specific Jamaica resort is open?</h3><p>Search the resort by its current or former name on this page to see whether it's open, reopening (with the date), brand new, or closed. Because many resorts recently changed names, we list the former names too. Still unsure? Message Golden Vacation and Travel on WhatsApp and we'll confirm and find you an open resort.</p></div>
+    <p class="foot">Dates can change — always cross-check with your hotel or your booking agent.
+      Maintained by Golden Vacation and Travel · <a href="/group-inquiry">Group travel inquiry</a></p>
+  </div>
+</section>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "Is Jamaica open after Hurricane Melissa?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Yes — most of Jamaica's all-inclusive resorts are open and welcoming guests. As of 26 July 2026, 32 of the 64 resorts we track are open now and 19 are reopening on set dates through 2026–2027. Jamaica's airports, attractions and the large majority of hotels are operating normally."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "What resorts are open in Jamaica right now?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "32 Jamaica all-inclusives are open and booking now, across Montego Bay, Negril, Ocho Rios, Runaway Bay and the South Coast — including Sandals, Couples, RIU and Iberostar properties. Search any resort above to confirm, or message Golden Vacation and Travel on WhatsApp for an open resort that fits your dates."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Which hotels are open in Jamaica after Hurricane Melissa?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Most major all-inclusives are open. A number are temporarily closed for refurbishment and reopening on confirmed dates — the full A–Z list below shows each resort's exact status. We verify and update this list regularly."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "How are the resorts in Jamaica after Hurricane Melissa?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Jamaica recovered quickly. The large majority of resorts are open and operating normally; most of the ones that closed did so for planned refurbishments and have confirmed reopening dates. Always confirm your specific resort's status before booking — we keep this page current."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Which Jamaica resorts are reopening in 2026?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "19 resorts are reopening across 2026 (a few into 2027), in Montego Bay, Negril, Ocho Rios and the South Coast. Each resort's confirmed reopening date is listed above and in the A–Z below."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "How do I check if a specific Jamaica resort is open?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Search the resort by its current or former name on this page to see whether it's open, reopening (with the date), brand new, or closed. Because many resorts recently changed names, we list the former names too. Still unsure? Message Golden Vacation and Travel on WhatsApp and we'll confirm and find you an open resort."
+   }
+  }
+ ]
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "ItemList",
+ "name": "Jamaica all-inclusive resort status",
+ "numberOfItems": 64,
+ "itemListOrder": "https://schema.org/ItemListOrderAscending",
+ "itemListElement": [
+  {
+   "@type": "ListItem",
+   "position": 1,
+   "name": "Azul Beach Resort Negril — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 2,
+   "name": "Bahia Principe Escape Runaway Bay — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 3,
+   "name": "Bahia Principe Explore Jamaica — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 4,
+   "name": "Beaches Negril — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 5,
+   "name": "Beaches Ocho Rios — Closed"
+  },
+  {
+   "@type": "ListItem",
+   "position": 6,
+   "name": "Beaches Runaway Bay — Closed"
+  },
+  {
+   "@type": "ListItem",
+   "position": 7,
+   "name": "Breathless Montego Bay — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 8,
+   "name": "Catalonia Montego Bay — Closed"
+  },
+  {
+   "@type": "ListItem",
+   "position": 9,
+   "name": "Couples Negril — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 10,
+   "name": "Couples Sans Souci — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 11,
+   "name": "Couples Swept Away — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 12,
+   "name": "Couples Tower Isle — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 13,
+   "name": "Deja Resort — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 14,
+   "name": "Dreams Rose Hall — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 15,
+   "name": "Excellence Oyster Bay — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 16,
+   "name": "FDR — Franklyn D. Resort — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 17,
+   "name": "Grand Decameron Cornwall Beach — Closed"
+  },
+  {
+   "@type": "ListItem",
+   "position": 18,
+   "name": "Grand Decameron Montego Beach — Closed"
+  },
+  {
+   "@type": "ListItem",
+   "position": 19,
+   "name": "Grand Lido Negril — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 20,
+   "name": "Grand Muthu Runaway Bay Club Caribbean — Closed"
+  },
+  {
+   "@type": "ListItem",
+   "position": 21,
+   "name": "Grand Palladium Jamaica Resort & Spa — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 22,
+   "name": "Grand Palladium Lady Hamilton Resort & Spa — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 23,
+   "name": "Grand Pineapple Beach Negril — Closed"
+  },
+  {
+   "@type": "ListItem",
+   "position": 24,
+   "name": "Hedonism II — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 25,
+   "name": "Hyatt Zilara Rose Hall — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 26,
+   "name": "Hyatt Ziva Rose Hall — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 27,
+   "name": "Iberostar Selection Rose Hall — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 28,
+   "name": "Iberostar Waves Rose Hall — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 29,
+   "name": "Jewel Grande Montego Bay — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 30,
+   "name": "JOIA Rose Hall by Iberostar — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 31,
+   "name": "Melia Braco Village — Permanently closed"
+  },
+  {
+   "@type": "ListItem",
+   "position": 32,
+   "name": "Moon Palace Jamaica — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 33,
+   "name": "Moon Palace The Grand – Montego Bay — Coming soon"
+  },
+  {
+   "@type": "ListItem",
+   "position": 34,
+   "name": "Oasis at Sunset Beach / Sunset Beach Resort — Closed"
+  },
+  {
+   "@type": "ListItem",
+   "position": 35,
+   "name": "Ocean Coral Spring — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 36,
+   "name": "Ocean Eden Bay — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 37,
+   "name": "Princess Grand Jamaica — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 38,
+   "name": "Princess Senses The Mangrove — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 39,
+   "name": "RIU Montego Bay — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 40,
+   "name": "RIU Negril — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 41,
+   "name": "RIU Ocho Rios — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 42,
+   "name": "RIU Palace Aquarelle — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 43,
+   "name": "RIU Palace Jamaica — Closing soon"
+  },
+  {
+   "@type": "ListItem",
+   "position": 44,
+   "name": "RIU Palace Tropical Bay — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 45,
+   "name": "RIU Reggae — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 46,
+   "name": "Royalton Blue Waters — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 47,
+   "name": "Royalton CHIC Jamaica Paradise Cove — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 48,
+   "name": "Royalton Hideaway Blue Waters — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 49,
+   "name": "Royalton Hideaway Negril — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 50,
+   "name": "Royalton Negril — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 51,
+   "name": "S Hotel Montego Bay — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 52,
+   "name": "Sandals Caribbean Cay — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 53,
+   "name": "Sandals Dunn's River — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 54,
+   "name": "Sandals Montego Bay — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 55,
+   "name": "Sandals Negril — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 56,
+   "name": "Sandals Ochi — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 57,
+   "name": "Sandals Royal Plantation — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 58,
+   "name": "Sandals South Coast — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 59,
+   "name": "Sea Garden Hotel — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 60,
+   "name": "Secrets St. James Montego Bay — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 61,
+   "name": "Secrets Wild Orchid Montego Bay — Reopening"
+  },
+  {
+   "@type": "ListItem",
+   "position": 62,
+   "name": "Sunset at the Palms — Open"
+  },
+  {
+   "@type": "ListItem",
+   "position": 63,
+   "name": "UNICO 18°77° Montego Bay — New"
+  },
+  {
+   "@type": "ListItem",
+   "position": 64,
+   "name": "Zoetry Montego Bay — Closed"
+  }
+ ]
+}
 </script>
 </body>
 </html>

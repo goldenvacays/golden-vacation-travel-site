@@ -1,3 +1,9 @@
-# Pretty URL for the interactive resort map (files live in /map, base href handles asset paths)
-/hotel-status-map     /map/index.html   200
-/hotel-status-map/    /map/index.html   200
+# Canonical resort-status page. The map UI at /map now carries the full status
+# content (map + list + A–Z text + schema) and is served at /hotel-status.
+# <base href="/map/"> keeps relative assets resolving correctly under the rewrite.
+/hotel-status         /map/index.html   200
+/hotel-status/        /map/index.html   200
+
+# Old map URL folds into the canonical one.
+/hotel-status-map     /hotel-status     301!
+/hotel-status-map/    /hotel-status     301!
