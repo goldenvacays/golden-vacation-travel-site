@@ -425,6 +425,7 @@ function GoldenVacaysSiteInner() {
               <a href="#about" className="hover:text-[#0057D9]">About</a>
               <a href="#booking" className="hover:text-[#0057D9]">WhatsApp Booking</a>
               <a href="/group-inquiry" className="hover:text-[#0057D9]">Group Inquiry</a>
+              <a href="/hotel-status" className="hover:text-[#0057D9] whitespace-nowrap">Resort Status</a>
               <a href="/hotel-status-map" className="hover:text-[#0057D9] whitespace-nowrap">Status Map</a>
               <a href="#reviews" className="hover:text-[#0057D9]">Reviews</a>
               <a href="#contact" className="hover:text-[#0057D9]">Contact</a>
@@ -474,6 +475,7 @@ function GoldenVacaysSiteInner() {
                   { href: "#about", label: "About" },
                   { href: "#booking", label: "WhatsApp Booking" },
                   { href: "/group-inquiry", label: "Group Inquiry" },
+                  { href: "/hotel-status", label: "Resort Status" },
                   { href: "/hotel-status-map", label: "Status Map" },
                   { href: "#reviews", label: "Reviews" },
                   { href: "#contact", label: "Contact" },
@@ -571,6 +573,33 @@ function GoldenVacaysSiteInner() {
         </section>
 
         {/* ABOUT */}
+        {/* Resort status callout — routes homepage traffic into /hotel-status */}
+        <section id="resort-status" className="py-14 border-t border-[#D9E7FF] bg-[#FFF9E6]/50">
+          <Container>
+            <div className="max-w-3xl">
+              <span className="inline-block text-xs font-semibold tracking-wide uppercase text-[#0057D9]">
+                Live Jamaica update
+              </span>
+              <h2 className="mt-3 text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900">
+                Which Jamaica resorts are open right now?
+              </h2>
+              <p className="mt-3 text-lg text-slate-700">
+                We track the status of every Jamaica all-inclusive — open, reopening with a
+                confirmed date, or closed — across Montego Bay, Negril, Ocho Rios, Runaway Bay
+                and the South Coast. Search any resort by its current or former name.
+              </p>
+              <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                <Button as="a" href="/hotel-status" className="bg-[#0057D9] text-white">
+                  Check your resort →
+                </Button>
+                <Button as="a" href="/hotel-status-map" className="bg-white border border-[#BFD6FF] text-[#0057D9]">
+                  View the map
+                </Button>
+              </div>
+            </div>
+          </Container>
+        </section>
+
         <section id="about" className="py-20 border-t border-[#D9E7FF]">
           <Container>
             <SectionTitle eyebrow="ABOUT GOLDEN VACATION & TRAVEL" title="Caribbean expertise. Global standards." subtitle="We blend local insight with international best practices to deliver worry‑free luxury escapes." />
