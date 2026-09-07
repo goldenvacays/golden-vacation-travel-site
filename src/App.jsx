@@ -423,6 +423,7 @@ function GoldenVacaysSiteInner() {
             <nav className="hidden lg:flex items-center gap-6 whitespace-nowrap">
               <a href="#home" className="hover:text-[#0057D9]">Home</a>
               <a href="#about" className="hover:text-[#0057D9]">About</a>
+              <a href="/getaways/" className="hover:text-[#0057D9] whitespace-nowrap">Getaways</a>
               <a href="#booking" className="hover:text-[#0057D9]">WhatsApp Booking</a>
               <a href="/group-inquiry" className="hover:text-[#0057D9]">Group Inquiry</a>
               <a href="/hotel-status" className="hover:text-[#0057D9] whitespace-nowrap">Resort Status</a>
@@ -473,6 +474,7 @@ function GoldenVacaysSiteInner() {
                 {[
                   { href: "#home", label: "Home" },
                   { href: "#about", label: "About" },
+                  { href: "/getaways/", label: "Getaways" },
                   { href: "#booking", label: "WhatsApp Booking" },
                   { href: "/group-inquiry", label: "Group Inquiry" },
                   { href: "/hotel-status", label: "Resort Status" },
