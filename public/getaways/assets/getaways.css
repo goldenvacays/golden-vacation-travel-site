@@ -22,6 +22,7 @@ input, select { font: inherit; color: inherit; }
 .hh { font-weight: 900; font-stretch: 110%; letter-spacing: -0.04em; line-height: 0.92; }
 .muted { color: var(--muted); }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+[hidden] { display: none !important; }
 .wrap { max-width: 1440px; width: 100%; margin: 0 auto; }
 .pad { padding-left: var(--pad); padding-right: var(--pad); }
 @media (max-width: 899px) { .desk { display: none !important; } }
