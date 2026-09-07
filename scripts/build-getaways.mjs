@@ -268,7 +268,7 @@ function destPage(d) {
   };
   const groups = d.groups.map((g) => `<section class="sec"><div class="sec-head"><div>${kicker(g.title)}<p class="sec-sub">${esc(g.note)}</p></div></div><div class="hotels">${g.hotels.map((h) => hotelRow(h, g)).join("")}</div></section>`).join("");
   const opts = `<div class="opts">
-    ${d.airports.length > 1 ? `<div class="opt"><span class="lbl">Leaving from</span><div class="chip-row">${d.airports.map((a, i) => `<button type="button" class="chip" data-airport="${a.code}" data-name="${esc(a.name)}" data-surcharge="${a.surcharge}" aria-pressed="${i === 0}">${esc(a.name)}${a.surcharge ? ` · +US$${a.surcharge}` : ""}</button>`).join("")}</div></div>` : `<span class="sr" data-airport="${d.airports[0].code}" data-name="${esc(d.airports[0].name)}" data-surcharge="0"></span>`}
+    ${d.airports.length > 1 ? `<div class="opt"><span class="lbl">Leaving from</span><div class="chip-row">${d.airports.map((a, i) => `<button type="button" class="chip" data-airport="${a.code}" data-name="${esc(a.name)}" data-surcharge="${a.surcharge}" aria-pressed="${i === 0}">${esc(a.name)}</button>`).join("")}</div></div>` : `<span class="sr" data-airport="${d.airports[0].code}" data-name="${esc(d.airports[0].name)}" data-surcharge="0"></span>`}
     <div class="opt"><span class="lbl">Nights</span><div class="chip-row">${d.nights.map((n, i) => `<button type="button" class="chip" data-nights="${n}" aria-pressed="${n === d.defaultNights}">${n} nights</button>`).join("")}${d.nightsAsk ? `<a class="chip" href="${quoteUrl("")}">${esc(d.nightsAsk)}</a>` : ""}</div></div>
     ${d.airportNote ? `<span class="opt-note">${esc(d.airportNote)}</span>` : ""}
   </div>`;
