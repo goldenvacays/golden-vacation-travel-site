@@ -25,4 +25,46 @@
   <priority>0.7</priority>
 </url>
 
+<url>
+  <loc>https://goldenvacays.com/getaways/</loc>
+  <lastmod>2026-09-07T00:00:00+00:00</lastmod>
+  <priority>0.9</priority>
+</url>
+
+<url>
+  <loc>https://goldenvacays.com/getaways/panama/</loc>
+  <lastmod>2026-09-07T00:00:00+00:00</lastmod>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://goldenvacays.com/getaways/medellin/</loc>
+  <lastmod>2026-09-07T00:00:00+00:00</lastmod>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://goldenvacays.com/getaways/punta-cana/</loc>
+  <lastmod>2026-09-07T00:00:00+00:00</lastmod>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://goldenvacays.com/getaways/lima/</loc>
+  <lastmod>2026-09-07T00:00:00+00:00</lastmod>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://goldenvacays.com/getaways/panama-peru/</loc>
+  <lastmod>2026-09-07T00:00:00+00:00</lastmod>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://goldenvacays.com/getaways/panama-medellin/</loc>
+  <lastmod>2026-09-07T00:00:00+00:00</lastmod>
+  <priority>0.8</priority>
+</url>
+
 </urlset>
