@@ -177,7 +177,7 @@
       airportRow.parentElement.hidden = aps.length === 0;
       if (aps.length && !aps.some(function (x) { return x.code === st.a; })) st.a = aps[0].code;
       aps.forEach(function (ap) {
-        var b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = ap.name + (ap.surcharge ? " · +US$" + ap.surcharge : "");
+        var b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = ap.name;
         b.setAttribute("aria-pressed", ap.code === st.a ? "true" : "false");
         b.addEventListener("click", function () { st.a = ap.code; fillChips(); render(); });
         airportRow.appendChild(b);
