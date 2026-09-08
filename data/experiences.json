@@ -630,6 +630,16 @@
           "add": 0
         },
         {
+          "key": "montego-bay-cruise-port",
+          "label": "Montego Bay cruise port",
+          "request": true
+        },
+        {
+          "key": "falmouth-cruise-port",
+          "label": "Falmouth cruise port",
+          "request": true
+        },
+        {
           "key": "own",
           "label": "I'll make my own way",
           "add": 0
@@ -856,6 +866,11 @@
           "label": "Montego Bay area hotel",
           "add": 30,
           "addChild": 35
+        },
+        {
+          "key": "montego-bay-cruise-port",
+          "label": "Montego Bay cruise port",
+          "request": true
         },
         {
           "key": "own",
@@ -2014,5 +2029,34 @@
       "lng": -77.95
     }
   },
+  "ports": [
+    {
+      "slug": "montego-bay-cruise-port",
+      "name": "Montego Bay cruise port",
+      "short": "MoBay port",
+      "region": "mobay",
+      "lat": 18.4636,
+      "lng": -77.9425,
+      "note": "Freeport, ten minutes from the Hip Strip."
+    },
+    {
+      "slug": "falmouth-cruise-port",
+      "name": "Falmouth cruise port",
+      "short": "Falmouth port",
+      "region": "falmouth",
+      "lat": 18.4935,
+      "lng": -77.6558,
+      "note": "The Ocean resorts are 20 minutes east, Montego Bay 35 minutes west."
+    },
+    {
+      "slug": "ocho-rios-cruise-port",
+      "name": "Ocho Rios cruise port",
+      "short": "Ocho Rios port",
+      "region": "ocho",
+      "lat": 18.4133,
+      "lng": -77.1056,
+      "note": "Mystic Mountain and Poko Loko are minutes from the pier."
+    }
+  ],
   "driveNote": "Drive times are rounded and say about. Drafted from the map on 8 September 2026 for Hana to correct."
 }
