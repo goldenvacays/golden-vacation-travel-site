@@ -74,7 +74,7 @@ export const handler = async (event) => {
   try { await stripe(`/payment_intents/${piId}`, { metadata: outcome }); } catch (e) { console.error("pi metadata", e.message); }
 
   const statusLine = team ? "PAID · confirmed to the guest · book it with the operator and send their details" : outcome.rezdy_status;
-  await netlifyForm("exp-bookings", { ref: m.ref, venue: m.venue_name, product: m.product_name, when: summary.when, guests: summary.guests, pickup: summary.pickup, customer: `${m.first} ${m.last}`, email: m.email, phone: m.phone, total: usd(Number(m.total_usd)), status: statusLine, order: outcome.rezdy_order, note: [m.choices, m.ship ? `Cruise: ${m.ship}` : "", `Stripe ${piId}`].filter(Boolean).join(" · ") });
+  await netlifyForm("exp-bookings", { ref: m.ref, venue: m.venue_name, product: m.product_name, when: summary.when, guests: summary.guests, pickup: summary.pickup, customer: `${m.first} ${m.last}`, email: m.email, phone: m.phone, total: usd(Number(m.total_usd)), status: statusLine, order: outcome.rezdy_order, note: [m.choices, summary.cruise ? `Cruise: ${summary.cruise}` : "", `Stripe ${piId}`].filter(Boolean).join(" · ") });
   if (outcome.rezdy_status === "NEEDS_ATTENTION") {
     await netlifyForm("exp-alerts", { ref: m.ref, venue: m.venue_name, product: m.product_name, when: summary.when, customer: `${m.first} ${m.last} · ${m.phone} · ${m.email}`, total: usd(Number(m.total_usd)), error: `PAID but the park booking failed: ${outcome.rezdy_error}. Book it by hand and reply to the guest.` });
   }
