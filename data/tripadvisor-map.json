@@ -1,0 +1,51 @@
+{
+  "_comment": "How each venue finds its Tripadvisor listing on the Terra API. locationId pins it (the only thing Terra lets us cache, and pinning also skips the catalog search, which is billed per result); otherwise the function searches the catalog by name in Jamaica and picks the hit nearest the venue's coordinates. category: attractions | hotels. skip = no listing of its own. Hotels use the hotel's own listing, which is honest as long as the page shows Tripadvisor's own name for it.",
+  "jamwest": {
+    "search": "JamWest Motorsports & Adventure Park",
+    "category": "attractions"
+  },
+  "jamwest-water-park": {
+    "search": "JamWest Motorsports & Adventure Park",
+    "category": "attractions"
+  },
+  "jamwest-catamaran": {
+    "search": "JamWest Motorsports & Adventure Park",
+    "category": "attractions"
+  },
+  "mystic-mountain": {
+    "search": "Mystic Mountain",
+    "category": "attractions"
+  },
+  "poko-loko": {
+    "search": "Poko Loko Floating Bar",
+    "category": "attractions"
+  },
+  "ocean-eden-bay": {
+    "search": "Ocean Eden Bay",
+    "category": "hotels"
+  },
+  "ocean-coral-spring": {
+    "search": "Ocean Coral Spring",
+    "category": "hotels"
+  },
+  "iberostar-waves-rose-hall": {
+    "search": "Iberostar Waves Rose Hall Beach",
+    "category": "hotels"
+  },
+  "iberostar-selection-rose-hall": {
+    "search": "Iberostar Selection Rose Hall Suites",
+    "category": "hotels"
+  },
+  "joia-rose-hall": {
+    "search": "JOIA Rose Hall by Iberostar",
+    "category": "hotels"
+  },
+  "club-mobay": {
+    "search": "Club Mobay",
+    "category": "attractions"
+  },
+  "club-kingston": {
+    "search": "Club Kingston",
+    "category": "attractions"
+  }
+}

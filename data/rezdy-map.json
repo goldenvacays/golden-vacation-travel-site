@@ -1,0 +1,20 @@
+{
+  "_comment": "Pins our product ids to JamWest's Rezdy product codes so instant booking never guesses. Key = venue/product, or venue/product|Choice A|Choice B (choices sorted A to Z). Fill in from the agent account once REZDY_API_KEY is in Netlify: GET /.netlify/functions/exp-products lists the codes. Until a code is pinned the function matches by name and falls back to WhatsApp when unsure.",
+  "jamwest/super-deal|Horseback|Zipline": "",
+  "jamwest/super-deal|JamCulture safari|Zipline": "",
+  "jamwest/super-deal|Horseback|JamCulture safari": "",
+  "jamwest/two-tours|ATV|Zipline": "",
+  "jamwest/two-tours|ATV|Horseback": "",
+  "jamwest/two-tours|ATV|JamCulture safari": "",
+  "jamwest/two-tours|Horseback|Zipline": "",
+  "jamwest/two-tours|JamCulture safari|Zipline": "",
+  "jamwest/two-tours|Horseback|JamCulture safari": "",
+  "jamwest/tour-catamaran|ATV": "",
+  "jamwest/tour-catamaran|Zipline": "",
+  "jamwest/tour-catamaran|Horseback": "",
+  "jamwest/atv": "",
+  "jamwest/zipline": "",
+  "jamwest/safari": "",
+  "jamwest/horseback": "",
+  "jamwest/push-kart": ""
+}
