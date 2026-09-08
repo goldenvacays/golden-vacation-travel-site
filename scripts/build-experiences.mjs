@@ -516,7 +516,7 @@ ${nav()}
 <section class="vbody wrap">
   <div class="vmain">
     <div class="opts-sec" id="options">
-      <div class="sec-head"><div><h2 class="hh">Choose your ${esc(v.optionNoun)}</h2>${v.rates ? `<p class="sec-sub">Two rates, both printed. ${esc(noDash(v.rates.resident.note))}</p>` : ""}</div></div>
+      <div class="sec-head"><div><h2 class="hh">Choose your ${esc(v.optionNoun)}</h2>${v.rates ? `<p class="sec-sub">Two rates, both printed. Visitor rate: ${esc(noDash(v.rates.visitor.note))} Resident rate: ${esc(noDash(v.rates.resident.note))}</p>` : ""}</div></div>
       <div class="ops" id="ops">
 ${options}
       </div>
@@ -550,7 +550,7 @@ ${options}
     <div class="ta-foot"><div class="ta-btns"><a class="btn btn-black btn-sm" id="ta-more" href="#" target="_blank" rel="noopener nofollow">More on Tripadvisor${icon("arrow", 16)}</a><a class="btn btn-outline btn-sm" id="ta-write" href="#" target="_blank" rel="noopener nofollow" hidden>Write a review</a></div><p>Reviews are written by Tripadvisor travellers about the tour, not about us. <span id="ta-sample" hidden>Sample data shown until the Tripadvisor key is in.</span></p></div>
   </div>
 </section>
-<div class="sticky-bar" id="sticky-bar"><div><b id="sticky-total">${usd(0)}</b><small id="sticky-sub">per person</small></div><a class="btn btn-black btn-sm" href="#panel" id="sticky-cta">${v.booking === "instant" ? "Book" : "Request"}${icon("arrow", 16)}</a></div>
+<div class="sticky-bar" id="sticky-bar"><div><b id="sticky-total">${usd(0)}</b><small id="sticky-sub">per person</small></div><button type="button" class="btn btn-black btn-sm" id="sticky-cta">${v.booking === "instant" ? "Book" : "Request"}${icon("arrow", 16)}</button></div>
 </main>
 ${footer()}
 ${scripts(cfg)}
