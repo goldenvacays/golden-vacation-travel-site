@@ -373,8 +373,10 @@ function panel(v) {
       <div class="stepper"><span><b>Adults</b><small id="adult-unit"></small></span><span class="step-c"><button type="button" data-step="adults" data-d="-1" aria-label="Fewer adults">−</button><output id="adults">2</output><button type="button" data-step="adults" data-d="1" aria-label="More adults">+</button></span></div>
       <div class="stepper" id="child-step"><span><b>Children</b><small id="child-unit"></small></span><span class="step-c"><button type="button" data-step="children" data-d="-1" aria-label="Fewer children">−</button><output id="children">0</output><button type="button" data-step="children" data-d="1" aria-label="More children">+</button></span></div>
       <p class="pf-hint" id="child-note" hidden></p>
+      <p class="pf-hint" id="guests-note" hidden>Up to 16 guests here. More than 16? <a href="mailto:${esc(S.email)}?subject=${encodeURIComponent(`Group booking: ${v.name}`)}">Email us</a> and we'll price it.</p>
     </div>`;
-  const pickup = v.pickups ? `<div class="pf" id="pf-pickup-wrap"><label class="pf-f"><span class="pf-l">Pickup</span><span class="pf-in">${icon("car", 18)}<select id="pf-pickup">${v.pickups.map((p) => `<option value="${p.key}" data-add="${p.add || 0}" data-add-child="${p.addChild != null ? p.addChild : p.add || 0}">${esc(p.label)}${p.add ? ` (+${usd(p.add)} each)` : ""}</option>`).join("")}</select></span></label><p class="pf-hint">Transfers are priced per person.</p></div>` : "";
+  const pickupPriced = !!(v.pickups && v.pickups.some((p) => p.add));
+  const pickup = v.pickups ? `<div class="pf" id="pf-pickup-wrap"><label class="pf-f"><span class="pf-l">Pickup</span><span class="pf-in">${icon("car", 18)}<select id="pf-pickup">${v.pickups.map((p) => `<option value="${p.key}" data-add="${p.add || 0}" data-add-child="${p.addChild != null ? p.addChild : p.add || 0}">${esc(p.label)}${p.add ? ` (+${usd(p.add)} each)` : ""}</option>`).join("")}</select></span></label><label class="pf-f" id="pf-pickup-hotel-wrap"><span class="pf-in">${icon("pin", 18)}<input type="text" id="pf-pickup-hotel" placeholder="Hotel name for the pickup" autocomplete="off"></span></label><p class="pf-hint">${pickupPriced ? "Pickup from the Negril area is included. Other areas are priced per person." : "Pickup is included. Tell us the hotel so the driver knows where to be."}</p></div>` : "";
   const contact = `<div class="pf pf-contact" id="pf-contact"${instant ? "" : " hidden"}><span class="pf-l">Who's booking</span>
       <div class="pf two"><label class="pf-f"><span class="pf-in"><input type="text" id="pf-first" placeholder="First name" autocomplete="given-name"></span></label><label class="pf-f"><span class="pf-in"><input type="text" id="pf-last" placeholder="Last name" autocomplete="family-name"></span></label></div>
       <label class="pf-f"><span class="pf-in"><input type="email" id="pf-email" placeholder="Email for the confirmation" autocomplete="email"></span></label>
@@ -390,7 +392,7 @@ function panel(v) {
       ${guests}
       ${pickup}
       ${contact}
-      <div class="pf pf-preview" id="pf-preview"><span class="pf-l">This is what we'll get</span><pre id="msg-preview"></pre></div>
+      <div class="pf pf-preview" id="pf-preview"${instant ? " hidden" : ""}><span class="pf-l">This is what we'll get</span><pre id="msg-preview"></pre></div>
       <button class="btn btn-black btn-lg btn-full" type="submit" id="cta">${instant ? icon("card", 18) : icon("chat", 18)}<span id="cta-label">${cta}</span></button>
       <p class="pf-sub" id="cta-sub">${ctaSub}</p>
       <p class="pf-alt" id="cta-alt"${instant ? "" : " hidden"}>Rather talk to a person first? <a href="#" id="cta-wa">Send this as a WhatsApp request instead</a>.</p>
