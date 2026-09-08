@@ -1,5 +1,5 @@
 /* POST /.netlify/functions/exp-checkout
-   Body: {slug, product, date, time, adults, children, pickup, choices[], ref, ship, customer:{first,last,email,phone}}
+   Body: {slug, product, date, time, date2, flightIn, flightOut, adults, children, pickup, pickupHotel, choices[], ref, ship, customer:{first,last,email,phone}}
    Prices are recomputed here from the catalogue; the browser's numbers are never trusted.
    JamWest (live calendar): re-checks seats with the park first. Every other instant venue ("team"): no seat check, the guest is
    confirmed on payment and the team books it with the operator by hand. Then opens a Stripe Checkout Session and returns {url}. */
@@ -63,6 +63,8 @@ export const handler = async (event) => {
   }
 
   const pk = pickupOf(venue, b.pickup);
+  const pickupHotel = pk && pk.key !== "own" ? clean(b.pickupHotel, 80) : "";
+  if (pk && pk.key !== "own" && !pickupHotel) return json(400, { error: "Which hotel should the driver collect you from?" });
   const whenDesc = flight
     ? [flightIn ? `arrives ${longDate(b.date)} on ${flightIn}` : "", flightOut ? `departs ${longDate(legs === "both" ? date2 : b.date)} on ${flightOut}` : ""].filter(Boolean).join(", ")
     : `${longDate(b.date)}${timeLabel ? ` at ${timeLabel}` : ""}`;
@@ -70,7 +72,7 @@ export const handler = async (event) => {
   const metadata = {
     ref, slug: venue.slug, product: product.id, venue_name: venue.name, product_name: product.name, confirm: live ? "live" : "team",
     date: b.date, time: timeLabel, date2, flight_in: flightIn, flight_out: flightOut, rezdy_code: code, rezdy_start: start,
-    adults: String(priced.adults), children: String(priced.children), pickup: pk ? pk.key : "", pickup_label: pk ? pk.label : "",
+    adults: String(priced.adults), children: String(priced.children), pickup: pk ? pk.key : "", pickup_label: pk ? pk.label : "", pickup_hotel: pickupHotel,
     choices: choices.join(" + "), ship: clean(b.ship, 120), first, last, email, phone, total_usd: String(priced.total), rezdy_status: "",
   };
   try {

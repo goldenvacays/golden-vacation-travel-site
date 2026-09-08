@@ -30,8 +30,8 @@ export function pickupOf(venue, key) { if (!venue.pickups) return null; return v
 /* server-side price: visitor rate only (that is the only rate paid on the site) */
 export function visitorTotal(venue, product, adults, children, pickupKey) {
   if (!product.visitor) return null;
-  const a = Math.max(1, Math.min(10, Number(adults) || 0));
-  const c = Math.max(0, Math.min(10, Number(children) || 0));
+  const a = Math.max(1, Math.min(16, Number(adults) || 0)); // parties above 16 go by email
+  const c = Math.max(0, Math.min(16, Number(children) || 0));
   if (product.perParty) return { total: product.visitor.usd, adults: 2, children: 0, note: "for two" };
   const pk = pickupOf(venue, pickupKey);
   const add = pk ? pk.add || 0 : 0;
@@ -185,6 +185,6 @@ export function bookingSummary(meta) {
     ref: meta.ref, venue: meta.venue_name, product: meta.product_name, confirm: meta.confirm || "live",
     when: whenText(meta),
     guests: `${meta.adults} adult${meta.adults === "1" ? "" : "s"}${Number(meta.children) ? `, ${meta.children} child${meta.children === "1" ? "" : "ren"}` : ""}${meta.choices ? ` · ${meta.choices}` : ""}`,
-    pickup: meta.pickup_label || "", total: usd(Number(meta.total_usd || 0)), email: meta.email || "",
+    pickup: meta.pickup_label ? `${meta.pickup_label}${meta.pickup_hotel ? `, ${meta.pickup_hotel}` : ""}` : "", total: usd(Number(meta.total_usd || 0)), email: meta.email || "",
   };
 }

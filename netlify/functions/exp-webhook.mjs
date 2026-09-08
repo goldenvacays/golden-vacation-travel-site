@@ -22,13 +22,14 @@ async function createRezdyBooking(m, paymentIntentId) {
   const quantities = [{ optionLabel: adultLabel, value: Number(m.adults) || 1 }];
   if (Number(m.children) > 0) quantities.push({ optionLabel: childLabel, value: Number(m.children) });
   const total = Number(m.total_usd) || 0;
-  const comments = [`Booked and paid on goldenvacays.com (${m.ref}).`, m.choices ? `Choice: ${m.choices}.` : "", m.pickup_label ? `Pickup: ${m.pickup_label}.` : "", m.ship ? `Cruise: ${m.ship}.` : "", `Guest phone ${m.phone}.`].filter(Boolean).join(" ");
+  const pickupText = m.pickup_label ? `${m.pickup_label}${m.pickup_hotel ? `, ${m.pickup_hotel}` : ""}` : "";
+  const comments = [`Booked and paid on goldenvacays.com (${m.ref}).`, m.choices ? `Choice: ${m.choices}.` : "", pickupText ? `Pickup: ${pickupText}.` : "", m.ship ? `Cruise: ${m.ship}.` : "", `Guest phone ${m.phone}.`].filter(Boolean).join(" ");
   const body = {
     resellerReference: m.ref,
     resellerComments: comments,
     sendNotifications: true,
     customer: { firstName: m.first, lastName: m.last, email: m.email, phone: m.phone },
-    items: [{ productCode: code, startTimeLocal: start, quantities, ...(m.pickup_label && m.pickup !== "own" ? { pickupLocation: { locationName: m.pickup_label } } : {}) }],
+    items: [{ productCode: code, startTimeLocal: start, quantities, ...(m.pickup_label && m.pickup !== "own" ? { pickupLocation: { locationName: m.pickup_hotel || m.pickup_label, ...(m.pickup_hotel ? { address: `${m.pickup_hotel} (${m.pickup_label})` } : {}) } } : {}) }],
     payments: [{ type: "CREDITCARD", amount: total, currency: "USD", label: `Paid online via goldenvacays.com, Stripe ${paymentIntentId}`, recipient: "AGENT" }],
     fields: [{ label: "Special requirements", value: comments }],
   };
@@ -73,7 +74,7 @@ export const handler = async (event) => {
   try { await stripe(`/payment_intents/${piId}`, { metadata: outcome }); } catch (e) { console.error("pi metadata", e.message); }
 
   const statusLine = team ? "PAID · confirmed to the guest · book it with the operator and send their details" : outcome.rezdy_status;
-  await netlifyForm("exp-bookings", { ref: m.ref, venue: m.venue_name, product: m.product_name, when: summary.when, guests: summary.guests, pickup: m.pickup_label, customer: `${m.first} ${m.last}`, email: m.email, phone: m.phone, total: usd(Number(m.total_usd)), status: statusLine, order: outcome.rezdy_order, note: [m.choices, m.ship ? `Cruise: ${m.ship}` : "", `Stripe ${piId}`].filter(Boolean).join(" · ") });
+  await netlifyForm("exp-bookings", { ref: m.ref, venue: m.venue_name, product: m.product_name, when: summary.when, guests: summary.guests, pickup: summary.pickup, customer: `${m.first} ${m.last}`, email: m.email, phone: m.phone, total: usd(Number(m.total_usd)), status: statusLine, order: outcome.rezdy_order, note: [m.choices, m.ship ? `Cruise: ${m.ship}` : "", `Stripe ${piId}`].filter(Boolean).join(" · ") });
   if (outcome.rezdy_status === "NEEDS_ATTENTION") {
     await netlifyForm("exp-alerts", { ref: m.ref, venue: m.venue_name, product: m.product_name, when: summary.when, customer: `${m.first} ${m.last} · ${m.phone} · ${m.email}`, total: usd(Number(m.total_usd)), error: `PAID but the park booking failed: ${outcome.rezdy_error}. Book it by hand and reply to the guest.` });
   }
