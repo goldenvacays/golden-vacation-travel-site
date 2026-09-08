@@ -29,7 +29,7 @@
       ["We quote it on WhatsApp", "Flights, hotel and transfers in one number, in J$ or US$, from one of our travel professionals, within working hours."],
       ["A deposit holds it", "Usually US$500 on Panama. The balance is due 30 days before you fly, by card link or bank transfer."]
     ],
-    "proof": "700+ trips a year · IATA-accredited since 2021",
+    "proof": "Thousands of travellers since 2021 · IATA-accredited",
     "destinationsTitle": "Four places. One price covers it.",
     "destinationsSub": "Starting prices per person sharing, with flights, hotel and transfers together. The exact rate depends on your dates. J$ at 160 when you switch currency.",
     "onRequest": { "title": "Cancún · Brazil", "text": "We sell both. Send your dates and we quote it the same day." },
@@ -42,7 +42,7 @@
       ["tag", "One convenient price", "Flights, hotel, airport transfers and your bag allowance in one number. What we quote is what you pay."],
       ["card", "Pay in J$", "Card link or bank transfer, in J$ or US$. A deposit, usually US$500, holds it; the balance is due 30 days before you fly."],
       ["map", "We're experts", "We've done thousands of trips, and every week we have guests flying in and out of the island. Ask us where to eat, what to skip and which day to book the Canal."],
-      ["chat", "A person, not a portal", "IATA-accredited, based in St Ann, 700+ trips a year. One of our travel professionals answers your WhatsApp within working hours."]
+      ["chat", "A person, not a portal", "IATA-accredited, based in St Ann, thousands of travellers since 2021. One of our travel professionals answers your WhatsApp within working hours."]
     ],
     "needTitle": "What you need. Not much.",
     "need": [
@@ -60,7 +60,7 @@
     ],
     "people": {
       "title": "Real people, in Jamaica, we travel just like you.",
-      "text": "IATA-accredited since 2021. 700+ trips a year, most of them booked over WhatsApp by someone who's been where you're going."
+      "text": "IATA-accredited since 2021. Thousands of travellers since then, most of them booked over WhatsApp by someone who's been where you're going."
     },
     "custom": {
       "title": "Somewhere else in mind?",
@@ -150,7 +150,7 @@
         ["Who replies", "REPLY_LINE"]
       ],
       "bottomNote": "Opens WhatsApp with hotel, nights, airport and travellers filled in · no payment yet",
-      "ticker": ["IATA-accredited", "Direct flights", "Visa-free", "700+ trips a year"],
+      "ticker": ["IATA-accredited", "Direct flights", "Visa-free", "Thousands of travellers"],
       "card": {
         "sub": "Riu Plaza Panama · 3 nights · from KIN or MBJ",
         "meta": "Return flights, bed & breakfast, airport transfers both ways, 1 carry-on + 1 personal item. Six city hotels and three beach all-inclusives to pick from. 4 and 7 nights available.",
@@ -226,7 +226,7 @@
         ["Who replies", "REPLY_LINE"]
       ],
       "bottomNote": "Opens WhatsApp with hotel, nights and travellers filled in · no payment yet",
-      "ticker": ["IATA-accredited", "Direct flights", "Visa-free", "700+ trips a year"],
+      "ticker": ["IATA-accredited", "Direct flights", "Visa-free", "Thousands of travellers"],
       "card": {
         "sub": "Hotel Dix · 4 nights · direct from MBJ",
         "meta": "Return flights, bed & breakfast, airport transfers both ways, 1 carry-on + 1 personal item. Six hotels to pick from. 5 and 7 nights available.",
@@ -304,7 +304,7 @@
         ["Who replies", "REPLY_LINE"]
       ],
       "bottomNote": "Opens WhatsApp with resort, nights and travellers filled in · no payment yet",
-      "ticker": ["IATA-accredited", "Visa-free", "All-inclusive", "700+ trips a year"],
+      "ticker": ["IATA-accredited", "Visa-free", "All-inclusive", "Thousands of travellers"],
       "card": {
         "sub": "Riu Republica · adults only · 3 nights · from KIN",
         "meta": "Return flights, 3 nights with all meals and drinks, airport transfers both ways, 1 personal item. Seven resorts to pick from, families included.",
@@ -381,7 +381,7 @@
         ["Who replies", "REPLY_LINE"]
       ],
       "bottomNote": "Opens WhatsApp with hotel, nights and travellers filled in · no payment yet",
-      "ticker": ["IATA-accredited", "Visa-free", "Direct flights", "700+ trips a year"],
+      "ticker": ["IATA-accredited", "Visa-free", "Direct flights", "Thousands of travellers"],
       "card": {
         "sub": "Suites del Bosque · bed & breakfast · 3 nights · direct from MBJ",
         "meta": "Return flights, bed & breakfast, airport transfers both ways, 1 carry-on + 1 personal item. Five hotels to pick from.",
@@ -434,7 +434,7 @@
         ["Cancelling", "Flights are non-refundable once ticketed. Refunds on the balance vary by hotel. We tell you the rules before you pay."]
       ],
       "bottomNote": "Opens WhatsApp with both legs, dates and travellers filled in · no payment yet",
-      "ticker": ["IATA-accredited", "Direct flights", "Visa-free", "700+ trips a year"],
+      "ticker": ["IATA-accredited", "Direct flights", "Visa-free", "Thousands of travellers"],
       "tile": { "img": "lima-hero.jpg", "alt": "The Miraflores cliffs, Lima", "sub": "Lima + Panama City · 6 nights · one ticket · Suites del Bosque and Dann Carlton", "subShort": "Lima + Panama City · 6 nights · one ticket", "tags": ["Two countries", "Visa-free"] }
     },
     {
@@ -477,7 +477,7 @@
         ["Cancelling", "Flights are non-refundable once ticketed. Refunds on the balance vary by hotel. We tell you the rules before you pay."]
       ],
       "bottomNote": "Opens WhatsApp with both legs, dates and travellers filled in · no payment yet",
-      "ticker": ["IATA-accredited", "Direct flights", "Visa-free", "700+ trips a year"],
+      "ticker": ["IATA-accredited", "Direct flights", "Visa-free", "Thousands of travellers"],
       "tile": { "img": "metrocable-hero.jpg", "alt": "The Metrocable over Medellín at sunset", "sub": "Kingston → Medellín 4 nights → Panama City 3 nights → home. Tequendama and Megapolis, one ticket, US$975 per person.", "subShort": "From Kingston · Medellín 4 nights + Panama City 3 nights · US$975", "tags": ["From Kingston"] }
     }
   ]

@@ -1,0 +1,488 @@
+{
+  "meta": {
+    "title": "Golden Vacation & Travel | Getaways from Jamaica, Jamaica hotels and tours, booked on WhatsApp",
+    "description": "IATA-accredited travel agency in St Ann, Jamaica. Visa-free getaways to Panama, Medellín, Punta Cana and Lima, Jamaica resorts priced in J$, trips to Jamaica from the USA, UK and Canada, and tours across the island. Quoted on WhatsApp by real people.",
+    "ogImage": "hero-fisher.jpg"
+  },
+  "nav": [
+    [
+      "Getaways",
+      "/getaways/"
+    ],
+    [
+      "Staycations",
+      "#staycations"
+    ],
+    [
+      "Jamaica",
+      "#coming"
+    ],
+    [
+      "Experiences",
+      "#experiences"
+    ],
+    [
+      "Groups",
+      "/group-inquiry"
+    ],
+    [
+      "Resort status",
+      "/hotel-status"
+    ]
+  ],
+  "hero": {
+    "kicker": "IATA-accredited · St Ann, Jamaica",
+    "kickerMobile": "IATA-accredited · Jamaica",
+    "headline": "See the world. See Jamaica.",
+    "sub": "Getaways in and out of Jamaica, island tours and everything between. Real people, in Jamaica. We travel just like you.",
+    "subMobile": "Getaways in and out of Jamaica, island tours and everything between. Real people, in Jamaica. We travel just like you.",
+    "img": "hero-fisher.jpg",
+    "imgMobile": "hero-fisher-m.jpg",
+    "alt": "A fisherman standing on his raft off the north coast of Jamaica",
+    "note": "No account, no payment. On WhatsApp, within working hours, one of our travel professionals is ready to help."
+  },
+  "quote": {
+    "modes": [
+      {
+        "key": "getaways",
+        "label": "Getaways",
+        "whereLabel": "Where to",
+        "options": [
+          [
+            "panama",
+            "Panama City"
+          ],
+          [
+            "medellin",
+            "Medellín"
+          ],
+          [
+            "punta-cana",
+            "Punta Cana"
+          ],
+          [
+            "lima",
+            "Lima"
+          ],
+          [
+            "panama-peru",
+            "Panama + Peru"
+          ],
+          [
+            "panama-medellin",
+            "Panama + Medellín"
+          ],
+          [
+            "",
+            "Somewhere else"
+          ]
+        ]
+      },
+      {
+        "key": "coming",
+        "label": "Coming to Jamaica",
+        "whereLabel": "Coming from",
+        "options": [
+          [
+            "USA",
+            "The USA"
+          ],
+          [
+            "Canada",
+            "Canada"
+          ],
+          [
+            "UK",
+            "The UK"
+          ],
+          [
+            "home",
+            "Coming home for a visit"
+          ],
+          [
+            "other",
+            "Somewhere else"
+          ]
+        ],
+        "code": "JAM"
+      },
+      {
+        "key": "staycation",
+        "label": "Staycation",
+        "whereLabel": "Where in Jamaica",
+        "options": [
+          [
+            "Ocho Rios",
+            "Ocho Rios"
+          ],
+          [
+            "Montego Bay",
+            "Montego Bay"
+          ],
+          [
+            "Negril",
+            "Negril"
+          ],
+          [
+            "Runaway Bay",
+            "Runaway Bay"
+          ],
+          [
+            "South Coast",
+            "South Coast"
+          ],
+          [
+            "Anywhere",
+            "Anywhere, best value"
+          ]
+        ],
+        "code": "STAY"
+      },
+      {
+        "key": "tours",
+        "label": "Tours",
+        "whereLabel": "What kind of day",
+        "options": [
+          [
+            "Add to my stay",
+            "Add tours to my hotel stay"
+          ],
+          [
+            "Cruise day",
+            "In port for the day, off a ship"
+          ],
+          [
+            "Locals' day out",
+            "A locals' day out"
+          ]
+        ],
+        "code": "TOURS"
+      }
+    ],
+    "who": [
+      "2 adults",
+      "1 adult",
+      "2 adults, kids",
+      "3 or more adults"
+    ]
+  },
+  "doors": {
+    "kicker": "Start here",
+    "items": [
+      {
+        "title": "Going abroad",
+        "text": "Panama, Medellín, Punta Cana, Lima. Flights, hotel, transfers, visa-free.",
+        "textMobile": "Panama, Medellín, Punta Cana, Lima",
+        "href": "/getaways/",
+        "img": "door-abroad.jpg",
+        "alt": "Panama City skyline at night"
+      },
+      {
+        "title": "Coming to Jamaica",
+        "text": "From the USA, UK, Canada, or coming home.",
+        "textMobile": "USA · coming home · español · UK & Canada",
+        "href": "#coming",
+        "img": "door-coming.jpg",
+        "alt": "The welcome sign in the arrivals hall at Montego Bay airport"
+      },
+      {
+        "title": "Staying on the island",
+        "text": "All-inclusive weekends, priced and paid in J$.",
+        "textMobile": "Priced and paid in J$",
+        "href": "#staycations",
+        "img": "door-island.jpg",
+        "alt": "RIU Ocho Rios from above, on Mammee Bay"
+      },
+      {
+        "title": "Tours & experiences",
+        "text": "Tours and day passes. Add to a stay, book a cruise day, plan a day out.",
+        "textMobile": "Tours · cruise days · days out",
+        "href": "#experiences",
+        "img": "door-tours.jpg",
+        "alt": "Climbing Dunn's River Falls"
+      }
+    ]
+  },
+  "getaways": {
+    "kicker": "Getaways from Jamaica",
+    "title": "Somewhere new. Visa-free.",
+    "sub": "Flights, hotel and transfers in one price from MBJ or KIN. All visa-free.",
+    "all": "All getaways",
+    "tiles": [
+      {
+        "slug": "panama",
+        "img": "tile-panama.jpg",
+        "alt": "Panama City skyline at night",
+        "sub": "Riu Plaza Panama · from KIN or MBJ · 3, 4 or 7 nights",
+        "subMobile": "Riu Plaza Panama · from KIN or MBJ · 3 nights",
+        "nights": 3
+      },
+      {
+        "slug": "medellin",
+        "img": "tile-medellin.jpg",
+        "alt": "El Poblado, Medellín",
+        "sub": "Hotel Dix · direct from MBJ · 4, 5 or 7 nights",
+        "subMobile": "Hotel Dix · direct from MBJ · 4 nights",
+        "nights": 4
+      },
+      {
+        "slug": "punta-cana",
+        "img": "tile-punta-cana.jpg",
+        "alt": "Bávaro beach, Punta Cana",
+        "sub": "Riu Republica · from KIN · all-inclusive · 3 nights",
+        "subMobile": "Riu Republica · from KIN · all-inclusive",
+        "nights": 3
+      },
+      {
+        "slug": "lima",
+        "img": "tile-lima.jpg",
+        "alt": "Miraflores, Lima",
+        "sub": "Suites del Bosque · direct from MBJ · 3 nights",
+        "subMobile": "Suites del Bosque · direct from MBJ",
+        "nights": 3
+      }
+    ]
+  },
+  "staycations": {
+    "kicker": "Staycations",
+    "title": "Enjoy Jamaica.",
+    "sub": "A weekend away without going away. Jamaica's resorts, priced and paid in J$, and we check what's open before we quote.",
+    "all": "All staycations",
+    "allHref": "/hotel-status",
+    "feature": {
+      "kicker": "Heroes Weekend · 17 to 19 Oct",
+      "title": "Long weekend, sorted.",
+      "text": "Two nights, two adults, priced in J$. Ocho Rios, Montego Bay or Negril, all confirmed open.",
+      "textMobile": "2 nights, 2 adults, priced in J$",
+      "cta": "Quote my weekend",
+      "message": "Hi Golden Vacation! I'm looking at Heroes Weekend on your website. Please quote 2 nights, 17 to 19 October, 2 adults, priced in J$. Open to Ocho Rios, Montego Bay or Negril. Ref GV-STAY-HEROES",
+      "until": "2026-10-17"
+    },
+    "hotels": [
+      {
+        "name": "RIU Ocho Rios",
+        "match": "RIU Ocho Rios",
+        "img": "stay-riu-ocho-rios.jpg",
+        "alt": "RIU Ocho Rios on Mammee Bay, from above",
+        "sub": "Ocho Rios · all-inclusive",
+        "subMobile": "Ocho Rios"
+      },
+      {
+        "name": "Iberostar Waves Rose Hall",
+        "match": "Iberostar Waves Rose Hall",
+        "img": "stay-iberostar-waves.jpg",
+        "alt": "The pool and beach at Iberostar Waves Rose Hall",
+        "sub": "Montego Bay · adults-only from 1 Nov",
+        "subMobile": "Montego Bay"
+      },
+      {
+        "name": "Royalton Negril",
+        "match": "Royalton Negril",
+        "img": "stay-royalton-negril.jpg",
+        "alt": "The swim-up bar at Royalton Negril",
+        "sub": "Negril · all-inclusive",
+        "subMobile": "Negril"
+      }
+    ],
+    "priceLine": "quoted in J$"
+  },
+  "coming": {
+    "kicker": "Coming to Jamaica",
+    "title": "Welcome, and welcome home.",
+    "sub": "Hotels and land packages priced in your currency and handled by the office nearest you.",
+    "planMobile": "Plan my trip",
+    "doors": [
+      {
+        "key": "usa",
+        "title": "From the USA",
+        "text": "US$ pricing, US cards, our Florida office. Land-only or with flights.",
+        "textMobile": "US$ · US cards · Florida office",
+        "img": "coming-usa.jpg",
+        "alt": "The welcome sign in the arrivals hall at Montego Bay airport",
+        "message": "Hi Golden Vacation! I'm coming to Jamaica from the USA and I'd like a quote for a hotel or land package. Ref GV-JAM-USA"
+      },
+      {
+        "key": "home",
+        "title": "Coming home",
+        "text": "Christmas, summer, weddings, reunions, the whole family on one quote.",
+        "textMobile": "Christmas, summer, weddings",
+        "img": "coming-home.jpg",
+        "alt": "The Club MoBay arrivals lounge at Montego Bay airport",
+        "message": "Hi Golden Vacation! I'm coming home to Jamaica for a visit and I'd like a quote for a hotel or package. Ref GV-JAM-HOME"
+      },
+      {
+        "key": "es",
+        "title": "En español",
+        "text": "Cotiza y reserva tu viaje a Jamaica por WhatsApp, en español.",
+        "textMobile": "Cotiza por WhatsApp",
+        "img": "coming-es.jpg",
+        "alt": "Climbing Dunn's River Falls",
+        "message": "¡Hola Golden Vacation! Quiero cotizar un viaje a Jamaica. Ref GV-JAM-ES"
+      },
+      {
+        "key": "ukca",
+        "title": "UK & Canada",
+        "text": "Land-only in £ and C$. You book the flight; we do the rest.",
+        "textMobile": "Land-only in £ and C$",
+        "img": "coming-ukca.jpg",
+        "alt": "A catamaran at sunset off the north coast",
+        "message": "Hi Golden Vacation! I'm coming to Jamaica from the UK or Canada and I'd like a land-only quote (hotel and transfers). Ref GV-JAM-UKCA"
+      }
+    ]
+  },
+  "experiences": {
+    "kicker": "Golden Experiences",
+    "title": "See the island, not just the resort.",
+    "sub": "40+ tours and day passes at 12 venues. Add them to any stay, book a cruise-day tour with a ship-safe return, or plan a locals' day out.",
+    "all": "Browse them all",
+    "allMobile": "All tours",
+    "message": "Hi Golden Vacation! I'd like to see your tours and day passes in Jamaica. Ref GV-TOURS",
+    "cards": [
+      {
+        "title": "Add to my stay",
+        "sub": "Pick a hotel, add tours, one quote",
+        "subMobile": "Hotel + tours, one quote",
+        "from": "US$31",
+        "img": "exp-zipline.jpg",
+        "alt": "Riding the zipline at JamWest",
+        "message": "Hi Golden Vacation! I'd like to add tours to a hotel stay in Jamaica. Ref GV-TOURS-STAY"
+      },
+      {
+        "title": "In port for the day",
+        "sub": "Falmouth · Ocho Rios · Montego Bay · ship-safe return",
+        "subMobile": "Falmouth · Ocho Rios · Montego Bay",
+        "from": "US$80",
+        "tag": "Ship-safe",
+        "img": "exp-port.jpg",
+        "alt": "A cruise ship docked at Ocho Rios",
+        "message": "Hi Golden Vacation! We're in port for the day on a cruise ship and we'd like a tour with a ship-safe return. Ref GV-TOURS-CRUISE"
+      },
+      {
+        "title": "Locals' day out",
+        "sub": "JamWest, Blue Hole, Nine Mile, priced in J$",
+        "subMobile": "JamWest, Blue Hole, priced in J$",
+        "from": "J$5,000",
+        "img": "exp-bluehole.jpg",
+        "alt": "Jumping at Blue Hole, Ocho Rios",
+        "message": "Hi Golden Vacation! I'm in Jamaica and I'd like to plan a day out, priced in J$. Ref GV-TOURS-LOCAL"
+      }
+    ]
+  },
+  "status": {
+    "kicker": "Resort status",
+    "title": "Is your resort open?",
+    "text": "{tracked} Jamaica all-inclusives tracked: open, reopening with a confirmed date, or closed, and cross-checked with the hotel before you pay.",
+    "seeAll": "See all {tracked}",
+    "seeAllMobile": "See all {tracked} resorts",
+    "map": "Resort map",
+    "rows": [
+      "RIU Ocho Rios",
+      "Iberostar Waves Rose Hall",
+      "Bahia Principe Explore Jamaica",
+      "Hyatt Ziva Rose Hall",
+      "UNICO 18°77° Montego Bay"
+    ],
+    "rowsMobile": [
+      "RIU Ocho Rios",
+      "Bahia Principe Explore Jamaica",
+      "Hyatt Ziva Rose Hall"
+    ]
+  },
+  "how": {
+    "kicker": "How booking works",
+    "title": "Real people. Quick answers.",
+    "steps": [
+      [
+        "Pick a package, or tell us your dates",
+        "Every card has a button. Nothing fits? Send us where, when and who's travelling.",
+        "Every card has a button."
+      ],
+      [
+        "We quote it, with what's included",
+        "One of our travel professionals, within working hours, on WhatsApp or email. The quote says exactly what's in it and whether the resort is open.",
+        "A travel professional, within working hours, on WhatsApp or email."
+      ],
+      [
+        "Hold it with a card",
+        "A secure card link, in your currency. A deposit holds it and the balance is due before you travel.",
+        "Secure card link, in your currency. A deposit holds it."
+      ]
+    ]
+  },
+  "ticker": [
+    "IATA-accredited · 85500310",
+    "Thousands of travellers since 2021",
+    "Real people, in Jamaica",
+    "Jamaica · Florida",
+    "Priced in J$, US$, £ or C$",
+    "Quotes by WhatsApp and email"
+  ],
+  "footer": {
+    "book": [
+      [
+        "Getaways from Jamaica",
+        "/getaways/"
+      ],
+      [
+        "Staycations",
+        "#staycations"
+      ],
+      [
+        "Jamaica resorts, what's open",
+        "/hotel-status"
+      ],
+      [
+        "Golden Experiences",
+        "#experiences"
+      ],
+      [
+        "Group travel",
+        "/group-inquiry"
+      ]
+    ],
+    "coming": [
+      [
+        "From the USA",
+        "usa"
+      ],
+      [
+        "Coming home",
+        "home"
+      ],
+      [
+        "En español",
+        "es"
+      ],
+      [
+        "From the UK",
+        "ukca"
+      ],
+      [
+        "From Canada",
+        "ukca"
+      ]
+    ],
+    "help": [
+      [
+        "Resort status",
+        "/hotel-status"
+      ],
+      [
+        "Resort map",
+        "/hotel-status-map"
+      ],
+      [
+        "Deposits & payments",
+        "/getaways/#questions"
+      ],
+      [
+        "Contact us",
+        "whatsapp"
+      ]
+    ],
+    "email": "goldentravellers@outlook.com"
+  },
+  "legal": {
+    "effective": "7 September 2026"
+  }
+}
