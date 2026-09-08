@@ -113,6 +113,8 @@ export const handler = async (event) => {
     if (!loc) return json(200, { ok: false, reason: "offline", ...(why ? { why: detailsR.reason && detailsR.reason.message } : {}) });
     const s = summary(loc);
     if (!s.rating) return json(200, { ok: false, reason: "no rating" });
+    const minReviews = Number((TA_MAP[slug] && TA_MAP[slug].minReviews) || TA_MAP._minReviews || 5);
+    if (s.count < minReviews) return json(200, { ok: false, reason: "too few reviews", ...(why ? { why: `${s.count} review(s), block needs ${minReviews}` } : {}) });
     if (reviewsR.status === "rejected") console.warn("tripadvisor reviews", slug, reviewsR.reason && reviewsR.reason.message);
     const reviews = reviewsR.status === "fulfilled" ? (reviewsR.value.data || []).slice(0, 3).map(review) : [];
     return json(200, { ok: true, id, ...s, reviews, ...(why && reviewsR.status === "rejected" ? { why: reviewsR.reason && reviewsR.reason.message } : {}) });

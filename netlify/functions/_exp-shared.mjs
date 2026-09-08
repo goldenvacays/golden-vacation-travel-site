@@ -19,6 +19,10 @@ export const todayJamaica = () => new Date(Date.now() - 5 * 3600 * 1000).toISOSt
 
 /* ---------- catalogue ---------- */
 export function findVenue(slug) { return DATA.venues.find((v) => v.slug === slug) || null; }
+/* JamWest has a live Rezdy calendar (seats checked, booking created in the park's system). Every other instant venue is
+   "team": the guest pays and is confirmed on the spot, and Hana's team books it with the operator and sends the details by hand. */
+export const liveCalendar = (venue) => !!venue && venue.calendar === "rezdy";
+export const isFlightPanel = (venue) => !!venue && venue.panel === "flight";
 export function findProduct(venue, id) { return venue ? venue.products.find((p) => p.id === id) || null : null; }
 export const isLive = (p, today = todayJamaica()) => !p.until || p.until >= today;
 export function pickupOf(venue, key) { if (!venue.pickups) return null; return venue.pickups.find((p) => p.key === key) || venue.pickups[0]; }
@@ -162,14 +166,24 @@ export function verifyStripeSignature(rawBody, header, secret, toleranceSec = 30
 export async function netlifyForm(name, fields) {
   try {
     const body = new URLSearchParams({ "form-name": name, ...Object.fromEntries(Object.entries(fields).map(([k, v]) => [k, String(v ?? "")])) });
-    await fetch(`${SITE}/experiences/booked/`, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body.toString() });
+    // Netlify Forms accept the POST on any path of the site; the root never redirects, so nothing turns the POST into a GET
+    await fetch(`${SITE}/`, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body.toString() });
   } catch (e) { console.warn("form submission failed", name, e.message); }
 }
 
+export function whenText(meta) {
+  if (meta.flight_in || meta.flight_out) {
+    const parts = [];
+    if (meta.flight_in) parts.push(`arrives ${longDate(meta.date)} on ${meta.flight_in}`);
+    if (meta.flight_out) parts.push(`departs ${longDate(meta.flight_in ? meta.date2 || meta.date : meta.date)} on ${meta.flight_out}`);
+    const t = parts.join(", "); return t.charAt(0).toUpperCase() + t.slice(1);
+  }
+  return `${longDate(meta.date)}${meta.time ? ` at ${meta.time}` : ""}`;
+}
 export function bookingSummary(meta) {
   return {
-    ref: meta.ref, venue: meta.venue_name, product: meta.product_name,
-    when: `${longDate(meta.date)}${meta.time ? ` at ${meta.time}` : ""}`,
+    ref: meta.ref, venue: meta.venue_name, product: meta.product_name, confirm: meta.confirm || "live",
+    when: whenText(meta),
     guests: `${meta.adults} adult${meta.adults === "1" ? "" : "s"}${Number(meta.children) ? `, ${meta.children} child${meta.children === "1" ? "" : "ren"}` : ""}${meta.choices ? ` · ${meta.choices}` : ""}`,
     pickup: meta.pickup_label || "", total: usd(Number(meta.total_usd || 0)), email: meta.email || "",
   };
