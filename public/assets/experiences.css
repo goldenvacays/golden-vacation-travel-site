@@ -310,7 +310,8 @@
 #pf-pickup-wrap .hotel-list { top: calc(100% + 4px); }
 .dist-chips .chip { height: 34px; font-size: 13px; }
 /* cruise ports as one-tap picks: above the box on phones (the open list must never cover them), beside it on desktop */
-.port-chips { gap: 8px; align-items: center; order: -1; }
+.port-chips { gap: 8px; align-items: center; }
+.hotel-box .port-chips { order: -1; }
 .port-chips .chips-l { flex-basis: 100%; font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin-right: 2px; }
 .port-chips .chip-sm { height: 32px; padding: 0 12px; font-size: 12px; }
 .drive-tag { left: auto !important; right: 12px; }

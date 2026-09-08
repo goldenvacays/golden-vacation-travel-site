@@ -182,7 +182,7 @@
       rateNote: $("#rate-note", root), flightIn: $("#pf-flight-in", root), flightOut: $("#pf-flight-out", root),
       stickyTotal: $("#sticky-total", root), stickySub: $("#sticky-sub", root), stickyCta: $("#sticky-cta", root),
     };
-    var state = { product: null, rate: V.rates ? "visitor" : (V.products[0] && V.products[0].audience === "resident" ? "resident" : "visitor"), date: "", time: "", adults: 2, children: 0, pickup: V.pickups ? V.pickups[0].key : null, pickupMode: "hotel", pickupHotel: "", pickupPlace: null, choices: {}, sessions: null, availOk: null, ref: ref(), aboard: 0 };
+    var state = { product: null, rate: V.rates ? "visitor" : (V.products[0] && V.products[0].audience === "resident" ? "resident" : "visitor"), date: "", time: "", adults: 2, children: 0, pickup: V.pickups ? V.pickups[0].key : null, pickupMode: "hotel", pickupHotel: "", pickupPlace: null, choices: {}, sessions: null, availOk: null, ref: ref(), aboard: 0, cruisePort: null };
     var HOTELS = hotelsOf(X), REGIONS = X.regions || {};
 
     /* ---- ship days: which port the guest is coming from, and what fits before all-aboard ---- */
@@ -193,6 +193,7 @@
     function portOf() {
       if (V.pickups && state.pickupMode === "hotel" && state.pickupPlace) return state.pickupPlace.port ? state.pickupPlace : null;
       if (V.pickups && state.pickupMode !== "hotel") return null;
+      if (state.cruisePort) return state.cruisePort;
       return myHotel && myHotel.port ? myHotel : null;
     }
     function cruise() { return !!SD && V.sd !== 0 && (!!portOf() || !!(el.ship && el.ship.value.trim())); } // lounges are flight-day things, the ship state never applies to them
@@ -382,6 +383,7 @@
       var aboardWrap = $("#pf-aboard-wrap", root); if (aboardWrap) aboardWrap.hidden = !isCruise || V.sd === 0;
       var shipNote = $("#ship-note", root); if (shipNote && isCruise) { shipNote.textContent = shipText(); shipNote.className = "pf-hint" + (shipBlock() ? " bad" : shipAsk() ? " warn" : ""); }
       $$("#pf-aboard .chip", root).forEach(function (b) { b.setAttribute("aria-pressed", (+b.getAttribute("data-aboard") || 0) === state.aboard ? "true" : "false"); });
+      var pt1 = portOf(); $$("#pf-ports .chip", root).forEach(function (b) { b.setAttribute("aria-pressed", pt1 && pt1.slug === b.getAttribute("data-port") ? "true" : "false"); });
       var fh0 = $("#fact-hotel", root), fht0 = $("#fact-hotel-t", root);
       if (fh0 && fht0 && myHotel && myHotel.port) { var dm = driveMin(myHotel, V, REGIONS), tr = shipTier(SD, V.sd, dm); fh0.hidden = dm == null && tr !== "no"; fht0.textContent = (dm != null ? driveLabel(dm) + " from " + myHotel.name : myHotel.name) + (tr === "no" || V.sd === 0 ? " · not on a ship day" : tr === "ask" ? " · a long day, we check it first" : " · fits a ship day"); }
       /* contact + cta */
@@ -583,9 +585,18 @@
     }
     /* all-aboard chips, and a way out for someone who picked a port earlier but isn't off a ship today */
     $$("#pf-aboard .chip", root).forEach(function (b) { b.addEventListener("click", function () { state.aboard = +b.getAttribute("data-aboard") || 0; renderTimes(); render(); track("exp_aboard", { venue: V.slug, aboard: state.aboard }); }); });
+    /* port chips on the tours without pickup (the pickup picker covers the rest): tap to pick, tap again to clear */
+    $$("#pf-ports .chip", root).forEach(function (b) { b.addEventListener("click", function () {
+      var slug = b.getAttribute("data-port"), pt = HOTELS.filter(function (hh) { return hh.slug === slug; })[0], cur = portOf();
+      if (cur && cur.slug === slug) { state.cruisePort = null; store("gv_hotel", null); if (myHotel && myHotel.port) { myHotel = null; var fh2 = $("#fact-hotel", root); if (fh2) fh2.hidden = true; } }
+      else if (pt) { state.cruisePort = pt; store("gv_hotel", pt.slug); }
+      renderTimes(); render(); track("exp_port", { venue: V.slug, port: state.cruisePort ? slug : "" });
+    }); });
     var shipClear = $("#ship-clear", root);
     if (shipClear) shipClear.addEventListener("click", function () {
-      if (myHotel && myHotel.port) { myHotel = null; store("gv_hotel", null); var fh1 = $("#fact-hotel", root); if (fh1) fh1.hidden = true; }
+      if (state.cruisePort || (myHotel && myHotel.port)) store("gv_hotel", null);
+      state.cruisePort = null;
+      if (myHotel && myHotel.port) { myHotel = null; var fh1 = $("#fact-hotel", root); if (fh1) fh1.hidden = true; }
       if (el.ship) el.ship.value = ""; state.aboard = 0;
       if (V.pickups && state.pickupPlace && state.pickupPlace.port) { state.pickupPlace = null; state.pickupHotel = ""; state.pickup = V.pickups[0].key; if (el.hotelIn) el.hotelIn.value = ""; }
       renderTimes(); render();
