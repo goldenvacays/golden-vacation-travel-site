@@ -27,7 +27,7 @@
       {
         "key": "stay",
         "title": "Add a day out to your stay",
-        "sub": "Hotel pickup where the venue runs it, one price, nothing hidden at the gate.",
+        "sub": "Hotel pickup where the tour includes it, one price, nothing hidden at the gate.",
         "subMobile": "Hotel pickup where it runs. One price.",
         "img": "jamwest-quad-water.jpg",
         "alt": "Riding a quad through the water at JamWest"
@@ -55,15 +55,15 @@
       "points": [
         [
           "Published prices, both currencies",
-          "What you see is the venue's published rate. We say plainly when the resident rate is only a little cheaper, or when it doesn't include pickup."
+          "What you see is the tour's published rate. We say plainly when the resident rate is only a little cheaper, or when it doesn't include pickup."
         ],
         [
           "Two rates, both printed",
           "Most attractions charge locals one price and visitors another. Nobody prints both. We do."
         ],
         [
-          "A person confirms the tricky ones",
-          "Resort passes are capped by how full the hotel is, and boats depend on weather. Where a venue can't promise instantly, we check first and charge after."
+          "Tours confirmed on the spot, passes checked first",
+          "Tours, boat days and lounges are confirmed the moment you pay. Resort passes are capped by how full the hotel is, so a person checks those first and charges after."
         ],
         [
           "Bed and tours, one quote",
@@ -130,27 +130,27 @@
     "questions": [
       [
         "Is anything booked when I press the WhatsApp button?",
-        "No. WhatsApp opens with your request already typed. One of our travel professionals checks the venue, confirms the price and sends a secure card link. Nothing is charged until you say yes."
+        "No. WhatsApp opens with your request already typed. One of our travel professionals checks the tour, confirms the price and sends a secure card link. Nothing is charged until you say yes."
       ],
       [
-        "Why can some tours be paid on the spot and others not?",
-        "JamWest gives us live availability, so those tours can be confirmed and paid on the page. Resort passes are limited by how full the hotel is that day, and boats depend on the weather, so a person confirms those first."
+        "Which ones are confirmed on the spot?",
+        "Tours, boat days and airport lounges: pay by card on the page and you're confirmed straight away, with your details sent by our team shortly after. Resort day passes are limited by how full the hotel is that day, so a person confirms those first and sends a secure card link."
       ],
       [
         "What does the resident rate need?",
-        "A Jamaican ID for every guest on the resident rate, shown at the gate. Without it you pay the visitor rate on the day. A photo of the ID is accepted at some venues."
+        "A Jamaican ID for every guest on the resident rate, shown at the gate. Without it you pay the visitor rate on the day. A photo of the ID is accepted at some gates."
       ],
       [
         "Do the prices include tax?",
-        "Yes. Every price is the full amount, tax and service included, with no booking fee on top."
+        "Yes. Every price is the full amount, tax and service included."
       ],
       [
         "Can children come?",
-        "It depends on the venue. Each page says the child age band and the child price where there is one. Adults-only venues say so at the top."
+        "It depends on the tour. Each page says the child age range and the child price where there is one. Adults-only tours say so at the top."
       ],
       [
         "Can I cancel?",
-        "Each venue sets its own terms and we pass them on before you pay. As a rule, weather cancellations on boat days are rebooked or refunded, and resort passes cancelled inside 48 hours are not refundable."
+        "Each tour has its own terms and we pass them on before you pay. As a rule, weather cancellations on boat days are rebooked or refunded, and resort passes cancelled inside 48 hours are not refundable."
       ]
     ]
   },
@@ -654,7 +654,8 @@
         "falmouth": 125,
         "ocho": 195,
         "south": 60
-      }
+      },
+      "calendar": "rezdy"
     },
     {
       "slug": "jamwest-water-park",
@@ -683,7 +684,7 @@
         }
       ],
       "panel": "pass",
-      "booking": "enquiry",
+      "booking": "instant",
       "doors": [
         "stay",
         "locals"
@@ -770,7 +771,7 @@
         }
       ],
       "panel": "tour",
-      "booking": "enquiry",
+      "booking": "instant",
       "doors": [
         "stay",
         "locals"
@@ -897,7 +898,7 @@
         }
       ],
       "panel": "tour",
-      "booking": "enquiry",
+      "booking": "instant",
       "doors": [
         "stay",
         "port",
@@ -1090,7 +1091,7 @@
         }
       ],
       "panel": "tour",
-      "booking": "request",
+      "booking": "instant",
       "doors": [
         "stay",
         "port",
@@ -1109,9 +1110,9 @@
         "Hotel transfer, unless you add one"
       ],
       "before": [
-        "Adults only until the venue confirms a child rate.",
+        "Adults only until a child rate is confirmed.",
         "Check in at Mahogany Beach at least 30 minutes before departure. The boat will not wait.",
-        "Sessions are capped, so we confirm the date before you pay.",
+        "Sessions are capped, so book ahead.",
         "The gift card is non-refundable. Bookings cancelled inside 48 hours are non-refundable.",
         "No smoking. There is a vaping area on the platform."
       ],
@@ -1779,7 +1780,7 @@
         }
       ],
       "panel": "flight",
-      "booking": "request",
+      "booking": "instant",
       "doors": [
         "stay"
       ],
@@ -1799,7 +1800,7 @@
       ],
       "before": [
         "Infants under 2 free. Children 2 to 12 at the child rate.",
-        "We need your flight number and time. We check the flight and confirm.",
+        "We need your flight number. We check the flight and send your lounge details.",
         "Arrival service is capacity-limited and sells out. Book ahead.",
         "Lounge placement depends on your flight and space available."
       ],
@@ -1890,7 +1891,7 @@
         }
       ],
       "panel": "flight",
-      "booking": "request",
+      "booking": "instant",
       "doors": [
         "stay"
       ],
@@ -1909,7 +1910,7 @@
       ],
       "before": [
         "Infants under 2 free. Children 2 to 12 at the child rate.",
-        "We need your flight number and time. We check the flight and confirm.",
+        "We need your flight number. We check the flight and send your lounge details.",
         "Lounge placement depends on your flight and space available.",
         "Pre-booking recommended. The lounge fills up."
       ],

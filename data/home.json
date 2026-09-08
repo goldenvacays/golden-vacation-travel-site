@@ -19,7 +19,7 @@
     ],
     [
       "Experiences",
-      "#experiences"
+      "/experiences/"
     ],
     [
       "Groups",
@@ -345,7 +345,8 @@
         "from": "US$31",
         "img": "exp-zipline.jpg",
         "alt": "Riding the zipline at JamWest",
-        "message": "Hi Golden Vacation! I'd like to add tours to a hotel stay in Jamaica. Ref GV-TOURS-STAY"
+        "message": "Hi Golden Vacation! I'd like to add tours to a hotel stay in Jamaica. Ref GV-TOURS-STAY",
+        "href": "/experiences/#stay"
       },
       {
         "title": "In port for the day",
@@ -355,7 +356,8 @@
         "tag": "Ship-safe",
         "img": "exp-port.jpg",
         "alt": "A cruise ship docked at Ocho Rios",
-        "message": "Hi Golden Vacation! We're in port for the day on a cruise ship and we'd like a tour with a ship-safe return. Ref GV-TOURS-CRUISE"
+        "message": "Hi Golden Vacation! We're in port for the day on a cruise ship and we'd like a tour with a ship-safe return. Ref GV-TOURS-CRUISE",
+        "href": "/experiences/#port"
       },
       {
         "title": "Locals' day out",
@@ -364,9 +366,11 @@
         "from": "J$5,000",
         "img": "exp-bluehole.jpg",
         "alt": "Jumping at Blue Hole, Ocho Rios",
-        "message": "Hi Golden Vacation! I'm in Jamaica and I'd like to plan a day out, priced in J$. Ref GV-TOURS-LOCAL"
+        "message": "Hi Golden Vacation! I'm in Jamaica and I'd like to plan a day out, priced in J$. Ref GV-TOURS-LOCAL",
+        "href": "/experiences/#locals"
       }
-    ]
+    ],
+    "allHref": "/experiences/"
   },
   "status": {
     "kicker": "Resort status",
@@ -433,7 +437,7 @@
       ],
       [
         "Golden Experiences",
-        "#experiences"
+        "/experiences/"
       ],
       [
         "Group travel",
