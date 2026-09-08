@@ -95,13 +95,13 @@ export const handler = async (event) => {
     if (!id) return json(200, { ok: false, reason: "not found" });
     // details and reviews in parallel; if the full listing is not licensed on this key, the catalog copy still carries the rating and links
     const [detailsR, reviewsR] = await Promise.allSettled([
-      ta(`/locations/${id}`, { locale: "en" }),
+      ta(`/locations/${id}`, { locale: "en-US" }),
       ta(`/locations/${id}/reviews`, { language: "en", sort_by: "MOST_RECENT", size: 3 }),
     ]);
     let loc = detailsR.status === "fulfilled" ? detailsR.value : null;
     if (!loc) {
       console.warn("tripadvisor details", slug, detailsR.reason && detailsR.reason.message);
-      loc = await ta(`/catalog/locations/${id}`, { locale: "en" }).catch((e) => { console.warn("tripadvisor catalog", slug, e.message); return null; });
+      loc = await ta(`/catalog/locations/${id}`, { locale: "en-US" }).catch((e) => { console.warn("tripadvisor catalog", slug, e.message); return null; });
     }
     if (!loc) return json(200, { ok: false, reason: "offline", ...(why ? { why: detailsR.reason && detailsR.reason.message } : {}) });
     const s = summary(loc);
