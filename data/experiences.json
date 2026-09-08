@@ -856,6 +856,12 @@
           "label": "Montego Bay area hotel",
           "add": 30,
           "addChild": 35
+        },
+        {
+          "key": "own",
+          "label": "I'll make my own way",
+          "add": 0,
+          "addChild": 0
         }
       ],
       "often": [
