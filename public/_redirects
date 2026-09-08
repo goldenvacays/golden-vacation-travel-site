@@ -1,6 +1,3 @@
 # Pretty URL for the interactive resort map (files live in /map, base href handles asset paths)
 /hotel-status-map     /map/index.html   200
 /hotel-status-map/    /map/index.html   200
-
-# Golden Experiences hotel pages are flat files served at /experiences/near/<hotel>/
-/experiences/near/:slug/   /experiences/near/:slug.html   200
