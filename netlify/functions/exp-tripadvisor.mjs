@@ -63,9 +63,12 @@ function summary(loc) {
   const overall = (loc.traveler_ratings && loc.traveler_ratings.overall) || loc.overall_rating || {};
   const rank = (loc.rankings || []).find((r) => r && r.display_text) || {};
   const urls = (loc.urls && loc.urls.tripadvisor) || {};
+  // the newest Travelers' Choice style award, with Tripadvisor's own badge image when they give one
+  const award = (loc.awards || []).filter((a) => a && a.name).sort((a, b) => (b.year || 0) - (a.year || 0))[0];
   return {
     name: pick(loc.names), rating: Number(overall.rating || 0), count: Number(overall.count || 0), ratingImage: overall.icon_url || "",
     ranking: rank.display_text || "", url: urls.main || "", writeReview: urls.write_review || "", status: loc.status && loc.status.value ? loc.status.value : "",
+    award: award ? { name: award.name, year: award.year || null, image: (award.image && award.image.url) || "" } : null,
   };
 }
 
@@ -81,7 +84,9 @@ function review(r) {
 }
 
 export const handler = async (event) => {
-  const slug = (event.queryStringParameters || {}).slug || "";
+  const qs = event.queryStringParameters || {};
+  const slug = qs.slug || "";
+  const why = qs.why === "1"; // adds Terra's own error line to a failed response (no secrets in it), for checking a deploy
   const venue = findVenue(slug);
   if (!venue) return json(404, { ok: false });
   if (TA_MAP[slug] && TA_MAP[slug].skip) return json(200, { ok: false, reason: "no listing" });
@@ -98,14 +103,14 @@ export const handler = async (event) => {
       console.warn("tripadvisor details", slug, detailsR.reason && detailsR.reason.message);
       loc = await ta(`/catalog/locations/${id}`, { locale: "en" }).catch((e) => { console.warn("tripadvisor catalog", slug, e.message); return null; });
     }
-    if (!loc) return json(200, { ok: false, reason: "offline" });
+    if (!loc) return json(200, { ok: false, reason: "offline", ...(why ? { why: detailsR.reason && detailsR.reason.message } : {}) });
     const s = summary(loc);
     if (!s.rating) return json(200, { ok: false, reason: "no rating" });
     if (reviewsR.status === "rejected") console.warn("tripadvisor reviews", slug, reviewsR.reason && reviewsR.reason.message);
     const reviews = reviewsR.status === "fulfilled" ? (reviewsR.value.data || []).slice(0, 3).map(review) : [];
-    return json(200, { ok: true, id, ...s, reviews });
+    return json(200, { ok: true, id, ...s, reviews, ...(why && reviewsR.status === "rejected" ? { why: reviewsR.reason && reviewsR.reason.message } : {}) });
   } catch (e) {
     console.warn("tripadvisor", slug, e.status || "", e.message);
-    return json(200, { ok: false, reason: "offline" });
+    return json(200, { ok: false, reason: "offline", ...(why ? { why: `${e.status || ""} ${e.message}`.trim() } : {}) });
   }
 };
