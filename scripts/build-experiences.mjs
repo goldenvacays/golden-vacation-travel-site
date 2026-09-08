@@ -87,6 +87,7 @@ const RESORTS = JSON.parse(resortsJs.slice(resortsJs.indexOf("["), resortsJs.las
 const slugify = (s) => String(s).toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 const HOTELS = RESORTS.filter((r) => r.status !== "Permanently closed" && r.region && X.regions[r.region] && r.lat && r.lng)
   .map((r) => ({ name: r.name, slug: slugify(r.name), region: r.region, lat: r.lat, lng: r.lng, status: r.status, area: r.area }))
+  .concat((X.ports || []).map((p) => ({ name: p.name, slug: p.slug, region: p.region, lat: p.lat, lng: p.lng, status: "Open", area: "Cruise port", port: true, short: p.short, note: p.note })))
   .sort((a, b) => a.name.localeCompare(b.name));
 const km = (a, b) => { const R = 6371, dLat = (b.lat - a.lat) * Math.PI / 180, dLng = (b.lng - a.lng) * Math.PI / 180; const x = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * Math.PI / 180) * Math.cos(b.lat * Math.PI / 180) * Math.sin(dLng / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(x)); };
 function driveMin(hotel, venue) {
@@ -277,7 +278,7 @@ ${ticker(hb.trust)}
   </div>
   <div class="hotel-box" id="hotel-box">
     <div class="hotel-q">
-      <label class="pf-f hotel-f"><span class="pf-l">Where are you staying?</span><span class="pf-in">${icon("pin", 18)}<input type="search" id="hotel-in" placeholder="Type your hotel, e.g. RIU Ocho Rios" autocomplete="off" aria-autocomplete="list" aria-controls="hotel-list"><button type="button" id="hotel-clear" aria-label="Clear hotel" hidden>${icon("x", 16, 2.6)}</button></span></label>
+      <label class="pf-f hotel-f"><span class="pf-l">Where are you staying?</span><span class="pf-in">${icon("pin", 18)}<input type="search" id="hotel-in" placeholder="Type your hotel or cruise port" autocomplete="off" aria-autocomplete="list" aria-controls="hotel-list"><button type="button" id="hotel-clear" aria-label="Clear hotel" hidden>${icon("x", 16, 2.6)}</button></span></label>
       <ul class="hotel-list" id="hotel-list" role="listbox" hidden></ul>
     </div>
     <div class="chip-row dist-chips" id="dist-chips" role="group" aria-label="How far" hidden>
@@ -322,7 +323,7 @@ ${cards}
 </section>
 </main>
 ${footer()}
-${scripts({ page: "hub", whatsapp: S.whatsapp, hotels: HOTELS.map((h) => [h.name, h.slug, h.region, h.lat, h.lng]), venues: venueDriveData, regions: X.regions, base: BASE })}
+${scripts({ page: "hub", whatsapp: S.whatsapp, hotels: HOTELS.map((h) => [h.name, h.slug, h.region, h.lat, h.lng, h.port ? 1 : 0]), venues: venueDriveData, regions: X.regions, base: BASE })}
 </body></html>`;
 }
 
@@ -375,8 +376,15 @@ function panel(v) {
       <p class="pf-hint" id="child-note" hidden></p>
       <p class="pf-hint" id="guests-note" hidden>Up to 16 guests here. More than 16? <a href="mailto:${esc(S.email)}?subject=${encodeURIComponent(`Group booking: ${v.name}`)}">Email us</a> and we'll price it.</p>
     </div>`;
-  const pickupPriced = !!(v.pickups && v.pickups.some((p) => p.add));
-  const pickup = v.pickups ? `<div class="pf" id="pf-pickup-wrap"><label class="pf-f"><span class="pf-l">Pickup</span><span class="pf-in">${icon("car", 18)}<select id="pf-pickup">${v.pickups.map((p) => `<option value="${p.key}" data-add="${p.add || 0}" data-add-child="${p.addChild != null ? p.addChild : p.add || 0}">${esc(p.label)}${p.add ? ` (+${usd(p.add)} each)` : ""}</option>`).join("")}</select></span></label><label class="pf-f" id="pf-pickup-hotel-wrap"><span class="pf-in">${icon("pin", 18)}<input type="text" id="pf-pickup-hotel" placeholder="Hotel name for the pickup" autocomplete="off"></span></label><p class="pf-hint">${pickupPriced ? "Pickup from the Negril area is included. Other areas are priced per person." : "Pickup is included. Tell us the hotel so the driver knows where to be."}</p></div>` : "";
+  /* pickup: the guest picks their hotel from the resort list (the area, and any transfer charge, follow from it);
+     "somewhere else" opens a free-text line plus the area list; "my own way" skips pickup */
+  const pickup = v.pickups ? `<div class="pf" id="pf-pickup-wrap">
+      <div class="hotel-q"><label class="pf-f hotel-f"><span class="pf-l">Pickup hotel</span><span class="pf-in">${icon("pin", 18)}<input type="search" id="pf-hotel-in" placeholder="Type your hotel, e.g. RIU Negril" autocomplete="off" autocapitalize="words"></span></label><ul class="hotel-list" id="pf-hotel-list" role="listbox" hidden></ul></div>
+      <div class="chip-row pickup-alts"><button type="button" class="chip chip-sm" data-pick="other" aria-pressed="false">Somewhere else</button><button type="button" class="chip chip-sm" data-pick="own" aria-pressed="false">I'll make my own way</button></div>
+      <label class="pf-f" id="pf-pickup-other-wrap" hidden><span class="pf-in">${icon("pin", 18)}<input type="text" id="pf-pickup-hotel" placeholder="Villa, Airbnb or hotel name" autocomplete="off"></span></label>
+      <label class="pf-f" id="pf-pickup-area-wrap" hidden><span class="pf-l">Pickup area</span><span class="pf-in">${icon("car", 18)}<select id="pf-pickup">${v.pickups.filter((p) => p.key !== "own").map((p) => `<option value="${p.key}" data-add="${p.add || 0}" data-add-child="${p.addChild != null ? p.addChild : p.add || 0}">${esc(p.label)}${p.request ? " (priced by hand)" : p.add ? ` (+${usd(p.add)} each)` : ""}</option>`).join("")}</select></span></label>
+      <p class="pf-hint" id="pickup-note">${v.pickups.some((p) => p.add) ? "Pickup from Negril hotels is included. Lucea and Montego Bay pickups are priced per person." : "Hotel pickup from Negril and Montego Bay is included."}</p>
+    </div>` : "";
   const contact = `<div class="pf pf-contact" id="pf-contact"${instant ? "" : " hidden"}><span class="pf-l">Who's booking</span>
       <div class="pf two"><label class="pf-f"><span class="pf-in"><input type="text" id="pf-first" placeholder="First name" autocomplete="given-name"></span></label><label class="pf-f"><span class="pf-in"><input type="text" id="pf-last" placeholder="Last name" autocomplete="family-name"></span></label></div>
       <label class="pf-f"><span class="pf-in"><input type="email" id="pf-email" placeholder="Email for the confirmation" autocomplete="email"></span></label>
@@ -424,7 +432,7 @@ function venuePage(v) {
   ];
   const cfg = {
     page: "venue", whatsapp: S.whatsapp, origin: S.origin, jmdRate: S.jmdRate, today: TODAY,
-    hotels: HOTELS.map((h) => [h.name, h.slug, h.region, h.lat, h.lng]), regions: X.regions,
+    hotels: HOTELS.map((h) => [h.name, h.slug, h.region, h.lat, h.lng, h.port ? 1 : 0]), regions: X.regions,
     venue: { slug: v.slug, name: v.name, panel: v.panel, booking: v.booking, calendar: v.calendar || null, area: AREAS[v.area], adultsOnly: !!v.adultsOnly, blackout: v.blackout || [], closedWeekdays: v.closedWeekdays || [], rates: v.rates || null, pickups: v.pickups || null, lat: v.lat, lng: v.lng, drive: v.drive || {},
       products: v.products.filter(live).map((p) => ({ id: p.id, name: p.name, hours: p.hours, times: p.times || [], audience: p.audience, visitor: p.visitor || null, resident: p.resident || null, perParty: p.perParty || 0, choose: p.choose || null, legs: p.legs || null, request: !!p.request, until: p.until || null })) },
   };
@@ -503,24 +511,24 @@ function nearPage(h) {
       <span class="nrow-t"><span class="nrow-drive">${esc(driveLabel(min))} from ${esc(h.name)}</span><b>${esc(v.name)}</b><small>${esc(v.card)}</small><span class="vcard-meta">${n} ${n === 1 ? "option" : "options"} · ${v.categories.map((c) => esc(CATS[c])).join(" · ")}</span></span>
       <span class="nrow-p">${price}</span>${icon("arrow", 18, 2.4)}</a>`;
   }).join("\n");
-  const waText = `Hi Golden Vacation! We're staying at ${h.name} and we'd like to add a day out. Ref GV-EXP-NEAR`;
+  const waText = h.port ? `Hi Golden Vacation! We're in port at ${h.name} for the day and we'd like a day out. Ref GV-EXP-PORT` : `Hi Golden Vacation! We're staying at ${h.name} and we'd like to add a day out. Ref GV-EXP-NEAR`;
   const under = (m) => rows.filter((r) => r.min <= m).length;
   const jsonld = [
     { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Golden Vacation & Travel", item: S.origin }, { "@type": "ListItem", position: 2, name: "Golden Experiences", item: `${S.origin}${BASE}/` }, { "@type": "ListItem", position: 3, name: `Near ${h.name}`, item: `${S.origin}${BASE}/near/${h.slug}` }] },
     { "@context": "https://schema.org", "@type": "ItemList", name: `Things to do near ${h.name}`, itemListElement: rows.map(({ v }, i) => ({ "@type": "ListItem", position: i + 1, name: v.name, url: `${S.origin}${BASE}/${v.slug}` })) },
   ];
-  const title = `Things to do near ${h.name} | day passes, tours and boat days with drive times`;
-  const desc = `${under(60)} days out under an hour from ${h.name}, ${region.label}: ${rows.slice(0, 3).map((r) => r.v.short).join(", ")} and more. Published prices in US$ and J$, hotel pickup where it runs, booked by Golden Vacation & Travel in Jamaica.`;
+  const title = h.port ? `Things to do from ${h.name} | tours, day passes and boat days for your ship day, with drive times` : `Things to do near ${h.name} | day passes, tours and boat days with drive times`;
+  const desc = h.port ? `${under(60)} days out under an hour from ${h.name}: ${rows.slice(0, 3).map((r) => r.v.short).join(", ")} and more, timed to your all-aboard. Published prices in US$, port pickup where it runs, booked by Golden Vacation & Travel in Jamaica.` : `${under(60)} days out under an hour from ${h.name}, ${region.label}: ${rows.slice(0, 3).map((r) => r.v.short).join(", ")} and more. Published prices in US$ and J$, hotel pickup where it runs, booked by Golden Vacation & Travel in Jamaica.`;
   return `${head({ title, description: desc, pathname: `${BASE}/near/${h.slug}`, image: hero.file, jsonld, bodyClass: "exp exp-near" })}
 ${nav()}
 <main class="near wrap" data-hotel="${h.slug}">
-<nav class="crumbs" aria-label="Breadcrumb"><a href="${BASE}/">Golden Experiences</a><span>/</span><span>Near ${esc(h.name)}</span></nav>
+<nav class="crumbs" aria-label="Breadcrumb"><a href="${BASE}/">Golden Experiences</a><span>/</span><span>${h.port ? "From" : "Near"} ${esc(h.name)}</span></nav>
 <section class="near-hero">
   <div class="near-t">
     ${kicker(h.area || region.label)}
-    <h1 class="hh">Things to do near ${esc(h.name)}.</h1>
-    <p class="lead">${under(30) ? `${under(30)} within half an hour, ` : ""}${under(60)} under an hour, ${rows.length} worth the drive. Every price is the published rate, both currencies, and we say when hotel pickup runs from ${esc(h.name)} and when it doesn't.</p>
-    <div class="near-btns">${btn("Add a day out to my stay", wa(waText), "black", "", "chat")}${btn("Browse with my hotel set", `${BASE}/?hotel=${h.slug}`, "outline", "", "arrow")}</div>
+    <h1 class="hh">${h.port ? `In port for the day? Things to do from ${esc(h.name)}.` : `Things to do near ${esc(h.name)}.`}</h1>
+    <p class="lead">${under(30) ? `${under(30)} within half an hour, ` : ""}${under(60)} under an hour, ${rows.length} worth the drive. ${h.port ? `${esc(h.note || "")} Tell us your all-aboard time and we work backwards from it. Every price is the published rate, and we say when pickup runs from the pier and when it doesn't.` : `Every price is the published rate, both currencies, and we say when hotel pickup runs from ${esc(h.name)} and when it doesn't.`}</p>
+    <div class="near-btns">${btn(h.port ? "Plan my ship day" : "Add a day out to my stay", wa(waText), "black", "", "chat")}${btn(h.port ? "Browse from this port" : "Browse with my hotel set", `${BASE}/?hotel=${h.slug}`, "outline", "", "arrow")}</div>
     <p class="pf-hint">${esc(X.driveNote.split(".")[0])}. Traffic and the road decide the rest.</p>
   </div>
   <div class="near-photo">${pic(hero.file, hero.alt, ' loading="eager"')}<div class="hero-tags">${tag(`Nearest: ${nearest.v.short}, ${driveLabel(nearest.min)}`, "gold")}</div></div>
@@ -529,8 +537,8 @@ ${nav()}
 <section class="near-foot">
   <div class="sec-head"><div>${kicker("Also from here")}<h2 class="hh">Airport, transfers and the room itself.</h2></div></div>
   <div class="near-links">
-    <a class="pair" href="${BASE}/club-mobay/"><span class="pair-t"><b>Club MoBay</b><small>Fast track and lounge at Montego Bay airport, timed to your flight</small></span>${icon("arrow", 18, 2.4)}</a>
-    <a class="pair" href="/hotel-status"><span class="pair-t"><b>Is ${esc(h.name)} open?</b><small>What's open, reopening and closed across the island, updated from the hotels</small></span>${icon("arrow", 18, 2.4)}</a>
+    <a class="pair" href="${BASE}/club-mobay"><span class="pair-t"><b>Club MoBay</b><small>Fast track and lounge at Montego Bay airport, timed to your flight</small></span>${icon("arrow", 18, 2.4)}</a>
+    ${h.port ? `<a class="pair" href="${BASE}/#port"><span class="pair-t"><b>In port for the day</b><small>Every day out that fits a ship day, nearest ports first</small></span>${icon("arrow", 18, 2.4)}</a>` : `<a class="pair" href="/hotel-status"><span class="pair-t"><b>Is ${esc(h.name)} open?</b><small>What's open, reopening and closed across the island, updated from the hotels</small></span>${icon("arrow", 18, 2.4)}</a>`}
     <a class="pair" href="${wa(`Hi Golden Vacation! I'd like a quote for a stay at ${h.name} with a day out added. Ref GV-EXP-STAY`)}"><span class="pair-t"><b>Bed and tours, one quote</b><small>Staying with us? We price the room and the day out together</small></span>${icon("chat", 18, 2.4)}</a>
   </div>
 </section>
@@ -554,6 +562,7 @@ ${nav()}
     <div class="bk-btns">${btn("Message us on WhatsApp", wa("Hi Golden Vacation! I've just booked an experience on your website and I have a question. Ref "), "outline", "", "chat", ' id="bk-wa"')}${btn("Back to experiences", `${BASE}/`, "black")}</div>
   </div>
   <form name="exp-bookings" data-netlify="true" netlify-honeypot="bot-field" hidden><input type="text" name="bot-field"><input type="text" name="ref"><input type="text" name="venue"><input type="text" name="product"><input type="text" name="when"><input type="text" name="guests"><input type="text" name="pickup"><input type="text" name="customer"><input type="email" name="email"><input type="text" name="phone"><input type="text" name="total"><input type="text" name="status"><input type="text" name="order"><input type="text" name="note"></form>
+  <form name="exp-enquiries" data-netlify="true" netlify-honeypot="bot-field" hidden><input type="text" name="bot-field"><input type="text" name="ref"><input type="text" name="venue"><input type="text" name="product"><input type="text" name="rate"><input type="text" name="when"><input type="text" name="guests"><input type="text" name="pickup"><input type="text" name="total"><input type="text" name="hotel"><input type="text" name="page"><textarea name="message"></textarea></form>
   <form name="exp-alerts" data-netlify="true" hidden><input type="text" name="ref"><input type="text" name="venue"><input type="text" name="product"><input type="text" name="when"><input type="text" name="customer"><input type="text" name="total"><input type="text" name="error"></form>
 </main>
 ${footer()}
@@ -567,7 +576,7 @@ const pages = [
   ...X.venues.map((v) => [`public/experiences/${v.slug}.html`, venuePage(v), v.slug]),
   ["public/experiences/booked.html", bookedPage(), "booked"],
   ...(BUNDLE ? [["public/experiences/booked-team.html", bookedPage("team"), "booked-team"]] : []),
-  ...(BUNDLE ? HOTELS.filter((h) => /RIU Ocho Rios|Iberostar Waves Rose Hall|Royalton Negril/.test(h.name)) : HOTELS).map((h) => [`public/experiences/near/${h.slug}.html`, nearPage(h), `near-${h.slug}`]),
+  ...(BUNDLE ? HOTELS.filter((h) => /RIU Ocho Rios|Iberostar Waves Rose Hall|Royalton Negril|Falmouth cruise port/.test(h.name)) : HOTELS).map((h) => [`public/experiences/near/${h.slug}.html`, nearPage(h), `near-${h.slug}`]),
 ];
 
 if (!BUNDLE) {
@@ -628,7 +637,7 @@ export const TA_MAP = ${JSON.stringify(readJson("data/tripadvisor-map.json"))};
 <script>window.GV_CONFIG=${JSON.stringify({ base: BASE, whatsapp: S.whatsapp, jmdRate: S.jmdRate, preview: true })};</script>
 </head>
 <body class="exp">
-<div class="pv-bar"><b>PREVIEW</b><select id="pv-pick" aria-label="Page">${pages.map(([, , key]) => `<option value="${key}">${key === "hub" ? "Experiences hub" : key === "booked" ? "After paying (JamWest)" : key === "booked-team" ? "After paying (other tours)" : key.startsWith("near-") ? "Near " + HOTELS.find((h) => h.slug === key.slice(5)).name : venueBySlug[key].name}</option>`).join("")}</select><span>Nothing here is live. Site links open goldenvacays.com in a new tab.</span></div>
+<div class="pv-bar"><b>PREVIEW</b><select id="pv-pick" aria-label="Page">${pages.map(([, , key]) => `<option value="${key}">${key === "hub" ? "Experiences hub" : key === "booked" ? "After paying (JamWest)" : key === "booked-team" ? "After paying (other tours)" : key.startsWith("near-") ? (HOTELS.find((h) => h.slug === key.slice(5)).port ? "From " : "Near ") + HOTELS.find((h) => h.slug === key.slice(5)).name : venueBySlug[key].name}</option>`).join("")}</select><span>Nothing here is live. Site links open goldenvacays.com in a new tab.</span></div>
 <div id="pv-root">${sections}</div>
 <script>${js}</script>
 <script>
