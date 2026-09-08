@@ -10,7 +10,14 @@
     "hours": "Replies come within working hours, usually inside the hour.",
     "iata": "IATA-accredited · 85500310",
     "address": "Shop 3, Enfield Plaza, Brown's Town, St Ann, Jamaica",
-    "updated": "2026-09-08"
+    "updated": "2026-09-08",
+    "shipDay": {
+      "arrive": "8:30am",
+      "backBy": "3:30pm",
+      "okDrive": 100,
+      "askDrive": 130,
+      "note": "A ship day is planned to have the guest back at the pier by backBy, or an hour before the all-aboard time they give. One-way drive from the port up to okDrive minutes books on the spot, up to askDrive goes to WhatsApp first, further is not offered."
+    }
   },
   "hub": {
     "kicker": "Golden Experiences · Jamaica",
@@ -894,7 +901,8 @@
         "falmouth": 120,
         "ocho": 190,
         "south": 75
-      }
+      },
+      "shipDayNote": "sails at 2:30pm and is back after most all-aboard times"
     },
     {
       "slug": "mystic-mountain",
@@ -1744,7 +1752,8 @@
           "audience": "everyone",
           "visitor": {
             "usd": 187
-          }
+          },
+          "shipDay": false
         }
       ],
       "enquiries": {
@@ -1884,7 +1893,8 @@
         "negril": 90,
         "ocho": 105,
         "south": 120
-      }
+      },
+      "shipDay": false
     },
     {
       "slug": "club-kingston",
@@ -1994,7 +2004,8 @@
         "mobay": 210,
         "lucea": 240,
         "negril": 240
-      }
+      },
+      "shipDay": false
     }
   ],
   "regions": {
