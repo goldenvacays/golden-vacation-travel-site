@@ -290,6 +290,11 @@
 .hotel-list li small { font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
 .hotel-list li[aria-selected="true"], .hotel-list li:hover { background: var(--alt); }
 .hotel-list .none { color: var(--muted); font-weight: 600; cursor: default; }
+/* pickup picker in the booking panel */
+.pickup-alts { gap: 8px; }
+.pickup-alts .chip-sm { height: 32px; padding: 0 12px; font-size: 12px; }
+#pf-pickup-wrap .hotel-q { position: relative; flex: none; }
+#pf-pickup-wrap .hotel-list { top: calc(100% + 4px); }
 .dist-chips .chip { height: 34px; font-size: 13px; }
 .drive-tag { left: auto !important; right: 12px; }
 .vcard .drive-tag[hidden] { display: none; }

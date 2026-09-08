@@ -139,13 +139,14 @@
       date: $("#pf-date", root), date2: $("#pf-date2", root), dateNote: $("#date-note", root),
       timesWrap: $("#pf-times-wrap", root), times: $("#pf-times", root), timesNote: $("#times-note", root),
       adults: $("#adults", root), children: $("#children", root), childStep: $("#child-step", root), childNote: $("#child-note", root), adultUnit: $("#adult-unit", root), childUnit: $("#child-unit", root),
-      pickupWrap: $("#pf-pickup-wrap", root), pickup: $("#pf-pickup", root), pickupHotelWrap: $("#pf-pickup-hotel-wrap", root), pickupHotel: $("#pf-pickup-hotel", root), previewWrap: $("#pf-preview", root),
+      pickupWrap: $("#pf-pickup-wrap", root), pickup: $("#pf-pickup", root), pickupAreaWrap: $("#pf-pickup-area-wrap", root), pickupOtherWrap: $("#pf-pickup-other-wrap", root), pickupHotel: $("#pf-pickup-hotel", root), hotelIn: $("#pf-hotel-in", root), hotelList: $("#pf-hotel-list", root), pickupNote: $("#pickup-note", root), previewWrap: $("#pf-preview", root),
       contact: $("#pf-contact", root), first: $("#pf-first", root), last: $("#pf-last", root), email: $("#pf-email", root), phone: $("#pf-phone", root), ship: $("#pf-ship", root),
       preview: $("#msg-preview", root), cta: $("#cta", root), ctaLabel: $("#cta-label", root), ctaSub: $("#cta-sub", root), ctaAlt: $("#cta-alt", root), ctaWa: $("#cta-wa", root),
       rateNote: $("#rate-note", root), flightIn: $("#pf-flight-in", root), flightOut: $("#pf-flight-out", root),
       stickyTotal: $("#sticky-total", root), stickySub: $("#sticky-sub", root), stickyCta: $("#sticky-cta", root),
     };
-    var state = { product: null, rate: V.rates ? "visitor" : (V.products[0] && V.products[0].audience === "resident" ? "resident" : "visitor"), date: "", time: "", adults: 2, children: 0, pickup: V.pickups ? V.pickups[0].key : null, choices: {}, sessions: null, availOk: null, ref: ref() };
+    var state = { product: null, rate: V.rates ? "visitor" : (V.products[0] && V.products[0].audience === "resident" ? "resident" : "visitor"), date: "", time: "", adults: 2, children: 0, pickup: V.pickups ? V.pickups[0].key : null, pickupMode: "hotel", pickupHotel: "", choices: {}, sessions: null, availOk: null, ref: ref() };
+    var HOTELS = hotelsOf(X), REGIONS = X.regions || {};
 
     /* expired seasonal products (belt and braces: the build already drops them) */
     $$("[data-until]", root).forEach(function (o) { if (o.getAttribute("data-until") < today) { o.setAttribute("data-expired", ""); var r = $("input", o); if (r) r.checked = false; } });
@@ -206,7 +207,7 @@
       var g = state.adults + " adult" + (state.adults === 1 ? "" : "s") + (state.children ? ", " + state.children + " child" + (state.children === 1 ? "" : "ren") : "");
       if (p.perParty) g = "2 people";
       lines.push("Guests: " + g + (isFlight ? " (infants under 2 free)" : ""));
-      if (V.pickups && rateOf(p) === "visitor") { var pk = pickupOf(); if (pk) lines.push("Pickup: " + pk.label + (pk.key !== "own" && el.pickupHotel && el.pickupHotel.value.trim() ? ", " + el.pickupHotel.value.trim() : "")); }
+      if (V.pickups && rateOf(p) === "visitor") { var pk = pickupOf(); if (pk) lines.push("Pickup: " + (pk.key === "own" ? "making my own way" : (state.pickupHotel ? state.pickupHotel + " (" + pk.label + ")" : pk.label))); }
       var ch = chosen(); if (ch.length) lines.push("Choice: " + (p.choose.fixed ? p.choose.fixed + " + " : "") + ch.join(" + "));
       if (pr.total) lines.push("Total: " + pr.lead + (pr.alt ? " (" + pr.alt + ")" : "") + (pr.note ? ". " + pr.note : ""));
       else lines.push("Total: to be priced");
@@ -283,9 +284,9 @@
       }
       $$("[data-step]", root).forEach(function (b) { var k = b.getAttribute("data-step"), d = +b.getAttribute("data-d"); var v = state[k]; if (k === "adults") b.disabled = (d < 0 && v <= 1) || (d > 0 && v >= MAX_GUESTS); if (k === "children" && !adultsOnly) b.disabled = (d < 0 && v <= 0) || (d > 0 && v >= MAX_GUESTS); });
       var gn = $("#guests-note", root); if (gn) gn.hidden = !(state.adults + state.children >= MAX_GUESTS);
-      /* pickup only on the visitor rate; the hotel name only when a pickup is wanted */
+      /* pickup only on the visitor rate */
       if (el.pickupWrap) el.pickupWrap.hidden = r !== "visitor";
-      if (el.pickupHotelWrap) el.pickupHotelWrap.hidden = state.pickup === "own";
+      renderPickup();
       /* airport lounges: the fields follow the product's legs */
       if (isFlight) {
         var legs = p.legs || "both";
@@ -346,8 +347,68 @@
     if (el.date2) { el.date2.min = today; el.date2.addEventListener("change", render); }
     [el.flightIn, el.flightOut, el.first, el.last, el.email, el.phone, el.ship].forEach(function (i) { if (i) i.addEventListener("input", render); });
     $$("[data-step]", root).forEach(function (b) { b.addEventListener("click", function () { var k = b.getAttribute("data-step"), d = +b.getAttribute("data-d"); state[k] = Math.max(k === "adults" ? 1 : 0, Math.min(MAX_GUESTS, state[k] + d)); el[k].value = state[k]; render(); }); });
+    /* ---- pickup hotel picker ---- */
+    function servedKey(region) { return V.pickups && V.pickups.some(function (pk) { return pk.key === region; }) ? region : null; }
+    function renderPickup() {
+      if (!V.pickups) return;
+      var mode = state.pickupMode, pk = pickupOf();
+      $$(".pickup-alts .chip", root).forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-pick") === mode ? "true" : "false"); });
+      if (el.pickupOtherWrap) el.pickupOtherWrap.hidden = mode !== "other";
+      if (el.pickupAreaWrap) el.pickupAreaWrap.hidden = mode !== "other";
+      if (el.pickupNote) {
+        var t = "";
+        if (mode === "own") t = "No pickup. The meeting point comes with your details.";
+        else if (mode === "hotel" && state.pickupHotel && pk) t = pk.key === "own" ? "No hotel pickup from " + state.pickupHotel + " on this one, so it's priced without pickup. Make your own way, or ask us on WhatsApp about a transfer." : pk.label + (pk.add ? ", +" + usd(pk.add) + " per person" : ", pickup included") + ".";
+        else if (mode === "other" && pk) t = pk.label + (pk.add ? ", +" + usd(pk.add) + " per person" : ", pickup included") + ". Tell us where and we'll confirm the pickup point.";
+        else t = V.pickups.some(function (x) { return x.add; }) ? "Pickup from Negril hotels is included. Lucea and Montego Bay pickups are priced per person." : "Hotel pickup from Negril and Montego Bay is included.";
+        el.pickupNote.textContent = t;
+      }
+    }
+    function pickHotel(hh) {
+      state.pickupMode = "hotel"; state.pickupHotel = hh.name;
+      state.pickup = servedKey(hh.region) || "own";
+      if (el.hotelIn) el.hotelIn.value = hh.name;
+      closeHotelList(); render(); track("exp_pickup_hotel", { venue: V.slug, hotel: hh.slug, served: state.pickup !== "own" });
+    }
+    var hCursor = -1;
+    function closeHotelList() { if (el.hotelList) { el.hotelList.hidden = true; el.hotelList.innerHTML = ""; } hCursor = -1; }
+    function openHotelList(q) {
+      if (!el.hotelList) return; var qq = (q || "").toLowerCase().trim();
+      var hits = HOTELS.filter(function (hh) { return !qq || hh.name.toLowerCase().indexOf(qq) >= 0; }).slice(0, 8);
+      el.hotelList.innerHTML = ""; hCursor = -1;
+      if (!hits.length) { var li0 = document.createElement("li"); li0.className = "none"; li0.textContent = "Not on our list. Choose \"Somewhere else\" below and type it in."; el.hotelList.appendChild(li0); }
+      hits.forEach(function (hh) {
+        var li = document.createElement("li"); li.setAttribute("role", "option"); li.innerHTML = "<span></span><small></small>";
+        li.firstChild.textContent = hh.name; li.lastChild.textContent = servedKey(hh.region) ? (REGIONS[hh.region] ? REGIONS[hh.region].label : hh.region) : "no pickup";
+        li.addEventListener("mousedown", function (e) { e.preventDefault(); pickHotel(hh); });
+        el.hotelList.appendChild(li);
+      });
+      el.hotelList.hidden = false;
+    }
+    if (el.hotelIn) {
+      el.hotelIn.addEventListener("input", function () { if (state.pickupMode !== "hotel" || el.hotelIn.value !== state.pickupHotel) { state.pickupMode = "hotel"; state.pickupHotel = ""; render(); } openHotelList(el.hotelIn.value); });
+      el.hotelIn.addEventListener("focus", function () { openHotelList(el.hotelIn.value); });
+      el.hotelIn.addEventListener("blur", function () { setTimeout(closeHotelList, 150); });
+      el.hotelIn.addEventListener("keydown", function (e) {
+        var items = $$("li[role=option]", el.hotelList);
+        if (e.key === "ArrowDown") { e.preventDefault(); hCursor = Math.min(items.length - 1, hCursor + 1); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); hCursor = Math.max(0, hCursor - 1); }
+        else if (e.key === "Enter") { e.preventDefault(); var pick = items[hCursor >= 0 ? hCursor : 0]; if (pick) pick.dispatchEvent(new MouseEvent("mousedown")); return; }
+        else if (e.key === "Escape") { closeHotelList(); return; }
+        items.forEach(function (li, i) { li.setAttribute("aria-selected", i === hCursor ? "true" : "false"); });
+      });
+    }
+    $$(".pickup-alts .chip", root).forEach(function (b) {
+      b.addEventListener("click", function () {
+        var m = b.getAttribute("data-pick");
+        if (state.pickupMode === m) { state.pickupMode = "hotel"; state.pickupHotel = ""; state.pickup = V.pickups[0].key; }
+        else { state.pickupMode = m; state.pickupHotel = m === "other" && el.pickupHotel ? el.pickupHotel.value.trim() : ""; state.pickup = m === "own" ? "own" : (el.pickup ? el.pickup.value : V.pickups[0].key); }
+        if (el.hotelIn) el.hotelIn.value = "";
+        render();
+      });
+    });
     if (el.pickup) el.pickup.addEventListener("change", function () { state.pickup = el.pickup.value; render(); });
-    if (el.pickupHotel) el.pickupHotel.addEventListener("input", render);
+    if (el.pickupHotel) el.pickupHotel.addEventListener("input", function () { state.pickupHotel = el.pickupHotel.value.trim(); render(); });
     if (el.ctaWa) el.ctaWa.addEventListener("click", function (e) { e.preventDefault(); sendWhatsApp(); });
     var sticky = $("#sticky-bar", root);
     if (sticky && "IntersectionObserver" in window) { var io = new IntersectionObserver(function (es) { es.forEach(function (x) { sticky.hidden = x.isIntersecting; }); }, { threshold: 0.15 }); io.observe(panel); }
@@ -375,8 +436,8 @@
       need(el.first, "We need a first name for the booking."); need(el.last, "And a last name."); need(el.email, "The confirmation goes by email, so we need an address.");
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.email.value.trim())) { el.email.focus(); throw new Error("That email doesn't look right."); }
       need(el.phone, "A WhatsApp or phone number, so we can send your details.");
-      if (V.pickups && state.pickup !== "own" && rateOf(p) === "visitor") need(el.pickupHotel, "Which hotel should the driver collect you from?");
-      var body = { slug: V.slug, product: p.id, date: state.date, time: wantsTime ? state.time : "", date2: date2, flightIn: flightIn, flightOut: flightOut, adults: state.adults, children: state.children, pickup: state.pickup, pickupHotel: el.pickupHotel ? el.pickupHotel.value.trim() : "", choices: chosen(), ref: state.ref, ship: el.ship ? el.ship.value.trim() : "", customer: { first: el.first.value.trim(), last: el.last.value.trim(), email: el.email.value.trim(), phone: el.phone.value.trim() } };
+      if (V.pickups && rateOf(p) === "visitor" && state.pickup !== "own" && !state.pickupHotel) { if (el.hotelIn) el.hotelIn.focus(); throw new Error("Which hotel should the driver collect you from? Pick it from the list, or choose somewhere else or your own way."); }
+      var body = { slug: V.slug, product: p.id, date: state.date, time: wantsTime ? state.time : "", date2: date2, flightIn: flightIn, flightOut: flightOut, adults: state.adults, children: state.children, pickup: state.pickup, pickupHotel: state.pickup === "own" ? "" : state.pickupHotel, choices: chosen(), ref: state.ref, ship: el.ship ? el.ship.value.trim() : "", customer: { first: el.first.value.trim(), last: el.last.value.trim(), email: el.email.value.trim(), phone: el.phone.value.trim() } };
       track("exp_checkout", { venue: V.slug, product: p.id, total: price().total, code: state.ref });
       if (PREVIEW) { alertBox("In the live site this opens the secure card page for " + price().lead + ". After paying, " + (live ? "the booking is created with the park" : "the guest is confirmed and the team gets the booking to send the details") + ", and the guest lands on the confirmation page (see \"After paying\" in the page picker)."); return; }
       el.cta.disabled = true; $("#cta-label", el.cta).textContent = "Opening secure payment…";
@@ -412,7 +473,7 @@
       var mins = driveMin(myHotel, V, X.regions || {});
       var fh = $("#fact-hotel", root), fht = $("#fact-hotel-t", root);
       if (fh && fht && mins != null) { fh.hidden = false; fht.textContent = driveLabel(mins) + " from " + myHotel.name; }
-      if (el.pickup && V.pickups) { var want = myHotel.region === "negril" ? "negril" : (myHotel.region === "lucea" ? "lucea" : "mobay"); if (V.pickups.some(function (p) { return p.key === want; })) { el.pickup.value = want; state.pickup = want; } if (el.pickupHotel && !el.pickupHotel.value) el.pickupHotel.value = myHotel.name; }
+      if (V.pickups && el.hotelIn) pickHotel(myHotel);
     }
 
     /* Tripadvisor: live rating and three reviews, below the panel. Loaded only when the visitor scrolls near it (each load is billed),
