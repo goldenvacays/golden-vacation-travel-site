@@ -130,7 +130,8 @@
   function initVenue(root) {
     var X = window.GV_EXP || {}; var V = X.venue; if (!V) return;
     var panel = $("#panel", root), form = $("#book", root); if (!panel || !form) return;
-    var isFlight = V.panel === "flight", isTour = V.panel === "tour", live = V.calendar === "rezdy"; // live: JamWest's Rezdy calendar; otherwise paid = confirmed, the team sends the details
+    var isFlight = V.panel === "flight", isTour = V.panel === "tour", live = V.calendar === "rezdy";
+    var MAX_GUESTS = 16; // bigger parties go by email, the note under the steppers says so // live: JamWest's Rezdy calendar; otherwise paid = confirmed, the team sends the details
     var today = todayISO();
     var products = {}; V.products.forEach(function (p) { products[p.id] = p; });
     var el = {
@@ -138,7 +139,7 @@
       date: $("#pf-date", root), date2: $("#pf-date2", root), dateNote: $("#date-note", root),
       timesWrap: $("#pf-times-wrap", root), times: $("#pf-times", root), timesNote: $("#times-note", root),
       adults: $("#adults", root), children: $("#children", root), childStep: $("#child-step", root), childNote: $("#child-note", root), adultUnit: $("#adult-unit", root), childUnit: $("#child-unit", root),
-      pickupWrap: $("#pf-pickup-wrap", root), pickup: $("#pf-pickup", root),
+      pickupWrap: $("#pf-pickup-wrap", root), pickup: $("#pf-pickup", root), pickupHotelWrap: $("#pf-pickup-hotel-wrap", root), pickupHotel: $("#pf-pickup-hotel", root), previewWrap: $("#pf-preview", root),
       contact: $("#pf-contact", root), first: $("#pf-first", root), last: $("#pf-last", root), email: $("#pf-email", root), phone: $("#pf-phone", root), ship: $("#pf-ship", root),
       preview: $("#msg-preview", root), cta: $("#cta", root), ctaLabel: $("#cta-label", root), ctaSub: $("#cta-sub", root), ctaAlt: $("#cta-alt", root), ctaWa: $("#cta-wa", root),
       rateNote: $("#rate-note", root), flightIn: $("#pf-flight-in", root), flightOut: $("#pf-flight-out", root),
@@ -161,7 +162,7 @@
     function price() {
       var p = product(); if (!p) return { lead: usd(0), sub: "", total: 0, cur: "USD", note: "" };
       var r = rateOf(p), a = state.adults, c = state.children;
-      if (p.perParty) { return { lead: usd(p.visitor.usd), sub: "for two", total: p.visitor.usd, cur: "USD", alt: jmdOf(p.visitor.usd), note: "Priced for two people, not per person." }; }
+      if (p.perParty) { return { lead: usd(p.visitor.usd), sub: "for two", total: p.visitor.usd, cur: "USD", note: "Priced for two people, not per person." }; }
       if (r === "resident" && p.resident) {
         var childKnown = p.resident.jmdChild != null;
         var tot = a * p.resident.jmd + (childKnown ? c * p.resident.jmdChild : 0);
@@ -171,7 +172,7 @@
         var pk = pickupOf(), add = pk ? (pk.add || 0) : 0, addC = pk ? (pk.addChild != null ? pk.addChild : add) : 0;
         var childKnownV = p.visitor.usdChild != null;
         var totV = a * (p.visitor.usd + add) + (childKnownV ? c * (p.visitor.usdChild + addC) : 0);
-        return { lead: usd(totV), alt: jmdOf(totV), sub: a + " adult" + (a === 1 ? "" : "s") + (c ? " + " + c + " child" + (c === 1 ? "" : "ren") : ""), total: totV, cur: "USD", note: !childKnownV && c ? "Children are priced when we confirm." : (add ? "Includes " + usd(add) + " per person for pickup." : "") };
+        return { lead: usd(totV), sub: a + " adult" + (a === 1 ? "" : "s") + (c ? " + " + c + " child" + (c === 1 ? "" : "ren") : ""), total: totV, cur: "USD", note: !childKnownV && c ? "Children are priced when we confirm." : (add ? "Includes " + usd(add) + " per person for pickup." : "") };
       }
       return { lead: "Price on request", sub: "", total: 0, cur: "USD", note: "" };
     }
@@ -205,7 +206,7 @@
       var g = state.adults + " adult" + (state.adults === 1 ? "" : "s") + (state.children ? ", " + state.children + " child" + (state.children === 1 ? "" : "ren") : "");
       if (p.perParty) g = "2 people";
       lines.push("Guests: " + g + (isFlight ? " (infants under 2 free)" : ""));
-      if (V.pickups && rateOf(p) === "visitor") { var pk = pickupOf(); if (pk) lines.push("Pickup: " + pk.label); }
+      if (V.pickups && rateOf(p) === "visitor") { var pk = pickupOf(); if (pk) lines.push("Pickup: " + pk.label + (pk.key !== "own" && el.pickupHotel && el.pickupHotel.value.trim() ? ", " + el.pickupHotel.value.trim() : "")); }
       var ch = chosen(); if (ch.length) lines.push("Choice: " + (p.choose.fixed ? p.choose.fixed + " + " : "") + ch.join(" + "));
       if (pr.total) lines.push("Total: " + pr.lead + (pr.alt ? " (" + pr.alt + ")" : "") + (pr.note ? ". " + pr.note : ""));
       else lines.push("Total: to be priced");
@@ -280,9 +281,11 @@
         el.childUnit.textContent = childPrice != null ? (r === "resident" ? jmd(childPrice) : usd(childPrice)) + " each" : (adultsOnly ? "" : "ask us");
         el.adultUnit.textContent = p.perParty ? "" : (r === "resident" && p.resident ? jmd(p.resident.jmd) : p.visitor ? usd(p.visitor.usd + (pickupOf() && r === "visitor" ? (pickupOf().add || 0) : 0)) : "") + (p.visitor || p.resident ? " each" : "");
       }
-      $$("[data-step]", root).forEach(function (b) { var k = b.getAttribute("data-step"), d = +b.getAttribute("data-d"); var v = state[k]; if (k === "adults") b.disabled = (d < 0 && v <= 1) || (d > 0 && v >= 10); if (k === "children" && !adultsOnly) b.disabled = (d < 0 && v <= 0) || (d > 0 && v >= 10); });
-      /* pickup only on the visitor rate */
+      $$("[data-step]", root).forEach(function (b) { var k = b.getAttribute("data-step"), d = +b.getAttribute("data-d"); var v = state[k]; if (k === "adults") b.disabled = (d < 0 && v <= 1) || (d > 0 && v >= MAX_GUESTS); if (k === "children" && !adultsOnly) b.disabled = (d < 0 && v <= 0) || (d > 0 && v >= MAX_GUESTS); });
+      var gn = $("#guests-note", root); if (gn) gn.hidden = !(state.adults + state.children >= MAX_GUESTS);
+      /* pickup only on the visitor rate; the hotel name only when a pickup is wanted */
       if (el.pickupWrap) el.pickupWrap.hidden = r !== "visitor";
+      if (el.pickupHotelWrap) el.pickupHotelWrap.hidden = state.pickup === "own";
       /* airport lounges: the fields follow the product's legs */
       if (isFlight) {
         var legs = p.legs || "both";
@@ -300,6 +303,7 @@
       $("#cta-label", el.cta).textContent = canPay ? "Book and pay " + pr.lead : (isRequest() ? "Request this date" : "Send enquiry");
       el.ctaSub.textContent = canPay ? (live ? "Confirmed straight away, paid by card on a secure page. You'll get the confirmation by email." : "Paid by card on a secure page and confirmed straight away. We send your booking details shortly by email and WhatsApp.") : liveOff ? "Live availability is offline, so this goes to us on WhatsApp and we confirm the time with the park. Nothing is charged now." : isRequest() ? "We confirm availability first, then send a secure card link. Nothing is charged now." : "We reply within working hours with a secure card link. Nothing is charged now.";
       if (el.ctaAlt) el.ctaAlt.hidden = !canPay;
+      if (el.previewWrap) el.previewWrap.hidden = canPay; // the WhatsApp text only matters when the booking goes by WhatsApp
       if (el.dateNote) { var prob = dateProblem(state.date); el.dateNote.hidden = !prob; el.dateNote.className = "pf-hint bad"; el.dateNote.textContent = prob; }
       el.preview.textContent = message();
     }
@@ -341,8 +345,9 @@
     if (el.date) { el.date.min = today; el.date.addEventListener("change", function () { state.date = el.date.value; render(); loadAvailability(); }); }
     if (el.date2) { el.date2.min = today; el.date2.addEventListener("change", render); }
     [el.flightIn, el.flightOut, el.first, el.last, el.email, el.phone, el.ship].forEach(function (i) { if (i) i.addEventListener("input", render); });
-    $$("[data-step]", root).forEach(function (b) { b.addEventListener("click", function () { var k = b.getAttribute("data-step"), d = +b.getAttribute("data-d"); state[k] = Math.max(k === "adults" ? 1 : 0, Math.min(10, state[k] + d)); el[k].value = state[k]; render(); }); });
+    $$("[data-step]", root).forEach(function (b) { b.addEventListener("click", function () { var k = b.getAttribute("data-step"), d = +b.getAttribute("data-d"); state[k] = Math.max(k === "adults" ? 1 : 0, Math.min(MAX_GUESTS, state[k] + d)); el[k].value = state[k]; render(); }); });
     if (el.pickup) el.pickup.addEventListener("change", function () { state.pickup = el.pickup.value; render(); });
+    if (el.pickupHotel) el.pickupHotel.addEventListener("input", render);
     if (el.ctaWa) el.ctaWa.addEventListener("click", function (e) { e.preventDefault(); sendWhatsApp(); });
     var sticky = $("#sticky-bar", root);
     if (sticky && "IntersectionObserver" in window) { var io = new IntersectionObserver(function (es) { es.forEach(function (x) { sticky.hidden = x.isIntersecting; }); }, { threshold: 0.15 }); io.observe(panel); }
@@ -370,7 +375,8 @@
       need(el.first, "We need a first name for the booking."); need(el.last, "And a last name."); need(el.email, "The confirmation goes by email, so we need an address.");
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.email.value.trim())) { el.email.focus(); throw new Error("That email doesn't look right."); }
       need(el.phone, "A WhatsApp or phone number, so we can send your details.");
-      var body = { slug: V.slug, product: p.id, date: state.date, time: wantsTime ? state.time : "", date2: date2, flightIn: flightIn, flightOut: flightOut, adults: state.adults, children: state.children, pickup: state.pickup, choices: chosen(), ref: state.ref, ship: el.ship ? el.ship.value.trim() : "", customer: { first: el.first.value.trim(), last: el.last.value.trim(), email: el.email.value.trim(), phone: el.phone.value.trim() } };
+      if (V.pickups && state.pickup !== "own" && rateOf(p) === "visitor") need(el.pickupHotel, "Which hotel should the driver collect you from?");
+      var body = { slug: V.slug, product: p.id, date: state.date, time: wantsTime ? state.time : "", date2: date2, flightIn: flightIn, flightOut: flightOut, adults: state.adults, children: state.children, pickup: state.pickup, pickupHotel: el.pickupHotel ? el.pickupHotel.value.trim() : "", choices: chosen(), ref: state.ref, ship: el.ship ? el.ship.value.trim() : "", customer: { first: el.first.value.trim(), last: el.last.value.trim(), email: el.email.value.trim(), phone: el.phone.value.trim() } };
       track("exp_checkout", { venue: V.slug, product: p.id, total: price().total, code: state.ref });
       if (PREVIEW) { alertBox("In the live site this opens the secure card page for " + price().lead + ". After paying, " + (live ? "the booking is created with the park" : "the guest is confirmed and the team gets the booking to send the details") + ", and the guest lands on the confirmation page (see \"After paying\" in the page picker)."); return; }
       el.cta.disabled = true; $("#cta-label", el.cta).textContent = "Opening secure payment…";
@@ -406,7 +412,7 @@
       var mins = driveMin(myHotel, V, X.regions || {});
       var fh = $("#fact-hotel", root), fht = $("#fact-hotel-t", root);
       if (fh && fht && mins != null) { fh.hidden = false; fht.textContent = driveLabel(mins) + " from " + myHotel.name; }
-      if (el.pickup && V.pickups) { var want = myHotel.region === "negril" ? "negril" : (myHotel.region === "lucea" ? "lucea" : "mobay"); if (V.pickups.some(function (p) { return p.key === want; })) { el.pickup.value = want; state.pickup = want; } }
+      if (el.pickup && V.pickups) { var want = myHotel.region === "negril" ? "negril" : (myHotel.region === "lucea" ? "lucea" : "mobay"); if (V.pickups.some(function (p) { return p.key === want; })) { el.pickup.value = want; state.pickup = want; } if (el.pickupHotel && !el.pickupHotel.value) el.pickupHotel.value = myHotel.name; }
     }
 
     /* Tripadvisor: live rating and three reviews, below the panel. Loaded only when the visitor scrolls near it (each load is billed),
