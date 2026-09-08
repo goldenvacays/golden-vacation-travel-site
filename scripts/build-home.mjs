@@ -233,13 +233,13 @@ ${modeChips("qmodes mob")}
 </div></section>`;
 
   // experiences
-  const ecards = H.experiences.cards.map((c) => `<a class="ecard" href="${wa(c.message)}" data-where="experiences-card">
+  const ecards = H.experiences.cards.map((c) => `<a class="ecard" href="${c.href || wa(c.message)}" data-where="experiences-card">
       <span class="ecard-photo">${pic(c.img, c.alt)}${c.tag ? tag(c.tag, "gold") : ""}</span>
       <span class="ecard-t"><span class="h">${esc(c.title)}</span><small>${longShort(c.sub, c.subMobile)}</small></span>
       <span class="ecard-p">From <b>${esc(c.from)}</b></span>
     </a>`).join("");
   const experiences = `<section class="sec wrap" id="experiences" aria-labelledby="exp-h">
-  <div class="sec-head"><div>${kicker(H.experiences.kicker)}<h2 id="exp-h" class="hh">${esc(H.experiences.title)}</h2><p class="sec-sub desk">${esc(H.experiences.sub)}</p></div>${biglink(H.experiences.all, wa(H.experiences.message)).replace('class="biglink', 'class="desk biglink')}${biglink(H.experiences.allMobile, wa(H.experiences.message)).replace('class="biglink', 'class="mob biglink')}</div>
+  <div class="sec-head"><div>${kicker(H.experiences.kicker)}<h2 id="exp-h" class="hh">${esc(H.experiences.title)}</h2><p class="sec-sub desk">${esc(H.experiences.sub)}</p></div>${biglink(H.experiences.all, H.experiences.allHref || wa(H.experiences.message)).replace('class="biglink', 'class="desk biglink')}${biglink(H.experiences.allMobile, H.experiences.allHref || wa(H.experiences.message)).replace('class="biglink', 'class="mob biglink')}</div>
   <div class="strip three">${ecards}</div>
 </section>`;
 
@@ -331,6 +331,8 @@ function legalPage(kind) {
 <ul><li>To provide quotes, make reservations, and deliver customer support.</li><li>To send confirmations and important trip updates.</li><li>To improve our services and prevent fraud or abuse.</li></ul>
 <h2 class="h">Sharing</h2><p>We share necessary details with the hotels, airlines and tour operators that fulfil your booking. We do not sell your data.</p>
 <h2 class="h">WhatsApp</h2><p>Clicking our WhatsApp buttons opens WhatsApp (or WhatsApp Web). Your messages are governed by WhatsApp's own terms and privacy policy.</p>
+<h2 class="h">Card payments on the site</h2><p>When you book a Golden Experience on this site, your card is handled by Stripe on Stripe's own secure payment page. We never see or store your card number. Stripe's privacy policy applies to the payment itself.</p>
+<h2 class="h">Reviews from Tripadvisor</h2><p>Experience pages show a tour's Tripadvisor rating and its most recent Tripadvisor reviews, including the reviewer's Tripadvisor username. That content is fetched from Tripadvisor each time the page is opened and is not stored by us. It is written by Tripadvisor travellers about the venue and is governed by Tripadvisor's terms.</p>
 <h2 class="h">Data security and retention</h2><p>We use reasonable technical and organisational measures to safeguard data. We keep records only as long as needed for bookings and legal requirements.</p>
 <h2 class="h">Your rights</h2><p>You may request access, correction, or deletion of your personal data. Contact us at <a href="mailto:${email}">${email}</a>.</p>
 <h2 class="h">Contact</h2><p>Golden Vacation and Travel Limited, ${esc(S.footerAddress)}. Email <a href="mailto:${email}">${email}</a>.</p>`;
