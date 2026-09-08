@@ -16,6 +16,7 @@
 */
 import fs from "node:fs";
 import path from "node:path";
+import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -32,6 +33,8 @@ const BUNDLE = args.includes("--bundle") ? args[args.indexOf("--bundle") + 1] : 
 const ARTIFACT = args.includes("--artifact");
 const NOINDEX = args.includes("--noindex");
 const TODAY = new Date().toISOString().slice(0, 10);
+/* a short fingerprint of the section's CSS and JS goes on their URLs, so a browser never keeps an old copy after a deploy */
+const STAMP = crypto.createHash("md5").update(["public/assets/experiences.css", "public/assets/experiences.js"].map((f) => fs.readFileSync(path.join(ROOT, f), "utf8")).join("\n")).digest("hex").slice(0, 8);
 
 /* ---------- helpers ---------- */
 const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -98,7 +101,59 @@ function driveMin(hotel, venue) {
   return Math.max(5, Math.round((anchor + nudge) / 5) * 5);
 }
 const driveLabel = (m) => m == null ? "" : m < 60 ? `about ${m} min` : `about ${Math.floor(m / 60)} h${m % 60 ? ` ${String(m % 60).padStart(2, "0")}` : ""}`;
-const venueDriveData = X.venues.map((v) => ({ slug: v.slug, lat: v.lat, lng: v.lng, drive: v.drive || {} }));
+const venueDriveData = X.venues.map((v) => ({ slug: v.slug, lat: v.lat, lng: v.lng, drive: v.drive || {}, sd: v.shipDay === false ? 0 : 1 }));
+
+/* ---------- ship days ----------
+   Cruise guests get every tour checked against their port: the drive there and back, and whether a start time
+   gets them back to the pier in time. The clock and duration of each option are read from its "times" and "hours"
+   text (a product can pin "mins" or "shipDay": false in the data when the text is not enough). */
+const SHIP = X.site.shipDay || { arrive: "8:30am", backBy: "3:30pm", okDrive: 100, askDrive: 130 };
+let SHIP_CFG = null; // filled once clockMins exists, below
+const clockMins = (s) => {
+  if (!s) return null;
+  const m = String(s).trim().toLowerCase().match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm|noon|midnight)?$/);
+  if (!m) return /^12 noon$/i.test(String(s).trim()) ? 720 : null;
+  let h = +m[1], mi = +(m[2] || 0);
+  const ap = m[3] || "";
+  if (ap === "noon") return 720; if (ap === "midnight") return 0;
+  if (ap === "pm" && h < 12) h += 12; if (ap === "am" && h === 12) h = 0;
+  return h * 60 + mi;
+};
+const durationMins = (hours) => {
+  const t = String(hours || "").toLowerCase();
+  let m = t.match(/(\d+(?:\.\d+)?)\s*(?:to\s*(\d+(?:\.\d+)?)\s*)?hours?/); if (m) return Math.round(+(m[2] || m[1]) * 60);
+  m = t.match(/(\d+)\s*(?:to\s*(\d+)\s*)?min/); if (m) return +(m[2] || m[1]);
+  if (/half day/.test(t)) return 240; if (/full day|all day/.test(t)) return 480;
+  return null;
+};
+SHIP_CFG = { arrive: clockMins(SHIP.arrive), backBy: clockMins(SHIP.backBy), backByText: SHIP.backBy, okDrive: SHIP.okDrive, askDrive: SHIP.askDrive };
+/* per product: starts (minutes since midnight, from "times" or an "h:mm to h:mm" range), mins, and whether it can never fit a ship day */
+function shipDayOf(p, v) {
+  const range = String(p.hours || "").match(/(\d{1,2}(?::\d{2})?\s*(?:am|pm))\s*to\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm))/i);
+  const starts = (p.times || []).map(clockMins).filter((n) => n != null);
+  let start = starts.length ? null : range ? clockMins(range[1]) : null;
+  let end = range ? clockMins(range[2]) : null;
+  if (end != null && start != null && end < start) end += 24 * 60;
+  const mins = p.mins || (range && start != null && end != null ? end - start : durationMins(p.hours));
+  const pass = v.panel === "pass";
+  const no = p.shipDay === false || v.shipDay === false || (start != null && start >= 16 * 60) || (starts.length && Math.min(...starts) >= 16 * 60);
+  return { starts: starts.length ? starts : (start != null ? [start] : []), mins: mins || (pass ? 120 : 180), flex: pass, no: !!no };
+}
+/* which tier a tour falls in for a ship day from a port: ok (books on the spot), ask (WhatsApp first), no (not offered) */
+const shipTier = (v, minsOneWay) => v.shipDay === false ? "no" : minsOneWay == null ? "ok" : minsOneWay > SHIP.askDrive ? "no" : minsOneWay > SHIP.okDrive ? "ask" : "ok";
+/* does an option get the guest back to the pier in time (default all-aboard rule) from a port that is `drive` minutes away? Same arithmetic as the page script and the checkout function */
+const productFits = (p, v, drive) => {
+  const s = shipDayOf(p, v); if (s.no || v.shipDay === false) return false;
+  const stay = s.flex ? Math.min(s.mins, 120) : s.mins, d = drive || 0;
+  if (s.starts.length) return s.starts.some((st) => st + stay + d <= SHIP_CFG.backBy);
+  return SHIP_CFG.arrive + d + stay + d <= SHIP_CFG.backBy;
+};
+const venueShipOk = (v, drive) => v.shipDay !== false && v.products.filter(live).some((p) => productFits(p, v, drive));
+const portsThatWork = (v) => (X.ports || []).map((pt) => ({ pt, min: driveMin(pt, v) })).filter((r) => r.min != null && shipTier(v, r.min) === "ok" && venueShipOk(v, r.min)).sort((a, b) => a.min - b.min);
+if (args.includes("--ship-check")) {
+  for (const v of X.venues) for (const p of v.products.filter(live)) { const s = shipDayOf(p, v); console.log(`${v.slug.padEnd(28)} ${p.name.padEnd(32)} starts=${s.starts.map((n) => `${Math.floor(n / 60)}:${String(n % 60).padStart(2, "0")}`).join(",").padEnd(24)} mins=${String(s.mins).padEnd(4)} flex=${s.flex ? 1 : 0} no=${s.no ? 1 : 0}`); }
+  process.exit(0);
+}
 
 /* lowest visitor price of a venue's live products (adult), for the card */
 function fromPrice(v) {
@@ -149,7 +204,7 @@ function head({ title, description, pathname, image, jsonld = [], noindex = fals
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100,400;100,500;100,600;100,700;110,800;110,900&display=swap">
 <link rel="stylesheet" href="/getaways/assets/getaways.css">
 <link rel="stylesheet" href="/assets/home.css">
-<link rel="stylesheet" href="${ASSETS}/experiences.css">
+<link rel="stylesheet" href="${ASSETS}/experiences.css?v=${STAMP}">
 ${ld}
 ${ga}
 <script>window.GV_CONFIG=${JSON.stringify({ base: BASE, whatsapp: S.whatsapp, jmdRate: S.jmdRate })};</script>
@@ -195,7 +250,7 @@ function footer() {
 const scripts = (cfg) => `<script>window.GV_EXP=${JSON.stringify(cfg)};</script>
 <script src="/getaways/assets/getaways.js" defer></script>
 <script src="/assets/home.js" defer></script>
-<script src="${ASSETS}/experiences.js" defer></script>`;
+<script src="${ASSETS}/experiences.js?v=${STAMP}" defer></script>`;
 
 /* ---------- pieces ---------- */
 function priceLine(p) {
@@ -281,6 +336,7 @@ ${ticker(hb.trust)}
       <label class="pf-f hotel-f"><span class="pf-l">Where are you staying?</span><span class="pf-in">${icon("pin", 18)}<input type="search" id="hotel-in" placeholder="Type your hotel or cruise port" autocomplete="off" aria-autocomplete="list" aria-controls="hotel-list"><button type="button" id="hotel-clear" aria-label="Clear hotel" hidden>${icon("x", 16, 2.6)}</button></span></label>
       <ul class="hotel-list" id="hotel-list" role="listbox" hidden></ul>
     </div>
+    <div class="chip-row port-chips" id="port-chips" role="group" aria-label="Cruise ports"><span class="chips-l">Off a cruise ship?</span>${(X.ports || []).map((p) => `<button class="chip chip-sm" type="button" data-port="${p.slug}" aria-pressed="false">${esc(p.name.replace(" cruise port", " port"))}</button>`).join("")}</div>
     <div class="chip-row dist-chips" id="dist-chips" role="group" aria-label="How far" hidden>
       <button class="chip" type="button" data-max="30">Under 30 min</button>
       <button class="chip" type="button" data-max="60">Under 1 hour</button>
@@ -323,7 +379,7 @@ ${cards}
 </section>
 </main>
 ${footer()}
-${scripts({ page: "hub", whatsapp: S.whatsapp, hotels: HOTELS.map((h) => [h.name, h.slug, h.region, h.lat, h.lng, h.port ? 1 : 0]), venues: venueDriveData, regions: X.regions, base: BASE })}
+${scripts({ page: "hub", whatsapp: S.whatsapp, hotels: HOTELS.map((h) => [h.name, h.slug, h.region, h.lat, h.lng, h.port ? 1 : 0]), venues: venueDriveData, regions: X.regions, base: BASE, shipDay: SHIP_CFG })}
 </body></html>`;
 }
 
@@ -379,17 +435,20 @@ function panel(v) {
   /* pickup: the guest picks their hotel from the resort list (the area, and any transfer charge, follow from it);
      "somewhere else" opens a free-text line plus the area list; "my own way" skips pickup */
   const pickup = v.pickups ? `<div class="pf" id="pf-pickup-wrap">
-      <div class="hotel-q"><label class="pf-f hotel-f"><span class="pf-l">Pickup hotel</span><span class="pf-in">${icon("pin", 18)}<input type="search" id="pf-hotel-in" placeholder="Type your hotel, e.g. RIU Negril" autocomplete="off" autocapitalize="words"></span></label><ul class="hotel-list" id="pf-hotel-list" role="listbox" hidden></ul></div>
-      <div class="chip-row pickup-alts"><button type="button" class="chip chip-sm" data-pick="other" aria-pressed="false">Somewhere else</button><button type="button" class="chip chip-sm" data-pick="own" aria-pressed="false">I'll make my own way</button></div>
+      <div class="hotel-q pf-f"><span class="pf-l">Pickup from</span>
+        <div class="chip-row pickup-alts"><button type="button" class="chip chip-sm" data-pick="ship" aria-pressed="false">Off a cruise ship</button><button type="button" class="chip chip-sm" data-pick="other" aria-pressed="false">Somewhere else</button><button type="button" class="chip chip-sm" data-pick="own" aria-pressed="false">I'll make my own way</button></div>
+        <label class="pf-f hotel-f"><span class="pf-in">${icon("pin", 18)}<input type="search" id="pf-hotel-in" placeholder="Type your hotel or cruise port" autocomplete="off" autocapitalize="words" aria-label="Pickup hotel or cruise port"></span></label><ul class="hotel-list" id="pf-hotel-list" role="listbox" hidden></ul></div>
       <label class="pf-f" id="pf-pickup-other-wrap" hidden><span class="pf-in">${icon("pin", 18)}<input type="text" id="pf-pickup-hotel" placeholder="Villa, Airbnb or hotel name" autocomplete="off"></span></label>
       <label class="pf-f" id="pf-pickup-area-wrap" hidden><span class="pf-l">Pickup area</span><span class="pf-in">${icon("car", 18)}<select id="pf-pickup">${v.pickups.filter((p) => p.key !== "own").map((p) => `<option value="${p.key}" data-add="${p.add || 0}" data-add-child="${p.addChild != null ? p.addChild : p.add || 0}">${esc(p.label)}${p.request ? " (priced by hand)" : p.add ? ` (+${usd(p.add)} each)` : ""}</option>`).join("")}</select></span></label>
       <p class="pf-hint" id="pickup-note">${v.pickups.some((p) => p.add) ? "Pickup from Negril hotels is included. Lucea and Montego Bay pickups are priced per person." : "Hotel pickup from Negril and Montego Bay is included."}</p>
     </div>` : "";
+  /* ship day: shown once we know the guest is off a ship (a port picked here or on the hub, or a ship name typed). Sits outside the contact block, which hides on the WhatsApp path */
+  const aboard = v.panel === "flight" ? "" : `<div class="pf" id="pf-aboard-wrap" hidden><span class="pf-l">All-aboard time</span><div class="chip-row aboard-chips" id="pf-aboard">${[["", "Not sure"], ["960", "4:00pm"], ["1020", "5:00pm"], ["1080", "6:00pm"], ["1140", "7:00pm or later"]].map(([m, l]) => `<button type="button" class="chip chip-sm" data-aboard="${m}" aria-pressed="${m === "" ? "true" : "false"}">${l}</button>`).join("")}</div><p class="pf-hint" id="ship-note"></p><button type="button" class="link-btn" id="ship-clear">Not off a ship today? Clear this</button></div>`;
   const contact = `<div class="pf pf-contact" id="pf-contact"${instant ? "" : " hidden"}><span class="pf-l">Who's booking</span>
       <div class="pf two"><label class="pf-f"><span class="pf-in"><input type="text" id="pf-first" placeholder="First name" autocomplete="given-name"></span></label><label class="pf-f"><span class="pf-in"><input type="text" id="pf-last" placeholder="Last name" autocomplete="family-name"></span></label></div>
       <label class="pf-f"><span class="pf-in"><input type="email" id="pf-email" placeholder="Email for the confirmation" autocomplete="email"></span></label>
       <label class="pf-f"><span class="pf-in"><input type="tel" id="pf-phone" placeholder="WhatsApp or phone" autocomplete="tel"></span></label>
-      <label class="pf-f" id="pf-ship-wrap"><span class="pf-in">${icon("ship", 18)}<input type="text" id="pf-ship" placeholder="On a cruise? Ship and all-aboard time"></span></label>
+      <label class="pf-f" id="pf-ship-wrap"><span class="pf-in">${icon("ship", 18)}<input type="text" id="pf-ship" placeholder="On a cruise? Ship name"></span></label>
     </div>`;
   return `<aside class="panel" id="panel" data-panel="${v.panel}" data-booking="${v.booking}">
     <div class="panel-head">${kicker(instant ? "Book on the spot" : v.booking === "request" ? "Request a date" : "Send an enquiry")}<div class="panel-total"><b id="total-lead">${usd(0)}</b><small id="total-sub"></small></div><p class="panel-caption" id="total-caption"></p></div>
@@ -399,6 +458,7 @@ function panel(v) {
       ${times}
       ${guests}
       ${pickup}
+      ${aboard}
       ${contact}
       <div class="pf pf-preview" id="pf-preview"${instant ? " hidden" : ""}><span class="pf-l">This is what we'll get</span><pre id="msg-preview"></pre></div>
       <button class="btn btn-black btn-lg btn-full" type="submit" id="cta">${instant ? icon("card", 18) : icon("chat", 18)}<span id="cta-label">${cta}</span></button>
@@ -432,9 +492,9 @@ function venuePage(v) {
   ];
   const cfg = {
     page: "venue", whatsapp: S.whatsapp, origin: S.origin, jmdRate: S.jmdRate, today: TODAY,
-    hotels: HOTELS.map((h) => [h.name, h.slug, h.region, h.lat, h.lng, h.port ? 1 : 0]), regions: X.regions,
-    venue: { slug: v.slug, name: v.name, panel: v.panel, booking: v.booking, calendar: v.calendar || null, area: AREAS[v.area], adultsOnly: !!v.adultsOnly, blackout: v.blackout || [], closedWeekdays: v.closedWeekdays || [], rates: v.rates || null, pickups: v.pickups || null, lat: v.lat, lng: v.lng, drive: v.drive || {},
-      products: v.products.filter(live).map((p) => ({ id: p.id, name: p.name, hours: p.hours, times: p.times || [], audience: p.audience, visitor: p.visitor || null, resident: p.resident || null, perParty: p.perParty || 0, choose: p.choose || null, legs: p.legs || null, request: !!p.request, until: p.until || null })) },
+    hotels: HOTELS.map((h) => [h.name, h.slug, h.region, h.lat, h.lng, h.port ? 1 : 0]), regions: X.regions, shipDay: SHIP_CFG,
+    venue: { slug: v.slug, name: v.name, panel: v.panel, booking: v.booking, calendar: v.calendar || null, area: AREAS[v.area], adultsOnly: !!v.adultsOnly, blackout: v.blackout || [], closedWeekdays: v.closedWeekdays || [], rates: v.rates || null, pickups: v.pickups || null, lat: v.lat, lng: v.lng, drive: v.drive || {}, sd: v.shipDay === false ? 0 : 1,
+      products: v.products.filter(live).map((p) => ({ id: p.id, name: p.name, hours: p.hours, times: p.times || [], audience: p.audience, visitor: p.visitor || null, resident: p.resident || null, perParty: p.perParty || 0, choose: p.choose || null, legs: p.legs || null, request: !!p.request, until: p.until || null, sd: shipDayOf(p, v) })) },
   };
   const title = `${v.name} | ${v.categories.map((c) => CATS[c]).join(", ")} in ${AREAS[v.area]}, Jamaica`;
   return `${head({ title, description: `${v.blurb} ${fromPrice(v) && fromPrice(v).usd != null ? `From ${usd(fromPrice(v).usd)} per person.` : ""} Published prices in US$ and J$, booked by Golden Vacation & Travel, St Ann, Jamaica.`, pathname: `${BASE}/${v.slug}`, image: hero.file, jsonld, bodyClass: "exp exp-venue" })}
@@ -498,27 +558,36 @@ ${scripts(cfg)}
 
 /* ---------- near-hotel pages ---------- */
 function nearPage(h) {
-  const rows = X.venues.map((v) => ({ v, min: driveMin(h, v) })).filter((r) => r.min != null && r.v.slug !== "club-kingston").sort((a, b) => a.min - b.min);
+  const rows = X.venues.map((v) => ({ v, min: driveMin(h, v) })).filter((r) => r.min != null && r.v.slug !== "club-kingston" && !(h.port && r.v.shipDay === false)).sort((a, b) => a.min - b.min);
   const nearest = rows[0];
-  const hero = nearest.v.photos[0];
+  /* on a port page every tour is sorted into a ship-day tier: fits, a long day (we check it first), or not on a ship day */
+  const tierOf = (v, min) => !h.port ? "ok" : (shipTier(v, min) === "no" ? "no" : !venueShipOk(v, min) ? "no" : shipTier(v, min));
+  const hero = (h.port ? (rows.find((r) => tierOf(r.v, r.min) === "ok") || nearest) : nearest).v.photos[0];
   const region = X.regions[h.region];
-  const list = rows.map(({ v, min }) => {
+  const row = ({ v, min }) => {
     const fp = fromPrice(v);
     const price = fp ? (fp.usd != null ? `<b>${dual(fp.usd)}</b><small>${fp.same ? "per person" : "from"}</small>` : `<b>${jmd(fp.jmd)}</b><small>${fp.same ? "per person" : "from"}</small>`) : "<b>Price on request</b>";
     const n = v.products.filter(live).length;
-    return `<a class="nrow" href="${BASE}/${v.slug}">
+    const tier = tierOf(v, min);
+    const works = tier === "no" && h.port ? portsThatWork(v)[0] : null;
+    const driveLine = tier === "no" ? (shipTier(v, min) !== "no" ? `Not on a ship day: ${v.shipDayNote || "runs in the evening"}` : `Not on a ship day: ${driveLabel(min)} each way${works ? `. Works from ${works.pt.name}, ${driveLabel(works.min)}` : ""}`) : tier === "ask" ? `A long day from the pier, ${driveLabel(min)} each way. Ask us first` : `${driveLabel(min)} from ${h.name}`;
+    return `<a class="nrow${tier === "no" ? " nrow-off" : ""}" href="${BASE}/${v.slug}${h.port ? `?hotel=${h.slug}` : ""}">
       <span class="nrow-img">${pic(small(v.photos[0].file), v.photos[0].alt)}</span>
-      <span class="nrow-t"><span class="nrow-drive">${esc(driveLabel(min))} from ${esc(h.name)}</span><b>${esc(v.name)}</b><small>${esc(v.card)}</small><span class="vcard-meta">${n} ${n === 1 ? "option" : "options"} · ${v.categories.map((c) => esc(CATS[c])).join(" · ")}</span></span>
+      <span class="nrow-t"><span class="nrow-drive${tier === "no" ? " off" : tier === "ask" ? " ask" : ""}">${esc(driveLine)}</span><b>${esc(v.name)}</b><small>${esc(v.card)}</small><span class="vcard-meta">${n} ${n === 1 ? "option" : "options"} · ${v.categories.map((c) => esc(CATS[c])).join(" · ")}</span></span>
       <span class="nrow-p">${price}</span>${icon("arrow", 18, 2.4)}</a>`;
-  }).join("\n");
+  };
+  const fits = rows.filter((r) => tierOf(r.v, r.min) === "ok"), longDay = rows.filter((r) => tierOf(r.v, r.min) === "ask"), notShip = rows.filter((r) => tierOf(r.v, r.min) === "no");
+  const list = h.port
+    ? `${fits.map(row).join("\n")}${longDay.length ? `<div class="near-group"><b>A long day from the pier</b><small>${longDay.length === 1 ? "This one is" : "These are"} ${driveLabel(SHIP.okDrive)} to ${driveLabel(SHIP.askDrive)} each way. Send the request and we check it against your all-aboard time before anything is charged.</small></div>${longDay.map(row).join("\n")}` : ""}${notShip.length ? `<div class="near-group"><b>Not on a ship day from ${esc(h.name)}</b><small>Too far for the hours in port, or an evening thing. Each one says which port it works from.</small></div>${notShip.map(row).join("\n")}` : ""}`
+    : rows.map(row).join("\n");
   const waText = h.port ? `Hi Golden Vacation! We're in port at ${h.name} for the day and we'd like a day out. Ref GV-EXP-PORT` : `Hi Golden Vacation! We're staying at ${h.name} and we'd like to add a day out. Ref GV-EXP-NEAR`;
   const under = (m) => rows.filter((r) => r.min <= m).length;
   const jsonld = [
     { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Golden Vacation & Travel", item: S.origin }, { "@type": "ListItem", position: 2, name: "Golden Experiences", item: `${S.origin}${BASE}/` }, { "@type": "ListItem", position: 3, name: `Near ${h.name}`, item: `${S.origin}${BASE}/near/${h.slug}` }] },
-    { "@context": "https://schema.org", "@type": "ItemList", name: `Things to do near ${h.name}`, itemListElement: rows.map(({ v }, i) => ({ "@type": "ListItem", position: i + 1, name: v.name, url: `${S.origin}${BASE}/${v.slug}` })) },
+    { "@context": "https://schema.org", "@type": "ItemList", name: `Things to do ${h.port ? "from" : "near"} ${h.name}`, itemListElement: (h.port ? fits.concat(longDay) : rows).map(({ v }, i) => ({ "@type": "ListItem", position: i + 1, name: v.name, url: `${S.origin}${BASE}/${v.slug}` })) },
   ];
   const title = h.port ? `Things to do from ${h.name} | tours, day passes and boat days for your ship day, with drive times` : `Things to do near ${h.name} | day passes, tours and boat days with drive times`;
-  const desc = h.port ? `${under(60)} days out under an hour from ${h.name}: ${rows.slice(0, 3).map((r) => r.v.short).join(", ")} and more, timed to your all-aboard. Published prices in US$, port pickup where it runs, booked by Golden Vacation & Travel in Jamaica.` : `${under(60)} days out under an hour from ${h.name}, ${region.label}: ${rows.slice(0, 3).map((r) => r.v.short).join(", ")} and more. Published prices in US$ and J$, hotel pickup where it runs, booked by Golden Vacation & Travel in Jamaica.`;
+  const desc = h.port ? `${fits.length} days out that fit a ship day from ${h.name}: ${fits.slice(0, 3).map((r) => r.v.short).join(", ")} and more, timed to your all-aboard. Published prices in US$, port pickup where it runs, booked by Golden Vacation & Travel in Jamaica.` : `${under(60)} days out under an hour from ${h.name}, ${region.label}: ${rows.slice(0, 3).map((r) => r.v.short).join(", ")} and more. Published prices in US$ and J$, hotel pickup where it runs, booked by Golden Vacation & Travel in Jamaica.`;
   return `${head({ title, description: desc, pathname: `${BASE}/near/${h.slug}`, image: hero.file, jsonld, bodyClass: "exp exp-near" })}
 ${nav()}
 <main class="near wrap" data-hotel="${h.slug}">
@@ -527,11 +596,11 @@ ${nav()}
   <div class="near-t">
     ${kicker(h.area || region.label)}
     <h1 class="hh">${h.port ? `In port for the day? Things to do from ${esc(h.name)}.` : `Things to do near ${esc(h.name)}.`}</h1>
-    <p class="lead">${under(30) ? `${under(30)} within half an hour, ` : ""}${under(60)} under an hour, ${rows.length} worth the drive. ${h.port ? `${esc(h.note || "")} Tell us your all-aboard time and we work backwards from it. Every price is the published rate, and we say when pickup runs from the pier and when it doesn't.` : `Every price is the published rate, both currencies, and we say when hotel pickup runs from ${esc(h.name)} and when it doesn't.`}</p>
+    <p class="lead">${h.port ? `${fits.length} fit a ship day${longDay.length ? `, ${longDay.length} ${longDay.length === 1 ? "is" : "are"} a long day we check first` : ""}${notShip.length ? `, ${notShip.length} ${notShip.length === 1 ? "doesn't" : "don't"} fit` : ""}. ${esc(h.note || "")} We plan to have you back at the pier by ${esc(SHIP.backBy)}, or an hour before the all-aboard time you give us. Every price is the published rate, and we say when pickup runs from the pier and when it doesn't.` : `${under(30) ? `${under(30)} within half an hour, ` : ""}${under(60)} under an hour, ${rows.length} worth the drive. Every price is the published rate, both currencies, and we say when hotel pickup runs from ${esc(h.name)} and when it doesn't.`}</p>
     <div class="near-btns">${btn(h.port ? "Plan my ship day" : "Add a day out to my stay", wa(waText), "black", "", "chat")}${btn(h.port ? "Browse from this port" : "Browse with my hotel set", `${BASE}/?hotel=${h.slug}`, "outline", "", "arrow")}</div>
     <p class="pf-hint">${esc(X.driveNote.split(".")[0])}. Traffic and the road decide the rest.</p>
   </div>
-  <div class="near-photo">${pic(hero.file, hero.alt, ' loading="eager"')}<div class="hero-tags">${tag(`Nearest: ${nearest.v.short}, ${driveLabel(nearest.min)}`, "gold")}</div></div>
+  <div class="near-photo">${pic(hero.file, hero.alt, ' loading="eager"')}<div class="hero-tags">${tag(`Nearest: ${(h.port && fits[0] ? fits[0] : nearest).v.short}, ${driveLabel((h.port && fits[0] ? fits[0] : nearest).min)}`, "gold")}</div></div>
 </section>
 <section class="near-list">${list}</section>
 <section class="near-foot">
@@ -594,6 +663,8 @@ if (!BUNDLE) {
 export const DATA = ${JSON.stringify(X)};
 export const REZDY_MAP = ${JSON.stringify(readJson("data/rezdy-map.json"))};
 export const TA_MAP = ${JSON.stringify(readJson("data/tripadvisor-map.json"))};
+/* ship days: the settings in minutes, each port's region, and the start/duration facts the build reads from every product's times and hours */
+export const SHIP = ${JSON.stringify({ settings: SHIP_CFG, ports: Object.fromEntries((X.ports || []).map((pt) => [pt.slug, { name: pt.name, region: pt.region }])), products: Object.fromEntries(X.venues.flatMap((v) => v.products.filter(live).map((p) => [`${v.slug}:${p.id}`, shipDayOf(p, v)]))), venues: Object.fromEntries(X.venues.map((v) => [v.slug, v.shipDay === false ? 0 : 1])) })};
 `;
   fs.writeFileSync(path.join(ROOT, "netlify/functions/_exp-data.mjs"), dataModule);
   console.log("wrote netlify/functions/_exp-data.mjs", `${(dataModule.length / 1024).toFixed(0)}K`);
