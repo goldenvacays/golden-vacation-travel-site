@@ -36,6 +36,15 @@
   function driveLabel(m) { if (m == null) return ""; if (m < 60) return "about " + m + " min"; var h = Math.floor(m / 60), r = m % 60; return "about " + h + " h" + (r ? " " + (r < 10 ? "0" + r : r) : ""); }
   function hotelsOf(X) { return (X.hotels || []).map(function (h) { return { name: h[0], slug: h[1], region: h[2], lat: h[3], lng: h[4], port: !!h[5] }; }); }
   function placeLabel(hh, regions) { return hh.port ? "Cruise port" : (regions && regions[hh.region] ? regions[hh.region].label : hh.region); }
+  /* type-ahead over hotels and cruise ports: ports also answer to "cruise", "ship", "terminal", "pier", "dock" and the short town names; an empty box lists the ports first so cruise guests see them without typing */
+  var PORT_WORDS = " cruise ship terminal pier dock port ", TOWN_ALIASES = { "montego bay": " mobay ", "ocho rios": " ochi " };
+  function searchText(hh) { var s = " " + hh.name.toLowerCase() + " "; Object.keys(TOWN_ALIASES).forEach(function (k) { if (s.indexOf(k) >= 0) s += TOWN_ALIASES[k]; }); if (hh.port) s += PORT_WORDS; return s; }
+  function matchPlaces(list, q, opts) {
+    var qq = (q || "").toLowerCase().trim(), portsOnly = !!(opts && opts.portsOnly), limit = (opts && opts.limit) || 8;
+    var hits = list.filter(function (hh) { if (portsOnly && !hh.port) return false; return !qq || searchText(hh).indexOf(qq) >= 0; });
+    if (!qq) hits = hits.filter(function (hh) { return hh.port; }).concat(hits.filter(function (hh) { return !hh.port; }));
+    return hits.slice(0, limit);
+  }
   function savedHotel(X) { var slug = store("gv_hotel"); if (!slug) return null; return hotelsOf(X).filter(function (h) { return h.slug === slug; })[0] || null; }
 
   /* ================= hub: doors, categories, area ================= */
@@ -91,6 +100,7 @@
       if (heading) heading.textContent = hotel ? (hotel.port ? "Days out from " + hotel.name + "." : "Days out near " + hotel.name + ".") : baseHeading;
       if (dist) dist.hidden = !hotel;
       if (hClear) hClear.hidden = !hotel;
+      $$("#port-chips .chip", root).forEach(function (b) { b.setAttribute("aria-pressed", hotel && hotel.slug === b.getAttribute("data-port") ? "true" : "false"); });
       root.classList ? root.classList.toggle("hotel-on", !!hotel) : null;
       if (hNote) hNote.innerHTML = hotel ? "Drive times from " + hotel.name + " are rounded and say about. Traffic and the road decide the rest. <a href=\"" + (X.base || "/experiences") + "/near/" + hotel.slug + "\">Open the page for " + hotel.name + "</a>." : "Pick your hotel and every card shows the drive time from it, nearest first. Not staying yet? <a href=\"/hotel-status\">See which resorts are open</a>.";
       apply();
@@ -100,8 +110,8 @@
     function setHotel(hh, save) { hotel = hh; if (hIn) hIn.value = hh ? hh.name : ""; if (save) store("gv_hotel", hh ? hh.slug : null); closeList(); applyHotel(); if (hh) track("exp_hotel", { hotel: hh.slug }); }
     function closeList() { if (hList) { hList.hidden = true; hList.innerHTML = ""; } cursor = -1; }
     function openList(q) {
-      if (!hList) return; var qq = q.toLowerCase().trim();
-      var hits = HOTELS.filter(function (hh) { return !qq || hh.name.toLowerCase().indexOf(qq) >= 0; }).slice(0, 8);
+      if (!hList) return;
+      var hits = matchPlaces(HOTELS, q);
       hList.innerHTML = ""; cursor = -1;
       if (!hits.length) { var li = document.createElement("li"); li.className = "none"; li.textContent = "Not on our list yet. Tell us on WhatsApp and we'll price from there."; hList.appendChild(li); }
       hits.forEach(function (hh) { var li = document.createElement("li"); li.setAttribute("role", "option"); li.innerHTML = "<span></span><small></small>"; li.firstChild.textContent = hh.name; li.lastChild.textContent = placeLabel(hh, X.regions); li.addEventListener("mousedown", function (e) { e.preventDefault(); setHotel(hh, true); }); hList.appendChild(li); });
@@ -121,6 +131,7 @@
       });
     }
     if (hClear) hClear.addEventListener("click", function () { maxMin = 0; $$("#dist-chips .chip", root).forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-max") === "0" ? "true" : "false"); }); setHotel(null, true); });
+    $$("#port-chips .chip", root).forEach(function (b) { b.addEventListener("click", function () { var slug = b.getAttribute("data-port"), p = HOTELS.filter(function (hh) { return hh.slug === slug; })[0]; if (!p) return; setHotel(hotel && hotel.slug === slug ? null : p, true); }); });
     $$("#dist-chips .chip", root).forEach(function (b) { b.addEventListener("click", function () { maxMin = +b.getAttribute("data-max"); $$("#dist-chips .chip", root).forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); }); applyHotel(); track("exp_distance", { max: maxMin }); }); });
     var qs = new URLSearchParams(location.search).get("hotel");
     var pre = qs ? HOTELS.filter(function (hh) { return hh.slug === qs; })[0] : savedHotel(X);
@@ -372,11 +383,11 @@
       if (el.hotelIn) el.hotelIn.value = hh.name;
       closeHotelList(); render(); track("exp_pickup_hotel", { venue: V.slug, hotel: hh.slug, served: state.pickup !== "own" });
     }
-    var hCursor = -1;
+    var hCursor = -1, portsOnly = false;
     function closeHotelList() { if (el.hotelList) { el.hotelList.hidden = true; el.hotelList.innerHTML = ""; } hCursor = -1; }
     function openHotelList(q) {
-      if (!el.hotelList) return; var qq = (q || "").toLowerCase().trim();
-      var hits = HOTELS.filter(function (hh) { return !qq || hh.name.toLowerCase().indexOf(qq) >= 0; }).slice(0, 8);
+      if (!el.hotelList) return;
+      var hits = matchPlaces(HOTELS, q, { portsOnly: portsOnly }); portsOnly = false;
       el.hotelList.innerHTML = ""; hCursor = -1;
       if (!hits.length) { var li0 = document.createElement("li"); li0.className = "none"; li0.textContent = "Not on our list. Choose \"Somewhere else\" below and type it in."; el.hotelList.appendChild(li0); }
       hits.forEach(function (hh) {
@@ -390,8 +401,9 @@
     }
     if (el.hotelIn) {
       el.hotelIn.addEventListener("input", function () { if (state.pickupMode !== "hotel" || el.hotelIn.value !== state.pickupHotel) { state.pickupMode = "hotel"; state.pickupHotel = ""; render(); } openHotelList(el.hotelIn.value); });
-      el.hotelIn.addEventListener("focus", function () { openHotelList(el.hotelIn.value); });
-      el.hotelIn.addEventListener("blur", function () { setTimeout(closeHotelList, 150); });
+      var blurTimer = null;
+      el.hotelIn.addEventListener("focus", function () { clearTimeout(blurTimer); openHotelList(el.hotelIn.value); });
+      el.hotelIn.addEventListener("blur", function () { blurTimer = setTimeout(closeHotelList, 150); });
       el.hotelIn.addEventListener("keydown", function (e) {
         var items = $$("li[role=option]", el.hotelList);
         if (e.key === "ArrowDown") { e.preventDefault(); hCursor = Math.min(items.length - 1, hCursor + 1); }
@@ -404,6 +416,11 @@
     $$(".pickup-alts .chip", root).forEach(function (b) {
       b.addEventListener("click", function () {
         var m = b.getAttribute("data-pick");
+        if (m === "ship") { /* cruise guests: clear the box and open the list on the three ports */
+          state.pickupMode = "hotel"; state.pickupHotel = ""; state.pickup = V.pickups[0].key;
+          if (el.hotelIn) { el.hotelIn.value = ""; portsOnly = true; el.hotelIn.focus(); if (portsOnly) openHotelList(""); }
+          render(); return;
+        }
         if (state.pickupMode === m) { state.pickupMode = "hotel"; state.pickupHotel = ""; state.pickup = V.pickups[0].key; }
         else { state.pickupMode = m; state.pickupHotel = m === "other" && el.pickupHotel ? el.pickupHotel.value.trim() : ""; state.pickup = m === "own" ? "own" : (el.pickup ? el.pickup.value : V.pickups[0].key); }
         if (el.hotelIn) el.hotelIn.value = "";

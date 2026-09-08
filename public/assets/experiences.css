@@ -296,6 +296,10 @@
 #pf-pickup-wrap .hotel-q { position: relative; flex: none; }
 #pf-pickup-wrap .hotel-list { top: calc(100% + 4px); }
 .dist-chips .chip { height: 34px; font-size: 13px; }
+/* cruise ports as one-tap picks: above the box on phones (the open list must never cover them), beside it on desktop */
+.port-chips { gap: 8px; align-items: center; order: -1; }
+.port-chips .chips-l { flex-basis: 100%; font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin-right: 2px; }
+.port-chips .chip-sm { height: 32px; padding: 0 12px; font-size: 12px; }
 .drive-tag { left: auto !important; right: 12px; }
 .vcard .drive-tag[hidden] { display: none; }
 .hotel-on .cat-note { font-weight: 700; color: var(--ink); }
@@ -330,6 +334,9 @@
 @media (min-width: 900px) {
   .hotel-box { flex-direction: row; align-items: center; flex-wrap: wrap; gap: 14px 20px; padding: 18px 22px; }
   .hotel-q { flex: 1 1 380px; }
+  .hotel-box .port-chips { flex: 0 1 auto; order: 0; }
+  .port-chips .chips-l { flex-basis: auto; }
+  .hotel-box .dist-chips { flex-basis: 100%; }
   .hotel-box .pf-hint { flex-basis: 100%; }
   .near { padding: 0 var(--pad) 96px; gap: 40px; }
   .near-hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: center; }
