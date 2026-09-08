@@ -1,0 +1,113 @@
+/* GET /.netlify/functions/exp-tripadvisor?slug=jamwest
+   Live Tripadvisor rating, review count and the three latest reviews for a venue, through Tripadvisor's Terra Partner API (Discover package).
+   Rules we keep:
+     - only the Location ID is ever cached (Terra caching policy); ratings and reviews are fetched fresh on every call and never stored;
+     - the response carries the official rating icons and every link back the Terra linking policy asks for
+       (venue name, review count, "Read more" under a cut review, "More on Tripadvisor", "Write a review");
+     - robots.txt disallows this path, so review text is loaded by the browser and never sits in crawlable HTML (review implementation policy).
+   Billing note: Discover bills per Location ID returned. Details = 1, reviews = 1, so one block load = 2 billable entities.
+   A catalog search bills one per result, so IDs get pinned in data/tripadvisor-map.json after the first successful lookup. */
+import { json, findVenue } from "./_exp-shared.mjs";
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);
+const TA_MAP = require("../../data/tripadvisor-map.json");
+
+const BASE = process.env.TRIPADVISOR_API_BASE || "https://terra.tripadvisor.com/api";
+const VERSION = process.env.TRIPADVISOR_API_VERSION || "2"; // Terra's parameter-based versioning; "" = whatever Terra calls latest
+const CATEGORY = { attractions: "ATTRACTION", hotels: "HOTEL", restaurants: "RESTAURANT" };
+const idCache = {}; // slug -> location id (caching IDs is allowed; nothing else is)
+
+async function ta(path, params = {}) {
+  const key = process.env.TRIPADVISOR_API_KEY;
+  if (!key) throw new Error("TRIPADVISOR_API_KEY is not set");
+  const q = new URLSearchParams();
+  if (VERSION) q.set("version", VERSION);
+  for (const [k, v] of Object.entries(params)) if (v != null && v !== "") q.set(k, String(v));
+  const res = await fetch(`${BASE}${path}?${q}`, { headers: { "X-API-Key": key, Accept: "application/json" } });
+  const body = await res.json().catch(() => ({}));
+  if (res.ok) return body;
+  const detail = [body.title, body.detail, body.message].filter(Boolean).join(" / ");
+  // If this Terra account does not know our version token, ask once more without pinning a version.
+  if (res.status === 400 && VERSION && /version/i.test(JSON.stringify(body))) {
+    const q2 = new URLSearchParams(); for (const [k, v] of Object.entries(params)) if (v != null && v !== "") q2.set(k, String(v));
+    const r2 = await fetch(`${BASE}${path}?${q2}`, { headers: { "X-API-Key": key, Accept: "application/json" } });
+    const b2 = await r2.json().catch(() => ({}));
+    if (r2.ok) return b2;
+  }
+  const e = new Error(detail || `Tripadvisor ${res.status}`); e.status = res.status; throw e;
+}
+
+const km = (a, b) => { if (!a || !b || a.latitude == null || b.lat == null) return Infinity; const R = 6371, dLat = (b.lat - a.latitude) * Math.PI / 180, dLng = (b.lng - a.longitude) * Math.PI / 180; const s = Math.sin(dLat / 2) ** 2 + Math.cos(a.latitude * Math.PI / 180) * Math.cos(b.lat * Math.PI / 180) * Math.sin(dLng / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(s)); };
+
+/* localized arrays: [{language, value, primary}] -> the English or primary value */
+function pick(arr) {
+  if (!Array.isArray(arr) || !arr.length) return "";
+  const en = arr.find((t) => t && /^en\b/i.test(t.language || "") && t.value);
+  const prim = arr.find((t) => t && t.primary && t.value);
+  return (en || prim || arr.find((t) => t && t.value) || {}).value || "";
+}
+
+async function locationIdFor(venue) {
+  const pinned = TA_MAP[venue.slug] || {};
+  if (pinned.locationId) return String(pinned.locationId);
+  if (idCache[venue.slug]) return idCache[venue.slug];
+  const body = await ta("/catalog/locations/search", { query: pinned.search || venue.name, search_type: "NAME", country_code: "JM", category: CATEGORY[pinned.category] || "ATTRACTION", size: 3 });
+  const hits = (body.data || []).map((h) => h.location || h).filter((l) => l && l.id);
+  if (!hits.length) return null;
+  // nearest to the venue's own coordinates wins; ties and missing coordinates fall back to Tripadvisor's own order
+  hits.sort((a, b) => km(a.coordinates, venue) - km(b.coordinates, venue));
+  idCache[venue.slug] = String(hits[0].id);
+  console.log("tripadvisor id", venue.slug, idCache[venue.slug], pick(hits[0].names), "(pin this in data/tripadvisor-map.json)");
+  return idCache[venue.slug];
+}
+
+function summary(loc) {
+  const overall = (loc.traveler_ratings && loc.traveler_ratings.overall) || loc.overall_rating || {};
+  const rank = (loc.rankings || []).find((r) => r && r.display_text) || {};
+  const urls = (loc.urls && loc.urls.tripadvisor) || {};
+  return {
+    name: pick(loc.names), rating: Number(overall.rating || 0), count: Number(overall.count || 0), ratingImage: overall.icon_url || "",
+    ranking: rank.display_text || "", url: urls.main || "", writeReview: urls.write_review || "", status: loc.status && loc.status.value ? loc.status.value : "",
+  };
+}
+
+const TRIP = { BUSINESS: "Business", COUPLES: "Couples", FAMILY: "Family", FRIENDS: "Friends", SOLO: "Solo" };
+function review(r) {
+  return {
+    rating: Number(r.rating || 0), ratingImage: (r.rating_icon_url && r.rating_icon_url.url) || "",
+    title: pick(r.title), text: pick(r.text),
+    date: r.publish_ts ? String(r.publish_ts).slice(0, 10) : "", travelDate: r.travel_date || "",
+    user: (r.user && r.user.username) || "", userGeo: (r.user && r.user.geo) || "",
+    tripType: TRIP[r.trip_type] || "", url: r.url || "",
+  };
+}
+
+export const handler = async (event) => {
+  const slug = (event.queryStringParameters || {}).slug || "";
+  const venue = findVenue(slug);
+  if (!venue) return json(404, { ok: false });
+  if (TA_MAP[slug] && TA_MAP[slug].skip) return json(200, { ok: false, reason: "no listing" });
+  try {
+    const id = await locationIdFor(venue);
+    if (!id) return json(200, { ok: false, reason: "not found" });
+    // details and reviews in parallel; if the full listing is not licensed on this key, the catalog copy still carries the rating and links
+    const [detailsR, reviewsR] = await Promise.allSettled([
+      ta(`/locations/${id}`, { locale: "en" }),
+      ta(`/locations/${id}/reviews`, { language: "en", sort_by: "MOST_RECENT", size: 3 }),
+    ]);
+    let loc = detailsR.status === "fulfilled" ? detailsR.value : null;
+    if (!loc) {
+      console.warn("tripadvisor details", slug, detailsR.reason && detailsR.reason.message);
+      loc = await ta(`/catalog/locations/${id}`, { locale: "en" }).catch((e) => { console.warn("tripadvisor catalog", slug, e.message); return null; });
+    }
+    if (!loc) return json(200, { ok: false, reason: "offline" });
+    const s = summary(loc);
+    if (!s.rating) return json(200, { ok: false, reason: "no rating" });
+    if (reviewsR.status === "rejected") console.warn("tripadvisor reviews", slug, reviewsR.reason && reviewsR.reason.message);
+    const reviews = reviewsR.status === "fulfilled" ? (reviewsR.value.data || []).slice(0, 3).map(review) : [];
+    return json(200, { ok: true, id, ...s, reviews });
+  } catch (e) {
+    console.warn("tripadvisor", slug, e.status || "", e.message);
+    return json(200, { ok: false, reason: "offline" });
+  }
+};

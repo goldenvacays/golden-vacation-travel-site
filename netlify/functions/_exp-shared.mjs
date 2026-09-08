@@ -1,0 +1,179 @@
+/*
+  Shared bits for the Golden Experiences booking functions.
+  Secrets come from Netlify environment variables only: REZDY_API_KEY, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET.
+  Nothing here is ever sent to the browser except what the handlers explicitly return.
+*/
+import crypto from "node:crypto";
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);
+const DATA = require("../../data/experiences.json");
+const REZDY_MAP = require("../../data/rezdy-map.json");
+
+export const SITE = process.env.URL || process.env.SITE_URL || "https://goldenvacays.com";
+export const REZDY_BASE = process.env.REZDY_BASE || "https://api.rezdy.com/v1";
+const STRIPE_BASE = "https://api.stripe.com/v1";
+
+export const json = (statusCode, body, extra = {}) => ({ statusCode, headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", ...extra }, body: JSON.stringify(body) });
+export const fmt = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+export const usd = (n) => `US$${fmt(n)}`;
+const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+export function longDate(iso) { const [y, m, d] = String(iso).split("-").map(Number); if (!y || !m || !d) return String(iso || ""); const dt = new Date(Date.UTC(y, m - 1, d)); return `${DAYS[dt.getUTCDay()]} ${d} ${MONTHS[m - 1]} ${y}`; }
+export const todayJamaica = () => new Date(Date.now() - 5 * 3600 * 1000).toISOString().slice(0, 10); // Jamaica is UTC-5 all year
+
+/* ---------- catalogue ---------- */
+export function findVenue(slug) { return DATA.venues.find((v) => v.slug === slug) || null; }
+export function findProduct(venue, id) { return venue ? venue.products.find((p) => p.id === id) || null : null; }
+export const isLive = (p, today = todayJamaica()) => !p.until || p.until >= today;
+export function pickupOf(venue, key) { if (!venue.pickups) return null; return venue.pickups.find((p) => p.key === key) || venue.pickups[0]; }
+
+/* server-side price: visitor rate only (that is the only rate paid on the site) */
+export function visitorTotal(venue, product, adults, children, pickupKey) {
+  if (!product.visitor) return null;
+  const a = Math.max(1, Math.min(10, Number(adults) || 0));
+  const c = Math.max(0, Math.min(10, Number(children) || 0));
+  if (product.perParty) return { total: product.visitor.usd, adults: 2, children: 0, note: "for two" };
+  const pk = pickupOf(venue, pickupKey);
+  const add = pk ? pk.add || 0 : 0;
+  const addC = pk ? (pk.addChild != null ? pk.addChild : add) : 0;
+  if (c > 0 && product.visitor.usdChild == null) return { error: "Children on this one are priced by a person. Send it as a WhatsApp request." };
+  if (c > 0 && venue.adultsOnly) return { error: "Adults only at this venue." };
+  const total = a * (product.visitor.usd + add) + c * (product.visitor.usdChild + addC);
+  return { total, adults: a, children: c, pickup: pk ? pk.label : "" };
+}
+
+/* date rules shared with the browser */
+export function dateProblem(venue, product, iso, today = todayJamaica()) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso || "")) return "Pick a date.";
+  if (iso < today) return "That date has passed.";
+  const d = new Date(`${iso}T12:00:00Z`);
+  if (venue.closedWeekdays && venue.closedWeekdays.includes(d.getUTCDay())) return `${venue.name} is closed on ${DAYS[d.getUTCDay()]}days.`;
+  if (venue.blackout && venue.blackout.includes(iso.slice(5))) return "The venue is closed on that date.";
+  if (product.until && iso > product.until) return `This offer ends on ${longDate(product.until)}.`;
+  return "";
+}
+
+/* "10:00am" <-> "10:00:00" */
+export function timeToLocal(label) {
+  const m = String(label).trim().toLowerCase().match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm|noon)?$/);
+  if (!m) return null;
+  let h = Number(m[1]); const min = m[2] || "00"; const ap = m[3];
+  if (ap === "noon") h = 12; else if (ap === "pm" && h < 12) h += 12; else if (ap === "am" && h === 12) h = 0;
+  return `${String(h).padStart(2, "0")}:${min}:00`;
+}
+export function localToLabel(startTimeLocal) {
+  const t = String(startTimeLocal).slice(11, 16); const [hh, mm] = t.split(":").map(Number);
+  if (hh === 12 && mm === 0) return "12 noon";
+  const ap = hh >= 12 ? "pm" : "am"; const h = hh % 12 || 12;
+  return `${h}:${String(mm).padStart(2, "0")}${ap}`;
+}
+
+/* ---------- Rezdy (agent API) ---------- */
+export async function rezdy(path, opts = {}) {
+  const key = process.env.REZDY_API_KEY;
+  if (!key) throw new Error("REZDY_API_KEY is not set");
+  const res = await fetch(`${REZDY_BASE}${path}`, { ...opts, headers: { apiKey: key, "Content-Type": "application/json", Accept: "application/json", ...(opts.headers || {}) } });
+  const text = await res.text();
+  let body; try { body = JSON.parse(text); } catch { body = { raw: text }; }
+  if (!res.ok || (body.requestStatus && body.requestStatus.success === false)) {
+    const err = body.requestStatus && body.requestStatus.error ? body.requestStatus.error : {};
+    const e = new Error(err.errorMessage || `Rezdy ${res.status}`); e.code = err.errorCode; e.status = res.status; e.body = body; throw e;
+  }
+  return body;
+}
+
+let productCache = { at: 0, list: [] };
+export async function rezdyProducts(search) {
+  if (Date.now() - productCache.at < 10 * 60 * 1000 && productCache.list.length) return productCache.list;
+  const list = [];
+  for (const negotiated of [true, false]) {
+    let offset = 0;
+    for (let i = 0; i < 5; i++) {
+      const q = new URLSearchParams({ limit: "100", offset: String(offset), search: search || "" });
+      if (negotiated) q.set("negotiatedRates", "true");
+      const body = await rezdy(`/products/marketplace?${q}`);
+      const ps = body.products || [];
+      list.push(...ps);
+      if (ps.length < 100) break;
+      offset += 100;
+    }
+    if (list.length) break;
+  }
+  productCache = { at: Date.now(), list };
+  return list;
+}
+
+/* map our product (+ chosen variant) to a Rezdy product code: pinned map first, then a name match */
+export async function rezdyCodeFor(venue, product, choices = []) {
+  const keyBase = `${venue.slug}/${product.id}`;
+  const keyVar = choices && choices.length ? `${keyBase}|${[...choices].sort().join("|")}` : keyBase;
+  if (REZDY_MAP[keyVar]) return REZDY_MAP[keyVar];
+  if (REZDY_MAP[keyBase] && !(choices && choices.length)) return REZDY_MAP[keyBase];
+  const names = (product.rezdy && product.rezdy.names) || [product.name];
+  const list = await rezdyProducts(venue.short || venue.name);
+  const norm = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  const wanted = names.map(norm);
+  const chosen = (choices || []).map(norm);
+  const candidates = list.filter((p) => { const n = norm(p.name); return wanted.some((w) => n.includes(w)); });
+  const scored = candidates.map((p) => { const n = norm(p.name); let s = 0; for (const c of chosen) if (n.includes(c.split(" ")[0])) s++; if (/resident|local|jamaican/.test(n)) s -= 5; return { p, s }; }).sort((a, b) => b.s - a.s);
+  if (!scored.length) return null;
+  if (chosen.length && scored[0].s < chosen.length) return null;
+  return scored[0].p.productCode;
+}
+
+export async function rezdySessions(code, iso) {
+  const q = new URLSearchParams({ productCode: code, startTimeLocal: `${iso} 00:00:00`, endTimeLocal: `${iso} 23:59:59` });
+  const body = await rezdy(`/availability?${q}`);
+  return (body.sessions || []).map((s) => ({ time: localToLabel(s.startTimeLocal), start: s.startTimeLocal, seats: s.seatsAvailable, id: s.id, priceOptions: s.priceOptions || [] }));
+}
+
+export async function rezdyProduct(code) {
+  const body = await rezdy(`/products/${encodeURIComponent(code)}`);
+  return body.product || body;
+}
+
+/* ---------- Stripe (REST, no SDK) ---------- */
+export function formEncode(obj, prefix = "", out = []) {
+  for (const [k, v] of Object.entries(obj)) {
+    if (v === undefined || v === null) continue;
+    const key = prefix ? `${prefix}[${k}]` : k;
+    if (Array.isArray(v)) v.forEach((it, i) => (typeof it === "object" ? formEncode(it, `${key}[${i}]`, out) : out.push(`${encodeURIComponent(`${key}[${i}]`)}=${encodeURIComponent(it)}`)));
+    else if (typeof v === "object") formEncode(v, key, out);
+    else out.push(`${encodeURIComponent(key)}=${encodeURIComponent(v)}`);
+  }
+  return out.join("&");
+}
+export async function stripe(path, params, method = "POST") {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) throw new Error("STRIPE_SECRET_KEY is not set");
+  const res = await fetch(`${STRIPE_BASE}${path}`, { method, headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/x-www-form-urlencoded" }, body: method === "GET" ? undefined : formEncode(params || {}) });
+  const body = await res.json();
+  if (!res.ok) { const e = new Error(body.error && body.error.message ? body.error.message : `Stripe ${res.status}`); e.status = res.status; throw e; }
+  return body;
+}
+export function verifyStripeSignature(rawBody, header, secret, toleranceSec = 300) {
+  if (!header || !secret) return false;
+  const parts = Object.fromEntries(header.split(",").map((kv) => kv.split("=").map((s) => s.trim())).filter((kv) => kv.length === 2));
+  const t = parts.t, v1 = parts.v1;
+  if (!t || !v1) return false;
+  if (Math.abs(Date.now() / 1000 - Number(t)) > toleranceSec) return false;
+  const expected = crypto.createHmac("sha256", secret).update(`${t}.${rawBody}`).digest("hex");
+  const a = Buffer.from(expected), b = Buffer.from(v1);
+  return a.length === b.length && crypto.timingSafeEqual(a, b);
+}
+
+/* ---------- Hana's copy of every booking: a Netlify Forms submission ---------- */
+export async function netlifyForm(name, fields) {
+  try {
+    const body = new URLSearchParams({ "form-name": name, ...Object.fromEntries(Object.entries(fields).map(([k, v]) => [k, String(v ?? "")])) });
+    await fetch(`${SITE}/experiences/booked/`, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body.toString() });
+  } catch (e) { console.warn("form submission failed", name, e.message); }
+}
+
+export function bookingSummary(meta) {
+  return {
+    ref: meta.ref, venue: meta.venue_name, product: meta.product_name,
+    when: `${longDate(meta.date)}${meta.time ? ` at ${meta.time}` : ""}`,
+    guests: `${meta.adults} adult${meta.adults === "1" ? "" : "s"}${Number(meta.children) ? `, ${meta.children} child${meta.children === "1" ? "" : "ren"}` : ""}${meta.choices ? ` · ${meta.choices}` : ""}`,
+    pickup: meta.pickup_label || "", total: usd(Number(meta.total_usd || 0)), email: meta.email || "",
+  };
+}
