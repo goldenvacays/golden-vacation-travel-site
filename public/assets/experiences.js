@@ -509,8 +509,16 @@
     if (el.pickup) el.pickup.addEventListener("change", function () { state.pickup = el.pickup.value; render(); });
     if (el.pickupHotel) el.pickupHotel.addEventListener("input", function () { state.pickupHotel = el.pickupHotel.value.trim(); render(); });
     if (el.ctaWa) el.ctaWa.addEventListener("click", function (e) { e.preventDefault(); sendWhatsApp(); });
+    /* the bottom bar shows whenever the real button is off screen (a sticky panel taller than the window keeps it below the fold on laptops) */
     var sticky = $("#sticky-bar", root);
-    if (sticky && "IntersectionObserver" in window) { var io = new IntersectionObserver(function (es) { es.forEach(function (x) { sticky.hidden = x.isIntersecting; }); }, { threshold: 0.15 }); io.observe(panel); }
+    if (sticky && "IntersectionObserver" in window) { var io = new IntersectionObserver(function (es) { es.forEach(function (x) { sticky.hidden = x.isIntersecting; }); }, { threshold: 0.5 }); io.observe(el.cta); }
+    if (el.stickyCta) el.stickyCta.addEventListener("click", function () {
+      var r = el.cta.getBoundingClientRect();
+      if (r.top >= 0 && r.bottom <= innerHeight) { el.cta.click(); return; }
+      var pr = panel.getBoundingClientRect(); if (pr.top < 0 || pr.top > innerHeight * 0.5) panel.scrollIntoView({ block: "start", behavior: "smooth" });
+      if (panel.scrollHeight > panel.clientHeight + 4) panel.scrollTo({ top: panel.scrollHeight, behavior: "smooth" }); else el.cta.scrollIntoView({ block: "center", behavior: "smooth" });
+      setTimeout(function () { el.cta.focus({ preventScroll: true }); }, 500);
+    });
 
     /* every WhatsApp request is also logged as a Netlify form entry (exp-enquiries), so the site keeps its own list of what came through */
     function logEnquiry(text) {

@@ -197,16 +197,18 @@
 .rate-opt b { font-size: 14px; font-weight: 800; }
 .rate-opt small { font-size: 11px; color: var(--muted); }
 .rate-note { font-size: 12px; line-height: 1.45; color: var(--muted); }
-.stepper { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.stepper > span:first-child { display: flex; flex-direction: column; gap: 1px; }
-.stepper b { font-size: 15px; font-weight: 800; }
-.stepper small { font-size: 12px; color: var(--muted); }
+/* the panel's steppers are one row each (label left, buttons right); getaways.css has a stacked .stepper for the quote page, so these say it outright */
+.panel .stepper { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; flex: none; }
+.panel .stepper > span { font-size: inherit; font-weight: inherit; letter-spacing: 0; text-transform: none; color: inherit; }
+.panel .stepper > span:first-child { display: flex; flex-direction: column; gap: 1px; }
+.panel .stepper b { font-size: 15px; font-weight: 800; }
+.panel .stepper small { font-size: 12px; color: var(--muted); }
 .step-c { display: inline-flex; align-items: center; gap: 4px; }
 .step-c button { width: 44px; height: 44px; border-radius: 999px; border: 0; background: var(--alt); color: var(--ink); font: inherit; font-size: 22px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
 .step-c button:hover { background: var(--line); }
 .step-c button[disabled] { opacity: .3; cursor: not-allowed; }
 .step-c output { min-width: 28px; text-align: center; font-size: 18px; font-weight: 900; }
-.stepper[data-off] { opacity: .45; }
+.panel .stepper[data-off] { opacity: .45; }
 .pf-preview pre { margin: 0; padding: 12px 14px; border-radius: 14px; background: var(--alt); font: 600 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre-wrap; word-break: break-word; color: var(--ink); }
 .pf-sub { font-size: 13px; line-height: 1.45; color: var(--muted); text-align: center; }
 .pf-alt { font-size: 13px; line-height: 1.45; text-align: center; color: var(--muted); }
@@ -278,8 +280,10 @@
   .op-name { font-size: 20px; }
   .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 40px; }
   .ib.warn { grid-column: 1 / -1; }
-  .panel { position: sticky; top: 20px; padding: 24px; border-radius: 24px; }
-  .sticky-bar { display: none; }
+  .panel { position: sticky; top: 20px; padding: 24px; border-radius: 24px; max-height: calc(100vh - 40px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+  /* on a short screen the panel is taller than the window: it scrolls inside itself, and the bottom bar carries the button until the real one is in view */
+  .sticky-bar { padding: 10px var(--pad); }
+  .sticky-bar > div { flex-direction: row; align-items: baseline; gap: 10px; }
   .booked { max-width: 760px; margin: 0 auto; padding: 56px var(--pad) 96px; }
   .booked h1 { font-size: 44px; }
 }
