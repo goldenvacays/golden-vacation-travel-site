@@ -34,6 +34,7 @@ export function visitorTotal(venue, product, adults, children, pickupKey) {
   const c = Math.max(0, Math.min(16, Number(children) || 0));
   if (product.perParty) return { total: product.visitor.usd, adults: 2, children: 0, note: "for two" };
   const pk = pickupOf(venue, pickupKey);
+  if (pk && pk.request) return { error: `Pickup from ${pk.label} is priced by hand. Send it as a WhatsApp request and we confirm the total first.` };
   const add = pk ? pk.add || 0 : 0;
   const addC = pk ? (pk.addChild != null ? pk.addChild : add) : 0;
   if (c > 0 && product.visitor.usdChild == null) return { error: "Children on this one are priced by a person. Send it as a WhatsApp request." };
