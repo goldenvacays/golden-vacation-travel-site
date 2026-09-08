@@ -34,7 +34,8 @@
     return Math.max(5, Math.round((anchor + nudge) / 5) * 5);
   }
   function driveLabel(m) { if (m == null) return ""; if (m < 60) return "about " + m + " min"; var h = Math.floor(m / 60), r = m % 60; return "about " + h + " h" + (r ? " " + (r < 10 ? "0" + r : r) : ""); }
-  function hotelsOf(X) { return (X.hotels || []).map(function (h) { return { name: h[0], slug: h[1], region: h[2], lat: h[3], lng: h[4] }; }); }
+  function hotelsOf(X) { return (X.hotels || []).map(function (h) { return { name: h[0], slug: h[1], region: h[2], lat: h[3], lng: h[4], port: !!h[5] }; }); }
+  function placeLabel(hh, regions) { return hh.port ? "Cruise port" : (regions && regions[hh.region] ? regions[hh.region].label : hh.region); }
   function savedHotel(X) { var slug = store("gv_hotel"); if (!slug) return null; return hotelsOf(X).filter(function (h) { return h.slug === slug; })[0] || null; }
 
   /* ================= hub: doors, categories, area ================= */
@@ -87,7 +88,7 @@
         c.classList.toggle("too-far", !!(hotel && maxMin && (m == null || m > maxMin)));
       });
       if (hotel) { var sorted = cards.slice().sort(function (a, b) { return (+a.getAttribute("data-min")) - (+b.getAttribute("data-min")); }); sorted.forEach(function (c) { grid.appendChild(c); }); }
-      if (heading) heading.textContent = hotel ? "Days out near " + hotel.name + "." : baseHeading;
+      if (heading) heading.textContent = hotel ? (hotel.port ? "Days out from " + hotel.name + "." : "Days out near " + hotel.name + ".") : baseHeading;
       if (dist) dist.hidden = !hotel;
       if (hClear) hClear.hidden = !hotel;
       root.classList ? root.classList.toggle("hotel-on", !!hotel) : null;
@@ -103,7 +104,7 @@
       var hits = HOTELS.filter(function (hh) { return !qq || hh.name.toLowerCase().indexOf(qq) >= 0; }).slice(0, 8);
       hList.innerHTML = ""; cursor = -1;
       if (!hits.length) { var li = document.createElement("li"); li.className = "none"; li.textContent = "Not on our list yet. Tell us on WhatsApp and we'll price from there."; hList.appendChild(li); }
-      hits.forEach(function (hh) { var li = document.createElement("li"); li.setAttribute("role", "option"); li.innerHTML = "<span></span><small></small>"; li.firstChild.textContent = hh.name; li.lastChild.textContent = (X.regions && X.regions[hh.region] ? X.regions[hh.region].label : hh.region); li.addEventListener("mousedown", function (e) { e.preventDefault(); setHotel(hh, true); }); hList.appendChild(li); });
+      hits.forEach(function (hh) { var li = document.createElement("li"); li.setAttribute("role", "option"); li.innerHTML = "<span></span><small></small>"; li.firstChild.textContent = hh.name; li.lastChild.textContent = placeLabel(hh, X.regions); li.addEventListener("mousedown", function (e) { e.preventDefault(); setHotel(hh, true); }); hList.appendChild(li); });
       hList.hidden = false;
     }
     if (hIn) {
@@ -155,8 +156,9 @@
 
     function product() { return products[state.product] || null; }
     function rateOf(p) { if (!p) return "visitor"; if (p.audience === "resident") return "resident"; if (p.audience === "visitor") return "visitor"; return state.rate; }
-    function instant() { var p = product(); return V.booking === "instant" && rateOf(p) === "visitor" && p && p.visitor && !p.request; }
-    function isRequest() { var p = product(); return V.booking === "request" || (p && p.request); }
+    function pickupByHand() { var pk = V.pickups && rateOf(product()) === "visitor" ? pickupOf() : null; return !!(pk && pk.request); }
+    function instant() { var p = product(); return V.booking === "instant" && rateOf(p) === "visitor" && p && p.visitor && !p.request && !pickupByHand(); }
+    function isRequest() { var p = product(); return V.booking === "request" || (p && p.request) || pickupByHand(); }
     function pickupOf() { if (!V.pickups) return null; for (var i = 0; i < V.pickups.length; i++) if (V.pickups[i].key === state.pickup) return V.pickups[i]; return V.pickups[0]; }
     function chosen() { var p = product(); if (!p || !p.choose) return []; return state.choices[p.id] || []; }
 
@@ -207,7 +209,7 @@
       var g = state.adults + " adult" + (state.adults === 1 ? "" : "s") + (state.children ? ", " + state.children + " child" + (state.children === 1 ? "" : "ren") : "");
       if (p.perParty) g = "2 people";
       lines.push("Guests: " + g + (isFlight ? " (infants under 2 free)" : ""));
-      if (V.pickups && rateOf(p) === "visitor") { var pk = pickupOf(); if (pk) lines.push("Pickup: " + (pk.key === "own" ? "making my own way" : (state.pickupHotel ? state.pickupHotel + " (" + pk.label + ")" : pk.label))); }
+      if (V.pickups && rateOf(p) === "visitor") { var pk = pickupOf(); if (pk) lines.push("Pickup: " + (pk.key === "own" ? "making my own way" : (state.pickupHotel && state.pickupHotel !== pk.label ? state.pickupHotel + " (" + pk.label + ")" : pk.label) + (pk.request ? ", transfer to be priced" : ""))); }
       var ch = chosen(); if (ch.length) lines.push("Choice: " + (p.choose.fixed ? p.choose.fixed + " + " : "") + ch.join(" + "));
       if (pr.total) lines.push("Total: " + pr.lead + (pr.alt ? " (" + pr.alt + ")" : "") + (pr.note ? ". " + pr.note : ""));
       else lines.push("Total: to be priced");
@@ -302,7 +304,7 @@
       var canPay = inst && !liveOff;
       el.cta.innerHTML = (canPay ? ICON_CARD : ICON_CHAT) + '<span id="cta-label"></span>';
       $("#cta-label", el.cta).textContent = canPay ? "Book and pay " + pr.lead : (isRequest() ? "Request this date" : "Send enquiry");
-      el.ctaSub.textContent = canPay ? (live ? "Confirmed straight away, paid by card on a secure page. You'll get the confirmation by email." : "Paid by card on a secure page and confirmed straight away. We send your booking details shortly by email and WhatsApp.") : liveOff ? "Live availability is offline, so this goes to us on WhatsApp and we confirm the time with the park. Nothing is charged now." : isRequest() ? "We confirm availability first, then send a secure card link. Nothing is charged now." : "We reply within working hours with a secure card link. Nothing is charged now.";
+      el.ctaSub.textContent = canPay ? (live ? "Confirmed straight away, paid by card on a secure page. You'll get the confirmation by email." : "Paid by card on a secure page and confirmed straight away. We send your booking details shortly by email and WhatsApp.") : liveOff ? "Live availability is offline, so this goes to us on WhatsApp and we confirm the time with the park. Nothing is charged now." : pickupByHand() ? "Pickup from the port is priced by hand, so this goes to us on WhatsApp first and we confirm the total. Nothing is charged now." : isRequest() ? "We confirm availability first, then send a secure card link. Nothing is charged now." : "We reply within working hours with a secure card link. Nothing is charged now.";
       if (el.ctaAlt) el.ctaAlt.hidden = !canPay;
       if (el.previewWrap) el.previewWrap.hidden = canPay; // the WhatsApp text only matters when the booking goes by WhatsApp
       if (el.dateNote) { var prob = dateProblem(state.date); el.dateNote.hidden = !prob; el.dateNote.className = "pf-hint bad"; el.dateNote.textContent = prob; }
@@ -348,7 +350,7 @@
     [el.flightIn, el.flightOut, el.first, el.last, el.email, el.phone, el.ship].forEach(function (i) { if (i) i.addEventListener("input", render); });
     $$("[data-step]", root).forEach(function (b) { b.addEventListener("click", function () { var k = b.getAttribute("data-step"), d = +b.getAttribute("data-d"); state[k] = Math.max(k === "adults" ? 1 : 0, Math.min(MAX_GUESTS, state[k] + d)); el[k].value = state[k]; render(); }); });
     /* ---- pickup hotel picker ---- */
-    function servedKey(region) { return V.pickups && V.pickups.some(function (pk) { return pk.key === region; }) ? region : null; }
+    function servedKey(key) { return V.pickups && V.pickups.some(function (pk) { return pk.key === key; }) ? key : null; }
     function renderPickup() {
       if (!V.pickups) return;
       var mode = state.pickupMode, pk = pickupOf();
@@ -358,7 +360,7 @@
       if (el.pickupNote) {
         var t = "";
         if (mode === "own") t = "No pickup. The meeting point comes with your details.";
-        else if (mode === "hotel" && state.pickupHotel && pk) t = pk.key === "own" ? "No hotel pickup from " + state.pickupHotel + " on this one, so it's priced without pickup. Make your own way, or ask us on WhatsApp about a transfer." : pk.label + (pk.add ? ", +" + usd(pk.add) + " per person" : ", pickup included") + ".";
+        else if (mode === "hotel" && state.pickupHotel && pk) t = pk.key === "own" ? "No pickup from " + state.pickupHotel + " on this one, so it's priced without pickup. Make your own way, or ask us on WhatsApp about a transfer." : pk.request ? "Pickup from " + pk.label + " is priced by hand, so this one goes to us on WhatsApp and we confirm the transfer price before anything is charged." : pk.label + (pk.add ? ", +" + usd(pk.add) + " per person" : ", pickup included") + ".";
         else if (mode === "other" && pk) t = pk.label + (pk.add ? ", +" + usd(pk.add) + " per person" : ", pickup included") + ". Tell us where and we'll confirm the pickup point.";
         else t = V.pickups.some(function (x) { return x.add; }) ? "Pickup from Negril hotels is included. Lucea and Montego Bay pickups are priced per person." : "Hotel pickup from Negril and Montego Bay is included.";
         el.pickupNote.textContent = t;
@@ -366,7 +368,7 @@
     }
     function pickHotel(hh) {
       state.pickupMode = "hotel"; state.pickupHotel = hh.name;
-      state.pickup = servedKey(hh.region) || "own";
+      state.pickup = servedKey(hh.port ? hh.slug : hh.region) || "own";
       if (el.hotelIn) el.hotelIn.value = hh.name;
       closeHotelList(); render(); track("exp_pickup_hotel", { venue: V.slug, hotel: hh.slug, served: state.pickup !== "own" });
     }
@@ -379,7 +381,8 @@
       if (!hits.length) { var li0 = document.createElement("li"); li0.className = "none"; li0.textContent = "Not on our list. Choose \"Somewhere else\" below and type it in."; el.hotelList.appendChild(li0); }
       hits.forEach(function (hh) {
         var li = document.createElement("li"); li.setAttribute("role", "option"); li.innerHTML = "<span></span><small></small>";
-        li.firstChild.textContent = hh.name; li.lastChild.textContent = servedKey(hh.region) ? (REGIONS[hh.region] ? REGIONS[hh.region].label : hh.region) : "no pickup";
+        var sk = servedKey(hh.port ? hh.slug : hh.region), spk = sk && V.pickups.filter(function (x) { return x.key === sk; })[0];
+        li.firstChild.textContent = hh.name; li.lastChild.textContent = !sk ? "no pickup" : (spk && spk.request ? "priced by hand" : (hh.port ? "Cruise port" : (REGIONS[hh.region] ? REGIONS[hh.region].label : hh.region)));
         li.addEventListener("mousedown", function (e) { e.preventDefault(); pickHotel(hh); });
         el.hotelList.appendChild(li);
       });
@@ -413,9 +416,19 @@
     var sticky = $("#sticky-bar", root);
     if (sticky && "IntersectionObserver" in window) { var io = new IntersectionObserver(function (es) { es.forEach(function (x) { sticky.hidden = x.isIntersecting; }); }, { threshold: 0.15 }); io.observe(panel); }
 
+    /* every WhatsApp request is also logged as a Netlify form entry (exp-enquiries), so the site keeps its own list of what came through */
+    function logEnquiry(text) {
+      if (PREVIEW) return;
+      try {
+        var p = product(), pr = price(), pk = V.pickups ? pickupOf() : null;
+        var body = new URLSearchParams({ "form-name": "exp-enquiries", ref: state.ref, venue: V.name, product: p ? p.name : "", rate: rateOf(p), when: (text.match(/^(Date|Arrives|Departs):.*$/m) || [""])[0], guests: state.adults + " adults" + (state.children ? ", " + state.children + " children" : ""), pickup: pk ? (pk.key === "own" ? "own way" : (state.pickupHotel || pk.label)) : "", total: pr.lead || "", hotel: (savedHotel(X) || {}).name || "", page: location.pathname, message: text });
+        fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body.toString(), keepalive: true }).catch(function () {});
+      } catch (e) {}
+    }
     function sendWhatsApp() {
       var text = message();
       track("exp_request", { venue: V.slug, product: state.product, rate: rateOf(product()), instant: false, code: state.ref });
+      logEnquiry(text);
       window.open(waUrl(text), "_blank", "noopener");
     }
     function need(field, msg) { if (!field || !field.value.trim()) { field && field.focus(); throw new Error(msg); } }
