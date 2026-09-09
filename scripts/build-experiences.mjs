@@ -68,6 +68,7 @@ const ICONS = {
   bolt: '<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>',
   ship: '<path d="M2 20c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0"></path><path d="M4 16l-1-5 9-3 9 3-1 5"></path><path d="M12 8V3M9 5h6"></path>',
   id: '<rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="12" r="2.2"></circle><path d="M14 10h4M14 14h4M6 17c0-1.7 1.3-3 3-3s3 1.3 3 3"></path>',
+  photo: '<rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="8.5" cy="10" r="1.5"></circle><path d="M21 16l-5-5-8 8"></path>',
 };
 const icon = (name, size = 20, sw = 2.2) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block">${ICONS[name]}</svg>`;
 const tag = (text, tone = "black") => `<span class="tag tag-${tone}">${esc(text)}</span>`;
@@ -479,7 +480,8 @@ function panel(v) {
 
 function venuePage(v) {
   const hero = v.photos[0];
-  const gallery = v.photos.slice(1, 5).map((p) => `<span class="gph">${pic(small(p.file), p.alt)}</span>`).join("");
+  const gallery = v.photos.slice(1, 5).map((p, i) => `<button type="button" class="gph lb-open" data-i="${i + 1}" aria-label="Open photo ${i + 2} of ${v.photos.length}">${pic(small(p.file), p.alt)}</button>`).join(""); // every photo opens the viewer at its own place; the hero is photo 1
+  const photosBtn = v.photos.length > 1 ? `<button type="button" class="tag tag-white photos-btn lb-open" data-i="0">${icon("photo", 14, 2.2)}${v.photos.length} photos</button>` : "";
   const groups = v.groups ? v.groups : [{ key: "all", label: "", sub: "" }];
   const options = groups.map((g) => {
     const ps = v.products.filter((p) => (g.key === "all" || p.group === g.key));
@@ -502,6 +504,7 @@ function venuePage(v) {
     page: "venue", whatsapp: S.whatsapp, origin: S.origin, jmdRate: S.jmdRate, today: TODAY,
     hotels: HOTELS.map((h) => [h.name, h.slug, h.region, h.lat, h.lng, h.port ? 1 : 0]), regions: X.regions, shipDay: SHIP_CFG,
     venue: { slug: v.slug, name: v.name, panel: v.panel, booking: v.booking, calendar: v.calendar || null, area: AREAS[v.area], adultsOnly: !!v.adultsOnly, blackout: v.blackout || [], closedWeekdays: v.closedWeekdays || [], rates: v.rates || null, pickups: v.pickups || null, lat: v.lat, lng: v.lng, drive: v.drive || {}, sd: v.shipDay === false ? 0 : 1,
+      photos: v.photos.map((p) => [img(p.file), p.alt]), // the photo viewer: full-size file and caption, hero first
       products: v.products.filter(live).map((p) => ({ id: p.id, name: p.name, hours: p.hours, times: p.times || [], audience: p.audience, visitor: p.visitor || null, resident: p.resident || null, perParty: p.perParty || 0, choose: p.choose || null, legs: p.legs || null, request: !!p.request, until: p.until || null, sd: shipDayOf(p, v) })) },
   };
   const title = `${v.name} | ${v.categories.map((c) => CATS[c]).join(", ")} in ${AREAS[v.area]}, Jamaica`;
@@ -510,7 +513,7 @@ ${nav()}
 <main class="venue" data-venue="${v.slug}">
 <nav class="crumbs wrap" aria-label="Breadcrumb"><a href="${BASE}/">Golden Experiences</a><span>/</span><span>${esc(v.short)}</span></nav>
 <section class="vhero wrap">
-  <div class="vhero-photo">${pic(hero.file, hero.alt, ' loading="eager" fetchpriority="high"')}<div class="hero-tags">${v.tags.slice(0, 1).map((t) => tag(t, "white")).join("")}</div></div>
+  <div class="vhero-photo">${pic(hero.file, hero.alt, ' loading="eager" fetchpriority="high" class="lb-open" data-i="0"')}<div class="hero-tags">${v.tags.slice(0, 1).map((t) => tag(t, "white")).join("")}</div>${photosBtn}</div>
   <div class="vhero-t">
     ${kicker(`${AREAS[v.area]} · ${v.parish}`)}
     <h1 class="hh">${esc(v.name)}</h1>
