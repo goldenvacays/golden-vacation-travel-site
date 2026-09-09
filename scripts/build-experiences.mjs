@@ -482,6 +482,10 @@ function venuePage(v) {
   const hero = v.photos[0];
   const gallery = v.photos.slice(1, 5).map((p, i) => `<button type="button" class="gph lb-open" data-i="${i + 1}" aria-label="Open photo ${i + 2} of ${v.photos.length}">${pic(small(p.file), p.alt)}</button>`).join(""); // every photo opens the viewer at its own place; the hero is photo 1
   const photosBtn = v.photos.length > 1 ? `<button type="button" class="tag tag-white photos-btn lb-open" data-i="0">${icon("photo", 14, 2.2)}${v.photos.length} photos</button>` : "";
+  // the hero is a strip of every photo: a swipe on a phone, arrows on a laptop, dots for where you are; the first one loads first, the rest lazily
+  const slides = v.photos.map((p, i) => `<div class="hero-slide">${pic(p.file, p.alt, i === 0 ? ' loading="eager" fetchpriority="high" class="lb-open" data-i="0"' : ` class="lb-open" data-i="${i}"`)}</div>`).join("");
+  const dots = v.photos.length > 1 ? `<div class="hero-dots" role="tablist" aria-label="Which photo">${v.photos.map((p, i) => `<button type="button" role="tab" aria-selected="${i === 0 ? "true" : "false"}" aria-label="Photo ${i + 1} of ${v.photos.length}" data-i="${i}"></button>`).join("")}</div>` : "";
+  const arrows = v.photos.length > 1 ? `<button type="button" class="hero-arrow hero-prev" aria-label="Previous photo">${icon("arrow", 18, 2.4)}</button><button type="button" class="hero-arrow hero-next" aria-label="Next photo">${icon("arrow", 18, 2.4)}</button>` : "";
   const groups = v.groups ? v.groups : [{ key: "all", label: "", sub: "" }];
   const options = groups.map((g) => {
     const ps = v.products.filter((p) => (g.key === "all" || p.group === g.key));
@@ -513,7 +517,7 @@ ${nav()}
 <main class="venue" data-venue="${v.slug}">
 <nav class="crumbs wrap" aria-label="Breadcrumb"><a href="${BASE}/">Golden Experiences</a><span>/</span><span>${esc(v.short)}</span></nav>
 <section class="vhero wrap">
-  <div class="vhero-photo">${pic(hero.file, hero.alt, ' loading="eager" fetchpriority="high" class="lb-open" data-i="0"')}<div class="hero-tags">${v.tags.slice(0, 1).map((t) => tag(t, "white")).join("")}</div>${photosBtn}</div>
+  <div class="vhero-photo${v.photos.length > 1 ? " has-slides" : ""}"><div class="hero-track" id="hero-track">${slides}</div><div class="hero-tags">${v.tags.slice(0, 1).map((t) => tag(t, "white")).join("")}</div>${photosBtn}${dots}${arrows}</div>
   <div class="vhero-t">
     ${kicker(`${AREAS[v.area]} · ${v.parish}`)}
     <h1 class="hh">${esc(v.name)}</h1>
