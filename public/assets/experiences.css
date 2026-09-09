@@ -64,7 +64,7 @@
 .vcard-t .h { font-size: 24px; }
 .vcard-t small { font-size: 14px; line-height: 1.45; color: var(--muted); }
 .vcard-meta { font-size: 12px; font-weight: 700; color: var(--muted); }
-.vcard-p { display: flex; align-items: baseline; gap: 8px; font-size: 14px; color: var(--muted); }
+.vcard-p { display: flex; align-items: baseline; gap: 8px; margin-top: auto; font-size: 14px; color: var(--muted); } /* pinned to the card's foot so prices line up across a row */
 .vcard-p b { color: var(--ink); font-size: 20px; font-weight: 900; font-stretch: 110%; letter-spacing: -.03em; }
 .empty { display: flex; flex-direction: column; gap: 10px; padding: 28px; border-radius: 20px; border: 2px dashed var(--line); }
 .empty b { font-size: 20px; font-weight: 800; }
