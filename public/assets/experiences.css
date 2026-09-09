@@ -1,5 +1,8 @@
 /* Golden Experiences. Loads after getaways.css (Bold tokens) and home.css (nav, doors, strips, steps, faqs). */
-:root { --res: #1F8A4C; --warn-bg: #FFF4E5; --warn: #8A6D12; }
+:root { --res: #1F8A4C; --warn-bg: #FFF4E5; --warn: #8A6D12;
+  /* three levels of text: ink for what matters, then two steps of the same ink at lower opacity, so hierarchy reads without extra colours */
+  --ink-2: rgba(14,15,14,.74); --ink-3: rgba(14,15,14,.55);
+  --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .5 0'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='.55'/></svg>"); }
 .exp .nav-links a[aria-current="page"] { color: var(--gold-txt); }
 .exp .hero p .long, .exp .why-head .long { display: none; }
 .exp .hero p .short { display: inline; }
@@ -14,8 +17,13 @@
 .hub-hero p .long { display: none; }
 .hero-doors { margin-top: 6px; }
 .mosaic { display: grid; grid-template-columns: 1.15fr 1fr; grid-template-rows: 1fr 1fr; gap: 8px; height: 300px; }
-.mosaic span { display: block; position: relative; overflow: hidden; border-radius: 16px; background: var(--ph-d); }
-.mosaic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.mosaic > a { display: block; position: relative; overflow: hidden; border-radius: 16px; background: var(--ph-d); color: var(--ink); box-shadow: 0 1px 0 rgba(255,255,255,.6) inset; }
+.mosaic > a::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14,15,14,0) 55%, rgba(14,15,14,.42) 100%); pointer-events: none; }
+.mosaic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+.mosaic > a:hover img { transform: scale(1.03); }
+.mosaic-tag { position: absolute; left: 12px; bottom: 12px; z-index: 1; box-shadow: 0 6px 18px rgba(14,15,14,.25); }
+.mosaic-tag-sm { height: 24px; padding: 0 9px; font-size: 10px; left: 10px; bottom: 10px; }
+@media (max-width: 899px) { .mosaic-tag { max-width: calc(100% - 20px); height: auto; min-height: 24px; padding: 5px 10px; white-space: normal; line-height: 1.2; font-size: 10px; } }
 .mosaic-a { grid-row: span 2; }
 
 /* doors as buttons */
@@ -36,9 +44,12 @@
 .vcard { display: flex; flex-direction: column; gap: 10px; color: var(--ink); }
 .vcard:hover { color: var(--ink); }
 .vcard[hidden] { display: none; }
-.vcard-photo { position: relative; display: block; height: 210px; border-radius: 18px; overflow: hidden; background: var(--ph-d); }
+.vcard-photo { position: relative; display: block; height: 210px; border-radius: 18px; overflow: hidden; background: var(--ph-d); box-shadow: 0 1px 2px rgba(14,15,14,.08); transition: box-shadow .35s ease, transform .35s ease; }
+.vcard-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14,15,14,0) 60%, rgba(14,15,14,.32) 100%); pointer-events: none; }
 .vcard-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+.vcard:hover .vcard-photo { box-shadow: 0 16px 36px rgba(14,15,14,.16); }
 .vcard:hover .vcard-photo img { transform: scale(1.04); }
+.vcard-photo .tag { z-index: 1; }
 .vcard-photo .tag { position: absolute; left: 12px; bottom: 12px; }
 .vcard-t { display: flex; flex-direction: column; gap: 4px; }
 .vcard-where { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--gold-txt); }
@@ -55,7 +66,9 @@
 
 /* faq + cta */
 .faq-grid { display: flex; flex-direction: column; gap: 18px; }
-.cta-band { background: var(--ink); color: #fff; padding: 40px var(--pad); }
+.cta-band { position: relative; overflow: hidden; background: radial-gradient(120% 90% at 12% 0%, #24261F 0%, var(--ink) 58%); color: #fff; padding: 40px var(--pad); }
+.cta-band::before { content: ""; position: absolute; inset: 0; background-image: var(--grain); opacity: .16; mix-blend-mode: overlay; pointer-events: none; }
+.cta-band > * { position: relative; }
 .cta-in { display: flex; flex-direction: column; gap: 22px; }
 .cta-in h2 { font-size: 30px; color: #fff; }
 .cta-in p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: rgba(255,255,255,.75); max-width: 520px; }
@@ -297,7 +310,7 @@
 }
 
 /* hotel picker (hub) */
-.hotel-box { display: flex; flex-direction: column; gap: 10px; padding: 16px; border-radius: 20px; background: var(--alt); }
+.hotel-box { display: flex; flex-direction: column; gap: 10px; padding: 16px; border-radius: 20px; background: linear-gradient(180deg, #F7F7F3 0%, #EEEEE8 100%); box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgba(14,15,14,.05); }
 .hotel-q { position: relative; }
 .hotel-f .pf-in { background: #fff; }
 .hotel-f input[type="search"]::-webkit-search-cancel-button { display: none; }
@@ -426,3 +439,9 @@
 @media (min-width: 900px) and (max-width: 1199px) {
   .ta-reviews { grid-template-columns: 1fr; }
 }
+
+/* three levels of text, applied last so they win over the older per-element greys: level two is the sentence under a heading, level three is meta, hints and small print */
+.hub-hero p, .vhero-t .lead, .near-t .lead, .sec-sub, .op-desc, .vcard-t small, .nrow-t small, .empty p, .faq-i p, .door small, .pair-t small, .cta-in p { color: var(--ink-2); }
+.cta-band .cta-in p { color: rgba(255,255,255,.72); }
+.vcard-meta, .op-hours, .op-times, .vcard-p, .pf-hint, .nrow-p small, .crumbs, .area-pick span, .pf-l, .op-group small, .hotel-list li small, .stepper small, .panel .stepper small { color: var(--ink-3); }
+.pf-hint.bad { color: #B42318; } .pf-hint.ok { color: var(--res); } .pf-hint.warn { color: var(--warn); }
