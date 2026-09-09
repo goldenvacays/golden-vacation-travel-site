@@ -322,7 +322,7 @@ ${nav()}
   </div>
   <div class="mosaic" aria-label="Three of the days out">
     <a class="mosaic-a" href="${BASE}/jamwest">${pic(heroImg, "Riding the zipline at JamWest, Westmoreland", ' loading="eager" fetchpriority="high"')}<span class="tag tag-gold mosaic-tag">${esc(mosaicTag("jamwest", "zipline", "Zipline at JamWest"))}</span></a>
-    <a class="mosaic-b" href="${BASE}/jamwest-catamaran">${pic("jamcat-sunset-sail.jpg", "Sunset sail on the JamWest catamaran off Negril", ' loading="eager"')}<span class="tag tag-white mosaic-tag mosaic-tag-sm">${esc(mosaicTag("jamwest-catamaran", null, "Sunset sail"))}</span></a>
+    <a class="mosaic-b" href="${BASE}/jamwest-catamaran">${pic("jamcat-sunset-silhouette.jpg", "Sunset sail on the JamWest catamaran off Negril", ' loading="eager"')}<span class="tag tag-white mosaic-tag mosaic-tag-sm">${esc(mosaicTag("jamwest-catamaran", null, "Sunset sail"))}</span></a>
     <a class="mosaic-c" href="${BASE}/iberostar-waves-rose-hall">${pic("ibwaves-beach-loungers.jpg", "The beach at Rose Hall, Montego Bay", ' loading="eager"')}<span class="tag tag-white mosaic-tag mosaic-tag-sm">${esc(mosaicTag("iberostar-waves-rose-hall", null, "Rose Hall day pass"))}</span></a>
   </div>
 </section>
