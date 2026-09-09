@@ -9,22 +9,30 @@
 .why-head, .opts-sec .sec-head { flex-direction: column !important; align-items: flex-start !important; }
 .why-head > div, .opts-sec .sec-head > div { display: flex; flex-direction: column; gap: 10px; }
 
-/* hub hero: words on the left, a three-photo mosaic on the right. Each photo is shown at or under its own pixel size, so it stays sharp on Retina screens. */
-.hub-hero { display: flex; flex-direction: column; gap: 20px; padding: 16px var(--pad) 8px; }
+/* hub hero: a black poster band. The words up top, then the three doors as photo tickets: each one an audience (staying, in port, living here),
+   carrying that audience's star tour with its printed price, and filtering the list below when tapped. Photos are shown under their own pixel size. */
+.hub-hero.poster { position: relative; overflow: hidden; display: block; background: radial-gradient(120% 90% at 12% 0%, #24261F 0%, var(--ink) 58%); color: #fff; padding: 36px var(--pad) 22px; }
+.hub-hero.poster::before { content: ""; position: absolute; inset: 0; background-image: var(--grain); opacity: .16; mix-blend-mode: overlay; pointer-events: none; }
+.hub-hero-in { position: relative; display: flex; flex-direction: column; gap: 26px; }
 .hub-hero-t { display: flex; flex-direction: column; gap: 12px; }
-.hub-hero h1 { font-size: 44px; }
-.hub-hero p { font-size: 15px; line-height: 1.5; color: var(--muted); max-width: 560px; }
+.hub-hero.poster h1 { font-size: 44px; color: #fff; }
+.hub-hero.poster p { font-size: 15px; line-height: 1.5; color: rgba(255,255,255,.72); max-width: 560px; }
 .hub-hero p .long { display: none; }
-.hero-doors { margin-top: 6px; }
-.mosaic { display: grid; grid-template-columns: 1.15fr 1fr; grid-template-rows: 1fr 1fr; gap: 8px; height: 300px; }
-.mosaic > a { display: block; position: relative; overflow: hidden; border-radius: 16px; background: var(--ph-d); color: var(--ink); box-shadow: 0 1px 0 rgba(255,255,255,.6) inset; }
-.mosaic > a::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14,15,14,0) 55%, rgba(14,15,14,.42) 100%); pointer-events: none; }
-.mosaic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
-.mosaic > a:hover img { transform: scale(1.03); }
-.mosaic-tag { position: absolute; left: 12px; bottom: 12px; z-index: 1; box-shadow: 0 6px 18px rgba(14,15,14,.25); }
-.mosaic-tag-sm { height: 24px; padding: 0 9px; font-size: 10px; left: 10px; bottom: 10px; }
-@media (max-width: 899px) { .mosaic-tag { max-width: calc(100% - 20px); height: auto; min-height: 24px; padding: 5px 10px; white-space: normal; line-height: 1.2; font-size: 10px; } }
-.mosaic-a { grid-row: span 2; }
+.tickets { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.ticket { position: relative; display: block; width: 100%; height: 200px; padding: 0; border: 0; border-radius: 18px; overflow: hidden; text-align: left; font: inherit; color: #fff; cursor: pointer; background: #1A1B19; box-shadow: 0 12px 32px rgba(0,0,0,.35); }
+.ticket-img { position: absolute; inset: 0; }
+.ticket-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+.ticket:hover img { transform: scale(1.04); }
+.ticket::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14,15,14,.04) 38%, rgba(14,15,14,.82) 100%); pointer-events: none; }
+.ticket-tag { position: absolute; left: 14px; top: 14px; z-index: 1; box-shadow: 0 6px 18px rgba(14,15,14,.3); }
+.ticket-t { position: absolute; left: 16px; right: 16px; bottom: 16px; z-index: 1; display: flex; flex-direction: column; gap: 3px; }
+.ticket-q { font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+.ticket-t b { font-size: 22px; line-height: 1.1; color: #fff; }
+.ticket-sub { font-size: 13px; line-height: 1.4; color: rgba(255,255,255,.8); }
+.ticket-sub .long { display: none; }
+.ticket[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--gold), 0 12px 32px rgba(0,0,0,.35); }
+.ticket:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+@media (max-width: 899px) { .ticket-tag { max-width: calc(100% - 28px); height: auto; min-height: 24px; padding: 5px 10px; white-space: normal; line-height: 1.2; font-size: 10px; } }
 
 /* doors as buttons */
 .edoors { gap: 10px; }
@@ -250,14 +258,21 @@
 
 /* ---------- desktop ---------- */
 @media (min-width: 900px) {
-  .hub-hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; align-items: center; padding: 40px var(--pad) 24px; }
-  .hub-hero-t { gap: 20px; }
-  .hub-hero h1 { font-size: 72px; }
-  .hub-hero p { font-size: 18px; max-width: 560px; }
+  .hub-hero.poster { padding: 60px var(--pad) 32px; }
+  .hub-hero-in { gap: 44px; }
+  .hub-hero-t { gap: 20px; max-width: 900px; width: 100%; margin: 0 auto; }
+  .hub-hero.poster h1 { font-size: 72px; }
+  .hub-hero.poster p { font-size: 18px; max-width: 560px; }
   .hub-hero p .long { display: inline; }
   .hub-hero p .short { display: none; }
-  .mosaic { height: 480px; gap: 12px; }
-  .mosaic span { border-radius: 22px; }
+  .tickets { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .ticket { height: 300px; border-radius: 22px; }
+  .ticket-tag { left: 16px; top: 16px; }
+  .ticket-t { left: 18px; right: 18px; bottom: 18px; }
+  .ticket-t b { font-size: 24px; }
+  .ticket-sub { font-size: 14px; }
+  .ticket-sub .long { display: inline; }
+  .ticket-sub .short { display: none; }
   .exp .hero p .long { display: inline; }
   .exp .hero p .short { display: none; }
   .edoors { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -304,8 +319,8 @@
   .exp .foot-grid .foot-col { display: none; }
 }
 @media (min-width: 1200px) {
-  .hub-hero h1 { font-size: 84px; }
-  .mosaic { height: 540px; }
+  .hub-hero.poster h1 { font-size: 84px; }
+  .ticket { height: 320px; }
   .vgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
