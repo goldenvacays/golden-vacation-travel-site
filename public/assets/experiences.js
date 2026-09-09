@@ -163,6 +163,76 @@
     if (pre) setHotel(pre, !!qs); else apply();
   }
 
+  /* ================= venue: the photo viewer ================= */
+  /* Tap the hero, the "N photos" pill or any gallery tile and the photo opens full screen: arrows or the keyboard step through,
+     a swipe or a tap on either half of the picture does the same on a phone, Escape or the backdrop closes. Built once, on first open. */
+  function initPhotos(root) {
+    var X = window.GV_EXP || {}; var V = X.venue; var photos = (V && V.photos) || [];
+    var openers = $$(".lb-open", root);
+    if (!photos.length || !openers.length) return;
+    var box = null, cur = 0, opener = null, touchX = null;
+    var SVG_X = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"></path></svg>';
+    var SVG_ARROW = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>';
+    function build() {
+      box = document.createElement("div");
+      box.className = "lb"; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true"); box.setAttribute("aria-label", (V.name || "") + " photos"); box.hidden = true;
+      box.innerHTML = '<button type="button" class="lb-x" aria-label="Close the photos">' + SVG_X + '</button>' +
+        '<button type="button" class="lb-prev" aria-label="Previous photo">' + SVG_ARROW + '</button>' +
+        '<figure class="lb-fig"><img class="lb-img" alt=""><figcaption class="lb-cap"><span class="lb-alt"></span><span class="lb-n"></span></figcaption></figure>' +
+        '<button type="button" class="lb-next" aria-label="Next photo">' + SVG_ARROW + '</button>';
+      document.body.appendChild(box);
+      if (photos.length < 2) { $(".lb-prev", box).hidden = true; $(".lb-next", box).hidden = true; $(".lb-n", box).hidden = true; }
+      $(".lb-x", box).addEventListener("click", close);
+      $(".lb-prev", box).addEventListener("click", function () { go(-1); });
+      $(".lb-next", box).addEventListener("click", function () { go(1); });
+      $(".lb-img", box).addEventListener("click", function (e) { if (photos.length < 2) return; var r = e.currentTarget.getBoundingClientRect(); go(e.clientX - r.left > r.width / 2 ? 1 : -1); });
+      box.addEventListener("click", function (e) { if (e.target === box || e.target.classList.contains("lb-fig")) close(); });
+      box.addEventListener("touchstart", function (e) { touchX = e.touches && e.touches.length === 1 ? e.touches[0].clientX : null; }, { passive: true });
+      box.addEventListener("touchend", function (e) { if (touchX == null || !e.changedTouches || !e.changedTouches.length) return; var dx = e.changedTouches[0].clientX - touchX; touchX = null; if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1); }, { passive: true });
+    }
+    function show(i) {
+      cur = (i + photos.length) % photos.length;
+      var p = photos[cur], im = $(".lb-img", box);
+      im.src = p[0]; im.alt = p[1] || "";
+      $(".lb-alt", box).textContent = p[1] || "";
+      $(".lb-n", box).textContent = (cur + 1) + " / " + photos.length;
+      [cur + 1, cur - 1].forEach(function (j) { var q = photos[(j + photos.length) % photos.length]; if (q && q !== p) { var pre = new Image(); pre.src = q[0]; } });
+    }
+    function go(d) { show(cur + d); }
+    function onKey(e) {
+      if (e.key === "Escape") { close(); return; }
+      if (e.key === "ArrowRight") { go(1); e.preventDefault(); }
+      else if (e.key === "ArrowLeft") { go(-1); e.preventDefault(); }
+      else if (e.key === "Tab") { /* keep the focus inside the viewer */
+        var f = $$("button:not([hidden])", box); if (!f.length) return;
+        var first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { last.focus(); e.preventDefault(); }
+        else if (!e.shiftKey && document.activeElement === last) { first.focus(); e.preventDefault(); }
+      }
+    }
+    function open(i, from) {
+      if (!box) build();
+      opener = from || null;
+      show(i);
+      box.hidden = false;
+      document.documentElement.classList.add("lb-open-page");
+      document.addEventListener("keydown", onKey);
+      setTimeout(function () { $(".lb-x", box).focus(); }, 0);
+      track("exp_photos", { venue: V.slug, photo: cur + 1 });
+    }
+    function close() {
+      if (!box || box.hidden) return;
+      box.hidden = true;
+      document.documentElement.classList.remove("lb-open-page");
+      document.removeEventListener("keydown", onKey);
+      if (opener && opener.focus) { try { opener.focus(); } catch (e) {} }
+    }
+    openers.forEach(function (b) {
+      b.addEventListener("click", function () { open(+(b.getAttribute("data-i") || 0), b.tagName === "BUTTON" ? b : $(".photos-btn", root) || b); });
+      if (b.tagName === "IMG") { b.setAttribute("role", "button"); b.setAttribute("tabindex", "0"); b.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(+(b.getAttribute("data-i") || 0), b); } }); }
+    });
+  }
+
   /* ================= venue: options, panel, booking ================= */
   function initVenue(root) {
     var X = window.GV_EXP || {}; var V = X.venue; if (!V) return;
@@ -706,7 +776,7 @@
     if (root !== document) { if (root.getAttribute("data-inited")) return; root.setAttribute("data-inited", "1"); }
     var X = window.GV_EXP || {};
     if (X.page === "hub") initHub(root);
-    else if (X.page === "venue") initVenue(root);
+    else if (X.page === "venue") { initPhotos(root); initVenue(root); }
     else if (X.page === "booked") initBooked(root);
     else if (X.page === "near" && X.hotel) { store("gv_hotel", X.hotel); }
   }

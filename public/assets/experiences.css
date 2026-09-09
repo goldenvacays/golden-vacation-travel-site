@@ -445,3 +445,37 @@
 .cta-band .cta-in p { color: rgba(255,255,255,.72); }
 .vcard-meta, .op-hours, .op-times, .vcard-p, .pf-hint, .nrow-p small, .crumbs, .area-pick span, .pf-l, .op-group small, .hotel-list li small, .stepper small, .panel .stepper small { color: var(--ink-3); }
 .pf-hint.bad { color: #B42318; } .pf-hint.ok { color: var(--res); } .pf-hint.warn { color: var(--warn); }
+
+/* the photo viewer: bigger tiles that open the photo full screen, with a "N photos" pill on the hero */
+.gallery { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+.gph { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; padding: 0; border: 0; cursor: zoom-in; font: inherit; }
+.gph img { transition: transform .4s ease; }
+.gph:hover img, .gph:focus-visible img { transform: scale(1.05); }
+.gph:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.vhero-photo img.lb-open { cursor: zoom-in; }
+.photos-btn { position: absolute; right: 12px; top: 12px; z-index: 1; gap: 6px; border: 0; cursor: pointer; text-transform: none; letter-spacing: 0; font-size: 13px; font-family: inherit; box-shadow: 0 2px 10px rgba(0,0,0,.25); }
+.photos-btn:hover { background: var(--gold); }
+.photos-btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.lb-open-page { overflow: hidden; }
+.lb { position: fixed; inset: 0; z-index: 1000; background: rgba(8,8,8,.97); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; }
+.lb[hidden] { display: none; }
+.lb-fig { margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; max-width: 100vw; max-height: 100vh; }
+.lb-img { display: block; max-width: 100vw; max-height: calc(100vh - 150px); width: auto; height: auto; object-fit: contain; cursor: pointer; user-select: none; -webkit-user-drag: none; }
+.lb-cap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 12px 70px; color: rgba(255,255,255,.85); font-size: 14px; line-height: 1.4; text-align: center; }
+.lb-n { color: rgba(255,255,255,.55); font-weight: 700; white-space: nowrap; }
+.lb button { position: absolute; width: 44px; height: 44px; border-radius: 999px; border: 0; background: #fff; color: var(--ink); display: grid; place-items: center; cursor: pointer; box-shadow: 0 2px 12px rgba(0,0,0,.35); }
+.lb button:hover { background: var(--gold); }
+.lb button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.lb-x { top: 14px; right: 14px; }
+.lb-prev, .lb-next { bottom: 18px; }
+.lb-prev { left: 14px; } .lb-prev svg { transform: scaleX(-1); }
+.lb-next { right: 14px; }
+@media (min-width: 900px) {
+  .photos-btn { right: 20px; top: auto; bottom: 24px; height: 30px; font-size: 13px; }
+  .lb-cap { flex-direction: row; align-items: baseline; gap: 14px; }
+  .lb-img { max-width: calc(100vw - 150px); max-height: calc(100vh - 96px); border-radius: 8px; }
+  .lb-cap { padding: 12px 20px; }
+  .lb-x { top: 20px; right: 20px; }
+  .lb-prev, .lb-next { top: 50%; bottom: auto; transform: translateY(-50%); }
+  .lb-prev { left: 24px; } .lb-next { right: 24px; }
+}
