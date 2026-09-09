@@ -928,6 +928,14 @@
         {
           "file": "mystic-pool-sea.jpg",
           "alt": "The infinity pool at Mystic Mountain above Ocho Rios"
+        },
+        {
+          "file": "mystic-bobsled-track.jpg",
+          "alt": "Looking up the bobsled track through the trees at Mystic Mountain"
+        },
+        {
+          "file": "mystic-bobsled-riders.jpg",
+          "alt": "Two riders on the Mystic Mountain bobsled"
         }
       ],
       "panel": "tour",
@@ -1110,6 +1118,10 @@
       "blurb": "Jamaica's first floating bar, off Mahogany Beach in Ocho Rios. Four sessions a day, from morning swim to midnight dancing.",
       "card": "Jamaica's floating bar. Morning swim, afternoon chill, sunset sips or midnight vibes.",
       "photos": [
+        {
+          "file": "poko-night-aerial.jpg",
+          "alt": "Poko Loko floating bar lit up at dusk off Ocho Rios"
+        },
         {
           "file": "poko-deck-sign.jpg",
           "alt": "The deck at Poko Loko floating bar, Ocho Rios"
