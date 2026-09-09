@@ -33,27 +33,33 @@
     "doors": [
       {
         "key": "stay",
+        "q": "Staying in Jamaica?",
         "title": "Add a day out to your stay",
         "sub": "Hotel pickup where the tour includes it, one price, nothing hidden at the gate.",
         "subMobile": "Hotel pickup where it runs. One price.",
-        "img": "jamwest-quad-water.jpg",
-        "alt": "Riding a quad through the water at JamWest"
+        "img": "jamwest-zipline-rider.jpg",
+        "alt": "Riding the zipline at JamWest, Westmoreland",
+        "star": {"slug": "jamwest", "product": "zipline", "label": "Zipline at JamWest"}
       },
       {
         "key": "port",
+        "q": "Off a cruise ship?",
         "title": "In port for the day",
         "sub": "Falmouth, Ocho Rios and Montego Bay. Tell us your all-aboard time and we'll say what fits.",
         "subMobile": "Falmouth · Ocho Rios · Montego Bay",
         "img": "poko-upper-deck-view.jpg",
-        "alt": "The upper deck at Poko Loko, Ocho Rios"
+        "alt": "The upper deck at Poko Loko, Ocho Rios",
+        "star": {"slug": "poko-loko", "product": null, "label": "Poko Loko"}
       },
       {
         "key": "locals",
+        "q": "Living here?",
         "title": "Locals' day out",
         "sub": "Resident rates in J$, ID at the gate. Family days, birthdays, a Friday that deserves better.",
         "subMobile": "Resident rates in J$, ID at the gate.",
         "img": "jamwest-quad-group.jpg",
-        "alt": "A group on quads at JamWest"
+        "alt": "A group on quads at JamWest",
+        "star": {"slug": "jamwest", "product": "atv", "label": "JamWest ATV", "resident": true}
       }
     ],
     "why": {
