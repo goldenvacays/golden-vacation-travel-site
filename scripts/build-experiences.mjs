@@ -46,7 +46,7 @@ const noDash = (s) => String(s).replace(/—/g, ",").replace(/–/g, "to");
 const usedImages = new Set();
 const img = (file) => { usedImages.add(file); return `${IMG}/${file}`; };
 const small = (file) => file.replace(/\.jpg$/, "-s.jpg");
-const pic = (file, alt, extra = "") => `<img src="${img(file)}" alt="${esc(alt)}" loading="lazy" decoding="async"${extra}>`;
+const pic = (file, alt, extra = "") => `<img src="${img(file)}" alt="${esc(alt)}"${/loading=/.test(extra) ? "" : ' loading="lazy"'} decoding="async"${extra}>`; // a hero image passes loading="eager" itself; the first loading attribute is the one browsers honour
 const wa = (text) => `https://wa.me/${S.whatsapp}?text=${encodeURIComponent(text)}`;
 const waHome = wa("Hi Golden Vacation! I'm looking at your tours and day passes and I'd like some help choosing. Ref GV-EXP");
 const live = (p) => !p.until || p.until >= TODAY;
@@ -155,6 +155,13 @@ if (args.includes("--ship-check")) {
   process.exit(0);
 }
 
+/* hero photo tags: the picture names the tour it shows and its printed price, so the star of the page sells something */
+function mosaicTag(slug, productId, label) {
+  const v = venueBySlug[slug]; if (!v) return label;
+  const p = productId ? v.products.find((x) => x.id === productId) : null;
+  const price = p && p.visitor ? p.visitor.usd : (fromPrice(v) && fromPrice(v).usd != null ? fromPrice(v).usd : null);
+  return price == null ? label : `${label} · ${p ? "" : "from "}${usd(price)}`;
+}
 /* lowest visitor price of a venue's live products (adult), for the card */
 function fromPrice(v) {
   const ps = v.products.filter(live);
@@ -313,10 +320,10 @@ ${nav()}
     <p>${longShort(hb.sub, hb.subMobile)}</p>
     <div class="chip-row hero-doors">${hb.doors.map((d) => `<button class="chip" type="button" data-door="${d.key}">${esc(d.title)}</button>`).join("")}</div>
   </div>
-  <div class="mosaic" aria-hidden="false">
-    <span class="mosaic-a">${pic(heroImg, "Riding the zipline at JamWest, Westmoreland", ' loading="eager" fetchpriority="high"')}</span>
-    <span class="mosaic-b">${pic("jamcat-sunset-sail.jpg", "Sunset sail on the JamWest catamaran off Negril", ' loading="eager"')}</span>
-    <span class="mosaic-c">${pic("ibwaves-beach-loungers.jpg", "The beach at Rose Hall, Montego Bay", ' loading="eager"')}</span>
+  <div class="mosaic" aria-label="Three of the days out">
+    <a class="mosaic-a" href="${BASE}/jamwest">${pic(heroImg, "Riding the zipline at JamWest, Westmoreland", ' loading="eager" fetchpriority="high"')}<span class="tag tag-gold mosaic-tag">${esc(mosaicTag("jamwest", "zipline", "Zipline at JamWest"))}</span></a>
+    <a class="mosaic-b" href="${BASE}/jamwest-catamaran">${pic("jamcat-sunset-sail.jpg", "Sunset sail on the JamWest catamaran off Negril", ' loading="eager"')}<span class="tag tag-white mosaic-tag mosaic-tag-sm">${esc(mosaicTag("jamwest-catamaran", null, "Sunset sail"))}</span></a>
+    <a class="mosaic-c" href="${BASE}/iberostar-waves-rose-hall">${pic("ibwaves-beach-loungers.jpg", "The beach at Rose Hall, Montego Bay", ' loading="eager"')}<span class="tag tag-white mosaic-tag mosaic-tag-sm">${esc(mosaicTag("iberostar-waves-rose-hall", null, "Rose Hall day pass"))}</span></a>
   </div>
 </section>
 ${ticker(hb.trust)}
