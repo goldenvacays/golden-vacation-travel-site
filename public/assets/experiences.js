@@ -171,6 +171,26 @@
     var openers = $$(".lb-open", root);
     if (!photos.length || !openers.length) return;
     var box = null, cur = 0, opener = null, touchX = null;
+    /* the hero strip: native scroll-snap does the swiping, this keeps the dots and arrows in step and lets the viewer hand back to the same slide */
+    var strip = $("#hero-track", root), slides = strip ? $$(".hero-slide", strip) : [], dots = $$(".hero-dots button", root), sCur = 0, sTimer = null;
+    function slideIdx() { return strip && strip.clientWidth ? Math.max(0, Math.min(slides.length - 1, Math.round(strip.scrollLeft / strip.clientWidth))) : 0; }
+    function slideTo(i, instant) {
+      if (!strip || slides.length < 2) return;
+      i = ((i % slides.length) + slides.length) % slides.length;
+      var left = i * strip.clientWidth;
+      if (instant || !("scrollTo" in strip)) strip.scrollLeft = left; else strip.scrollTo({ left: left, behavior: "smooth" });
+      markSlide(i);
+    }
+    function markSlide(i) { if (i === sCur) return; sCur = i; dots.forEach(function (d, j) { d.setAttribute("aria-selected", j === i ? "true" : "false"); }); }
+    if (strip && slides.length > 1) {
+      strip.addEventListener("scroll", function () { clearTimeout(sTimer); sTimer = setTimeout(function () { markSlide(slideIdx()); }, 80); }, { passive: true });
+      dots.forEach(function (d) { d.addEventListener("click", function () { slideTo(+d.getAttribute("data-i")); }); });
+      var pv = $(".hero-prev", root), nx = $(".hero-next", root);
+      if (pv) pv.addEventListener("click", function () { slideTo(slideIdx() - 1); });
+      if (nx) nx.addEventListener("click", function () { slideTo(slideIdx() + 1); });
+      strip.addEventListener("keydown", function (e) { if (e.key === "ArrowRight") { slideTo(slideIdx() + 1); e.preventDefault(); } else if (e.key === "ArrowLeft") { slideTo(slideIdx() - 1); e.preventDefault(); } });
+      window.addEventListener("resize", function () { slideTo(sCur, true); }); // a rotated phone keeps the same photo in view
+    }
     var SVG_X = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"></path></svg>';
     var SVG_ARROW = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>';
     function build() {
@@ -225,6 +245,7 @@
       box.hidden = true;
       document.documentElement.classList.remove("lb-open-page");
       document.removeEventListener("keydown", onKey);
+      slideTo(cur, true); // the strip shows the photo you closed on
       if (opener && opener.focus) { try { opener.focus(); } catch (e) {} }
     }
     openers.forEach(function (b) {
