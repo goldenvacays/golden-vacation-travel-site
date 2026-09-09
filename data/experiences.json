@@ -783,8 +783,12 @@
       "card": "Sunset sail from Negril, open bar, snorkel stop, Rick's Cafe.",
       "photos": [
         {
-          "file": "jamcat-sunset-sail.jpg",
-          "alt": "The catamaran at sunset off Negril"
+          "file": "jamcat-beach-day.jpg",
+          "alt": "The JamWest catamaran off the beach at Negril"
+        },
+        {
+          "file": "jamcat-sunset-silhouette.jpg",
+          "alt": "A catamaran at sunset"
         }
       ],
       "panel": "tour",
