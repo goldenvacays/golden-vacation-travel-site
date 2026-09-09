@@ -157,9 +157,10 @@ if (args.includes("--ship-check")) {
 }
 
 /* hero photo tags: the picture names the tour it shows and its printed price, so the star of the page sells something */
-function mosaicTag(slug, productId, label) {
+function mosaicTag(slug, productId, label, resident = false) {
   const v = venueBySlug[slug]; if (!v) return label;
   const p = productId ? v.products.find((x) => x.id === productId) : null;
+  if (resident) { const r = p && p.resident ? p.resident.jmd : null; return r == null ? label : `${label} · ${jmd(r)}`; } // the locals' ticket prints the resident rate
   const price = p && p.visitor ? p.visitor.usd : (fromPrice(v) && fromPrice(v).usd != null ? fromPrice(v).usd : null);
   return price == null ? label : `${label} · ${p ? "" : "from "}${usd(price)}`;
 }
@@ -296,11 +297,17 @@ function venueCard(v) {
 function hubPage() {
   const hb = X.hub;
   const heroImg = "jamwest-zipline-rider.jpg";
-  const doors = hb.doors.map((d) => `<button class="door edoor" type="button" data-door="${d.key}">
-      <span class="door-img">${pic(small(d.img), d.alt)}</span>
-      <span class="door-t"><b>${esc(d.title)}</b><small>${longShort(d.sub, d.subMobile)}</small></span>
-      <span class="door-go">${icon("arrow", 20, 2.4)}</span>
-    </button>`).join("");
+  /* the three doors are photo tickets in the hero band: each one is an audience (stay, port, locals), carries that audience's star tour with its printed price, and filters the list below */
+  const tickets = hb.doors.map((d, i) => {
+    const s = d.star || {};
+    const tagText = s.slug ? mosaicTag(s.slug, s.product || null, s.label || "", !!s.resident) : "";
+    const srcset = ` srcset="${img(small(d.img))} 800w, ${img(d.img)} 1600w" sizes="(min-width: 900px) 30vw, 92vw"`;
+    return `<button class="ticket edoor" type="button" data-door="${d.key}" aria-pressed="false">
+      <span class="ticket-img">${pic(d.img, d.alt, ` loading="eager"${i === 0 ? ' fetchpriority="high"' : ""}${srcset}`)}</span>
+      ${tagText ? `<span class="tag ${i === 0 ? "tag-gold" : "tag-white"} ticket-tag">${esc(tagText)}</span>` : ""}
+      <span class="ticket-t">${d.q ? `<small class="ticket-q">${esc(d.q)}</small>` : ""}<b class="hh">${esc(d.title)}</b><span class="ticket-sub">${longShort(d.sub, d.subMobile)}</span></span>
+    </button>`;
+  }).join("");
   const chips = hb.categories.map(([k, l], i) => `<button class="chip" type="button" data-cat="${k}" aria-pressed="${i === 0 ? "true" : "false"}">${esc(l)}</button>`).join("");
   const areaOpts = hb.areas.map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join("");
   const cards = X.venues.map(venueCard).join("\n");
@@ -314,25 +321,17 @@ function hubPage() {
   return `${head({ title: "Golden Experiences | Jamaica tours, day passes, boat days and airport lounges", description: "Day passes at Ocean and the Rose Hall resorts, JamWest and Mystic Mountain tours, the JamWest catamaran, Poko Loko floating bar and Club MoBay and Club Kingston lounges. Published prices in US$ and J$, resident rates where they exist, booked by people in Jamaica.", pathname: `${BASE}/`, image: heroImg, jsonld, bodyClass: "exp exp-hub" })}
 ${nav()}
 <main>
-<section class="hub-hero wrap">
-  <div class="hub-hero-t">
-    ${kicker(hb.kicker)}
-    <h1 class="hh">${esc(hb.title)}</h1>
-    <p>${longShort(hb.sub, hb.subMobile)}</p>
-    <div class="chip-row hero-doors">${hb.doors.map((d) => `<button class="chip" type="button" data-door="${d.key}">${esc(d.title)}</button>`).join("")}</div>
-  </div>
-  <div class="mosaic" aria-label="Three of the days out">
-    <a class="mosaic-a" href="${BASE}/jamwest">${pic(heroImg, "Riding the zipline at JamWest, Westmoreland", ' loading="eager" fetchpriority="high"')}<span class="tag tag-gold mosaic-tag">${esc(mosaicTag("jamwest", "zipline", "Zipline at JamWest"))}</span></a>
-    <a class="mosaic-b" href="${BASE}/jamwest-catamaran">${pic("jamcat-sunset-silhouette.jpg", "Sunset sail on the JamWest catamaran off Negril", ' loading="eager"')}<span class="tag tag-white mosaic-tag mosaic-tag-sm">${esc(mosaicTag("jamwest-catamaran", null, "Sunset sail"))}</span></a>
-    <a class="mosaic-c" href="${BASE}/iberostar-waves-rose-hall">${pic("ibwaves-beach-loungers.jpg", "The beach at Rose Hall, Montego Bay", ' loading="eager"')}<span class="tag tag-white mosaic-tag mosaic-tag-sm">${esc(mosaicTag("iberostar-waves-rose-hall", null, "Rose Hall day pass"))}</span></a>
+<section class="hub-hero poster" aria-label="Golden Experiences">
+  <div class="wrap hub-hero-in">
+    <div class="hub-hero-t">
+      ${kicker(hb.kicker, true)}
+      <h1 class="hh">${esc(hb.title)}</h1>
+      <p>${longShort(hb.sub, hb.subMobile)}</p>
+    </div>
+    <div class="tickets" role="group" aria-label="Start here">${tickets}</div>
   </div>
 </section>
 ${ticker(hb.trust)}
-
-<section class="doors-sec wrap" aria-label="Start here">
-  ${kicker("Start here")}
-  <div class="doors edoors">${doors}</div>
-</section>
 
 <section class="sec wrap cat-sec" id="all">
   <div class="sec-head cat-head">
