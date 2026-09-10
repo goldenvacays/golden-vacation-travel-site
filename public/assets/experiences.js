@@ -345,6 +345,7 @@
       var d = parseDate(iso); if (!d) return "";
       if (iso < today) return "That date has passed.";
       if (V.closedWeekdays && V.closedWeekdays.indexOf(d.getUTCDay()) >= 0) return V.name + " is closed on " + DAYS[d.getUTCDay()] + "days. Pick another day and we'll price the same thing.";
+      if (V.childDays && state.children > 0 && V.childDays.indexOf(d.getUTCDay()) < 0) return V.childDaysText || "Children sail on the family days only. Pick one of those, or book adults only.";
       var md = iso.slice(5);
       if (V.blackout && V.blackout.indexOf(md) >= 0) return "Closed on that date. Pick another day.";
       var p = product(); if (p && p.until && iso > p.until) return "This offer ends on " + longDate(p.until) + ".";
