@@ -425,12 +425,14 @@ function panel(v) {
       <label class="rate-opt"><input type="radio" name="rate" value="visitor" checked><span><b>${esc(v.rates.visitor.label)}</b><small>${esc(v.rates.visitor.who)}</small></span></label>
       <label class="rate-opt"><input type="radio" name="rate" value="resident"><span><b>${esc(v.rates.resident.label)}</b><small>${esc(v.rates.resident.who)}</small></span></label>
     </div><p class="rate-note" id="rate-note">${esc(noDash(v.rates.visitor.note))}</p></div>` : "";
+  /* cruise guests: the question only opens when the guest asks for it (or the site already knows their port); residents never see it */
+  const cruiseLink = isFlight || v.pickups || v.shipDay === false ? "" : `<button type="button" class="link-btn" id="cruise-link" hidden>Off a cruise ship?</button>`;
   const date = isFlight
     ? `<div class="pf two"><label class="pf-f"><span class="pf-l" id="pf-date-l">Arrival date</span><span class="pf-in">${icon("calendar", 18)}<input type="date" id="pf-date" required></span></label><label class="pf-f" id="pf-date2-wrap"><span class="pf-l" id="pf-date2-l">Departure date</span><span class="pf-in">${icon("calendar", 18)}<input type="date" id="pf-date2"></span></label></div>
        <div class="pf two"><label class="pf-f" id="pf-flight-in-wrap"><span class="pf-l">Flight in</span><span class="pf-in">${icon("plane", 18)}<input type="text" id="pf-flight-in" placeholder="e.g. BA2263" autocapitalize="characters"></span></label><label class="pf-f" id="pf-flight-out-wrap"><span class="pf-l">Flight out</span><span class="pf-in">${icon("plane", 18)}<input type="text" id="pf-flight-out" placeholder="e.g. BA2262" autocapitalize="characters"></span></label></div>
        <p class="pf-hint" id="date-note" hidden></p>
        <p class="pf-hint">We check your flight and send the lounge details to your email and WhatsApp.</p>`
-    : `<div class="pf"><label class="pf-f"><span class="pf-l">Date</span><span class="pf-in">${icon("calendar", 18)}<input type="date" id="pf-date" required></span></label><p class="pf-hint" id="date-note" hidden></p></div>`;
+    : `<div class="pf"><label class="pf-f"><span class="pf-l">Date</span><span class="pf-in">${icon("calendar", 18)}<input type="date" id="pf-date" required></span></label><p class="pf-hint" id="date-note" hidden></p>${cruiseLink}</div>`;
   const anyTimes = v.products.some((p) => p.times && p.times.length);
   const times = isTour || anyTimes ? `<div class="pf" id="pf-times-wrap"><span class="pf-l">${v.panel === "pass" ? "Entry time" : "Start time"}</span><div class="chip-row" id="pf-times"></div><p class="pf-hint" id="times-note" hidden></p></div>` : "";
   const guests = `<div class="pf pf-guests"><span class="pf-l">Guests</span>
@@ -439,6 +441,8 @@ function panel(v) {
       <p class="pf-hint" id="child-note" hidden></p>
       <p class="pf-hint" id="guests-note" hidden>Up to 16 guests here. More than 16? <a href="mailto:${esc(S.email)}?subject=${encodeURIComponent(`Group booking: ${v.name}`)}">Email us</a> and we'll price it.</p>
     </div>`;
+  /* tours without a bookable pickup say so where the pickup picker would sit, so nobody goes looking for it */
+  const noPickup = isTour && !v.pickups ? `<p class="pf-hint" id="no-pickup-note">No hotel pickup on this one. Ask us on WhatsApp if you need a ride.</p>` : "";
   /* pickup: the guest picks their hotel from the resort list (the area, and any transfer charge, follow from it);
      "somewhere else" opens a free-text line plus the area list; "my own way" skips pickup */
   const pickup = v.pickups ? `<div class="pf" id="pf-pickup-wrap">
@@ -449,8 +453,9 @@ function panel(v) {
       <label class="pf-f" id="pf-pickup-area-wrap" hidden><span class="pf-l">Pickup area</span><span class="pf-in">${icon("car", 18)}<select id="pf-pickup">${v.pickups.filter((p) => p.key !== "own").map((p) => `<option value="${p.key}" data-add="${p.add || 0}" data-add-child="${p.addChild != null ? p.addChild : p.add || 0}">${esc(p.label)}${p.request ? " (priced by hand)" : p.add ? ` (+${usd(p.add)} each)` : ""}</option>`).join("")}</select></span></label>
       <p class="pf-hint" id="pickup-note">${v.pickups.some((p) => p.add) ? "Pickup from Negril hotels is included. Lucea and Montego Bay pickups are priced per person." : "Hotel pickup from Negril and Montego Bay is included."}</p>
     </div>` : "";
-  /* ship day: shown once we know the guest is off a ship (a port picked here or on the hub, or a ship name typed). Sits outside the contact block, which hides on the WhatsApp path */
-  const cruisePick = v.panel === "flight" || v.pickups ? "" : `<div class="pf" id="pf-cruise-wrap"><span class="pf-l">Off a cruise ship?</span><div class="chip-row port-chips" id="pf-ports">${(X.ports || []).map((pt) => `<button type="button" class="chip chip-sm" data-port="${pt.slug}" aria-pressed="false">${esc(pt.name.replace(" cruise port", " port"))}</button>`).join("")}</div></div>`;
+  /* ship day: the port chips open from the "Off a cruise ship?" link under the date, or on their own when the site already knows the port
+     (picked on the hub, or arrived from a port page). Tours with a pickup picker take the port through that picker instead. */
+  const cruisePick = isFlight || v.pickups ? "" : `<div class="pf" id="pf-cruise-wrap" hidden><span class="pf-l">Off a cruise ship?</span><div class="chip-row port-chips" id="pf-ports">${(X.ports || []).map((pt) => `<button type="button" class="chip chip-sm" data-port="${pt.slug}" aria-pressed="false">${esc(pt.name.replace(" cruise port", " port"))}</button>`).join("")}</div><p class="pf-hint">Tell us your port and we only show what gets you back to the pier in time.</p></div>`;
   const aboard = v.panel === "flight" ? "" : `${cruisePick}<div class="pf" id="pf-aboard-wrap" hidden><span class="pf-l">All-aboard time</span><div class="chip-row aboard-chips" id="pf-aboard">${[["", "Not sure"], ["960", "4:00pm"], ["1020", "5:00pm"], ["1080", "6:00pm"], ["1140", "7:00pm or later"]].map(([m, l]) => `<button type="button" class="chip chip-sm" data-aboard="${m}" aria-pressed="${m === "" ? "true" : "false"}">${l}</button>`).join("")}</div><p class="pf-hint" id="ship-note"></p><button type="button" class="link-btn" id="ship-clear">Not off a ship today? Clear this</button></div>`;
   const contact = `<div class="pf pf-contact" id="pf-contact"${instant ? "" : " hidden"}><span class="pf-l">Who's booking</span>
       <div class="pf two"><label class="pf-f"><span class="pf-in"><input type="text" id="pf-first" placeholder="First name" autocomplete="given-name"></span></label><label class="pf-f"><span class="pf-in"><input type="text" id="pf-last" placeholder="Last name" autocomplete="family-name"></span></label></div>
@@ -458,21 +463,31 @@ function panel(v) {
       <label class="pf-f"><span class="pf-in"><input type="tel" id="pf-phone" placeholder="WhatsApp or phone" autocomplete="tel"></span></label>
       <label class="pf-f" id="pf-ship-wrap"><span class="pf-in">${icon("ship", 18)}<input type="text" id="pf-ship" placeholder="On a cruise? Ship name"></span></label>
     </div>`;
+  /* two steps: first the booking itself with its total (the guest settles on that), then their details and the payment */
   return `<aside class="panel" id="panel" data-panel="${v.panel}" data-booking="${v.booking}">
     <div class="panel-head">${kicker(instant ? "Book on the spot" : v.booking === "request" ? "Request a date" : "Send an enquiry")}<div class="panel-total"><b id="total-lead">${usd(0)}</b><small id="total-sub"></small></div><p class="panel-caption" id="total-caption"></p></div>
     <form id="book" novalidate>
+      <div class="bstep" id="step-1">
       ${rate}
       ${date}
       ${times}
       ${guests}
+      ${noPickup}
       ${pickup}
       ${aboard}
+      <button class="btn btn-black btn-lg btn-full" type="button" id="next"><span id="next-label">Continue</span>${icon("arrow", 18)}</button>
+      <p class="pf-sub" id="next-sub"></p>
+      </div>
+      <div class="bstep" id="step-2" hidden>
+      <button type="button" class="link-btn step-back" id="step-back">${icon("arrow", 14, 2.6)}Change the booking</button>
+      <div class="sum" id="sum"></div>
       ${contact}
       <div class="pf pf-preview" id="pf-preview"${instant ? " hidden" : ""}><span class="pf-l">This is what we'll get</span><pre id="msg-preview"></pre></div>
       <button class="btn btn-black btn-lg btn-full" type="submit" id="cta">${instant ? icon("card", 18) : icon("chat", 18)}<span id="cta-label">${cta}</span></button>
       <p class="pf-sub" id="cta-sub">${ctaSub}</p>
       <p class="pf-alt" id="cta-alt"${instant ? "" : " hidden"}>Rather talk to a person first? <a href="#" id="cta-wa">Send this as a WhatsApp request instead</a>.</p>
       <p class="pf-fine">Nothing is charged until you see the total. Tax and service included. A person reads every request.</p>
+      </div>
     </form>
   </aside>`;
 }
