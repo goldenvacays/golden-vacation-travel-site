@@ -231,6 +231,16 @@
 .step-c output { min-width: 28px; text-align: center; font-size: 18px; font-weight: 900; }
 .panel .stepper[data-off] { opacity: .45; }
 .pf-preview pre { margin: 0; padding: 12px 14px; border-radius: 14px; background: var(--alt); font: 600 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre-wrap; word-break: break-word; color: var(--ink); }
+/* the panel's two steps: the booking and its total, then who's booking and the payment */
+.bstep { display: flex; flex-direction: column; gap: 16px; }
+.bstep[hidden] { display: none; }
+.step-back { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+.step-back svg { transform: rotate(180deg); }
+.step-back:hover { text-decoration: underline; }
+.sum { display: flex; flex-direction: column; gap: 3px; padding: 12px 14px; border-radius: 14px; background: var(--alt); font-size: 13px; line-height: 1.45; color: var(--ink-2, var(--ink)); }
+.sum b { font-size: 15px; font-weight: 800; color: var(--ink); }
+.sum:empty { display: none; }
+#next-sub:empty { display: none; }
 .pf-sub { font-size: 13px; line-height: 1.45; color: var(--muted); text-align: center; }
 .pf-alt { font-size: 13px; line-height: 1.45; text-align: center; color: var(--muted); }
 .pf-alt a { text-decoration: underline; color: var(--ink); }

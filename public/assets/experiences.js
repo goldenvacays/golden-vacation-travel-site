@@ -272,8 +272,10 @@
       preview: $("#msg-preview", root), cta: $("#cta", root), ctaLabel: $("#cta-label", root), ctaSub: $("#cta-sub", root), ctaAlt: $("#cta-alt", root), ctaWa: $("#cta-wa", root),
       rateNote: $("#rate-note", root), flightIn: $("#pf-flight-in", root), flightOut: $("#pf-flight-out", root),
       stickyTotal: $("#sticky-total", root), stickySub: $("#sticky-sub", root), stickyCta: $("#sticky-cta", root),
+      step1: $("#step-1", root), step2: $("#step-2", root), next: $("#next", root), nextSub: $("#next-sub", root), back: $("#step-back", root), sum: $("#sum", root),
+      cruiseLink: $("#cruise-link", root), cruiseWrap: $("#pf-cruise-wrap", root),
     };
-    var state = { product: null, rate: V.rates ? "visitor" : (V.products[0] && V.products[0].audience === "resident" ? "resident" : "visitor"), date: "", time: "", adults: 2, children: 0, pickup: V.pickups ? V.pickups[0].key : null, pickupMode: "hotel", pickupHotel: "", pickupPlace: null, choices: {}, sessions: null, availOk: null, ref: ref(), aboard: 0, cruisePort: null };
+    var state = { product: null, rate: V.rates ? "visitor" : (V.products[0] && V.products[0].audience === "resident" ? "resident" : "visitor"), date: "", time: "", adults: 2, children: 0, pickup: V.pickups ? V.pickups[0].key : null, pickupMode: "hotel", pickupHotel: "", pickupPlace: null, choices: {}, sessions: null, availOk: null, ref: ref(), aboard: 0, cruisePort: null, step: 1, cruiseOpen: false };
     var HOTELS = hotelsOf(X), REGIONS = X.regions || {};
 
     /* ---- ship days: which port the guest is coming from, and what fits before all-aboard ---- */
@@ -287,7 +289,7 @@
       if (state.cruisePort) return state.cruisePort;
       return myHotel && myHotel.port ? myHotel : null;
     }
-    function cruise() { return !!SD && V.sd !== 0 && (!!portOf() || !!(el.ship && el.ship.value.trim())); } // lounges are flight-day things, the ship state never applies to them
+    function cruise() { return !!SD && V.sd !== 0 && rateOf(product()) !== "resident" && (!!portOf() || !!(el.ship && el.ship.value.trim())); } // residents are never off a ship // lounges are flight-day things, the ship state never applies to them
     function backBy() { return state.aboard ? state.aboard - 60 : SD.backBy; }
     function portDrive() { var pt = portOf(); return pt ? driveMin(pt, V, REGIONS) : null; }
     function driveTier() { return cruise() ? shipTier(SD, V.sd, portDrive()) : "ok"; }
@@ -473,6 +475,10 @@
       });
       if (isCruise && !productOk(p) && driveTier() !== "no" && V.sd !== 0) { var alt = V.products.filter(productOk)[0]; if (alt) { selectProduct(alt.id); return; } }
       var aboardWrap = $("#pf-aboard-wrap", root); if (aboardWrap) aboardWrap.hidden = !isCruise || V.sd === 0;
+      /* the cruise question: a small link under the date until the guest opens it, or the site already knows the port; never for residents */
+      var cruiseAllowed = !!SD && !isFlight && !V.pickups && V.sd !== 0 && r === "visitor";
+      if (el.cruiseLink) el.cruiseLink.hidden = !cruiseAllowed || isCruise || state.cruiseOpen;
+      if (el.cruiseWrap) el.cruiseWrap.hidden = !cruiseAllowed || !(isCruise || state.cruiseOpen);
       var shipNote = $("#ship-note", root); if (shipNote && isCruise) { shipNote.textContent = shipText(); shipNote.className = "pf-hint" + (shipBlock() ? " bad" : shipAsk() ? " warn" : ""); }
       $$("#pf-aboard .chip", root).forEach(function (b) { b.setAttribute("aria-pressed", (+b.getAttribute("data-aboard") || 0) === state.aboard ? "true" : "false"); });
       var pt1 = portOf(); $$("#pf-ports .chip", root).forEach(function (b) { b.setAttribute("aria-pressed", pt1 && pt1.slug === b.getAttribute("data-port") ? "true" : "false"); });
@@ -490,13 +496,60 @@
       if (el.previewWrap) el.previewWrap.hidden = canPay; // the WhatsApp text only matters when the booking goes by WhatsApp
       if (el.dateNote) { var prob = dateProblem(state.date); el.dateNote.hidden = !prob; el.dateNote.className = "pf-hint bad"; el.dateNote.textContent = prob; }
       el.preview.textContent = message();
+      /* two steps: the booking and its total first, then who's booking and the payment */
+      if (el.step1) el.step1.hidden = state.step !== 1;
+      if (el.step2) el.step2.hidden = state.step !== 2;
+      if (el.nextSub) el.nextSub.textContent = canPay ? "Next: your details, then a secure card page. Nothing is charged yet." : "Next: we send it to us on WhatsApp. Nothing is charged now.";
+      if (el.stickyCta) el.stickyCta.firstChild.textContent = state.step === 1 ? "Continue" : (canPay ? "Book" : "Request");
+      renderSummary(p, pr, r);
+      syncSticky();
+    }
+    function renderSummary(p, pr, r) {
+      if (!el.sum) return;
+      el.sum.innerHTML = "";
+      var lines = [];
+      var ch = chosen();
+      lines.push(["b", p.name + (ch.length ? " · " + (p.choose && p.choose.fixed ? p.choose.fixed + " + " : "") + ch.join(" + ") : "")]);
+      if (isFlight) {
+        var legs = p.legs || "both", fi = el.flightIn ? el.flightIn.value.trim().toUpperCase() : "", fo = el.flightOut ? el.flightOut.value.trim().toUpperCase() : "";
+        if (legs !== "out") lines.push(["", "Arrives " + (state.date ? longDate(state.date) : "") + (fi ? " on " + fi : "")]);
+        if (legs !== "in") lines.push(["", "Departs " + ((legs === "both" ? (el.date2 && el.date2.value ? longDate(el.date2.value) : "") : (state.date ? longDate(state.date) : ""))) + (fo ? " on " + fo : "")]);
+      } else lines.push(["", (state.date ? longDate(state.date) : "Date to confirm") + (state.time ? " at " + state.time : "")]);
+      lines.push(["", p.perParty ? "2 people" : state.adults + " adult" + (state.adults === 1 ? "" : "s") + (state.children ? ", " + state.children + " child" + (state.children === 1 ? "" : "ren") : "")]);
+      if (V.pickups && r === "visitor") { var pk = pickupOf(); if (pk) lines.push(["", pk.key === "own" ? "Making my own way" : "Pickup: " + (state.pickupHotel && state.pickupHotel !== pk.label ? state.pickupHotel : pk.label)]); }
+      if (cruise()) { var pt0 = portOf(); lines.push(["", "Off a ship" + (pt0 ? ", " + pt0.name : "") + (state.aboard ? ", all-aboard " + clockText(state.aboard) : "")]); }
+      if (r === "resident") lines.push(["", "Resident rate, Jamaican ID at the gate"]);
+      lines.forEach(function (l) { var e = document.createElement(l[0] ? "b" : "span"); e.textContent = l[1]; el.sum.appendChild(e); });
+    }
+    function goStep(n) {
+      state.step = n; render();
+      var pr = panel.getBoundingClientRect(); if (pr.top < 0 || pr.top > innerHeight * 0.5) panel.scrollIntoView({ block: "start", behavior: "smooth" });
+      if (panel.scrollHeight > panel.clientHeight + 4) panel.scrollTo({ top: 0, behavior: "smooth" });
+      if (n === 2 && el.contact && !el.contact.hidden && el.first) setTimeout(function () { el.first.focus({ preventScroll: true }); }, 450);
+      track("exp_step", { venue: V.slug, step: n });
+    }
+    /* what step one needs before the guest moves on (the same checks run again at payment) */
+    function checkStep1() {
+      var p = product(), prob = dateProblem(state.date), legs = p.legs || "both";
+      if (!state.date) { el.date.focus(); throw new Error(isFlight ? (legs === "out" ? "Pick your departure date first." : "Pick your arrival date first.") : "Pick a date first."); }
+      if (prob) throw new Error(prob);
+      var wantsTime = (p.times && p.times.length) || (state.sessions && state.sessions.length);
+      if (wantsTime && !state.time) throw new Error("Pick a start time.");
+      if (isFlight) {
+        var flightIn = el.flightIn ? el.flightIn.value.trim().toUpperCase() : "", flightOut = el.flightOut ? el.flightOut.value.trim().toUpperCase() : "", date2 = el.date2 ? el.date2.value : "";
+        var flightRe = /^[A-Z0-9]{2,3}\s?\d{1,4}[A-Z]?$/;
+        if (legs !== "out" && !flightRe.test(flightIn)) { el.flightIn.focus(); throw new Error("We need the arriving flight number, e.g. BA2263."); }
+        if (legs !== "in" && !flightRe.test(flightOut)) { el.flightOut.focus(); throw new Error("We need the departing flight number, e.g. BA2262."); }
+        if (legs === "both" && (!date2 || date2 < state.date)) { el.date2.focus(); throw new Error("Pick the departure date too."); }
+      }
+      if (V.pickups && rateOf(p) === "visitor" && state.pickup !== "own" && !state.pickupHotel && instant()) { if (el.hotelIn) el.hotelIn.focus(); throw new Error("Which hotel should the driver collect you from? Pick it from the list, or choose somewhere else or your own way."); }
     }
     var ICON_CARD = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="M2 10h20"></path></svg>';
     var ICON_CHAT = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>';
 
     /* option rows */
     function selectProduct(id, scroll) {
-      state.product = id; state.time = ""; state.sessions = null; state.availOk = null;
+      state.product = id; state.time = ""; state.sessions = null; state.availOk = null; if (state.step !== 1) state.step = 1;
       $$(".op", root).forEach(function (o) { var r = $("input", o); if (r) r.checked = o.getAttribute("data-id") === id; });
       /* choices default: first n */
       var p = product();
@@ -602,15 +655,20 @@
     if (el.pickupHotel) el.pickupHotel.addEventListener("input", function () { state.pickupHotel = el.pickupHotel.value.trim(); render(); });
     if (el.ctaWa) el.ctaWa.addEventListener("click", function (e) { e.preventDefault(); sendWhatsApp(); });
     /* the bottom bar shows whenever the real button is off screen (a sticky panel taller than the window keeps it below the fold on laptops) */
-    var sticky = $("#sticky-bar", root);
-    if (sticky && "IntersectionObserver" in window) { var io = new IntersectionObserver(function (es) { es.forEach(function (x) { sticky.hidden = x.isIntersecting; }); }, { threshold: 0.5 }); io.observe(el.cta); }
+    var sticky = $("#sticky-bar", root), seen = {};
+    function stepBtn() { return state.step === 1 && el.next ? el.next : el.cta; }
+    function syncSticky() { if (!sticky) return; var b = stepBtn(); sticky.hidden = !!seen[b.id]; }
+    if (sticky && "IntersectionObserver" in window) { var io = new IntersectionObserver(function (es) { es.forEach(function (x) { seen[x.target.id] = x.isIntersecting; }); syncSticky(); }, { threshold: 0.5 }); [el.next, el.cta].forEach(function (b) { if (b) io.observe(b); }); }
     if (el.stickyCta) el.stickyCta.addEventListener("click", function () {
-      var r = el.cta.getBoundingClientRect();
-      if (r.top >= 0 && r.bottom <= innerHeight) { el.cta.click(); return; }
+      var b = stepBtn(), r = b.getBoundingClientRect();
+      if (r.top >= 0 && r.bottom <= innerHeight) { b.click(); return; }
       var pr = panel.getBoundingClientRect(); if (pr.top < 0 || pr.top > innerHeight * 0.5) panel.scrollIntoView({ block: "start", behavior: "smooth" });
-      if (panel.scrollHeight > panel.clientHeight + 4) panel.scrollTo({ top: panel.scrollHeight, behavior: "smooth" }); else el.cta.scrollIntoView({ block: "center", behavior: "smooth" });
-      setTimeout(function () { el.cta.focus({ preventScroll: true }); }, 500);
+      if (panel.scrollHeight > panel.clientHeight + 4) panel.scrollTo({ top: panel.scrollHeight, behavior: "smooth" }); else b.scrollIntoView({ block: "center", behavior: "smooth" });
+      setTimeout(function () { b.focus({ preventScroll: true }); }, 500);
     });
+    if (el.next) el.next.addEventListener("click", function () { var box = $("#exp-alert", root); if (box) box.remove(); try { checkStep1(); goStep(2); } catch (err) { alertBox(err.message); } });
+    if (el.back) el.back.addEventListener("click", function () { var box = $("#exp-alert", root); if (box) box.remove(); goStep(1); });
+    if (el.cruiseLink) el.cruiseLink.addEventListener("click", function () { state.cruiseOpen = true; render(); track("exp_cruise_open", { venue: V.slug }); });
 
     /* every WhatsApp request is also logged as a Netlify form entry (exp-enquiries), so the site keeps its own list of what came through */
     function logEnquiry(text) {
@@ -659,8 +717,9 @@
         .catch(function (e) { el.cta.disabled = false; render(); alertBox((e && e.message ? e.message : "Something went wrong.") + " You can send the same booking by WhatsApp and we'll confirm it by hand.", true); });
     }
     function alertBox(text, offerWa) {
-      var box = $("#exp-alert", root);
-      if (!box) { box = document.createElement("div"); box.id = "exp-alert"; box.className = "pf-hint bad"; box.setAttribute("role", "alert"); box.style.cssText = "padding:12px 14px;border-radius:12px;background:#FFF4E5;color:#8A6D12;font-size:13px;line-height:1.45"; el.cta.parentNode.insertBefore(box, el.cta); }
+      var box = $("#exp-alert", root), anchor = stepBtn();
+      if (box && box.nextSibling !== anchor) { box.remove(); box = null; }
+      if (!box) { box = document.createElement("div"); box.id = "exp-alert"; box.className = "pf-hint bad"; box.setAttribute("role", "alert"); box.style.cssText = "padding:12px 14px;border-radius:12px;background:#FFF4E5;color:#8A6D12;font-size:13px;line-height:1.45"; anchor.parentNode.insertBefore(box, anchor); }
       box.innerHTML = "";
       box.appendChild(document.createTextNode(text + " "));
       if (offerWa) { var a = document.createElement("a"); a.href = "#"; a.textContent = "Send by WhatsApp"; a.style.cssText = "text-decoration:underline;color:inherit;font-weight:800"; a.addEventListener("click", function (e) { e.preventDefault(); sendWhatsApp(); }); box.appendChild(a); }
@@ -670,6 +729,7 @@
       e.preventDefault();
       var box = $("#exp-alert", root); if (box) box.remove();
       try {
+        if (state.step === 1 && el.next) { checkStep1(); goStep(2); return; } // Enter in a step-one field moves on, it never tries to pay
         if (instant() && (!live || state.availOk !== false)) { pay(); return; }
         if (!isFlight) { var prob = dateProblem(state.date); if (prob) { alertBox(prob); return; } }
         sendWhatsApp();
@@ -697,7 +757,7 @@
       if (state.cruisePort || (myHotel && myHotel.port)) store("gv_hotel", null);
       state.cruisePort = null;
       if (myHotel && myHotel.port) { myHotel = null; var fh1 = $("#fact-hotel", root); if (fh1) fh1.hidden = true; }
-      if (el.ship) el.ship.value = ""; state.aboard = 0;
+      if (el.ship) el.ship.value = ""; state.aboard = 0; state.cruiseOpen = false;
       if (V.pickups && state.pickupPlace && state.pickupPlace.port) { state.pickupPlace = null; state.pickupHotel = ""; state.pickup = V.pickups[0].key; if (el.hotelIn) el.hotelIn.value = ""; }
       renderTimes(); render();
     });
