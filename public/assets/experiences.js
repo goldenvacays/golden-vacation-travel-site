@@ -95,6 +95,9 @@
         state.cat = "all";
         apply();
         var target = $("#all", root); if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+        /* the stay ticket lands the guest in the hotel box (drive times, nearest first); the port ticket lands them on the port chips */
+        if (d === "stay" && hIn && !hotel) { setTimeout(function () { try { hIn.focus({ preventScroll: true }); } catch (e) { hIn.focus(); } }, 350); }
+        else if (d === "port" && !hotel) { var pc = $("#port-chips", root); if (pc) { pc.classList.remove("flash"); void pc.offsetWidth; pc.classList.add("flash"); var f = $(".chip", pc); if (f) setTimeout(function () { try { f.focus({ preventScroll: true }); } catch (e) {} }, 350); } }
         track("exp_door", { door: d });
       });
     });
@@ -542,7 +545,7 @@
         if (legs !== "in" && !flightRe.test(flightOut)) { el.flightOut.focus(); throw new Error("We need the departing flight number, e.g. BA2262."); }
         if (legs === "both" && (!date2 || date2 < state.date)) { el.date2.focus(); throw new Error("Pick the departure date too."); }
       }
-      if (V.pickups && rateOf(p) === "visitor" && state.pickup !== "own" && !state.pickupHotel && instant()) { if (el.hotelIn) el.hotelIn.focus(); throw new Error("Which hotel should the driver collect you from? Pick it from the list, or choose somewhere else or your own way."); }
+      if (V.pickups && rateOf(p) === "visitor" && state.pickup !== "own" && !state.pickupHotel && instant()) { if (el.hotelIn) el.hotelIn.focus(); throw new Error("Which hotel should the driver collect you from? Pick it from the list, or choose Hotel or Airbnb, or your own way."); }
     }
     var ICON_CARD = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="M2 10h20"></path></svg>';
     var ICON_CHAT = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>';
@@ -612,7 +615,7 @@
       if (!el.hotelList) return;
       var hits = matchPlaces(HOTELS, q, { portsOnly: portsOnly }); portsOnly = false;
       el.hotelList.innerHTML = ""; hCursor = -1;
-      if (!hits.length) { var li0 = document.createElement("li"); li0.className = "none"; li0.textContent = "Not on our list. Choose \"Somewhere else\" below and type it in."; el.hotelList.appendChild(li0); }
+      if (!hits.length) { var li0 = document.createElement("li"); li0.className = "none"; li0.textContent = "Not on our list. Choose \"Hotel or Airbnb\" below and type it in."; el.hotelList.appendChild(li0); }
       hits.forEach(function (hh) {
         var li = document.createElement("li"); li.setAttribute("role", "option"); li.innerHTML = "<span></span><small></small>";
         var sk = servedKey(hh.port ? hh.slug : hh.region), spk = sk && V.pickups.filter(function (x) { return x.key === sk; })[0];
@@ -703,7 +706,7 @@
       need(el.first, "We need a first name for the booking."); need(el.last, "And a last name."); need(el.email, "The confirmation goes by email, so we need an address.");
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.email.value.trim())) { el.email.focus(); throw new Error("That email doesn't look right."); }
       need(el.phone, "A WhatsApp or phone number, so we can send your details.");
-      if (V.pickups && rateOf(p) === "visitor" && state.pickup !== "own" && !state.pickupHotel) { if (el.hotelIn) el.hotelIn.focus(); throw new Error("Which hotel should the driver collect you from? Pick it from the list, or choose somewhere else or your own way."); }
+      if (V.pickups && rateOf(p) === "visitor" && state.pickup !== "own" && !state.pickupHotel) { if (el.hotelIn) el.hotelIn.focus(); throw new Error("Which hotel should the driver collect you from? Pick it from the list, or choose Hotel or Airbnb, or your own way."); }
       var body = { slug: V.slug, product: p.id, date: state.date, time: wantsTime ? state.time : "", date2: date2, flightIn: flightIn, flightOut: flightOut, adults: state.adults, children: state.children, pickup: state.pickup, pickupHotel: state.pickup === "own" ? "" : state.pickupHotel, choices: chosen(), ref: state.ref, ship: el.ship ? el.ship.value.trim() : "", port: cruise() && portOf() ? portOf().slug : "", aboard: cruise() ? (state.aboard || "") : "", customer: { first: el.first.value.trim(), last: el.last.value.trim(), email: el.email.value.trim(), phone: el.phone.value.trim() } };
       track("exp_checkout", { venue: V.slug, product: p.id, total: price().total, code: state.ref });
       if (PREVIEW) { alertBox("In the live site this opens the secure card page for " + price().lead + ". After paying, " + (live ? "the booking is created with the park" : "the guest is confirmed and the team gets the booking to send the details") + ", and the guest lands on the confirmation page (see \"After paying\" in the page picker)."); return; }

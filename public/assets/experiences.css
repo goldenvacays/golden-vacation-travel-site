@@ -64,6 +64,15 @@
 .vcard-t .h { font-size: 24px; }
 .vcard-t small { font-size: 14px; line-height: 1.45; color: var(--muted); }
 .vcard-meta { font-size: 12px; font-weight: 700; color: var(--muted); }
+/* three facts a guest compares on: length, pickup, children */
+.vcard-facts { display: flex; flex-wrap: wrap; gap: 3px 0; font-size: 12px; font-weight: 700; color: var(--muted); line-height: 1.35; }
+.vcard-facts span { white-space: nowrap; }
+.vcard-facts span:not(:last-child)::after { content: "·"; margin: 0 6px; font-weight: 900; opacity: .55; }
+.vcard-photo .top-tag { top: 12px; bottom: auto; }
+/* the port chips catch the eye for a moment when the cruise ticket sends someone to them */
+.port-chips.flash .chip { animation: chip-flash 1.4s ease 1; }
+@keyframes chip-flash { 0%, 100% { box-shadow: none; } 30%, 60% { box-shadow: 0 0 0 4px var(--gold); } }
+@media (prefers-reduced-motion: reduce) { .port-chips.flash .chip { animation: none; } }
 .vcard-p { display: flex; align-items: baseline; gap: 8px; margin-top: auto; font-size: 14px; color: var(--muted); } /* pinned to the card's foot so prices line up across a row */
 .vcard-p b { color: var(--ink); font-size: 20px; font-weight: 900; font-stretch: 110%; letter-spacing: -.03em; }
 .empty { display: flex; flex-direction: column; gap: 10px; padding: 28px; border-radius: 20px; border: 2px dashed var(--line); }
@@ -468,7 +477,7 @@
 /* three levels of text, applied last so they win over the older per-element greys: level two is the sentence under a heading, level three is meta, hints and small print */
 .hub-hero p, .vhero-t .lead, .near-t .lead, .sec-sub, .op-desc, .vcard-t small, .nrow-t small, .empty p, .faq-i p, .door small, .pair-t small, .cta-in p { color: var(--ink-2); }
 .cta-band .cta-in p { color: rgba(255,255,255,.72); }
-.vcard-meta, .op-hours, .op-times, .vcard-p, .pf-hint, .nrow-p small, .crumbs, .area-pick span, .pf-l, .op-group small, .hotel-list li small, .stepper small, .panel .stepper small { color: var(--ink-3); }
+.vcard-meta, .vcard-facts, .op-hours, .op-times, .vcard-p, .pf-hint, .nrow-p small, .crumbs, .area-pick span, .pf-l, .op-group small, .hotel-list li small, .stepper small, .panel .stepper small { color: var(--ink-3); }
 .pf-hint.bad { color: #B42318; } .pf-hint.ok { color: var(--res); } .pf-hint.warn { color: var(--warn); }
 
 /* the photo viewer: bigger tiles that open the photo full screen, with a "N photos" pill on the hero */
