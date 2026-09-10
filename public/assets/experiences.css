@@ -354,6 +354,8 @@
 .hotel-list li small { font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
 .hotel-list li[aria-selected="true"], .hotel-list li:hover { background: var(--alt); }
 .hotel-list .none { color: var(--muted); font-weight: 600; cursor: default; }
+.hotel-list li.area { border-top: 1px solid var(--line); border-radius: 0; }
+.hotel-list li.area + li.area { border-top: 0; }
 /* pickup picker in the booking panel */
 .pickup-alts { gap: 8px; }
 .pickup-alts .chip-sm { height: 32px; padding: 0 12px; font-size: 12px; }
