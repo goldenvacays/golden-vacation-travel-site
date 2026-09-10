@@ -14,7 +14,7 @@ export const handler = async (event) => {
   const venue = findVenue(b.slug), product = findProduct(venue, b.product);
   if (!venue || !product) return json(404, { error: "Unknown product" });
   if (venue.booking !== "instant" || !product.visitor || product.request || !isLive(product)) return json(400, { error: "This one is booked by WhatsApp, not on the spot." });
-  const prob = dateProblem(venue, product, b.date);
+  const prob = dateProblem(venue, product, b.date, undefined, b.children);
   if (prob) return json(400, { error: prob });
   const c = b.customer || {};
   const first = clean(c.first, 60), last = clean(c.last, 60), email = clean(c.email, 120), phone = clean(c.phone, 40);

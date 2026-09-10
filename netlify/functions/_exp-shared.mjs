@@ -44,12 +44,13 @@ export function visitorTotal(venue, product, adults, children, pickupKey) {
 }
 
 /* date rules shared with the browser */
-export function dateProblem(venue, product, iso, today = todayJamaica()) {
+export function dateProblem(venue, product, iso, today = todayJamaica(), children = 0) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(iso || "")) return "Pick a date.";
   if (iso < today) return "That date has passed.";
   const d = new Date(`${iso}T12:00:00Z`);
   if (venue.closedWeekdays && venue.closedWeekdays.includes(d.getUTCDay())) return `${venue.name} is closed on ${DAYS[d.getUTCDay()]}days.`;
   if (venue.blackout && venue.blackout.includes(iso.slice(5))) return "The venue is closed on that date.";
+  if (venue.childDays && Number(children) > 0 && !venue.childDays.includes(d.getUTCDay())) return venue.childDaysText || "Children are welcome on the family days only. Pick one of those, or book adults only.";
   if (product.until && iso > product.until) return `This offer ends on ${longDate(product.until)}.`;
   return "";
 }
