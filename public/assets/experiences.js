@@ -499,7 +499,7 @@
       /* two steps: the booking and its total first, then who's booking and the payment */
       if (el.step1) el.step1.hidden = state.step !== 1;
       if (el.step2) el.step2.hidden = state.step !== 2;
-      if (el.nextSub) el.nextSub.textContent = canPay ? "Next: your details, then a secure card page. Nothing is charged yet." : "Next: we send it to us on WhatsApp. Nothing is charged now.";
+      if (el.nextSub) el.nextSub.textContent = canPay ? "Next: your details, then a secure card page. Nothing is charged yet." : "Next: send it to us on WhatsApp. Nothing is charged now.";
       if (el.stickyCta) el.stickyCta.firstChild.textContent = state.step === 1 ? "Continue" : (canPay ? "Book" : "Request");
       renderSummary(p, pr, r);
       syncSticky();
