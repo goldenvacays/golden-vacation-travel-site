@@ -506,7 +506,7 @@ function venuePage(v) {
   const cfg = {
     page: "venue", whatsapp: S.whatsapp, origin: S.origin, jmdRate: S.jmdRate, today: TODAY,
     hotels: HOTELS.map((h) => [h.name, h.slug, h.region, h.lat, h.lng, h.port ? 1 : 0]), regions: X.regions, shipDay: SHIP_CFG,
-    venue: { slug: v.slug, name: v.name, panel: v.panel, booking: v.booking, calendar: v.calendar || null, area: AREAS[v.area], adultsOnly: !!v.adultsOnly, blackout: v.blackout || [], closedWeekdays: v.closedWeekdays || [], rates: v.rates || null, pickups: v.pickups || null, lat: v.lat, lng: v.lng, drive: v.drive || {}, sd: v.shipDay === false ? 0 : 1,
+    venue: { slug: v.slug, name: v.name, panel: v.panel, booking: v.booking, calendar: v.calendar || null, area: AREAS[v.area], adultsOnly: !!v.adultsOnly, blackout: v.blackout || [], closedWeekdays: v.closedWeekdays || [], ...(v.childDays ? { childDays: v.childDays, childDaysText: v.childDaysText || "" } : {}), rates: v.rates || null, pickups: v.pickups || null, lat: v.lat, lng: v.lng, drive: v.drive || {}, sd: v.shipDay === false ? 0 : 1,
       photos: v.photos.map((p) => [img(p.file), p.alt]), // the photo viewer: full-size file and caption, hero first
       products: v.products.filter(live).map((p) => ({ id: p.id, name: p.name, hours: p.hours, times: p.times || [], audience: p.audience, visitor: p.visitor || null, resident: p.resident || null, perParty: p.perParty || 0, choose: p.choose || null, legs: p.legs || null, request: !!p.request, until: p.until || null, sd: shipDayOf(p, v) })) },
   };
