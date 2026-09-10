@@ -506,6 +506,7 @@
       if (el.stickyCta) el.stickyCta.firstChild.textContent = state.step === 1 ? "Continue" : (canPay ? "Book" : "Request");
       renderSummary(p, pr, r);
       syncSticky();
+      cals.forEach(function (c) { c.refresh(); });
     }
     function renderSummary(p, pr, r) {
       if (!el.sum) return;
@@ -534,7 +535,7 @@
     /* what step one needs before the guest moves on (the same checks run again at payment) */
     function checkStep1() {
       var p = product(), prob = dateProblem(state.date), legs = p.legs || "both";
-      if (!state.date) { el.date.focus(); throw new Error(isFlight ? (legs === "out" ? "Pick your departure date first." : "Pick your arrival date first.") : "Pick a date first."); }
+      if (!state.date) { openDate(0); throw new Error(isFlight ? (legs === "out" ? "Pick your departure date first." : "Pick your arrival date first.") : "Pick a date first."); }
       if (prob) throw new Error(prob);
       var wantsTime = (p.times && p.times.length) || (state.sessions && state.sessions.length);
       if (wantsTime && !state.time) throw new Error("Pick a start time.");
@@ -543,7 +544,7 @@
         var flightRe = /^[A-Z0-9]{2,3}\s?\d{1,4}[A-Z]?$/;
         if (legs !== "out" && !flightRe.test(flightIn)) { el.flightIn.focus(); throw new Error("We need the arriving flight number, e.g. BA2263."); }
         if (legs !== "in" && !flightRe.test(flightOut)) { el.flightOut.focus(); throw new Error("We need the departing flight number, e.g. BA2262."); }
-        if (legs === "both" && (!date2 || date2 < state.date)) { el.date2.focus(); throw new Error("Pick the departure date too."); }
+        if (legs === "both" && (!date2 || date2 < state.date)) { openDate(1); throw new Error("Pick the departure date too."); }
       }
       if (V.pickups && rateOf(p) === "visitor" && state.pickup !== "own" && !state.pickupHotel && instant()) { if (el.hotelIn) el.hotelIn.focus(); throw new Error("Where should the driver collect you? Pick your hotel or area from the list, or choose I'll make my own way."); }
     }
@@ -584,6 +585,68 @@
     $$("input[name=rate]", root).forEach(function (r) { r.addEventListener("change", function () { if (r.checked) { state.rate = r.value; state.sessions = null; state.availOk = null; renderTimes(); render(); loadAvailability(); track("exp_rate", { venue: V.slug, rate: r.value }); } }); });
     if (el.date) { el.date.min = today; el.date.addEventListener("change", function () { state.date = el.date.value; render(); loadAvailability(); }); }
     if (el.date2) { el.date2.min = today; el.date2.addEventListener("change", render); }
+    /* ---- our own calendar on the date boxes: a native date box can't grey out days, this one greys past days, closed weekdays,
+       blackout dates, the end of an offer, and the non-family days when children are in the party (the same rules as dateProblem) ---- */
+    var LONG_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    var cals = [];
+    function openDate(i) { var c = cals[i]; if (c) c.open(); else { var f = i ? el.date2 : el.date; if (f) f.focus(); } }
+    function makeCal(input, opts) {
+      if (!input || !("closest" in input)) return null;
+      var wrap = input.closest(".pf-in"), field = input.closest(".pf-f") || wrap; if (!wrap || !field) return null;
+      var host = field.parentElement || field; // the popover sits beside the label, not inside it: a click inside a label is forwarded to its button
+      input.type = "hidden";
+      var btn = document.createElement("button"); btn.type = "button"; btn.className = "date-btn"; btn.setAttribute("aria-haspopup", "dialog"); btn.setAttribute("aria-expanded", "false");
+      wrap.appendChild(btn); wrap.classList.add("has-cal");
+      var pop = document.createElement("div"); pop.className = "cal"; pop.setAttribute("role", "dialog"); pop.setAttribute("aria-label", opts.label || "Pick a date"); pop.hidden = true;
+      host.classList.add("cal-host"); host.appendChild(pop);
+      var view = null; // first day of the month on show
+      function iso(d) { return d.getUTCFullYear() + "-" + String(d.getUTCMonth() + 1).padStart(2, "0") + "-" + String(d.getUTCDate()).padStart(2, "0"); }
+      function label() { btn.textContent = input.value ? longDate(input.value) : (opts.placeholder || "Pick a date"); btn.classList.toggle("empty", !input.value); }
+      function paint() {
+        var t = parseDate(today), sel = input.value ? parseDate(input.value) : null;
+        if (!view) view = sel ? new Date(Date.UTC(sel.getUTCFullYear(), sel.getUTCMonth(), 1)) : new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), 1));
+        var y = view.getUTCFullYear(), m = view.getUTCMonth(), first = new Date(Date.UTC(y, m, 1)), daysIn = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+        var canBack = new Date(Date.UTC(y, m, 1)) > new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), 1));
+        var h = (opts.title ? '<p class="cal-title">' + opts.title + "</p>" : "") + '<div class="cal-head"><button type="button" class="cal-nav" data-nav="-1" aria-label="Previous month"' + (canBack ? "" : " disabled") + '>&#8249;</button><b>' + ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][m] + " " + y + '</b><button type="button" class="cal-nav" data-nav="1" aria-label="Next month">&#8250;</button></div>';
+        h += '<div class="cal-grid cal-dow">' + ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map(function (d) { return "<span>" + d + "</span>"; }).join("") + "</div><div class=\"cal-grid\">";
+        for (var i = 0; i < first.getUTCDay(); i++) h += "<span></span>";
+        for (var d = 1; d <= daysIn; d++) {
+          var ds = iso(new Date(Date.UTC(y, m, d))), why = opts.problem(ds), off = !!why, isSel = sel && ds === input.value, isToday = ds === today;
+          h += '<button type="button" class="cal-d' + (isSel ? " sel" : "") + (isToday ? " today" : "") + '" data-d="' + ds + '"' + (off ? ' disabled aria-disabled="true" title="' + why.replace(/"/g, "&quot;") + '"' : "") + ">" + d + "</button>";
+        }
+        h += "</div>";
+        var legend = opts.legend ? opts.legend() : "";
+        if (legend) h += '<p class="cal-legend">' + legend + "</p>";
+        pop.innerHTML = h;
+        $$(".cal-nav", pop).forEach(function (b) { b.addEventListener("click", function () { var nav = b.getAttribute("data-nav"); view = new Date(Date.UTC(view.getUTCFullYear(), view.getUTCMonth() + (+nav), 1)); paint(); var again = $('.cal-nav[data-nav="' + nav + '"]:not([disabled])', pop) || $(".cal-d:not([disabled])", pop); if (again) again.focus({ preventScroll: true }); }); }); // the repaint replaced the button that had focus, so put focus back inside the calendar
+        $$(".cal-d:not([disabled])", pop).forEach(function (b) { b.addEventListener("click", function () { input.value = b.getAttribute("data-d"); label(); close(); input.dispatchEvent(new Event("change", { bubbles: true })); }); });
+      }
+      var openedAt = 0;
+      function open() { cals.forEach(function (c) { if (c !== api) c.close(); }); view = null; paint(); pop.hidden = false; openedAt = Date.now(); btn.setAttribute("aria-expanded", "true"); setTimeout(function () { if (pop.scrollIntoView) pop.scrollIntoView({ block: "nearest" }); var f = $(".cal-d.sel", pop) || $(".cal-d:not([disabled])", pop); if (f) f.focus({ preventScroll: true }); }, 0); } // the desktop panel scrolls inside itself, so bring the whole month into view
+      function close() { if (pop.hidden) return; pop.hidden = true; btn.setAttribute("aria-expanded", "false"); }
+      btn.addEventListener("click", function () { if (pop.hidden) open(); else close(); });
+      pop.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") { e.preventDefault(); close(); btn.focus(); return; }
+        var days = $$(".cal-d:not([disabled])", pop), i = days.indexOf(document.activeElement); if (i < 0) return;
+        var step = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: 7, ArrowUp: -7 }[e.key]; if (!step) return;
+        e.preventDefault(); var cur = +document.activeElement.getAttribute("data-d").slice(8), want = cur + step, next = null;
+        days.forEach(function (d) { var n = +d.getAttribute("data-d").slice(8); if (step > 0 ? (n >= want && !next) : (n <= want)) next = d; }); // the nearest open day in that direction
+        if (next) next.focus({ preventScroll: true });
+      });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !pop.hidden) { close(); btn.focus(); } }); // the whole page: focus may sit outside the calendar after a repaint
+      document.addEventListener("click", function (e) { if (Date.now() - openedAt < 150) return; if (e.target && e.target.isConnected && !host.contains(e.target)) close(); }); // the Continue button opens it for an empty date, and that same click must not close it again; a month arrow repaints the grid before this runs, so a detached target was inside the calendar
+      var api = { refresh: function () { label(); if (!pop.hidden) paint(); }, close: close, open: open };
+      label(); cals.push(api); return api;
+    }
+    makeCal(el.date, { label: isFlight ? "Arrival date" : "Date", title: isFlight ? "Arrival date" : "", placeholder: "Pick a date", problem: function (ds) { return ds < today ? "That date has passed." : (isFlight ? "" : dateProblem(ds)); }, legend: function () {
+      if (isFlight) return "";
+      var bits = [];
+      if (V.closedWeekdays && V.closedWeekdays.length) bits.push("Closed on " + V.closedWeekdays.map(function (n) { return LONG_DAYS[n] + "s"; }).join(" and "));
+      if (V.childDays && state.children > 0) bits.push("With children: " + V.childDays.map(function (n) { return LONG_DAYS[n] + "s"; }).join(" and ") + " only");
+      var p = product(); if (p && p.until) bits.push("This offer ends " + longDate(p.until));
+      return bits.join(". ") + (bits.length ? "." : "");
+    } });
+    if (el.date2) makeCal(el.date2, { label: "Departure date", title: "Departure date", placeholder: "Pick a date", problem: function (ds) { return ds < today ? "That date has passed." : (state.date && ds < state.date ? "Before your arrival." : ""); } });
     [el.flightIn, el.flightOut, el.first, el.last, el.email, el.phone, el.ship].forEach(function (i) { if (i) i.addEventListener("input", render); });
     $$("[data-step]", root).forEach(function (b) { b.addEventListener("click", function () { var k = b.getAttribute("data-step"), d = +b.getAttribute("data-d"); state[k] = Math.max(k === "adults" ? 1 : 0, Math.min(MAX_GUESTS, state[k] + d)); el[k].value = state[k]; render(); }); });
     /* ---- pickup hotel picker ---- */
@@ -645,7 +708,19 @@
         li.addEventListener("mousedown", function (e) { e.preventDefault(); pickArea(a); });
         el.hotelList.appendChild(li);
       });
+      /* the open list sits over the chip below it, so the same choice is offered as the last row */
+      var liOwn = document.createElement("li"); liOwn.setAttribute("role", "option"); liOwn.className = "own"; liOwn.innerHTML = "<span></span><small></small>";
+      liOwn.firstChild.textContent = "I'll make my own way"; liOwn.lastChild.textContent = "no pickup";
+      liOwn.addEventListener("mousedown", function (e) { e.preventDefault(); setOwnWay(true); });
+      el.hotelList.appendChild(liOwn);
       el.hotelList.hidden = false;
+    }
+    function setOwnWay(on) {
+      state.pickupPlace = null; state.pickupHotel = "";
+      if (on) { state.pickupMode = "own"; state.pickup = "own"; closeHotelList(); if (el.hotelIn) el.hotelIn.blur(); }
+      else { state.pickupMode = "hotel"; state.pickup = V.pickups[0].key; if (el.hotelIn) setTimeout(function () { el.hotelIn.focus(); }, 50); }
+      if (el.hotelIn) el.hotelIn.value = "";
+      render();
     }
     if (el.hotelIn) {
       el.hotelIn.addEventListener("input", function () { if (state.pickupMode !== "hotel" || el.hotelIn.value !== state.pickupHotel) { state.pickupMode = "hotel"; state.pickup = V.pickups[0].key; state.pickupHotel = ""; state.pickupPlace = null; render(); } openHotelList(el.hotelIn.value); });
@@ -662,15 +737,7 @@
       });
     }
     /* one chip: make my own way (tap again to go back to a pickup) */
-    $$(".pickup-alts .chip", root).forEach(function (b) {
-      b.addEventListener("click", function () {
-        state.pickupPlace = null; state.pickupHotel = "";
-        if (state.pickupMode === "own") { state.pickupMode = "hotel"; state.pickup = V.pickups[0].key; if (el.hotelIn) setTimeout(function () { el.hotelIn.focus(); }, 50); }
-        else { state.pickupMode = "own"; state.pickup = "own"; closeHotelList(); }
-        if (el.hotelIn) el.hotelIn.value = "";
-        render();
-      });
-    });
+    $$(".pickup-alts .chip", root).forEach(function (b) { b.addEventListener("click", function () { setOwnWay(state.pickupMode !== "own"); }); });
     if (el.pickup) el.pickup.addEventListener("change", function () { state.pickup = el.pickup.value; render(); });
     if (el.pickupHotel) el.pickupHotel.addEventListener("input", function () { state.pickupHotel = el.pickupHotel.value.trim(); render(); });
     if (el.ctaWa) el.ctaWa.addEventListener("click", function (e) { e.preventDefault(); sendWhatsApp(); });
@@ -708,7 +775,7 @@
     function need(field, msg) { if (!field || !field.value.trim()) { field && field.focus(); throw new Error(msg); } }
     function pay() {
       var p = product(), prob = dateProblem(state.date), legs = p.legs || "both";
-      if (!state.date) { el.date.focus(); throw new Error(isFlight ? (legs === "out" ? "Pick your departure date first." : "Pick your arrival date first.") : "Pick a date first."); }
+      if (!state.date) { openDate(0); throw new Error(isFlight ? (legs === "out" ? "Pick your departure date first." : "Pick your arrival date first.") : "Pick a date first."); }
       if (prob) throw new Error(prob);
       var wantsTime = (p.times && p.times.length) || (state.sessions && state.sessions.length);
       if (wantsTime && !state.time) throw new Error("Pick a start time.");
@@ -718,7 +785,7 @@
         var flightRe = /^[A-Z0-9]{2,3}\s?\d{1,4}[A-Z]?$/;
         if (legs !== "out" && !flightRe.test(flightIn)) { el.flightIn.focus(); throw new Error("We need the arriving flight number, e.g. BA2263."); }
         if (legs !== "in" && !flightRe.test(flightOut)) { el.flightOut.focus(); throw new Error("We need the departing flight number, e.g. BA2262."); }
-        if (legs === "both" && (!date2 || date2 < state.date)) { el.date2.focus(); throw new Error("Pick the departure date too."); }
+        if (legs === "both" && (!date2 || date2 < state.date)) { openDate(1); throw new Error("Pick the departure date too."); }
       }
       need(el.first, "We need a first name for the booking."); need(el.last, "And a last name."); need(el.email, "The confirmation goes by email, so we need an address.");
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.email.value.trim())) { el.email.focus(); throw new Error("That email doesn't look right."); }

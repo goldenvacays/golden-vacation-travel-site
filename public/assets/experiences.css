@@ -200,6 +200,26 @@
 .pf-in input::placeholder { color: var(--muted); font-weight: 600; }
 .pf-in select { background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230E0F0E' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>") no-repeat right center; padding-right: 22px; }
 .pf-hint { font-size: 12px; line-height: 1.45; color: var(--muted); }
+/* the panel's own calendar: days that can't be booked are greyed and can't be tapped */
+.cal-host { position: relative; }
+.date-btn { flex: 1; min-width: 0; text-align: left; border: 0; background: transparent; padding: 0; font: inherit; font-size: 15px; font-weight: 700; color: var(--ink); cursor: pointer; height: 100%; }
+.date-btn.empty { color: var(--muted); font-weight: 600; }
+.cal { position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 31; padding: 12px; border-radius: 16px; background: #fff; box-shadow: 0 18px 50px rgba(14,15,14,.18), inset 0 0 0 2px var(--ink); }
+.cal[hidden] { display: none; }
+.cal-title { margin: 0 0 6px; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); text-align: center; }
+.cal-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.cal-head b { font-size: 15px; font-weight: 800; }
+.cal-nav { width: 36px; height: 36px; border-radius: 999px; border: 0; background: var(--alt); color: var(--ink); font: inherit; font-size: 20px; font-weight: 800; line-height: 1; cursor: pointer; }
+.cal-nav:hover { background: var(--line); }
+.cal-nav[disabled] { opacity: .3; cursor: not-allowed; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.cal-dow span { text-align: center; font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); padding: 4px 0; }
+.cal-d { height: 38px; border: 0; border-radius: 10px; background: transparent; font: inherit; font-size: 14px; font-weight: 700; color: var(--ink); cursor: pointer; }
+.cal-d:hover { background: var(--alt); }
+.cal-d.today { box-shadow: inset 0 0 0 2px var(--line); }
+.cal-d.sel { background: var(--ink); color: #fff; }
+.cal-d[disabled] { color: var(--ink); opacity: .22; cursor: not-allowed; text-decoration: line-through; text-decoration-thickness: 2px; background: transparent; }
+.cal-legend { margin: 8px 0 0; font-size: 12px; line-height: 1.45; color: var(--muted); }
 .pf-hint.bad { color: #B42318; font-weight: 700; }
 .pf-hint.ok { color: var(--res); font-weight: 700; }
 .pf-hint.warn { color: var(--warn); font-weight: 700; }
@@ -356,6 +376,7 @@
 .hotel-list .none { color: var(--muted); font-weight: 600; cursor: default; }
 .hotel-list li.area { border-top: 1px solid var(--line); border-radius: 0; }
 .hotel-list li.area + li.area { border-top: 0; }
+.hotel-list li.own { border-top: 2px solid var(--ink); border-radius: 0 0 10px 10px; margin-top: 4px; }
 /* pickup picker in the booking panel */
 .pickup-alts { gap: 8px; }
 .pickup-alts .chip-sm { height: 32px; padding: 0 12px; font-size: 12px; }
