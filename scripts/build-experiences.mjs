@@ -276,18 +276,23 @@ function priceLine(p) {
   return `<span class="op-price"><b>Price on request</b></span>`;
 }
 
+const featured = (v) => (X.hub.featured || []).includes(v.slug);
+/* the grid leads with the featured tours (hub.featured, in that order), then the rest in catalogue order */
+const gridOrder = () => [...X.venues.filter(featured).sort((a, b) => X.hub.featured.indexOf(a.slug) - X.hub.featured.indexOf(b.slug)), ...X.venues.filter((v) => !featured(v))];
 function venueCard(v) {
   const fp = fromPrice(v);
   const price = fp ? (fp.usd != null ? `<b>${dual(fp.usd)}</b><small>${fp.same ? "per person" : "from, per person"}</small>` : `<b>${jmd(fp.jmd)}</b><small>${fp.same ? "per person" : "from, per person"}</small>`) : `<b>Price on request</b>`;
   const n = v.products.filter(live).length;
   const doors = (v.doors || []).join(" ");
+  /* three facts a guest compares on (venue.facts), instead of the option count and the category names */
+  const meta = v.facts && v.facts.length ? `<span class="vcard-facts">${v.facts.slice(0, 3).map((f) => `<span>${esc(noDash(f))}</span>`).join("")}</span>` : `<span class="vcard-meta">${n} ${n === 1 ? "option" : "options"} · ${v.categories.map((c) => esc(CATS[c])).join(" · ")}</span>`;
   return `<a class="vcard" href="${BASE}/${v.slug}" data-slug="${v.slug}" data-cats="${esc(v.categories.join(" "))}" data-area="${v.area}" data-doors="${esc(doors)}" data-booking="${v.booking}">
-    <span class="vcard-photo">${pic(small(v.photos[0].file), v.photos[0].alt)}<span class="tag tag-white drive-tag" hidden></span></span>
+    <span class="vcard-photo">${pic(small(v.photos[0].file), v.photos[0].alt)}${featured(v) ? `<span class="tag tag-gold top-tag">Most booked</span>` : ""}<span class="tag tag-white drive-tag" hidden></span></span>
     <span class="vcard-t">
       <span class="vcard-where">${esc(AREAS[v.area])} · ${esc(v.parish)}</span>
       <span class="h hh">${esc(v.name)}</span>
       <small>${esc(v.card)}</small>
-      <span class="vcard-meta">${n} ${n === 1 ? "option" : "options"} · ${v.categories.map((c) => esc(CATS[c])).join(" · ")}</span>
+      ${meta}
     </span>
     <span class="vcard-p">${price}</span>
   </a>`;
@@ -310,12 +315,12 @@ function hubPage() {
   }).join("");
   const chips = hb.categories.map(([k, l], i) => `<button class="chip" type="button" data-cat="${k}" aria-pressed="${i === 0 ? "true" : "false"}">${esc(l)}</button>`).join("");
   const areaOpts = hb.areas.map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join("");
-  const cards = X.venues.map(venueCard).join("\n");
+  const cards = gridOrder().map(venueCard).join("\n");
   const why = hb.why.points.map(([t, p], i) => `<div class="hstep"><span class="n">0${i + 1}</span><div><b>${esc(t)}</b><p>${esc(p)}</p></div></div>`).join("");
   const faqs = hb.questions.map(([q, a]) => `<div class="faq-i"><b>${esc(q)}</b><p>${esc(a)}</p></div>`).join("");
   const jsonld = [
     { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Golden Vacation & Travel", item: S.origin }, { "@type": "ListItem", position: 2, name: "Golden Experiences", item: `${S.origin}${BASE}/` }] },
-    { "@context": "https://schema.org", "@type": "ItemList", name: "Golden Experiences in Jamaica", itemListElement: X.venues.map((v, i) => ({ "@type": "ListItem", position: i + 1, name: v.name, url: `${S.origin}${BASE}/${v.slug}` })) },
+    { "@context": "https://schema.org", "@type": "ItemList", name: "Golden Experiences in Jamaica", itemListElement: gridOrder().map((v, i) => ({ "@type": "ListItem", position: i + 1, name: v.name, url: `${S.origin}${BASE}/${v.slug}` })) },
     { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: hb.questions.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) },
   ];
   return `${head({ title: "Golden Experiences | Jamaica tours, day passes, boat days and airport lounges", description: "Day passes at Ocean and the Rose Hall resorts, JamWest and Mystic Mountain tours, the JamWest catamaran, Poko Loko floating bar and Club MoBay and Club Kingston lounges. Published prices in US$ and J$, resident rates where they exist, booked by people in Jamaica.", pathname: `${BASE}/`, image: heroImg, jsonld, bodyClass: "exp exp-hub" })}
@@ -447,7 +452,7 @@ function panel(v) {
      "somewhere else" opens a free-text line plus the area list; "my own way" skips pickup */
   const pickup = v.pickups ? `<div class="pf" id="pf-pickup-wrap">
       <div class="hotel-q pf-f"><span class="pf-l">Pickup from</span>
-        <div class="chip-row pickup-alts"><button type="button" class="chip chip-sm" data-pick="ship" aria-pressed="false">Off a cruise ship</button><button type="button" class="chip chip-sm" data-pick="other" aria-pressed="false">Somewhere else</button><button type="button" class="chip chip-sm" data-pick="own" aria-pressed="false">I'll make my own way</button></div>
+        <div class="chip-row pickup-alts"><button type="button" class="chip chip-sm" data-pick="ship" aria-pressed="false">Off a cruise ship</button><button type="button" class="chip chip-sm" data-pick="other" aria-pressed="false">Hotel or Airbnb</button><button type="button" class="chip chip-sm" data-pick="own" aria-pressed="false">I'll make my own way</button></div>
         <label class="pf-f hotel-f"><span class="pf-in">${icon("pin", 18)}<input type="search" id="pf-hotel-in" placeholder="Type your hotel or cruise port" autocomplete="off" autocapitalize="words" aria-label="Pickup hotel or cruise port"></span></label><ul class="hotel-list" id="pf-hotel-list" role="listbox" hidden></ul></div>
       <label class="pf-f" id="pf-pickup-other-wrap" hidden><span class="pf-in">${icon("pin", 18)}<input type="text" id="pf-pickup-hotel" placeholder="Villa, Airbnb or hotel name" autocomplete="off"></span></label>
       <label class="pf-f" id="pf-pickup-area-wrap" hidden><span class="pf-l">Pickup area</span><span class="pf-in">${icon("car", 18)}<select id="pf-pickup">${v.pickups.filter((p) => p.key !== "own").map((p) => `<option value="${p.key}" data-add="${p.add || 0}" data-add-child="${p.addChild != null ? p.addChild : p.add || 0}">${esc(p.label)}${p.request ? " (priced by hand)" : p.add ? ` (+${usd(p.add)} each)` : ""}</option>`).join("")}</select></span></label>
