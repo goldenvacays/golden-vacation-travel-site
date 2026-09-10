@@ -452,10 +452,9 @@ function panel(v) {
      "somewhere else" opens a free-text line plus the area list; "my own way" skips pickup */
   const pickup = v.pickups ? `<div class="pf" id="pf-pickup-wrap">
       <div class="hotel-q pf-f"><span class="pf-l">Pickup from</span>
-        <div class="chip-row pickup-alts"><button type="button" class="chip chip-sm" data-pick="ship" aria-pressed="false">Off a cruise ship</button><button type="button" class="chip chip-sm" data-pick="other" aria-pressed="false">Hotel or Airbnb</button><button type="button" class="chip chip-sm" data-pick="own" aria-pressed="false">I'll make my own way</button></div>
-        <label class="pf-f hotel-f"><span class="pf-in">${icon("pin", 18)}<input type="search" id="pf-hotel-in" placeholder="Type your hotel or cruise port" autocomplete="off" autocapitalize="words" aria-label="Pickup hotel or cruise port"></span></label><ul class="hotel-list" id="pf-hotel-list" role="listbox" hidden></ul></div>
-      <label class="pf-f" id="pf-pickup-other-wrap" hidden><span class="pf-in">${icon("pin", 18)}<input type="text" id="pf-pickup-hotel" placeholder="Villa, Airbnb or hotel name" autocomplete="off"></span></label>
-      <label class="pf-f" id="pf-pickup-area-wrap" hidden><span class="pf-l">Pickup area</span><span class="pf-in">${icon("car", 18)}<select id="pf-pickup">${v.pickups.filter((p) => p.key !== "own").map((p) => `<option value="${p.key}" data-add="${p.add || 0}" data-add-child="${p.addChild != null ? p.addChild : p.add || 0}">${esc(p.label)}${p.request ? " (priced by hand)" : p.add ? ` (+${usd(p.add)} each)` : ""}</option>`).join("")}</select></span></label>
+        <label class="pf-f hotel-f"><span class="pf-in">${icon("pin", 18)}<input type="search" id="pf-hotel-in" placeholder="Type your hotel, area or cruise port" autocomplete="off" autocapitalize="words" aria-label="Pickup hotel, area or cruise port"></span></label><ul class="hotel-list" id="pf-hotel-list" role="listbox" hidden></ul></div>
+      <label class="pf-f" id="pf-pickup-other-wrap" hidden><span class="pf-in">${icon("pin", 18)}<input type="text" id="pf-pickup-hotel" placeholder="Villa or Airbnb name, for the driver" autocomplete="off"></span></label>
+      <div class="chip-row pickup-alts"><button type="button" class="chip chip-sm" data-pick="own" aria-pressed="false">I'll make my own way</button></div>
       <p class="pf-hint" id="pickup-note">${v.pickups.some((p) => p.add) ? "Pickup from Negril hotels is included. Lucea and Montego Bay pickups are priced per person." : "Hotel pickup from Negril and Montego Bay is included."}</p>
     </div>` : "";
   /* ship day: the port chips open from the "Off a cruise ship?" link under the date, or on their own when the site already knows the port
