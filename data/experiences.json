@@ -804,6 +804,8 @@
         "locals"
       ],
       "optionNoun": "cruise",
+      "childDays": [2, 4],
+      "childDaysText": "Children sail on Tuesdays and Thursdays, the family days. Pick one of those, or book adults only.",
       "rates": {
         "visitor": {
           "label": "Visitor rate",
