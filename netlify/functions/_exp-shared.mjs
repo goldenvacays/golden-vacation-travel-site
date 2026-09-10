@@ -39,7 +39,7 @@ export function visitorTotal(venue, product, adults, children, pickupKey) {
   const addC = pk ? (pk.addChild != null ? pk.addChild : add) : 0;
   if (c > 0 && product.visitor.usdChild == null) return { error: "Children on this one are priced by a person. Send it as a WhatsApp request." };
   if (c > 0 && venue.adultsOnly) return { error: "Adults only at this venue." };
-  const total = a * (product.visitor.usd + add) + c * (product.visitor.usdChild + addC);
+  const total = a * (product.visitor.usd + add) + (c > 0 ? c * (product.visitor.usdChild + addC) : 0); // no usdChild => 0 * NaN, so only price children when there are any
   return { total, adults: a, children: c, pickup: pk ? pk.label : "" };
 }
 
