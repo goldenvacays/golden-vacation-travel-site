@@ -1,0 +1,10 @@
+# Build command and publish directory stay as set in the Netlify UI (Vite -> dist).
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# The Golden Experiences booking functions never cache
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Cache-Control = "no-store"
