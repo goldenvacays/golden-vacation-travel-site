@@ -54,8 +54,8 @@ function hotelPage(hotel) {
   const pathname = `${BASE}/${d.slug}/${hotel.slug}`; // a flat file, served at the bare path like the Experiences pages (no trailing slash)
   const quoteUrl = `${BASE}/quote/?d=${d.slug}&h=${hotel.slug}&n=${d.defaultNights}&a=${d.airports[0].code}`;
   const defaultPrice = prices[d.defaultNights];
-  const photo = copy.photo || (row && row.img) || null;
-  const photos = (copy.photos || []).filter(Boolean);
+  const photos = (copy.photos || []).filter((p) => p && p.file);
+  const photo = photos.length ? photos[0].file : (copy.photo || (row && row.img) || null);
   const airportTime = short(hotel.drive_time_to_airport) || short(hotel.distance_to_airport_km);
 
   /* facts row: the five or six things a guest compares on */
@@ -69,9 +69,23 @@ function hotelPage(hotel) {
   ].filter(Boolean);
 
   const heroTags = (copy.tags || []).slice(0, 2);
-  const hero = photo
-    ? `<section class="hero-photo hp-hero">${heroPic(photo, `${name}`)}<div class="hero-tags">${heroTags.map((t, i) => tag(t, i ? "white" : "gold")).join("")}</div></section>`
-    : `<section class="hp-hero-empty"><div class="wrap"><span class="kicker kicker-light">${esc(d.name)}${district ? ` · ${esc(district)}` : ""} · photos coming</span><div class="hero-tags-inline">${heroTags.map((t, i) => tag(t, i ? "white" : "gold")).join("")}</div></div></section>`;
+  const tagsHtml = `<div class="hero-tags">${heroTags.map((t, i) => tag(t, i ? "white" : "gold")).join("")}</div>`;
+  const PHOTO_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="12" cy="12" r="3.5"></circle><path d="M8 5l1.5-2h5L16 5"></path></svg>';
+  let hero, gallery = "";
+  if (photos.length > 1) {
+    /* the swipe strip from the tour pages: every photo side by side, dots, arrows on hover, a "N photos" pill, tap opens the viewer */
+    const slides = photos.map((p, i) => `<div class="hero-slide">${i === 0 ? heroPic(p.file, p.alt).replace("<img ", '<img class="lb-open" data-i="0" ') : pic(p.file, p.alt, "lb-open", ` data-i="${i}"`)}</div>`).join("");
+    const dots = `<div class="hero-dots" role="tablist" aria-label="Which photo">${photos.map((p, i) => `<button type="button" role="tab" aria-selected="${i === 0 ? "true" : "false"}" aria-label="Photo ${i + 1} of ${photos.length}" data-i="${i}"></button>`).join("")}</div>`;
+    const arrows = `<button type="button" class="hero-arrow hero-prev" aria-label="Previous photo">${icon("arrow", 18, 2.4)}</button><button type="button" class="hero-arrow hero-next" aria-label="Next photo">${icon("arrow", 18, 2.4)}</button>`;
+    const pill = `<button type="button" class="tag tag-white photos-btn lb-open" data-i="0">${PHOTO_ICON}${photos.length} photos</button>`;
+    hero = `<section class="hero-photo hp-hero has-slides"><div class="hero-track" id="hero-track">${slides}</div>${tagsHtml}${pill}${dots}${arrows}</section>`;
+    gallery = `<section class="hp-sec hp-gallery-sec"><div>${kicker("Photos")}<p class="sec-sub">Tap any photo to see it full screen.</p></div><div class="hp-gallery">${photos.slice(1, 7).map((p, i) => `<button type="button" class="gph lb-open" data-i="${i + 1}" aria-label="Open photo ${i + 2} of ${photos.length}">${pic(p.small || p.file, p.alt)}</button>`).join("")}</div></section>`;
+  } else if (photo) {
+    hero = `<section class="hero-photo hp-hero">${heroPic(photo, `${name}`)}${tagsHtml}</section>`;
+  } else {
+    hero = `<section class="hp-hero-empty"><div class="wrap"><span class="kicker kicker-light">${esc(d.name)}${district ? ` · ${esc(district)}` : ""} · photos coming</span><div class="hero-tags-inline">${heroTags.map((t, i) => tag(t, i ? "white" : "gold")).join("")}</div></div></section>`;
+  }
+  const photoData = photos.length > 1 ? `<script>window.GV_HOTEL=${JSON.stringify({ slug: hotel.slug, name: shortName, photos: photos.map((p) => [img(p.file), p.alt]) })};</script><script src="${BASE}/assets/hotels.js" defer></script>` : "";
 
   /* price card, driven by getaways.js exactly like the destination page (chips + data-lead) */
   const priceCard = `<div class="lead hp-lead">
@@ -147,6 +161,7 @@ ${opts}
 <div class="dest-grid">
   <div class="dest-side">${priceCard}</div>
   <div class="dest-main">
+    ${gallery}
     ${gtk}
     ${rooms}
     ${resortIncluded}
@@ -166,8 +181,9 @@ ${ticker(d.ticker)}
 ${footer()}
 ${bottomBar(`Get a quote for ${shortName}`, quoteUrl, d.bottomNote)}
 ${scripts()}
+${photoData}
 </body></html>`;
-  return { pathname, html: head({ title, description: metaDescription, pathname, image: photo || d.hero.img, jsonld, extraHead: `<link rel="stylesheet" href="${CSS_HOTELS}">` }) + body };
+  return { pathname, html: (head({ title, description: metaDescription, pathname, image: photo || d.hero.img, jsonld, extraHead: `<link rel="stylesheet" href="${CSS_HOTELS}">` }) + body).replace(/^[ \t]*\n/gm, "") };
 }
 
 /* ---------- write ---------- */
