@@ -7,14 +7,36 @@
 .hp-crumb:hover { color: var(--gold-txt); }
 .hp-facts { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 var(--pad) 18px; }
 .hp-facts span { display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border-radius: 999px; background: var(--alt); font-size: 13px; font-weight: 800; color: var(--ink); white-space: nowrap; }
-.hp-lead .lead-row { align-items: flex-start; }
-.hp-lead .ask { display: block; font-size: 13px; font-weight: 700; color: var(--muted); }
-.hp-lead-note { font-size: 12px; line-height: 1.45; color: var(--muted); }
+/* the price card: name, airport chips, one row per stay length (each a link to the quote with that length), the quote button */
+.lead.hp-lead { margin: 0 var(--pad) 8px; padding: 18px; border-radius: 20px; box-shadow: inset 0 0 0 2px var(--ink); gap: 14px; }
+.hp-lead-head { display: flex; flex-direction: column; gap: 3px; }
+.hp-lead-head .h { font-size: 22px; font-weight: 900; letter-spacing: -0.02em; line-height: 1.05; }
+.hp-lead-head .meta { font-size: 13px; color: var(--muted); }
+.hp-nights { display: flex; flex-direction: column; }
+.hp-nrow { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 2px solid var(--line); color: var(--ink); text-decoration: none; }
+.hp-nrow:first-child { border-top: 0; padding-top: 2px; }
+.hp-nrow-l { flex: 1; font-size: 15px; font-weight: 800; }
+.hp-nrow .price { font-size: 22px; }
+.hp-nrow .price[hidden] { display: none; }
+.hp-nrow .ask { font-size: 12px; font-weight: 700; color: var(--muted); text-align: right; }
+.hp-nrow svg { color: var(--muted); }
+.hp-nrow:hover, .hp-nrow:hover svg { color: var(--gold-txt); }
+.hp-nrow:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; border-radius: 8px; }
+.hp-nrow-ask .hp-nrow-l { color: var(--gold-txt); }
+.hp-lead-per, .hp-lead-note { font-size: 12px; line-height: 1.45; color: var(--muted); }
+.hp-lead-per { margin-top: -6px; }
 .hp-sec { padding: 0 var(--pad) 28px; display: flex; flex-direction: column; gap: 12px; }
 .hp-sec .sec-sub { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
 .hp-p { margin: 0; font-size: 15px; line-height: 1.55; }
-.hp-rooms { display: grid; grid-template-columns: 1fr; gap: 10px; }
-.hp-room { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border-radius: 16px; background: var(--alt); }
+/* rooms: cards, with the room's photo on top when we have one */
+.hp-rooms { display: grid; grid-template-columns: 1fr; gap: 10px; align-items: start; }
+.hp-room { display: flex; flex-direction: column; border-radius: 16px; background: var(--alt); overflow: hidden; }
+.hp-room-img { display: block; width: 100%; padding: 0; border: 0; background: var(--ph); aspect-ratio: 16 / 10; overflow: hidden; font: inherit; }
+button.hp-room-img { cursor: zoom-in; }
+.hp-room-img img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+button.hp-room-img:hover img, button.hp-room-img:focus-visible img { transform: scale(1.04); }
+button.hp-room-img:focus-visible { outline: 3px solid var(--gold); outline-offset: -3px; }
+.hp-room-t { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; }
 .hp-room b { font-size: 16px; }
 .hp-room small { font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
 .hp-room p { margin: 2px 0 0; font-size: 14px; line-height: 1.5; color: var(--muted); }
@@ -29,7 +51,11 @@
 .hp-map { position: relative; border-radius: 20px; overflow: hidden; background: var(--ph); aspect-ratio: 16 / 10; max-width: 100%; }
 .hp-map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 @media (min-width: 900px) {
-  .hp .dest-grid { grid-template-columns: .85fr 1.15fr; }
+  /* booking-site layout: the content runs down the left, the price card sits on the right and sticks (the side comes first in the markup so phones show it first) */
+  .hp .dest-grid { grid-template-columns: minmax(0, 1fr) clamp(320px, 32%, 400px); gap: 56px; }
+  .hp .dest-side { grid-column: 2; grid-row: 1; }
+  .hp .dest-main { grid-column: 1; grid-row: 1; }
+  .dest-side .lead.hp-lead { padding: 22px; margin: 0; }
   .hp-hero-empty { padding: 40px var(--pad) 36px; }
   .hp-facts { padding-bottom: 28px; }
   .dest-main .hp-sec { padding: 0 0 36px; }
