@@ -25,6 +25,23 @@
 .hp-nrow-ask .hp-nrow-l { color: var(--gold-txt); }
 .hp-lead-per, .hp-lead-note { font-size: 12px; line-height: 1.45; color: var(--muted); }
 .hp-lead-per { margin-top: -6px; }
+/* what the price includes, inside the card */
+.hp-card-inc { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-radius: 14px; background: var(--alt); }
+.hp-card-inc .lbl { margin-bottom: 2px; }
+.hp-inc { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 1.4; font-weight: 700; }
+.hp-inc svg { flex: none; margin-top: 1px; color: var(--gold-txt); }
+/* about the hotel: short written block, chips under it */
+.hp-about .hp-p + .hp-p { margin-top: 2px; }
+.hp-about .hp-amen { margin-top: 6px; }
+/* the room categories behind See more */
+.hp-more { margin-top: 4px; }
+.hp-more summary { list-style: none; cursor: pointer; display: inline-flex; }
+.hp-more summary::-webkit-details-marker { display: none; }
+.hp-more summary .chip { gap: 6px; }
+.hp-more summary .chip svg { transform: rotate(90deg); transition: transform .2s ease; }
+.hp-more[open] summary .chip svg { transform: rotate(-90deg); }
+.hp-more[open] summary { margin-bottom: 12px; }
+.hp-more summary:focus-visible .chip { outline: 3px solid var(--gold); outline-offset: 2px; }
 .hp-sec { padding: 0 var(--pad) 28px; display: flex; flex-direction: column; gap: 12px; }
 .hp-sec .sec-sub { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
 .hp-p { margin: 0; font-size: 15px; line-height: 1.55; }
@@ -81,11 +98,6 @@ button.hp-room-img:focus-visible { outline: 3px solid var(--gold); outline-offse
 .photos-btn { position: absolute; right: 12px; top: 12px; z-index: 1; display: inline-flex; align-items: center; gap: 6px; border: 0; cursor: pointer; text-transform: none; letter-spacing: 0; font-size: 13px; font-family: inherit; box-shadow: 0 2px 10px rgba(0,0,0,.25); }
 .photos-btn:hover { background: var(--gold); }
 .photos-btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
-.hp-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-.gph { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; padding: 0; border: 0; border-radius: 12px; overflow: hidden; cursor: zoom-in; font: inherit; background: var(--ph); }
-.gph img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
-.gph:hover img, .gph:focus-visible img { transform: scale(1.05); }
-.gph:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 /* the full-screen viewer */
 .lb-open-page { overflow: hidden; }
 .lb { position: fixed; inset: 0; z-index: 1000; background: rgba(8,8,8,.97); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; }
@@ -105,11 +117,10 @@ button.hp-room-img:focus-visible { outline: 3px solid var(--gold); outline-offse
   .hero-arrow { display: grid; opacity: 0; transition: opacity .2s ease; }
   .hp-hero:hover .hero-arrow, .hero-arrow:focus-visible, .hp-hero:focus-within .hero-arrow { opacity: 1; }
   .hero-dots { top: 16px; }
-  .hp-gallery { gap: 10px; }
   .lb-cap { flex-direction: row; align-items: baseline; gap: 14px; padding: 12px 20px; }
   .lb-img { max-width: calc(100vw - 150px); max-height: calc(100vh - 96px); border-radius: 8px; }
   .lb-x { top: 20px; right: 20px; }
   .lb-prev, .lb-next { top: 50%; bottom: auto; transform: translateY(-50%); }
   .lb-prev { left: 24px; } .lb-next { right: 24px; }
 }
-@media (prefers-reduced-motion: reduce) { .hero-track { scroll-behavior: auto; } .hero-dots button, .hero-arrow, .gph img { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .hero-track { scroll-behavior: auto; } .hero-dots button, .hero-arrow { transition: none; } }
