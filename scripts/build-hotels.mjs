@@ -43,7 +43,11 @@ const bedText = (s) => {
 const starOf = (s) => { const m = /(\d)\s*star/i.exec(s || ""); return m ? `${m[1]} star` : ""; };
 const splitList = (s) => {
   const out = [];
-  String(s || "").split(/,\s*/).forEach((f) => { f = f.trim(); if (!f) return; if (out.length && /^[a-z]/.test(f)) out[out.length - 1] += `, ${f}`; else out.push(f); });
+  String(s || "").replace(/(\d),(\d{3})\b/g, "$1$2").split(/,\s*/).forEach((f) => {
+    f = f.replace(/\b\d+\s*sq ?(ft|m)\b/gi, "").replace(/^\d+(\.\d+)?\s*km$/i, "").trim(); if (!f) return;
+    /* a fragment that starts lowercase, or that only qualifies the item before it ("24 hour access"), belongs to that item */
+    if (out.length && (/^[a-z]/.test(f) || /^\d+\s*(hour access|hours)$/i.test(f))) out[out.length - 1] += `, ${f}`; else out.push(f);
+  });
   return out.filter((f) => !TRADE.test(f));
 };
 const slugOf = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -146,7 +150,10 @@ function hotelPage(hotel) {
     <div class="hp-rooms">${upFront.map(roomCard).join("")}</div>
     ${moreRooms.length ? `<details class="hp-more"><summary><span class="chip">See ${moreRooms.length} more categor${moreRooms.length === 1 ? "y" : "ies"}${icon("arrow", 16, 2.6)}</span></summary><div class="hp-rooms">${moreRooms.map(roomCard).join("")}</div></details>` : ""}</section>` : "";
 
-  const amenities = splitList(hotel.full_amenity_list);
+  /* the chips are facilities a guest scans for (pools, restaurants, gym, spa, kids club, lounge); the things the paragraph above
+     already says (Wi-Fi, parking, reception, room service, pets, in-room basics, board, policies) stay out of the chips */
+  const CHIP_DROP = /\b(wi-?fi|parking|reception|front desk|room service|pets?\b|pet friendly|dogs?\b|air conditioning|safe\b|coffee|kettle|nespresso|iron\b|ironing|fridge|refrigerator|minibar|liquor dispenser|television|tv\b|hdtv|hairdryer|desk\b|workspace|wardrobe|digital key|check ?in|check ?out|laundry|dry cleaning|smok(e|ing)|adapted|accessib|wheelchair|breakfast|bed and breakfast|all inclusive|unlimited luxury|taxes|gratuities|wristband|reservations|languages|concierge|luggage|cots?\b|cribs?\b|amenities kit|bathrobe|prices quoted|cancellation|room only|refundable|towels|first aid|nurse|pharmacy|ev charging|airport|shuttle|transfer|kosher rooms|non motorised|telephone|mattress|printing|business (centre|facilities)|car rental|tour desk|ticket desk|in the group|stay free|sq ?(ft|m)\b|private bathroom|ramps|fire alarm)/i;
+  const amenities = splitList(hotel.full_amenity_list).filter((a) => !CHIP_DROP.test(a));
   /* About the hotel: the written block from hotels-copy.json (about: strings or [lead, text]), the amenity chips under it.
      Without an about block, the sheet fields are joined into plain paragraphs. */
   const aboutParas = (copy.about && copy.about.length) ? copy.about.map((p) => Array.isArray(p) ? `<p class="hp-p"><b>${esc(p[0])}.</b> ${esc(p[1])}</p>` : `<p class="hp-p">${esc(p)}</p>`) : [
