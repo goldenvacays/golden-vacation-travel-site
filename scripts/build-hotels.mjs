@@ -73,18 +73,16 @@ function hotelPage(hotel) {
   const heroTags = (copy.tags || []).slice(0, 2);
   const tagsHtml = `<div class="hero-tags">${heroTags.map((t, i) => tag(t, i ? "white" : "gold")).join("")}</div>`;
   const PHOTO_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="12" cy="12" r="3.5"></circle><path d="M8 5l1.5-2h5L16 5"></path></svg>';
-  let hero, gallery = "";
+  let hero;
   if (photos.length > 1) {
     /* the swipe strip from the tour pages: every photo side by side, dots, arrows on hover, a "N photos" pill, tap opens the viewer */
     /* responsive sources: -s (800px) for tiles, the 1600px file, -l (2400px) for the hero on sharp wide screens and the viewer */
     const heroSet = (p) => p.large ? ` srcset="${img(p.file)} 1600w, ${img(p.large)} 2400w" sizes="100vw"` : "";
-    const tileSet = (p, sizes) => p.small ? ` srcset="${img(p.small)} 800w, ${img(p.file)} 1600w" sizes="${sizes}"` : "";
     const slides = photos.map((p, i) => `<div class="hero-slide">${i === 0 ? heroPic(p.file, p.alt).replace("<img ", `<img class="lb-open" data-i="0"${heroSet(p)} `) : pic(p.file, p.alt, "lb-open", ` data-i="${i}"${heroSet(p)}`)}</div>`).join("");
     const dots = `<div class="hero-dots" role="tablist" aria-label="Which photo">${photos.map((p, i) => `<button type="button" role="tab" aria-selected="${i === 0 ? "true" : "false"}" aria-label="Photo ${i + 1} of ${photos.length}" data-i="${i}"></button>`).join("")}</div>`;
     const arrows = `<button type="button" class="hero-arrow hero-prev" aria-label="Previous photo">${icon("arrow", 18, 2.4)}</button><button type="button" class="hero-arrow hero-next" aria-label="Next photo">${icon("arrow", 18, 2.4)}</button>`;
     const pill = `<button type="button" class="tag tag-white photos-btn lb-open" data-i="0">${PHOTO_ICON}${photos.length} photos</button>`;
     hero = `<section class="hero-photo hp-hero has-slides"><div class="hero-track" id="hero-track">${slides}</div>${tagsHtml}${pill}${dots}${arrows}</section>`;
-    gallery = `<section class="hp-sec hp-gallery-sec"><div>${kicker("Photos")}<p class="sec-sub">Tap any photo to see it full screen.</p></div><div class="hp-gallery">${photos.slice(1, 7).map((p, i) => `<button type="button" class="gph lb-open" data-i="${i + 1}" aria-label="Open photo ${i + 2} of ${photos.length}">${pic(p.small || p.file, p.alt, "", tileSet(p, "(min-width: 900px) 20vw, 33vw"))}</button>`).join("")}</div></section>`;
   } else if (photo) {
     hero = `<section class="hero-photo hp-hero">${heroPic(photo, `${name}`)}${tagsHtml}</section>`;
   } else {
@@ -109,18 +107,17 @@ function hotelPage(hotel) {
       return `<a class="hp-nrow" data-n="${n}" href="${quoteFor(n)}"><span class="hp-nrow-l">${n} nights</span>${p != null ? price(p, "hh") : `<span class="price hh" hidden></span>`}<small class="ask"${p != null ? " hidden" : ""}>quoted with your dates</small>${icon("arrow", 18, 2.4)}</a>`;
     }).join("")}${d.nightsAsk ? `<a class="hp-nrow hp-nrow-ask" href="${quoteUrl}"><span class="hp-nrow-l">${esc(d.nightsAsk)}</span>${icon("arrow", 18, 2.4)}</a>` : ""}</div>
     <small class="hp-lead-per">${Object.keys(prices).length ? "Per person sharing. Starting prices; the exact rate depends on your dates." : "Per person sharing. Send your dates and we quote it within working hours."}</small>
+    <div class="hp-card-inc"><span class="lbl">The price includes</span>${d.included.map((t) => /^Your (hotel|resort)\b/i.test(t) ? `Your ${/^Your resort/i.test(t) ? "resort" : "hotel"}, ${board}` : t).map((t) => `<span class="hp-inc">${icon("check", 16, 2.8)}<span>${esc(t)}</span></span>`).join("")}</div>
     ${btn(`Get a quote for ${shortName}`, quoteUrl, "black", "", "arrow", ' class="btn btn-black btn-full"').replace('class="btn btn-black" ', "")}
-    <small class="hp-lead-note">The quote comes back on WhatsApp within working hours. Nothing to pay yet; a deposit from ${usd(d.deposit)} holds it when you book.</small>
+    <small class="hp-lead-note">The quote comes back on WhatsApp within working hours. Nothing to pay yet: a deposit from ${usd(d.deposit)} holds it${/^Balance due 30 days before departure/.test(d.depositText || "") ? `, the balance is due 30 days before departure in J$ or US$, and a payment plan is available.` : `. ${esc(d.depositText || "")}`}</small>
   </div>`;
 
-  const gtk = (copy.goodToKnow || []).length ? `<section class="list hp-sec"><div>${kicker("Good to know")}</div>${copy.goodToKnow.map((t) => check(esc(t))).join("")}</section>` : "";
 
   /* rooms: one card per category, with the room's photo when hotels-copy.json maps one (roomPhotos: name -> file).
      Sizes in square metres are left out on purpose. A room photo that is also in the strip opens the viewer at that photo. */
   const roomPhotos = copy.roomPhotos || {};
   Object.keys(roomPhotos).forEach((n) => { if (!hotel.rooms.some((r) => r.name === n)) console.warn(`  ${hotel.slug}: roomPhotos "${n}" matches no room in the sheet`); });
-  const rooms = hotel.rooms.length ? `<section class="hp-sec"><div>${kicker("Rooms")}<p class="sec-sub">${hotel.rooms.length} categor${hotel.rooms.length === 1 ? "y" : "ies"} as the hotel publishes them. Sleeps counts the beds, including sofa beds; we confirm the maximum for your party when we quote.</p></div>
-    <div class="hp-rooms">${hotel.rooms.map((r) => {
+  const roomCard = (r) => {
       const meta = [r.sleeps ? `sleeps ${r.sleeps}` : "", decode(r.beds)].filter(Boolean).map((x) => esc(x)).join(" · ");
       const note = decode(guest(r.notes));
       const rp = roomPhotos[r.name];
@@ -131,24 +128,24 @@ function hotelPage(hotel) {
         ? `<button type="button" class="hp-room-img lb-open" data-i="${idx}" aria-label="Open the ${esc(r.name)} photo">${pic(small, photos[idx].alt, "", roomSet)}</button>`
         : `<div class="hp-room-img">${pic(small, r.name)}</div>`;
       return `<div class="hp-room${shot ? " has-img" : ""}">${shot}<div class="hp-room-t"><b>${esc(r.name)}</b>${meta ? `<small>${meta}</small>` : ""}${note ? `<p>${esc(note)}</p>` : ""}</div></div>`;
-    }).join("")}</div></section>` : "";
+  };
+  /* the categories people book go up front; the rest sit behind See more (roomsUpFront in hotels-copy.json, else the first 5 when there are more than 6) */
+  if (copy.roomsUpFront) copy.roomsUpFront.forEach((n) => { if (!hotel.rooms.some((r) => r.name === n)) console.warn(`  ${hotel.slug}: roomsUpFront "${n}" matches no room in the sheet`); });
+  const upFront = copy.roomsUpFront ? hotel.rooms.filter((r) => copy.roomsUpFront.includes(r.name)) : (hotel.rooms.length > 6 ? hotel.rooms.slice(0, 5) : hotel.rooms);
+  const moreRooms = hotel.rooms.filter((r) => !upFront.includes(r));
+  const rooms = hotel.rooms.length ? `<section class="hp-sec"><div>${kicker("Rooms")}<p class="sec-sub">${moreRooms.length ? `The categories most people book; ${moreRooms.length} more below. ` : ""}Sleeps counts the beds, including sofa beds; we confirm the maximum for your party when we quote.</p></div>
+    <div class="hp-rooms">${upFront.map(roomCard).join("")}</div>
+    ${moreRooms.length ? `<details class="hp-more"><summary><span class="chip">See ${moreRooms.length} more categor${moreRooms.length === 1 ? "y" : "ies"}${icon("arrow", 16, 2.6)}</span></summary><div class="hp-rooms">${moreRooms.map(roomCard).join("")}</div></details>` : ""}</section>` : "";
 
   const amenities = splitList(hotel.full_amenity_list);
-  const amen = amenities.length ? `<section class="hp-sec"><div>${kicker("At the hotel")}</div><div class="hp-amen">${amenities.map((a) => `<span>${esc(a)}</span>`).join("")}</div></section>` : "";
-
-  const dining = kv([["Restaurants", short(hotel.restaurant)], ["Bars", short(hotel.bar)], ["Breakfast", short(hotel.breakfast)], ["Room service", short(hotel.room_service)]]);
-  const diningSec = /<dt>/.test(dining) ? `<section class="hp-sec"><div>${kicker("Eating and drinking")}</div>${dining}</section>` : "";
-
-  const resortIncluded = isAI && hotel.included ? `<section class="list hp-sec"><div>${kicker("Included at the resort")}</div>${String(hotel.included).split(/,\s*(?=[A-Z0-9])/).map((t) => guest(t)).filter(Boolean).map((t) => check(esc(t.replace(/\.$/, "")))).join("")}${hotel.costs_extra ? `<p class="hp-extra"><b>Costs extra:</b> ${esc(guest(hotel.costs_extra))}</p>` : ""}</section>` : "";
-  const kids = hotel.kids && guest(hotel.kids) ? `<section class="hp-sec"><div>${kicker("For children")}</div><p class="hp-p">${esc(guest(hotel.kids))}</p></section>` : "";
-
-  const practical = kv([
-    ["Check-in", short(hotel.check_in)], ["Check-out", short(hotel.check_out)],
-    ["Parking", short(hotel.parking)], ["Wi-Fi", short(hotel.wi_fi)],
-    ["Reception", short(hotel.reception_hours)], ["Languages", short(hotel.languages_spoken)], ["Pets", short(hotel.pet_policy)],
-    ["Accessibility", decode(short(hotel.accessibility))], ["Built", short(hotel.year_built)], ["Renovated", short(hotel.year_renovated)],
-  ]);
-  const practicalSec = /<dt>/.test(practical) ? `<section class="hp-sec"><div>${kicker("The practical bits")}</div>${practical}</section>` : "";
+  /* About the hotel: the written block from hotels-copy.json (about: strings or [lead, text]), the amenity chips under it.
+     Without an about block, the sheet fields are joined into plain paragraphs. */
+  const aboutParas = (copy.about && copy.about.length) ? copy.about.map((p) => Array.isArray(p) ? `<p class="hp-p"><b>${esc(p[0])}.</b> ${esc(p[1])}</p>` : `<p class="hp-p">${esc(p)}</p>`) : [
+    (copy.goodToKnow || []).length ? `<p class="hp-p">${esc(copy.goodToKnow.join(" "))}</p>` : "",
+    (() => { const t = [["Restaurants", short(hotel.restaurant)], ["Bars", short(hotel.bar)], ["Breakfast", short(hotel.breakfast)], ["Room service", short(hotel.room_service)]].filter(([, v]) => v).map(([k, v]) => `${k}: ${v.replace(/\.$/, "")}`).join(". "); return t ? `<p class="hp-p"><b>Eating and drinking.</b> ${esc(t)}.</p>` : ""; })(),
+    (() => { const t = [["Check-in", short(hotel.check_in)], ["Check-out", short(hotel.check_out)], ["Parking", short(hotel.parking)], ["Wi-Fi", short(hotel.wi_fi)], ["Reception", short(hotel.reception_hours)], ["Languages", short(hotel.languages_spoken)], ["Pets", short(hotel.pet_policy)], ["Accessibility", decode(short(hotel.accessibility))]].filter(([, v]) => v).map(([k, v]) => `${k}: ${v.replace(/\.$/, "")}`).join(". "); return t ? `<p class="hp-p"><b>The practical bits.</b> ${esc(t)}.</p>` : ""; })(),
+  ].filter(Boolean);
+  const about = aboutParas.length || amenities.length ? `<section class="hp-sec hp-about"><div>${kicker("About the hotel")}</div>${aboutParas.join("")}${amenities.length ? `<div class="hp-amen">${amenities.map((a) => `<span>${esc(a)}</span>`).join("")}</div>` : ""}</section>` : "";
 
   const lat = hotel.latitude, lng = hotel.longitude;
   const mapUrl = lat != null && lng != null ? `https://www.google.com/maps?q=${lat},${lng}&z=15&output=embed` : "";
@@ -159,8 +156,6 @@ function hotelPage(hotel) {
 
   const tours = d.tours && d.tours.length ? `<section class="list hp-sec"><div>${kicker(d.toursTitle || "Days out")}</div><p class="sec-sub">${esc(d.toursNote || "")}</p>
     ${d.tours.map((t) => `<div class="tour">${pic(t.img, t.alt)}<div class="tour-t"><b>${esc(t.name)}</b><small>${esc(t.text)}</small></div><span class="hh">${usd(t.price)}</span></div>`).join("")}</section>` : "";
-  const included = `<section class="list hp-sec"><div>${kicker("What the package includes")}</div>${d.included.map((t) => check(esc(t))).join("")}</section>`;
-  const deposit = `<div class="deposit"><span class="h">Hold it with a deposit from ${usd(d.deposit)}.</span><p>${esc(d.depositText)}</p></div>`;
   const faq = `<section class="gtk"><div>${kicker("Questions")}</div><div class="faq">${d.faq.map(([q, a]) => faqItem(q, a)).join("")}</div></section>`;
 
   const description = copy.intro ? copy.intro : guest(hotel.one_line_description);
@@ -181,18 +176,10 @@ ${hero}
 <div class="dest-grid">
   <div class="dest-side">${priceCard}</div>
   <div class="dest-main">
-    ${gallery}
     ${rooms}
-    ${gtk}
-    ${resortIncluded}
-    ${kids}
-    ${amen}
-    ${diningSec}
-    ${practicalSec}
+    ${about}
     ${where}
     ${tours}
-    ${included}
-    ${deposit}
     ${faq}
   </div>
 </div>
