@@ -76,18 +76,21 @@ function hotelPage(hotel) {
   let hero, gallery = "";
   if (photos.length > 1) {
     /* the swipe strip from the tour pages: every photo side by side, dots, arrows on hover, a "N photos" pill, tap opens the viewer */
-    const slides = photos.map((p, i) => `<div class="hero-slide">${i === 0 ? heroPic(p.file, p.alt).replace("<img ", '<img class="lb-open" data-i="0" ') : pic(p.file, p.alt, "lb-open", ` data-i="${i}"`)}</div>`).join("");
+    /* responsive sources: -s (800px) for tiles, the 1600px file, -l (2400px) for the hero on sharp wide screens and the viewer */
+    const heroSet = (p) => p.large ? ` srcset="${img(p.file)} 1600w, ${img(p.large)} 2400w" sizes="100vw"` : "";
+    const tileSet = (p, sizes) => p.small ? ` srcset="${img(p.small)} 800w, ${img(p.file)} 1600w" sizes="${sizes}"` : "";
+    const slides = photos.map((p, i) => `<div class="hero-slide">${i === 0 ? heroPic(p.file, p.alt).replace("<img ", `<img class="lb-open" data-i="0"${heroSet(p)} `) : pic(p.file, p.alt, "lb-open", ` data-i="${i}"${heroSet(p)}`)}</div>`).join("");
     const dots = `<div class="hero-dots" role="tablist" aria-label="Which photo">${photos.map((p, i) => `<button type="button" role="tab" aria-selected="${i === 0 ? "true" : "false"}" aria-label="Photo ${i + 1} of ${photos.length}" data-i="${i}"></button>`).join("")}</div>`;
     const arrows = `<button type="button" class="hero-arrow hero-prev" aria-label="Previous photo">${icon("arrow", 18, 2.4)}</button><button type="button" class="hero-arrow hero-next" aria-label="Next photo">${icon("arrow", 18, 2.4)}</button>`;
     const pill = `<button type="button" class="tag tag-white photos-btn lb-open" data-i="0">${PHOTO_ICON}${photos.length} photos</button>`;
     hero = `<section class="hero-photo hp-hero has-slides"><div class="hero-track" id="hero-track">${slides}</div>${tagsHtml}${pill}${dots}${arrows}</section>`;
-    gallery = `<section class="hp-sec hp-gallery-sec"><div>${kicker("Photos")}<p class="sec-sub">Tap any photo to see it full screen.</p></div><div class="hp-gallery">${photos.slice(1, 7).map((p, i) => `<button type="button" class="gph lb-open" data-i="${i + 1}" aria-label="Open photo ${i + 2} of ${photos.length}">${pic(p.small || p.file, p.alt)}</button>`).join("")}</div></section>`;
+    gallery = `<section class="hp-sec hp-gallery-sec"><div>${kicker("Photos")}<p class="sec-sub">Tap any photo to see it full screen.</p></div><div class="hp-gallery">${photos.slice(1, 7).map((p, i) => `<button type="button" class="gph lb-open" data-i="${i + 1}" aria-label="Open photo ${i + 2} of ${photos.length}">${pic(p.small || p.file, p.alt, "", tileSet(p, "(min-width: 900px) 20vw, 33vw"))}</button>`).join("")}</div></section>`;
   } else if (photo) {
     hero = `<section class="hero-photo hp-hero">${heroPic(photo, `${name}`)}${tagsHtml}</section>`;
   } else {
     hero = `<section class="hp-hero-empty"><div class="wrap"><span class="kicker kicker-light">${esc(d.name)}${district ? ` · ${esc(district)}` : ""} · photos coming</span><div class="hero-tags-inline">${heroTags.map((t, i) => tag(t, i ? "white" : "gold")).join("")}</div></div></section>`;
   }
-  const photoData = photos.length > 1 ? `<script>window.GV_HOTEL=${JSON.stringify({ slug: hotel.slug, name: shortName, photos: photos.map((p) => [img(p.file), p.alt]) })};</script><script src="${BASE}/assets/hotels.js" defer></script>` : "";
+  const photoData = photos.length > 1 ? `<script>window.GV_HOTEL=${JSON.stringify({ slug: hotel.slug, name: shortName, photos: photos.map((p) => [img(p.file), p.alt, p.large ? img(p.large) : null]) })};</script><script src="${BASE}/assets/hotels.js" defer></script>` : "";
 
   /* price card, driven by getaways.js like the destination page (airport chips + data-lead), but every stay length is listed
      instead of nights chips: one row per length, each a link to the quote page with that length filled in. A hotel with no
@@ -123,8 +126,9 @@ function hotelPage(hotel) {
       const rp = roomPhotos[r.name];
       const idx = rp ? photos.findIndex((p) => p.file === rp) : -1;
       const small = idx >= 0 ? (photos[idx].small || photos[idx].file) : rp;
+      const roomSet = idx >= 0 && photos[idx].small ? ` srcset="${img(photos[idx].small)} 800w, ${img(photos[idx].file)} 1600w" sizes="(min-width: 900px) 30vw, 100vw"` : "";
       const shot = !rp ? "" : idx >= 0
-        ? `<button type="button" class="hp-room-img lb-open" data-i="${idx}" aria-label="Open the ${esc(r.name)} photo">${pic(small, photos[idx].alt)}</button>`
+        ? `<button type="button" class="hp-room-img lb-open" data-i="${idx}" aria-label="Open the ${esc(r.name)} photo">${pic(small, photos[idx].alt, "", roomSet)}</button>`
         : `<div class="hp-room-img">${pic(small, r.name)}</div>`;
       return `<div class="hp-room${shot ? " has-img" : ""}">${shot}<div class="hp-room-t"><b>${esc(r.name)}</b>${meta ? `<small>${meta}</small>` : ""}${note ? `<p>${esc(note)}</p>` : ""}</div></div>`;
     }).join("")}</div></section>` : "";
