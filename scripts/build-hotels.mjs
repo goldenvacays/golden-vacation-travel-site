@@ -21,9 +21,11 @@ const CSS_HOTELS = `${BASE}/assets/hotels.css`;
 
 /* trade notes never reach a page: any sentence with one of these is dropped from a sheet field */
 const TRADE = /\b(confirm|tbc|trade record|not published|not shown|make no|quot(e|ed|ing)\b|the lineup|on file|the whole file|brochure|booking engine|per (the hotel|openstreetmap|a trade)|contract|commission|the other all inclusives|compete)/i;
+/* square metres stay off the pages (Hana: nobody reads them): "rooms from 44 sq m, a spa" -> "rooms, a spa"; "both 44 sq m sleeping three" -> "both sleeping three" */
+const nosize = (s) => String(s).replace(/\s+(from|of|at)\s+\d+(\.\d+)?\s*(sq\s*m|m2|m²)\b/gi, "").replace(/,\s*\d+(\.\d+)?\s*(sq\s*m|m2|m²)(?=[.,;])/gi, "").replace(/\b(a|an)\s+\d+(\.\d+)?\s*(sq\s*m|m2|m²)\s+/gi, "$1 ").replace(/\b\d+(\.\d+)?\s*(sq\s*m|m2|m²)\s*/gi, "").replace(/\s{2,}/g, " ");
 const guest = (s) => {
   if (!s) return "";
-  const parts = String(s).split(/(?<=[.!?])\s+/).filter((p) => p.trim() && !TRADE.test(p));
+  const parts = nosize(s).split(/(?<=[.!?])\s+/).filter((p) => p.trim() && !TRADE.test(p));
   return parts.join(" ").trim();
 };
 const short = (s) => { const g = guest(s); return g && !TRADE.test(g) ? g : ""; };
@@ -56,15 +58,15 @@ function hotelPage(hotel) {
   const defaultPrice = prices[d.defaultNights];
   const photos = (copy.photos || []).filter((p) => p && p.file);
   const photo = photos.length ? photos[0].file : (copy.photo || (row && row.img) || null);
-  const airportTime = short(hotel.drive_time_to_airport) || short(hotel.distance_to_airport_km);
+  const roomService = short(hotel.room_service);
 
-  /* facts row: the five or six things a guest compares on */
+  /* facts row: the five or six things a guest compares on (no airport distance: the transfer is in the package, and Hana says nobody reads the km) */
   const facts = [
     star,
     short(hotel.property_type),
     hotel.total_rooms && /^\d+$/.test(hotel.total_rooms) ? `${hotel.total_rooms} rooms` : "",
     hotel.pool && !/^no\b/i.test(hotel.pool) ? (/rooftop/i.test(hotel.pool) ? "Rooftop pool" : /infinity/i.test(hotel.pool) ? "Infinity pool" : /\b(four|six|4|6)\b/i.test(hotel.pool) ? "Several pools" : /indoor/i.test(hotel.pool) ? "Indoor pool" : "Pool") : (hotel.pool ? "No pool" : ""),
-    airportTime ? `Airport ${airportTime.replace(/^about /i, "about ").replace(/\.$/, "")}` : "",
+    roomService && !/^no\b/i.test(roomService) ? (/24/.test(roomService) ? "24 hour room service" : "Room service") : "",
     board.replace(/^\w/, (c) => c.toUpperCase()),
   ].filter(Boolean);
 
@@ -87,22 +89,44 @@ function hotelPage(hotel) {
   }
   const photoData = photos.length > 1 ? `<script>window.GV_HOTEL=${JSON.stringify({ slug: hotel.slug, name: shortName, photos: photos.map((p) => [img(p.file), p.alt]) })};</script><script src="${BASE}/assets/hotels.js" defer></script>` : "";
 
-  /* price card, driven by getaways.js exactly like the destination page (chips + data-lead) */
+  /* price card, driven by getaways.js like the destination page (airport chips + data-lead), but every stay length is listed
+     instead of nights chips: one row per length, each a link to the quote page with that length filled in. A hotel with no
+     starting price at all gets one "quoted with your dates" row. */
+  const quoteFor = (n) => `${BASE}/quote/?d=${d.slug}&h=${hotel.slug}&n=${n}&a=${d.airports[0].code}`;
+  const nightsRows = Object.keys(prices).length ? d.nights : [d.defaultNights];
+  const airportOpt = d.airports.length > 1
+    ? `<div class="opt"><span class="lbl">Leaving from</span><div class="chip-row">${d.airports.map((a, i) => `<button type="button" class="chip" data-airport="${a.code}" data-name="${esc(a.name)}" data-surcharge="${a.surcharge}" aria-pressed="${i === 0}">${esc(a.name)}</button>`).join("")}</div></div>`
+    : `<span class="sr" data-airport="${d.airports[0].code}" data-name="${esc(d.airports[0].name)}" data-surcharge="0"></span>`;
   const priceCard = `<div class="lead hp-lead">
     <span class="hotel sr" data-slug="${hotel.slug}" data-prices='${JSON.stringify(prices)}' hidden></span>
-    <div class="lead-row"><div><span class="h">${esc(shortName)}</span><br><span class="meta">${d.defaultNights} nights · ${esc(board)}</span></div>
-      <div class="lead-price"><span class="lbl">${esc(d.airports[0].name)} · ${d.defaultNights} nights</span>${defaultPrice != null ? price(defaultPrice, "hh") : `<span class="price hh" hidden></span>`}<small class="ask"${defaultPrice != null ? " hidden" : ""}>quoted with your dates</small><small>per person sharing, flights, hotel and transfers</small></div></div>
+    <div class="hp-lead-head"><span class="h">${esc(shortName)}</span><span class="meta">${esc(board.replace(/^\w/, (c) => c.toUpperCase()))} · flights, hotel and transfers${d.airports.length === 1 ? ` · from ${esc(d.airports[0].name)}` : ""}</span></div>
+    ${airportOpt}
+    <div class="hp-nights">${nightsRows.map((n) => {
+      const p = prices[n];
+      return `<a class="hp-nrow" data-n="${n}" href="${quoteFor(n)}"><span class="hp-nrow-l">${n} nights</span>${p != null ? price(p, "hh") : `<span class="price hh" hidden></span>`}<small class="ask"${p != null ? " hidden" : ""}>quoted with your dates</small>${icon("arrow", 18, 2.4)}</a>`;
+    }).join("")}${d.nightsAsk ? `<a class="hp-nrow hp-nrow-ask" href="${quoteUrl}"><span class="hp-nrow-l">${esc(d.nightsAsk)}</span>${icon("arrow", 18, 2.4)}</a>` : ""}</div>
+    <small class="hp-lead-per">${Object.keys(prices).length ? "Per person sharing. Starting prices; the exact rate depends on your dates." : "Per person sharing. Send your dates and we quote it within working hours."}</small>
     ${btn(`Get a quote for ${shortName}`, quoteUrl, "black", "", "arrow", ' class="btn btn-black btn-full"').replace('class="btn btn-black" ', "")}
-    <small class="hp-lead-note">Starting price. The exact rate depends on your dates, and it comes back on WhatsApp within working hours. Deposit from ${usd(d.deposit)}.</small>
+    <small class="hp-lead-note">The quote comes back on WhatsApp within working hours. Nothing to pay yet; a deposit from ${usd(d.deposit)} holds it when you book.</small>
   </div>`;
 
   const gtk = (copy.goodToKnow || []).length ? `<section class="list hp-sec"><div>${kicker("Good to know")}</div>${copy.goodToKnow.map((t) => check(esc(t))).join("")}</section>` : "";
 
+  /* rooms: one card per category, with the room's photo when hotels-copy.json maps one (roomPhotos: name -> file).
+     Sizes in square metres are left out on purpose. A room photo that is also in the strip opens the viewer at that photo. */
+  const roomPhotos = copy.roomPhotos || {};
+  Object.keys(roomPhotos).forEach((n) => { if (!hotel.rooms.some((r) => r.name === n)) console.warn(`  ${hotel.slug}: roomPhotos "${n}" matches no room in the sheet`); });
   const rooms = hotel.rooms.length ? `<section class="hp-sec"><div>${kicker("Rooms")}<p class="sec-sub">${hotel.rooms.length} categor${hotel.rooms.length === 1 ? "y" : "ies"} as the hotel publishes them. Sleeps counts the beds, including sofa beds; we confirm the maximum for your party when we quote.</p></div>
     <div class="hp-rooms">${hotel.rooms.map((r) => {
-      const meta = [r.size, r.sleeps ? `sleeps ${r.sleeps}` : "", decode(r.beds)].filter(Boolean).map((x) => esc(x)).join(" · ");
+      const meta = [r.sleeps ? `sleeps ${r.sleeps}` : "", decode(r.beds)].filter(Boolean).map((x) => esc(x)).join(" · ");
       const note = decode(guest(r.notes));
-      return `<div class="hp-room"><b>${esc(r.name)}</b>${meta ? `<small>${meta}</small>` : ""}${note ? `<p>${esc(note)}</p>` : ""}</div>`;
+      const rp = roomPhotos[r.name];
+      const idx = rp ? photos.findIndex((p) => p.file === rp) : -1;
+      const small = idx >= 0 ? (photos[idx].small || photos[idx].file) : rp;
+      const shot = !rp ? "" : idx >= 0
+        ? `<button type="button" class="hp-room-img lb-open" data-i="${idx}" aria-label="Open the ${esc(r.name)} photo">${pic(small, photos[idx].alt)}</button>`
+        : `<div class="hp-room-img">${pic(small, r.name)}</div>`;
+      return `<div class="hp-room${shot ? " has-img" : ""}">${shot}<div class="hp-room-t"><b>${esc(r.name)}</b>${meta ? `<small>${meta}</small>` : ""}${note ? `<p>${esc(note)}</p>` : ""}</div></div>`;
     }).join("")}</div></section>` : "";
 
   const amenities = splitList(hotel.full_amenity_list);
@@ -116,8 +140,7 @@ function hotelPage(hotel) {
 
   const practical = kv([
     ["Check-in", short(hotel.check_in)], ["Check-out", short(hotel.check_out)],
-    ["Airport", [short(hotel.airport_code), airportTime.replace(/^About/, "about")].filter(Boolean).join(", ")],
-    ["Airport transfer", short(hotel.airport_transfer)], ["Parking", short(hotel.parking)], ["Wi-Fi", short(hotel.wi_fi)],
+    ["Parking", short(hotel.parking)], ["Wi-Fi", short(hotel.wi_fi)],
     ["Reception", short(hotel.reception_hours)], ["Languages", short(hotel.languages_spoken)], ["Pets", short(hotel.pet_policy)],
     ["Accessibility", decode(short(hotel.accessibility))], ["Built", short(hotel.year_built)], ["Renovated", short(hotel.year_renovated)],
   ]);
@@ -136,12 +159,6 @@ function hotelPage(hotel) {
   const deposit = `<div class="deposit"><span class="h">Hold it with a deposit from ${usd(d.deposit)}.</span><p>${esc(d.depositText)}</p></div>`;
   const faq = `<section class="gtk"><div>${kicker("Questions")}</div><div class="faq">${d.faq.map(([q, a]) => faqItem(q, a)).join("")}</div></section>`;
 
-  const opts = `<div class="opts">
-    ${d.airports.length > 1 ? `<div class="opt"><span class="lbl">Leaving from</span><div class="chip-row">${d.airports.map((a, i) => `<button type="button" class="chip" data-airport="${a.code}" data-name="${esc(a.name)}" data-surcharge="${a.surcharge}" aria-pressed="${i === 0}">${esc(a.name)}</button>`).join("")}</div></div>` : `<span class="sr" data-airport="${d.airports[0].code}" data-name="${esc(d.airports[0].name)}" data-surcharge="0"></span>`}
-    <div class="opt"><span class="lbl">Nights</span><div class="chip-row">${d.nights.map((n) => `<button type="button" class="chip" data-nights="${n}" aria-pressed="${n === d.defaultNights}">${n} nights</button>`).join("")}${d.nightsAsk ? `<a class="chip" href="${quoteUrl}">${esc(d.nightsAsk)}</a>` : ""}</div></div>
-    ${d.airportNote ? `<span class="opt-note">${esc(d.airportNote)}</span>` : ""}
-  </div>`;
-
   const description = copy.intro ? copy.intro : guest(hotel.one_line_description);
   const metaDescription = `${shortName} in ${d.name}${district ? ` (${district})` : ""}: ${guest(hotel.one_line_description) || description.split(". ")[0]}. From Jamaica with flights and transfers, ${defaultPrice != null ? `from ${usd(defaultPrice)} per person` : "quoted with your dates"}.`.replace(/\.\./g, ".").slice(0, 300);
   const title = `${shortName}, ${d.name}: ${d.defaultNights} nights from Jamaica with flights${defaultPrice != null ? ` from ${usd(defaultPrice)}` : ""} | Golden Vacation & Travel`;
@@ -157,13 +174,12 @@ ${hero}
 <div class="wrap">
 <div class="dest-head hp-head"><a class="hp-crumb" href="${BASE}/${d.slug}/">${icon("back", 16, 2.6)}All ${esc(d.name)} hotels</a>${kicker(`Getaways from Jamaica · ${d.name}${district ? ` · ${district}` : ""}`)}<h1 class="hh">${esc(name)}</h1><p>${esc(description)}</p></div>
 <div class="hp-facts">${facts.map((f) => `<span>${esc(f)}</span>`).join("")}</div>
-${opts}
 <div class="dest-grid">
   <div class="dest-side">${priceCard}</div>
   <div class="dest-main">
     ${gallery}
-    ${gtk}
     ${rooms}
+    ${gtk}
     ${resortIncluded}
     ${kids}
     ${amen}
