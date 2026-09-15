@@ -1,5 +1,5 @@
 {
- "_about": "Guest-facing copy for the hotel pages, keyed by the page slug. The facts come from data/hotels.json (the spreadsheet); this file is the words. No em dashes, no supplier names, guide prices only, nothing internal. photos: [{file, small, alt}] per hotel, files under public/getaways/img/hotels/; the list order is the display order (the first is the hero, the rest make the swipe strip and the viewer), the file numbers are just names. roomPhotos: {room name exactly as the sheet has it: file} puts that photo on the room card; a photo that is also in the photos list opens the viewer.",
+ "_about": "Guest-facing copy for the hotel pages, keyed by the page slug. The facts come from data/hotels.json (the spreadsheet); this file is the words. No em dashes, no supplier names, guide prices only, nothing internal. photos: [{file (1600px), small (800px, tiles), large (2400px, hero on sharp screens and the viewer), alt}] per hotel, files under public/getaways/img/hotels/; the list order is the display order (the first is the hero, the rest make the swipe strip and the viewer), the file numbers are just names. roomPhotos: {room name exactly as the sheet has it: file} puts that photo on the room card; a photo that is also in the photos list opens the viewer.",
  "riu-plaza": {
   "tags": [
    "Most popular",
@@ -15,87 +15,103 @@
    {
     "file": "hotels/riu-plaza-02.jpg",
     "small": "hotels/riu-plaza-02-s.jpg",
-    "alt": "The outdoor pool"
+    "alt": "The outdoor pool",
+    "large": "hotels/riu-plaza-02-l.jpg"
    },
    {
     "file": "hotels/riu-plaza-01.jpg",
     "small": "hotels/riu-plaza-01-s.jpg",
-    "alt": "Hotel Riu Plaza Panama on Calle 50, Marbella"
+    "alt": "Hotel Riu Plaza Panama on Calle 50, Marbella",
+    "large": "hotels/riu-plaza-01-l.jpg"
    },
    {
     "file": "hotels/riu-plaza-03.jpg",
     "small": "hotels/riu-plaza-03-s.jpg",
-    "alt": "The pool and the Ibiza bar at night"
+    "alt": "The pool and the Ibiza bar at night",
+    "large": "hotels/riu-plaza-03-l.jpg"
    },
    {
     "file": "hotels/riu-plaza-04.jpg",
     "small": "hotels/riu-plaza-04-s.jpg",
-    "alt": "Ibiza, the pool snack bar"
+    "alt": "Ibiza, the pool snack bar",
+    "large": "hotels/riu-plaza-04-l.jpg"
    },
    {
     "file": "hotels/riu-plaza-05.jpg",
     "small": "hotels/riu-plaza-05-s.jpg",
-    "alt": "The lobby"
+    "alt": "The lobby",
+    "large": "hotels/riu-plaza-05-l.jpg"
    },
    {
     "file": "hotels/riu-plaza-06.jpg",
     "small": "hotels/riu-plaza-06-s.jpg",
-    "alt": "The lobby bar"
+    "alt": "The lobby bar",
+    "large": "hotels/riu-plaza-06-l.jpg"
    },
    {
     "file": "hotels/riu-plaza-07.jpg",
     "small": "hotels/riu-plaza-07-s.jpg",
-    "alt": "Sushi Lounge Studio 50"
+    "alt": "Sushi Lounge Studio 50",
+    "large": "hotels/riu-plaza-07-l.jpg"
    },
    {
     "file": "hotels/riu-plaza-08.jpg",
     "small": "hotels/riu-plaza-08-s.jpg",
-    "alt": "One of the restaurants"
+    "alt": "One of the restaurants",
+    "large": "hotels/riu-plaza-08-l.jpg"
    },
    {
     "file": "hotels/riu-plaza-09.jpg",
     "small": "hotels/riu-plaza-09-s.jpg",
-    "alt": "Arts, the buffet restaurant"
-   },
-   {
-    "file": "hotels/riu-plaza-11.jpg",
-    "small": "hotels/riu-plaza-11-s.jpg",
-    "alt": "Deluxe King room"
+    "alt": "Arts, the buffet restaurant",
+    "large": "hotels/riu-plaza-09-l.jpg"
    },
    {
     "file": "hotels/riu-plaza-10.jpg",
     "small": "hotels/riu-plaza-10-s.jpg",
-    "alt": "Deluxe Family King room, with the sofa bed made up"
+    "alt": "Deluxe King room",
+    "large": "hotels/riu-plaza-10-l.jpg"
+   },
+   {
+    "file": "hotels/riu-plaza-11.jpg",
+    "small": "hotels/riu-plaza-11-s.jpg",
+    "alt": "Deluxe Family King room, with the sofa bed made up",
+    "large": "hotels/riu-plaza-11-l.jpg"
    },
    {
     "file": "hotels/riu-plaza-12.jpg",
     "small": "hotels/riu-plaza-12-s.jpg",
-    "alt": "Deluxe Family Twin room"
+    "alt": "Deluxe Family Twin room",
+    "large": "hotels/riu-plaza-12-l.jpg"
    },
    {
     "file": "hotels/riu-plaza-13.jpg",
     "small": "hotels/riu-plaza-13-s.jpg",
-    "alt": "Suite living room"
+    "alt": "Suite living room",
+    "large": "hotels/riu-plaza-13-l.jpg"
    },
    {
     "file": "hotels/riu-plaza-14.jpg",
     "small": "hotels/riu-plaza-14-s.jpg",
-    "alt": "Penthouse living room"
+    "alt": "Penthouse living room",
+    "large": "hotels/riu-plaza-14-l.jpg"
    },
    {
     "file": "hotels/riu-plaza-15.jpg",
     "small": "hotels/riu-plaza-15-s.jpg",
-    "alt": "Penthouse kitchen"
+    "alt": "Penthouse kitchen",
+    "large": "hotels/riu-plaza-15-l.jpg"
    },
    {
     "file": "hotels/riu-plaza-16.jpg",
     "small": "hotels/riu-plaza-16-s.jpg",
-    "alt": "Bathroom with a walk-in shower"
+    "alt": "Bathroom with a walk-in shower",
+    "large": "hotels/riu-plaza-16-l.jpg"
    }
   ],
   "roomPhotos": {
-   "Deluxe King Room": "hotels/riu-plaza-11.jpg",
-   "Deluxe Family King Room": "hotels/riu-plaza-10.jpg",
+   "Deluxe King Room": "hotels/riu-plaza-10.jpg",
+   "Deluxe Family King Room": "hotels/riu-plaza-11.jpg",
    "Deluxe Family Twin Room": "hotels/riu-plaza-12.jpg",
    "Penthouse, In the heart of the city": "hotels/riu-plaza-14.jpg"
   }
