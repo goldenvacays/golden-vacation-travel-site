@@ -1,0 +1,4283 @@
+{
+ "source": "hotel-page-data.xlsx",
+ "hotels": [
+  {
+   "name": "ESTELAR Miraflores",
+   "slug": "estelar-miraflores",
+   "group_or_brand": "Hoteles ESTELAR",
+   "property_type": "City hotel",
+   "star_rating": null,
+   "country": "Peru",
+   "city": "Lima",
+   "district": "Miraflores",
+   "address": "Av. Alfredo Benavides 415, Miraflores",
+   "postcode": null,
+   "latitude": -12.1243688,
+   "longitude": -77.0291837,
+   "coordinates_note": "Exact, hotel",
+   "total_rooms": "151",
+   "floors": "At least 21",
+   "year_built": "1988 per a trade record. Not published by the hotel",
+   "year_renovated": null,
+   "check_in": "3:00 pm per a trade record. Not published by the hotel",
+   "check_out": "12:00 noon per a trade record. Not published by the hotel",
+   "airport_code": "LIM",
+   "distance_to_airport_km": null,
+   "drive_time_to_airport": null,
+   "nearby_landmarks": "Parque Kennedy, Larcomar, the Malecon clifftop walk",
+   "one_line_description": "A 151 room Miraflores hotel with a rooftop restaurant and eleven event rooms.",
+   "restaurant": "Piso 21, top floor, Peruvian and international. Cafe Juan Valdez on site.",
+   "bar": "Piso 21 bar",
+   "breakfast": "Included. Every rate in the hotel's booking engine is Alojamiento y Desayuno, bed and breakfast.",
+   "room_service": "Yes",
+   "gym": "Fitness centre",
+   "pool": "Outdoor pool",
+   "spa_or_sauna": "Turkish bath and jacuzzi",
+   "business_centre": null,
+   "meeting_rooms": "11 event rooms: Estelar, Pardo, Armendariz, Larco, Bellavista, Balta, La Paz, 28 de Julio, Ricardo Palma, Benavides, Arequipa. Capacities not published.",
+   "largest_meeting_capacity": null,
+   "parking": "Secure parking with a security system",
+   "wi_fi": "Free throughout",
+   "airport_transfer": null,
+   "laundry": "Yes",
+   "reception_hours": "24 hours",
+   "air_conditioning": "Yes",
+   "pet_policy": null,
+   "accessibility": "Nothing published. Make no accessibility claim without written confirmation.",
+   "languages_spoken": null,
+   "phone": "+51 1 630 7777",
+   "whatsapp": null,
+   "email": "reservas.peru@hotelesestelar.com",
+   "website": "https://www.estelarmiraflores.com",
+   "good_to_know": "Strongest meetings option in the Lima lineup. Standard Twin has two queen beds.",
+   "included": null,
+   "costs_extra": null,
+   "kids": null,
+   "photos_on_file": "No, photos still needed",
+   "source_links": "estelarmiraflores.com hotel, services and booking engine; trip.com listing",
+   "last_verified": "2026-09-12",
+   "full_amenity_list": "Free Wi-Fi, Outdoor pool, Fitness centre, Turkish bath, Jacuzzi, Rooftop restaurant, Bar, Cafe Juan Valdez, Room service, 24 hour reception, Laundry service, Secure parking, Airport transfers on request, 11 event rooms, Air conditioning, Breakfast included, Safe, 55 inch cable television, Minibar, Hydromassage bathtub in Junior Suite, Private sauna in Premium, Separate sitting room in suites",
+   "sheetSlug": "estelar-miraflores",
+   "dest": "lima",
+   "rooms": [
+    {
+     "name": "Standard Queen",
+     "size": null,
+     "sleeps": null,
+     "beds": "One queen",
+     "notes": "55 inch cable TV, Wi-Fi."
+    },
+    {
+     "name": "Standard King",
+     "size": null,
+     "sleeps": null,
+     "beds": "One king",
+     "notes": "Minibar, Wi-Fi."
+    },
+    {
+     "name": "Standard Twin",
+     "size": null,
+     "sleeps": null,
+     "beds": "Two queens",
+     "notes": "Panoramic window over Lima. The family option."
+    },
+    {
+     "name": "Superior King",
+     "size": null,
+     "sleeps": null,
+     "beds": "One king",
+     "notes": "In room breakfast service, safe."
+    },
+    {
+     "name": "Junior Suite",
+     "size": null,
+     "sleeps": null,
+     "beds": "One king",
+     "notes": "Separate sitting room and hydromassage bathtub."
+    },
+    {
+     "name": "Premium",
+     "size": null,
+     "sleeps": null,
+     "beds": "One king",
+     "notes": "Jacuzzi and private sauna, sitting room."
+    }
+   ]
+  },
+  {
+   "name": "Hilton Lima Miraflores",
+   "slug": "hilton-lima",
+   "group_or_brand": "Hilton. Sister property in the same district: Hilton Garden Inn Lima Miraflores.",
+   "property_type": "Full service city hotel",
+   "star_rating": null,
+   "country": "Peru",
+   "city": "Lima",
+   "district": "Miraflores",
+   "address": "Avenida La Paz 1099, Miraflores",
+   "postcode": "15074",
+   "latitude": -12.1286334,
+   "longitude": -77.026541,
+   "coordinates_note": "Exact, hotel building",
+   "total_rooms": "207",
+   "floors": "11",
+   "year_built": "2012 per a trade record. Not published by the hotel",
+   "year_renovated": null,
+   "check_in": "3:00 pm",
+   "check_out": "12:00 noon",
+   "airport_code": "LIM",
+   "distance_to_airport_km": "About 18 km, 11 miles",
+   "drive_time_to_airport": "About 40 minutes. No hotel shuttle.",
+   "nearby_landmarks": "Parque Kennedy, Larcomar, the Malecon clifftop walk",
+   "one_line_description": "A 207 room Hilton in Miraflores with an outdoor pool, rooftop bar and free parking.",
+   "restaurant": "Social Restaurant and Bar, Peruvian and American",
+   "bar": "Rooftop bar, seasonal, plus a lobby cafe",
+   "breakfast": "Available at a charge",
+   "room_service": "Yes",
+   "gym": "Fitness centre",
+   "pool": "Outdoor pool with whirlpools",
+   "spa_or_sauna": null,
+   "business_centre": "Executive lounge and meeting rooms",
+   "meeting_rooms": "9 meeting rooms. Huascaran Ballroom seats 370 theatre style, about 382 sq m.",
+   "largest_meeting_capacity": "370",
+   "parking": "Free self parking, secured and covered, in and out privileges. No valet. Two EV charging points.",
+   "wi_fi": "Free",
+   "airport_transfer": "None. No hotel shuttle.",
+   "laundry": null,
+   "reception_hours": null,
+   "air_conditioning": "Yes",
+   "pet_policy": "Pets up to 25 kg, 55 lb, US$60 non refundable fee. Pet bed, feeder, snack and bag dispenser provided.",
+   "accessibility": "An accessible room is sold as its own bookable category, 1 King Bed Accessible Room. The only property in the lineup besides Souma and Melia with a confirmed accessible room. Confirm the specifics in writing.",
+   "languages_spoken": null,
+   "phone": "+51 1 200 8000",
+   "whatsapp": null,
+   "email": null,
+   "website": "https://www.hilton.com/en/hotels/limmfhh-hilton-lima-miraflores/",
+   "good_to_know": "Free parking, smoke free, no airport shuttle, rooftop bar is seasonal. Minors admitted only with a parent or guardian, carrying a passport and notarised authorisation.",
+   "included": null,
+   "costs_extra": null,
+   "kids": null,
+   "photos_on_file": "No, photos still needed",
+   "source_links": "hilton.com hotel, rooms, hotel-info and booking engine; travelweekly.com; cvent.com venue listing",
+   "last_verified": "2026-09-12",
+   "full_amenity_list": "Free Wi-Fi, Free self parking, secured and covered, Outdoor pool with whirlpools, Fitness centre, Room service, On site restaurant, Rooftop bar, seasonal, Lobby cafe, Executive lounge, Concierge, 9 meeting rooms, Ballroom, Air conditioning, Accessible room category, 100 per cent smoke free, Two EV charging points, Pet friendly, up to 25 kg, Cribs, Kids menu, Minibar, Safe, Workspace, Rain shower, Dual vanity in suites, Balcony in one category, Prices quoted in US dollars",
+   "sheetSlug": "hilton-lima-miraflores",
+   "dest": "lima",
+   "rooms": [
+    {
+     "name": "1 King Bed Room",
+     "size": "About 35 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "City view, workspace, rain shower, minibar."
+    },
+    {
+     "name": "1 King Bed Deluxe",
+     "size": "About 35 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "High floor, city view, workspace."
+    },
+    {
+     "name": "1 King Bed Executive Floor",
+     "size": "About 35 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Executive floor, lounge access, minibar."
+    },
+    {
+     "name": "1 King Bed Junior Suite",
+     "size": "About 50 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Corner room, lounge access, city view."
+    },
+    {
+     "name": "1 King Executive Balcony",
+     "size": "About 35 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Balcony, lounge access, minibar."
+    },
+    {
+     "name": "1 King 1 Bedroom Exec Suite",
+     "size": "About 50 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Separate bedroom and living space, dual vanity."
+    },
+    {
+     "name": "1 King Bed Presidential Suite",
+     "size": null,
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Separate living space, sofa, dual vanity, lounge access."
+    },
+    {
+     "name": "2 Queen Beds",
+     "size": "About 35 sq m",
+     "sleeps": "4",
+     "beds": "Two queens",
+     "notes": "City view, workspace, rain shower, minibar. Family option."
+    },
+    {
+     "name": "2 Queen Beds Deluxe",
+     "size": "About 35 sq m",
+     "sleeps": "4",
+     "beds": "Two queens",
+     "notes": "High floor, city view. Family option."
+    },
+    {
+     "name": "2 Queen Beds Executive Floor",
+     "size": "About 35 sq m",
+     "sleeps": "4",
+     "beds": "Two queens",
+     "notes": "Executive floor, lounge access. Family option."
+    },
+    {
+     "name": "1 King Bed Accessible Room",
+     "size": null,
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Accessible category, sold as its own room type."
+    }
+   ]
+  },
+  {
+   "name": "Melia Lima",
+   "slug": "melia-lima",
+   "group_or_brand": "Melia Hotels International",
+   "property_type": "City hotel",
+   "star_rating": "5 star",
+   "country": "Peru",
+   "city": "Lima",
+   "district": "San Isidro",
+   "address": "Av. Salaverry 2599, San Isidro",
+   "postcode": null,
+   "latitude": -12.092819,
+   "longitude": -77.0526968,
+   "coordinates_note": "Exact, hotel building",
+   "total_rooms": "180",
+   "floors": "9",
+   "year_built": "2000 per a trade record. Not published by the hotel",
+   "year_renovated": "2004 per a trade record. Not published by the hotel",
+   "check_in": "3:00 pm",
+   "check_out": "12:00 noon",
+   "airport_code": "LIM",
+   "distance_to_airport_km": "About 11 km, 7 miles, per a trade record",
+   "drive_time_to_airport": "About 15 minutes",
+   "nearby_landmarks": "San Isidro financial district, El Olivar park, Miraflores",
+   "one_line_description": "A five star San Isidro hotel with an outdoor pool and ten event rooms.",
+   "restaurant": "El Tambo, Peruvian cuisine",
+   "bar": null,
+   "breakfast": "Optional. The hotel sells room only and bed and breakfast as separate rates.",
+   "room_service": null,
+   "gym": "Yes, in the wellness centre",
+   "pool": "Outdoor swimming pool",
+   "spa_or_sauna": "Turkish bath and jacuzzi, jacuzzi at a charge",
+   "business_centre": null,
+   "meeting_rooms": "10 event rooms, up to 961 people, largest room 601 sq m. Capacity chart by setup not published.",
+   "largest_meeting_capacity": "961",
+   "parking": "Yes, at a charge",
+   "wi_fi": "Free",
+   "airport_transfer": "Free airport transportation included on the hotel's direct rates. Conditions apply, confirm at booking.",
+   "laundry": null,
+   "reception_hours": null,
+   "air_conditioning": "Yes",
+   "pet_policy": null,
+   "accessibility": "Accessible and adapted rooms published as a room category. Confirm the specifics in writing.",
+   "languages_spoken": null,
+   "phone": "+51 1 411 9000",
+   "whatsapp": null,
+   "email": null,
+   "website": "https://www.melia.com/en/hotels/peru/lima/melia-lima",
+   "good_to_know": "The Level is an upgraded tier with its own lounge. San Isidro, not Miraflores.",
+   "included": null,
+   "costs_extra": null,
+   "kids": null,
+   "photos_on_file": "No, photos still needed",
+   "source_links": "melia.com hotel page and booking engine; travelweekly.com property record",
+   "last_verified": "2026-09-12",
+   "full_amenity_list": "Free airport transportation, Free Wi-Fi, Outdoor pool, Wellness centre, Gym, Turkish bath, Jacuzzi, at a charge, Restaurant, Parking, at a charge, 10 event rooms, The Level lounge, Accessible rooms, Air conditioning, Free cancellation on direct rates, Room only or bed and breakfast rates, Minibar, Safe, Desk, Television, Lounge area in suites, Private bar in Grand Suite, Non smoking rooms",
+   "sheetSlug": "melia-lima",
+   "dest": "lima",
+   "rooms": [
+    {
+     "name": "Melia Room",
+     "size": "22 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "City view."
+    },
+    {
+     "name": "Deluxe Room",
+     "size": "22 sq m",
+     "sleeps": "4",
+     "beds": "Two double beds",
+     "notes": "City view."
+    },
+    {
+     "name": "The Level Premium",
+     "size": "28 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Lounge area. The Level access."
+    },
+    {
+     "name": "The Level Supreme",
+     "size": "28 sq m",
+     "sleeps": "4",
+     "beds": "Two double beds",
+     "notes": "The Level access."
+    },
+    {
+     "name": "Junior Suite",
+     "size": "48 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Separate lounge area."
+    },
+    {
+     "name": "Executive Junior Suite",
+     "size": "48 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Upper floors, lounge area."
+    },
+    {
+     "name": "Business Suite",
+     "size": "48 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Bedroom plus a dining room."
+    },
+    {
+     "name": "Grand Suite",
+     "size": "121 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Separate lounge and a private bar."
+    },
+    {
+     "name": "Accessible Room",
+     "size": "22 sq m",
+     "sleeps": "2",
+     "beds": "One king or two singles",
+     "notes": "Adapted facilities. A bookable category."
+    }
+   ]
+  },
+  {
+   "name": "nhow Lima",
+   "slug": "nhow",
+   "group_or_brand": "nhow, part of Minor Hotels and NH Hotels",
+   "property_type": "Design hotel",
+   "star_rating": null,
+   "country": "Peru",
+   "city": "Lima",
+   "district": "Miraflores",
+   "address": "Calle Atahualpa 155, Miraflores",
+   "postcode": "15074",
+   "latitude": -12.1132091,
+   "longitude": -77.0311714,
+   "coordinates_note": "Street level only, Calle Atahualpa. Refine before publishing.",
+   "total_rooms": "243",
+   "floors": "13",
+   "year_built": null,
+   "year_renovated": null,
+   "check_in": "3:00 pm",
+   "check_out": "12:00 noon",
+   "airport_code": "LIM",
+   "distance_to_airport_km": null,
+   "drive_time_to_airport": "About 35 minutes by taxi, about 40 minutes by Airport Express bus",
+   "nearby_landmarks": "Parque Kennedy, Larcomar, the Malecon clifftop walk",
+   "one_line_description": "A 243 room design hotel in Miraflores with a rooftop pool and rooftop bar.",
+   "restaurant": "Restaurant serving breakfast, international and regional dishes",
+   "bar": "Lobby bar and rooftop bar",
+   "breakfast": "Served in the restaurant. Meal plan depends on the rate booked.",
+   "room_service": null,
+   "gym": "Yes, with sauna",
+   "pool": "Yes, rooftop, with city views",
+   "spa_or_sauna": "Sauna in the gym",
+   "business_centre": null,
+   "meeting_rooms": "7 conference rooms and 4 meeting rooms. Capacities not published.",
+   "largest_meeting_capacity": null,
+   "parking": "Indoor, self park and valet",
+   "wi_fi": "Free",
+   "airport_transfer": null,
+   "laundry": null,
+   "reception_hours": null,
+   "air_conditioning": "Yes, all rooms",
+   "pet_policy": "Dogs and cats up to 25 kg, US$35 per pet per night, maximum two. Guide dogs free. Limited availability.",
+   "accessibility": "Accessibility features advertised but not detailed. Confirm before booking a guest who needs one.",
+   "languages_spoken": null,
+   "phone": null,
+   "whatsapp": null,
+   "email": "lima@nhow-hotels.com",
+   "website": "https://www.nhow-hotels.com/en/nhow-lima",
+   "good_to_know": "The only Lima property in the lineup with a rooftop pool and rooftop bar.",
+   "included": null,
+   "costs_extra": null,
+   "kids": null,
+   "photos_on_file": "No, photos still needed",
+   "source_links": "nhow-hotels.com; nh-hotels.com hotel and rooms pages; nhow booking engine room list",
+   "last_verified": "2026-09-12",
+   "full_amenity_list": "Free Wi-Fi, Rooftop pool, Rooftop bar, Lobby bar, Restaurant, Gym, Sauna, Air conditioning, Indoor parking, Valet parking, 7 conference rooms, 4 meeting rooms, Executive Floor, Pet friendly, up to 25 kg, Guide dogs free, Nespresso machine, Kettle, Minibar, Safe, Bathrobe, Rain shower, Flat screen television, Sleep Better mattresses, Sitting area, Non smoking rooms",
+   "sheetSlug": "nhow-lima",
+   "dest": "lima",
+   "rooms": [
+    {
+     "name": "nhow room",
+     "size": "26 sq m",
+     "sleeps": "3",
+     "beds": "One king or two twins",
+     "notes": "City views. Rain shower, Nespresso machine, sitting area."
+    },
+    {
+     "name": "nhow premium room",
+     "size": "28 sq m",
+     "sleeps": "3",
+     "beds": "One king",
+     "notes": "Executive Floor access."
+    },
+    {
+     "name": "nhow studio xl",
+     "size": "37 sq m",
+     "sleeps": "3",
+     "beds": "One king, plus sofa",
+     "notes": "Executive Floor access, VIP level."
+    },
+    {
+     "name": "nhow suite",
+     "size": "51 sq m",
+     "sleeps": "3",
+     "beds": "One king, plus sofa",
+     "notes": "Bathtub and rain shower. Executive Floor access."
+    },
+    {
+     "name": "nhow penthouse",
+     "size": "144 sq m",
+     "sleeps": "2",
+     "beds": "One king, plus sofa",
+     "notes": "Top category. Bathtub and rain shower."
+    }
+   ]
+  },
+  {
+   "name": "Nobility Hotel",
+   "slug": "nobility",
+   "group_or_brand": "Nobility Hotels. Sister property: Nobility Grand Hotel, Av. Angamos Oeste 700, Miraflores.",
+   "property_type": "City hotel",
+   "star_rating": "4 star",
+   "country": "Peru",
+   "city": "Lima",
+   "district": "Miraflores",
+   "address": "Av. Roosevelt 6461, formerly Av. Republica de Panama, Miraflores",
+   "postcode": "15048",
+   "latitude": -12.1298188,
+   "longitude": -77.0177192,
+   "coordinates_note": "Exact, hotel building",
+   "total_rooms": "58",
+   "floors": null,
+   "year_built": null,
+   "year_renovated": null,
+   "check_in": "2:00 pm",
+   "check_out": "12:00 noon",
+   "airport_code": "LIM",
+   "distance_to_airport_km": "About 20",
+   "drive_time_to_airport": "About 20 to 30 minutes, traffic dependent",
+   "nearby_landmarks": "Miraflores centre, Parque Kennedy, Larcomar, the Malecon clifftop walk",
+   "one_line_description": "A 58 room hotel in Miraflores with its own restaurant, bar, gym, sauna and jacuzzi.",
+   "restaurant": "A la Vista, Mediterranean, 6:00 am to 11:00 pm",
+   "bar": "Nobility Cafe Bar",
+   "breakfast": "Daily hot and cold buffet, 6:30 am to 10:30 am. Creole breakfast on Sundays.",
+   "room_service": "24 hours",
+   "gym": "Yes",
+   "pool": "No",
+   "spa_or_sauna": "Sauna and jacuzzi",
+   "business_centre": "Yes",
+   "meeting_rooms": "Salon A la Vista: up to 150. Salon Real: up to 50. Per the hotel, which is the source of truth.",
+   "largest_meeting_capacity": "150",
+   "parking": "Free, hotel owned, on site",
+   "wi_fi": "Free, wired and wireless",
+   "airport_transfer": "Airport shuttle on request, at a charge, 24 hours",
+   "laundry": "Laundry and dry cleaning",
+   "reception_hours": null,
+   "air_conditioning": "Yes, all 58 rooms",
+   "pet_policy": null,
+   "accessibility": "Nothing published. Make no accessibility claim without written confirmation.",
+   "languages_spoken": null,
+   "phone": "+51 1 660 2028",
+   "whatsapp": "+51 981 243 669",
+   "email": "reservas@hotelnobility.com",
+   "website": "https://www.nobilityhotel.com",
+   "good_to_know": "Do not confuse with Nobility Grand Hotel, a separate property in the same group.",
+   "included": null,
+   "costs_extra": null,
+   "kids": null,
+   "photos_on_file": "No, photos still needed",
+   "source_links": "nobilityhotel.com; nobilityhotels.com; HRS 642291; limaperuhotels.net",
+   "last_verified": "2026-09-12",
+   "full_amenity_list": "Free Wi-Fi, wired and wireless, Free parking, Air conditioning, Gym, Sauna, Jacuzzi, Business centre, Conference facilities, 24 hour room service, Laundry and dry cleaning, Restaurant, Cafe bar, Buffet breakfast, Airport shuttle on request, Tour and ticket desk, Safe in room, Bar fridge, Cable television, Wardrobe, Coffee kit, Rain shower, Vegetarian options",
+   "sheetSlug": "nobility-hotel",
+   "dest": "lima",
+   "rooms": [
+    {
+     "name": "Standard",
+     "size": "38 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Bar fridge, cable TV, wardrobe, safe, coffee kit, rain shower"
+    },
+    {
+     "name": "Twin",
+     "size": "38 sq m",
+     "sleeps": "2",
+     "beds": "Twin beds",
+     "notes": "Same amenities as Standard"
+    },
+    {
+     "name": "Triple",
+     "size": "38 sq m",
+     "sleeps": "3",
+     "beds": "One king plus an extra bed",
+     "notes": "Practical for three sharing"
+    },
+    {
+     "name": "Suite",
+     "size": "42 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Larger living space"
+    },
+    {
+     "name": "Suite Nobility",
+     "size": "42 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "In room jacuzzi, top category"
+    }
+   ]
+  },
+  {
+   "name": "Souma Hotel Lima",
+   "slug": "souma",
+   "group_or_brand": "Vignette Collection, IHG. First Vignette Collection property in Latin America.",
+   "property_type": "Oceanfront luxury hotel",
+   "star_rating": "5 star",
+   "country": "Peru",
+   "city": "Lima",
+   "district": "Miraflores",
+   "address": "Malecon 28 de Julio 385, Miraflores",
+   "postcode": "15074",
+   "latitude": -12.1260586,
+   "longitude": -77.0333023,
+   "coordinates_note": "Exact, hotel",
+   "total_rooms": "214 per a trade record. Not published by the hotel",
+   "floors": null,
+   "year_built": null,
+   "year_renovated": null,
+   "check_in": "3:00 pm per a trade record. Not published by the hotel",
+   "check_out": "12:00 noon per a trade record. Not published by the hotel",
+   "airport_code": "LIM",
+   "distance_to_airport_km": null,
+   "drive_time_to_airport": null,
+   "nearby_landmarks": "The Malecon clifftop walk, Larcomar, Parque Kennedy, Barranco",
+   "one_line_description": "A five star oceanfront hotel on the Malecon with a rooftop infinity pool and three restaurants.",
+   "restaurant": "KIMO (Nikkei), Ortega y Huaman (Mediterranean inspired), 27 Tapas",
+   "bar": null,
+   "breakfast": null,
+   "room_service": "24 hours",
+   "gym": "Yes, open 24 hours, with ocean views",
+   "pool": "Rooftop infinity pool, 8:00 am to 5:00 pm",
+   "spa_or_sauna": "Bambu Spa",
+   "business_centre": "Yes, with copying, printing and scanning",
+   "meeting_rooms": "Groups and events service available. Capacities not published.",
+   "largest_meeting_capacity": null,
+   "parking": "Valet parking. Four accessible parking spaces.",
+   "wi_fi": null,
+   "airport_transfer": null,
+   "laundry": "Same day dry cleaning, dry cleaning pickup and laundry valet",
+   "reception_hours": null,
+   "air_conditioning": "Yes",
+   "pet_policy": "Dogs up to 15 kg in Premium City View rooms only, US$50 plus tax per night. Designated areas only.",
+   "accessibility": "Documented: wheelchair accessible rooms, lifts, restrooms, restaurants and ramps, four accessible parking spaces with drop off points, audible fire alarms in rooms and public areas.",
+   "languages_spoken": null,
+   "phone": "+51 1 680 5440",
+   "whatsapp": null,
+   "email": "lmarc2@soumahotel.com",
+   "website": "https://www.soumahotel.com",
+   "good_to_know": "Only oceanfront and only five star property in the Lima lineup. Sleeps up to 7 in the SOUMA Suite. Pool closes at 5:00 pm.",
+   "included": null,
+   "costs_extra": null,
+   "kids": null,
+   "photos_on_file": "No, photos still needed",
+   "source_links": "soumahotel.com; ihg.com Vignette Collection hotel, rooms and amenities pages; IHG booking engine room list; travelweekly.com",
+   "last_verified": "2026-09-12",
+   "full_amenity_list": "Rooftop infinity pool, Bambu Spa, Gym open 24 hours, Yoga classes, Three restaurants, 24 hour room service, Business centre, Printing and scanning, Same day dry cleaning, Laundry valet, Valet parking, Air conditioning, Accessible rooms, Accessible lifts and restrooms, Ramps, Four accessible parking bays, Audible fire alarms, Tennis court access, Pet friendly in one category, Floor to ceiling windows, Minibar, Safe, Coffee maker, Television, Free Wi-Fi, Balcony in Junior Suites",
+   "sheetSlug": "souma-lima",
+   "dest": "lima",
+   "rooms": [
+    {
+     "name": "Standard Room",
+     "size": null,
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Entry category. Size not shown in the booking engine."
+    },
+    {
+     "name": "1 King Standard City View",
+     "size": "26 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "City view."
+    },
+    {
+     "name": "2 Double Standard City View",
+     "size": "26 sq m",
+     "sleeps": "4",
+     "beds": "Two double beds",
+     "notes": "City view. Family option."
+    },
+    {
+     "name": "1 King Premium City View",
+     "size": "27 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "City view. The only pet friendly category."
+    },
+    {
+     "name": "2 Double Premium City View",
+     "size": "27 sq m",
+     "sleeps": "4",
+     "beds": "Two double beds",
+     "notes": "City view. Family option."
+    },
+    {
+     "name": "1 King Premium Sea View",
+     "size": "27 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Pacific view."
+    },
+    {
+     "name": "2 Double Premium Sea View",
+     "size": "27 sq m",
+     "sleeps": "4",
+     "beds": "Two double beds",
+     "notes": "Pacific view. Family option."
+    },
+    {
+     "name": "1 King Grand Sea View",
+     "size": "27 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Upgraded Pacific view category."
+    },
+    {
+     "name": "1 King Suite Sea View",
+     "size": "44 sq m",
+     "sleeps": "4",
+     "beds": "One king",
+     "notes": "Suite with Pacific view."
+    },
+    {
+     "name": "1 King SOUMA Suite Sea View",
+     "size": "63 sq m",
+     "sleeps": "7",
+     "beds": "One king",
+     "notes": "Signature suite. The largest capacity in the Lima lineup."
+    }
+   ]
+  },
+  {
+   "name": "Hotel Suites del Bosque",
+   "slug": "suites-del-bosque",
+   "group_or_brand": "Independent",
+   "property_type": "Boutique all suite city hotel",
+   "star_rating": "4 star",
+   "country": "Peru",
+   "city": "Lima",
+   "district": "San Isidro",
+   "address": "Av. Paz Soldan 165, San Isidro",
+   "postcode": "15073",
+   "latitude": -12.097344,
+   "longitude": -77.0333072,
+   "coordinates_note": "Exact, hotel building",
+   "total_rooms": "55",
+   "floors": "12",
+   "year_built": null,
+   "year_renovated": null,
+   "check_in": "3:00 pm",
+   "check_out": "12:00 noon",
+   "airport_code": "LIM",
+   "distance_to_airport_km": null,
+   "drive_time_to_airport": "About 30 minutes, traffic dependent",
+   "nearby_landmarks": "El Olivar forest and park, San Isidro huacas, the financial district, Miraflores",
+   "one_line_description": "An all suite hotel in San Isidro, steps from the El Olivar olive grove and Lima's business district.",
+   "restaurant": "Cafeteria Los Cristales, breakfast daily",
+   "bar": "Los Cristales Bar, until 8:30 pm",
+   "breakfast": "Daily breakfast in Cafeteria Los Cristales. Meal plan depends on the rate booked.",
+   "room_service": "7:00 am to 3:00 pm",
+   "gym": "Yes, third floor",
+   "pool": "No",
+   "spa_or_sauna": "No",
+   "business_centre": "Yes",
+   "meeting_rooms": "Salon Alba Maria: theatre 120, classroom 60, banquet 60, U shape 35. Salon Los Olivos: theatre 70, classroom 35, U shape 20. Both second floor.",
+   "largest_meeting_capacity": "120",
+   "parking": "Free",
+   "wi_fi": "Free throughout",
+   "airport_transfer": null,
+   "laundry": "Mon to Sat, 7:00 am to 12:00 noon",
+   "reception_hours": "24 hours",
+   "air_conditioning": "Yes, throughout",
+   "pet_policy": "Dogs welcome. Confirm size limit and any fee at booking.",
+   "accessibility": "Lift serves all 12 floors. No accessible room detail published. Make no accessibility claim without written confirmation.",
+   "languages_spoken": null,
+   "phone": "+51 1 616 2121",
+   "whatsapp": null,
+   "email": "reservas@suitesdelbosque.com",
+   "website": "https://www.suitesdelbosque.com",
+   "good_to_know": "All accommodation is suite grade, so there is no standard room. Residential and quiet, not a resort. No pool.",
+   "included": null,
+   "costs_extra": null,
+   "kids": null,
+   "photos_on_file": "Yes, supplied for the Lima package page",
+   "source_links": "suitesdelbosque.com (hotel, rooms, services, events)",
+   "last_verified": "2026-09-12",
+   "full_amenity_list": "Free Wi-Fi, Free parking, Air conditioning, Gym, Business centre, 24 hour reception, Lift, Laundry and dry cleaning, Room service, Restaurant, Bar, Airport transfer on request, Meeting rooms, Pet friendly, dogs, Safe, Minibar, LCD television, Hairdryer, Bathtub, Desk, Amenities kit, Kitchenette in two categories, Sofa bed in every suite, Connecting rooms, Non smoking rooms",
+   "sheetSlug": "suites-del-bosque",
+   "dest": "lima",
+   "rooms": [
+    {
+     "name": "Sunflower Suite",
+     "size": "32 sq m",
+     "sleeps": "3",
+     "beds": "One double, plus sofa bed",
+     "notes": "Loft sitting area. Views to the El Olivar forest."
+    },
+    {
+     "name": "Junior Suite",
+     "size": "55 sq m",
+     "sleeps": "3",
+     "beds": "One king, plus sofa bed",
+     "notes": "Loft sitting room, microwave, minibar. Marble bathroom with bathtub."
+    },
+    {
+     "name": "Junior Suite, two queens",
+     "size": "55 sq m",
+     "sleeps": "5",
+     "beds": "Two queens, plus sofa bed. King or twin on request.",
+     "notes": "Loft sitting room, microwave, minibar. Connecting rooms available."
+    },
+    {
+     "name": "Junior Suite Kitchenette",
+     "size": null,
+     "sleeps": "5",
+     "beds": "Two queens, plus sofa bed",
+     "notes": "Full kitchenette. Connecting rooms available."
+    },
+    {
+     "name": "Executive Suite",
+     "size": "60 sq m",
+     "sleeps": "3",
+     "beds": "One king, plus sofa bed",
+     "notes": "Loft living and dining room. Marble bathroom with bathtub."
+    },
+    {
+     "name": "Executive Suite Kitchenette",
+     "size": null,
+     "sleeps": "3",
+     "beds": "One king, plus sofa bed",
+     "notes": "Full kitchenette."
+    },
+    {
+     "name": "Suite El Bosque",
+     "size": "60 sq m",
+     "sleeps": "3",
+     "beds": "Separate bedroom, bed type on request, plus sofa bed",
+     "notes": "Separate living room. Outlook to Av. Paz Soldan."
+    },
+    {
+     "name": "Suite Paz Soldan",
+     "size": "122 sq m",
+     "sleeps": "3",
+     "beds": "One king, plus sofa bed",
+     "notes": "Presidential suite. Rain shower, bathrobes."
+    }
+   ]
+  },
+  {
+   "name": "Grand Decameron Panama, A Trademark All Inclusive",
+   "slug": "decameron-panama",
+   "group_or_brand": "Decameron All Inclusive Hotels and Resorts, A Trademark Collection by Wyndham",
+   "property_type": "All inclusive beach resort",
+   "star_rating": null,
+   "country": "Panama",
+   "city": "Rio Hato",
+   "district": "Farallon, Anton, Cocle",
+   "address": "Avenida Principal Farallon, Kilometro 115, Carretera Interamericana",
+   "postcode": null,
+   "latitude": 8.3635818,
+   "longitude": -80.1288638,
+   "coordinates_note": "Building level match on OpenStreetMap against the resort name. Good enough to pin a map.",
+   "total_rooms": "852",
+   "floors": "Low rise, number of floors not published",
+   "year_built": null,
+   "year_renovated": null,
+   "check_in": "3:00 pm",
+   "check_out": "12:00 noon",
+   "airport_code": "RIH, Rio Hato Scarlett Martinez, about 2 km. PTY, Tocumen, is the usual arrival.",
+   "distance_to_airport_km": "About 2 km to Rio Hato. Panama City is about 90 minutes by road.",
+   "drive_time_to_airport": "About 90 minutes from Panama City",
+   "nearby_landmarks": "Farallon beach, Mantarraya Golf Club, Playa Blanca, El Valle de Anton",
+   "one_line_description": "An 852 room all inclusive on Panama's Pacific coast at Farallon, with a beachfront pool complex, a three flume water slide park and nine dining outlets.",
+   "restaurant": "Nine outlets: Cafe Med (Mediterranean), El Canal (seafood), El Pilon (Panamanian), Pannamai (Italian), La Esquina Asiatica (Asian), Mezcal (Mexican), Cowboy Steakhouse (grills), plus Atlantis and Pacifiko buffets. A la carte dinner 6:30 pm to 10:00 pm.",
+   "bar": "Eight: Lobby Bar 1, Lobby Bar 2, Cafe Med, Mezcal, Nega Nega, Las Congas, El Pilon and the nightclub bar. Open 9:00 am to 2:00 am, nightclub 11:00 pm to 2:00 am. A services page claims 13, which most likely counts pool, beach and snack service points as well.",
+   "breakfast": "Included. Buffet 7:00 to 10:30 am. Plus guests eat in a private restaurant.",
+   "room_service": null,
+   "gym": "Yes. Plus guests have an exclusive gym per the hotel.",
+   "pool": "Six pools for adults and children in a single beachfront complex, with a three flume water slide park (70, 60 and 13 metres) and its own splash pools. All Inclusive Plus has a separate adults pool and a family pool.",
+   "spa_or_sauna": "Spa and massages, at a charge",
+   "business_centre": null,
+   "meeting_rooms": "Two convention centres",
+   "largest_meeting_capacity": "Up to 1,000 people",
+   "parking": null,
+   "wi_fi": "Included on the standard plan. Unlimited Wi-Fi with better in room coverage is an All Inclusive Plus benefit.",
+   "airport_transfer": "Listed as a service. Terms and price not published.",
+   "laundry": "Yes",
+   "reception_hours": "24 hours, three receptions",
+   "air_conditioning": "Yes",
+   "pet_policy": null,
+   "accessibility": null,
+   "languages_spoken": null,
+   "phone": "+507 993 2255",
+   "whatsapp": null,
+   "email": null,
+   "website": "https://www.decameron.com/es/hoteles/farallon/decameron-panama/",
+   "good_to_know": "Two all inclusive tiers. Plus adds a private restaurant for breakfast and lunch, an exclusive pool and lounge bar, premium drinks, unlimited Wi-Fi, priority dinner reservations and separate check in.",
+   "included": "All meals across nine outlets, national and international drinks, day and night snacks, daily activities programme, non motorised water sports (kayak, paddle, sailing), beach towels, tennis and multi use courts, nightly entertainment, kids programme, gym, Wi-Fi and in room safe.",
+   "costs_extra": "Mantarraya golf. Spa treatments and massages. Motorised water sports. Decameron Explorer tours. The All Inclusive Plus upgrade.",
+   "kids": "Daily children's programme with magic classes, balloon modelling, crafts, origami, plasticine, face painting and treasure hunts. Playground, three track water slide, family pools.",
+   "photos_on_file": "No, photos still needed",
+   "source_links": "decameron.com hotel, servicios, restaurantes, todo-incluido and todo-incluido-plus pages; decameron.com booking engine March 2027; OpenStreetMap",
+   "last_verified": "2026-09-13",
+   "full_amenity_list": "All inclusive, Seven a la carte restaurants, Two buffet restaurants, Eight bars including the nightclub, 6 pools for adults and children, Water slide park, three flumes, Beachfront pool complex, Private Pacific beach, Spa and massages, Fitness centre, Tennis court, Multi use sports court, 18 hole golf next door, at a charge, Outdoor cinema, Kids playground, Daily kids programme, Nightly live shows, Non motorised water sports, Beach and pool towels, Air conditioning, Balcony or terrace, Minibar, Safe, Cable television with USB ports, Telephone, Hairdryer, Laundry, 24 hour reception, Luggage storage, Cot on request, Solarium, Hair salon, Pharmacy, Nurse station, Tour desk in every lobby, Airport transfer, Two convention centres, All Inclusive Plus upgrade",
+   "sheetSlug": "grand-decameron-panama",
+   "dest": "panama",
+   "rooms": [
+    {
+     "name": "Garden View, 1 King",
+     "size": null,
+     "sleeps": "3",
+     "beds": "One king",
+     "notes": "Tropical decor, garden outlook. Third guest is a child or infant."
+    },
+    {
+     "name": "Garden View, 2 Double Beds",
+     "size": null,
+     "sleeps": "4",
+     "beds": "Two double beds",
+     "notes": "Takes four adults."
+    },
+    {
+     "name": "Garden View Plus, 1 King",
+     "size": null,
+     "sleeps": "3",
+     "beds": "One king",
+     "notes": "Plus tier. Balcony or private terrace. Third guest is a child or infant."
+    },
+    {
+     "name": "Garden View Plus, 2 Double Beds",
+     "size": null,
+     "sleeps": "4",
+     "beds": "Two double beds",
+     "notes": "Plus tier. Takes four adults."
+    },
+    {
+     "name": "Ocean View, 2 Double Beds",
+     "size": null,
+     "sleeps": "4",
+     "beds": "Two double beds",
+     "notes": "Balcony, sea outlook. Takes four adults."
+    },
+    {
+     "name": "Ocean View Plus, 1 King",
+     "size": null,
+     "sleeps": "3",
+     "beds": "One king",
+     "notes": "Plus tier, sea outlook. Third guest is a child or infant."
+    }
+   ]
+  },
+  {
+   "name": "Dreams Playa Bonita Panama",
+   "slug": "dreams-playa-bonita",
+   "group_or_brand": "Dreams Resorts and Spas, Hyatt Inclusive Collection. Part of World of Hyatt.",
+   "property_type": "All inclusive beach resort",
+   "star_rating": null,
+   "country": "Panama",
+   "city": "Playa Bonita, Veracruz",
+   "district": "Distrito de Arraijan",
+   "address": "Camino a Veracruz, Kilometro 7, Distrito de Arraijan",
+   "postcode": "PO Box 00816-2007",
+   "latitude": 8.8979928,
+   "longitude": -79.5810652,
+   "coordinates_note": "Resort level match on OpenStreetMap, Playa Bonita Village, Veracruz, Arraijan.",
+   "total_rooms": "301",
+   "floors": "11 low rise seaside towers",
+   "year_built": null,
+   "year_renovated": null,
+   "check_in": null,
+   "check_out": null,
+   "airport_code": "PTY, Tocumen",
+   "distance_to_airport_km": null,
+   "drive_time_to_airport": "About 40 minutes",
+   "nearby_landmarks": "Punta Bruja nature reserve, Panama Canal 30 minutes, Casco Viejo, Panama Viejo, Gamboa Rainforest, Tucan Country Club golf",
+   "one_line_description": "A 301 room Unlimited Luxury all inclusive on Playa Bonita, twenty minutes from Panama City, with four pools and the largest event space on file.",
+   "restaurant": "Eight outlets: Bordeaux (French, adults only, formal), Oceana (seafood), Portofino (Italian), Market Cafe (buffet breakfast), Seaside Grill (lunch buffet), Barefoot Grill (oceanfront), Coco Cafe, Preferred Club Lounge. No reservations required. Gluten free menu at every restaurant.",
+   "bar": "Five: Rendezvous (lobby, 11:00 am to 11:00 pm), Manatees (swim up, 10:00 am to 6:00 pm), Barracuda (11:00 am to 6:00 pm), Desires (music lounge, 11:00 pm to 1:00 am), Preferred Club Pool Bar. Top shelf international and domestic spirits.",
+   "breakfast": "Included. Buffet 6:30 to 11:00 am. Preferred Club guests get continental service in the lounge.",
+   "room_service": "24 hours, included",
+   "gym": "Fitness centre, open 24 hours",
+   "pool": "Four: a large infinity pool, a shallow children's pool, an adults only pool and a Preferred Club adults only pool",
+   "spa_or_sauna": "Dreams Spa, 10,000 sq ft, hydrotherapy, sauna and steam room. At a charge. Preferred Club guests get one complimentary wet area visit per stay and 20 per cent off treatments.",
+   "business_centre": null,
+   "meeting_rooms": "Nine, over 16,000 sq ft, plus a 3,014 sq ft foyer",
+   "largest_meeting_capacity": "Dreams Ballroom: 1,500 theatre, 800 banquet, 1,400 cocktail",
+   "parking": null,
+   "wi_fi": "Free, included",
+   "airport_transfer": "Airport to hotel to airport transportation available at an additional cost",
+   "laundry": "Laundry and dry cleaning, 9:00 am to 7:00 pm Monday to Saturday, 24 hour return. Charged by item.",
+   "reception_hours": "24 hours",
+   "air_conditioning": "Yes, with in room climate control",
+   "pet_policy": "Small dogs under 10 kg welcome in set room categories, about US$65 per night. Vaccination certificate required at check in. Not allowed at the pool, gym, spa, shops, golf or on the beach. Service dogs may be excluded from the small dog policy, confirm separately.",
+   "accessibility": "Accessible rooms available on request. The resort does not publish how many or which category. Confirm the specifics in writing.",
+   "languages_spoken": null,
+   "phone": "+507 211 8600",
+   "whatsapp": null,
+   "email": "sales.drpbp@dreamsresorts.com for sales, groups.drpbp@dreamsresorts.com for groups",
+   "website": "https://www.hyatt.com/en-US/hotel/panama/playa-bonita-panama/ddpbp",
+   "good_to_know": "Unlimited Luxury includes all taxes and gratuities and needs no dinner reservations. Twenty minutes from Panama City. Two double bed rooms cap at three adults and every suite sleeps two only. Pets under 10 kg accepted at a charge.",
+   "included": "All meals across eight outlets with no reservations required, top shelf international and domestic spirits, 24 hour room service and concierge, pool and beach wait service, minibar restocked daily, daily maid service, daytime activities, nightly entertainment and theme parties, kids club, Wi-Fi, and all taxes and gratuities. No wristbands.",
+   "costs_extra": "Golf. Dreams Spa treatments. Tours and excursions. Beauty salon. Private romantic dinners. Airport transfers. Shopping. Guaranteed connecting rooms, about US$60 per stay. The Preferred Club upgrade.",
+   "kids": "Explorer's Club for ages 3 to 12, 9:00 am to 9:00 pm, fully supervised. Arts and crafts, girls spa, playground, children's pool, treasure hunts, sandcastle contests, games, big screen movies on the beach, children's dinner, parental beepers. Children must be fully potty trained.",
+   "photos_on_file": "No, photos still needed",
+   "source_links": "Resort fact sheet supplied by Golden, dated 23 May 2023; hyatt.com property page DDPBP verified live; OpenStreetMap",
+   "last_verified": "2026-09-13",
+   "full_amenity_list": "All inclusive, Unlimited Luxury, All taxes and gratuities included, No wristbands, Four a la carte restaurants, Buffet, grill and cafe, Five bars and lounges, No dinner reservations required, Gluten free menu at every restaurant, 4 pools including two adults only, 2 km private beach, Dreams Spa, 10,000 sq ft, at a charge, 24 hour fitness centre, 24 hour room service, Concierge, Explorer Club for kids, ages 3 to 12, Preferred Club upgrade tier, Putting green and driving range, Batting cage, Archery, Beach volleyball, Yoga, Kayaks, Jungle tour, Free Wi-Fi, Air conditioning, Private balcony in every room, Minibar restocked daily, Safe, Laundry and dry cleaning, Beauty salon, Car rental, First aid, Nine meeting rooms, 16,000 sq ft, Wedding deck, Accessible rooms on request, Small dogs welcome, at a charge, All rooms non smoking",
+   "sheetSlug": "dreams-playa-bonita",
+   "dest": "panama",
+   "rooms": [
+    {
+     "name": "Deluxe Partial Ocean View",
+     "size": "495 sq ft, about 46 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Garden and partial Pacific view, first floor. 40 rooms."
+    },
+    {
+     "name": "Deluxe Partial Ocean View",
+     "size": "495 sq ft, about 46 sq m",
+     "sleeps": "4",
+     "beds": "Two double beds",
+     "notes": "Maximum 3 adults. 10 rooms."
+    },
+    {
+     "name": "Deluxe Ocean View",
+     "size": "495 sq ft, about 46 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Full Pacific view. 95 rooms."
+    },
+    {
+     "name": "Deluxe Ocean View",
+     "size": "495 sq ft, about 46 sq m",
+     "sleeps": "4",
+     "beds": "Two double beds",
+     "notes": "Maximum 3 adults. 55 rooms."
+    },
+    {
+     "name": "Preferred Club Deluxe Ocean View",
+     "size": "495 sq ft, about 46 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Top floors, club benefits. 48 rooms."
+    },
+    {
+     "name": "Preferred Club Deluxe Ocean View",
+     "size": "495 sq ft, about 46 sq m",
+     "sleeps": "4",
+     "beds": "Two double beds",
+     "notes": "Maximum 3 adults. 26 rooms."
+    },
+    {
+     "name": "Preferred Club Junior Suite Ocean View",
+     "size": "820 sq ft, about 76 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Walk in closet, dining table for four, bathtub. 20 suites."
+    },
+    {
+     "name": "Preferred Club Master Suite Ocean View",
+     "size": "1,035 sq ft, about 96 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Dining table for six, one and a half bathrooms, two televisions. 6 suites."
+    },
+    {
+     "name": "Preferred Club One Bedroom Presidential Suite",
+     "size": "1,400 sq ft, about 130 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "The best ocean views on the resort. 1 suite."
+    }
+   ]
+  },
+  {
+   "name": "Hospedium Princess Hotel Panama",
+   "slug": "hospedium-princess",
+   "group_or_brand": "Hospedium Hotel Group",
+   "property_type": "City hotel",
+   "star_rating": null,
+   "country": "Panama",
+   "city": "Panama City",
+   "district": "Marbella. The hotel's own site says Bellavista. TBC - confirm with hotel",
+   "address": "Calle 53 y Avenida 5A B, Marbella",
+   "postcode": "832-0239",
+   "latitude": 8.9799971,
+   "longitude": -79.519869,
+   "coordinates_note": "Exact, hotel",
+   "total_rooms": "124",
+   "floors": "8",
+   "year_built": "1997",
+   "year_renovated": "2015",
+   "check_in": null,
+   "check_out": null,
+   "airport_code": "PTY",
+   "distance_to_airport_km": "About 17 km, 10.5 miles",
+   "drive_time_to_airport": "About 15 minutes",
+   "nearby_landmarks": "World Trade Centre, Panama Bay, Panama Viejo about 10 minutes, Miraflores canal visitor centre about 20 minutes, Calzada de Amador about 15 minutes",
+   "one_line_description": "A 124 room value hotel at the World Trade Centre with a pool, gym, sauna, spa and volleyball court.",
+   "restaurant": "Restaurant Saloma, buffet, Andean and international",
+   "bar": "Yes",
+   "breakfast": "Optional. Rates are sold room only or with breakfast, refundable or non refundable.",
+   "room_service": null,
+   "gym": "Yes",
+   "pool": "Outdoor swimming pool",
+   "spa_or_sauna": "Sauna and spa",
+   "business_centre": null,
+   "meeting_rooms": null,
+   "largest_meeting_capacity": null,
+   "parking": "Yes",
+   "wi_fi": "Free",
+   "airport_transfer": null,
+   "laundry": null,
+   "reception_hours": null,
+   "air_conditioning": "Yes",
+   "pet_policy": null,
+   "accessibility": "Nothing published. Make no accessibility claim without written confirmation.",
+   "languages_spoken": null,
+   "phone": "+507 309 6901",
+   "whatsapp": null,
+   "email": "reservas@princesshotelpanama.com",
+   "website": "https://princesshotelpanama.com",
+   "good_to_know": "Five categories, 20 to 52 sq m. The two double bed room takes three. Best value in the lineup. Long stay rates for 7 and 30 nights.",
+   "included": null,
+   "costs_extra": null,
+   "kids": null,
+   "photos_on_file": "No, photos still needed",
+   "source_links": "princesshotelpanama.com hotel and rooms pages; booking-hospedium.com booking engine; travelweekly.com",
+   "last_verified": "2026-09-12",
+   "full_amenity_list": "Outdoor pool, Gym, Sauna, Spa, Volleyball court, Buffet restaurant, Free Wi-Fi, Parking, Air conditioning, Safe, Minibar, Flat screen cable television, Desk, Hairdryer, Private bathroom with shower, City views, Pool views, Laundry, 24 hour reception",
+   "sheetSlug": "hospedium-princess-panama",
+   "dest": "panama",
+   "rooms": [
+    {
+     "name": "Habitacion Sencilla Ejecutiva",
+     "size": "20 sq m",
+     "sleeps": "2",
+     "beds": "One bed",
+     "notes": "The smallest category in either lineup."
+    },
+    {
+     "name": "Habitacion Doble, 1 cama grande",
+     "size": "32 sq m",
+     "sleeps": "2",
+     "beds": "One large double bed",
+     "notes": "City or pool view."
+    },
+    {
+     "name": "Habitacion Doble, 2 camas dobles",
+     "size": "32 sq m",
+     "sleeps": "3",
+     "beds": "Two double beds",
+     "notes": "City or pool view. The family option."
+    },
+    {
+     "name": "Habitacion Doble Ejecutiva",
+     "size": null,
+     "sleeps": null,
+     "beds": null,
+     "notes": "Not available on the dates checked. Confirm it exists."
+    },
+    {
+     "name": "Suite Junior",
+     "size": "52 sq m",
+     "sleeps": "2",
+     "beds": "One double bed",
+     "notes": "Large separate lounge area."
+    }
+   ]
+  },
+  {
+   "name": "Hotel Las Americas Golden Tower Panama",
+   "slug": "las-americas",
+   "group_or_brand": "Las Americas Hotels",
+   "property_type": "Tower city hotel",
+   "star_rating": null,
+   "country": "Panama",
+   "city": "Panama City",
+   "district": "Marbella",
+   "address": "Avenida Balboa y Calle 53 Esquina, Marbella",
+   "postcode": null,
+   "latitude": 8.977583,
+   "longitude": -79.5171395,
+   "coordinates_note": "Taken from the hotel's own map link on lasamericasgoldentower.com. Not in OpenStreetMap.",
+   "total_rooms": "285",
+   "floors": "30",
+   "year_built": "2016",
+   "year_renovated": null,
+   "check_in": null,
+   "check_out": null,
+   "airport_code": "PTY",
+   "distance_to_airport_km": "About 17 km, 10.5 miles",
+   "drive_time_to_airport": null,
+   "nearby_landmarks": "Avenida Balboa, Cinta Costera, Panama Bay, the financial district",
+   "one_line_description": "A 5 star LEED certified tower in Marbella with 285 rooms from 44 sq m, a spa and a 24 hour gym.",
+   "restaurant": "Aurum, fine dining, fifth floor. Union Market food hall.",
+   "bar": "Bar 507, fourth floor",
+   "breakfast": "Buffet breakfast included on the standard rate",
+   "room_service": "Yes",
+   "gym": "Yes, 24 hours, sixth floor",
+   "pool": "Indoor, climate controlled",
+   "spa_or_sauna": "Sona Spa and Wellness, sixth floor",
+   "business_centre": null,
+   "meeting_rooms": "Meeting rooms with adaptive configurations plus event space on the 28th floor. Capacities not published.",
+   "largest_meeting_capacity": null,
+   "parking": "Yes",
+   "wi_fi": "Free",
+   "airport_transfer": null,
+   "laundry": null,
+   "reception_hours": null,
+   "air_conditioning": "Yes",
+   "pet_policy": null,
+   "accessibility": "Two dedicated accessible categories sold in their own right, Accesible King and Accesible Doble, both 44 sq m sleeping three. Wheelchair access listed as a hotel facility. The strongest accessibility position of all twelve properties.",
+   "languages_spoken": null,
+   "phone": "+507 370 4600 ext 6303",
+   "whatsapp": null,
+   "email": "reservas@lasamericashg.com",
+   "website": "https://www.lasamericasgoldentower.com",
+   "good_to_know": "Marbella, not Obarrio. 5 star and LEED certified. Two accessible categories. Breakfast included.",
+   "included": null,
+   "costs_extra": null,
+   "kids": null,
+   "photos_on_file": "No, photos still needed",
+   "source_links": "lasamericasgoldentower.com hotel and habitaciones pages; lasamericashotels.mybookhotel.com booking engine; travelweekly.com",
+   "last_verified": "2026-09-12",
+   "full_amenity_list": "Free Wi-Fi, Climate controlled pool, Sona Spa and Wellness, 24 hour gym, Fine dining restaurant, Food hall, Bar, Room service, Meeting rooms, Event space on the 28th floor, Air conditioning, Safe, Minibar, Television, Desk, Parking, Concierge, Laundry, Business facilities, City and bay views",
+   "sheetSlug": "las-americas-golden-tower",
+   "dest": "panama",
+   "rooms": [
+    {
+     "name": "Deluxe King",
+     "size": "44 sq m",
+     "sleeps": "3",
+     "beds": "One king, 2 x 2 m",
+     "notes": "City view. 47 inch HD television."
+    },
+    {
+     "name": "Deluxe Doble",
+     "size": "44 sq m",
+     "sleeps": "4",
+     "beds": "Two double beds, 1.40 x 2 m",
+     "notes": "City view. The family option."
+    },
+    {
+     "name": "Accesible King",
+     "size": "44 sq m",
+     "sleeps": "3",
+     "beds": "One king, 2 x 2 m",
+     "notes": "Accessible category, sold in its own right. City view."
+    },
+    {
+     "name": "Accesible Doble",
+     "size": "44 sq m",
+     "sleeps": "3",
+     "beds": "Two double beds, 1.40 x 2 m",
+     "notes": "Accessible category, sold in its own right."
+    },
+    {
+     "name": "Executive King",
+     "size": "44 sq m",
+     "sleeps": "3",
+     "beds": "One king, 2 x 2 m",
+     "notes": "Executive category."
+    },
+    {
+     "name": "Executive Doble",
+     "size": "44 sq m",
+     "sleeps": "4",
+     "beds": "Two double beds, 1.40 x 2 m",
+     "notes": "Executive category. Family option."
+    },
+    {
+     "name": "Junior Suite",
+     "size": "85 sq m",
+     "sleeps": "3",
+     "beds": "One king, 2 x 2 m",
+     "notes": "Sitting room with a half bath and shower, dining area."
+    },
+    {
+     "name": "Garden Suite",
+     "size": "143 sq m",
+     "sleeps": "4",
+     "beds": "One king, 2 x 2 m",
+     "notes": "Jacuzzi, sitting room, dining area, furnished outdoor terrace."
+    },
+    {
+     "name": "Suite Presidencial",
+     "size": "214 sq m",
+     "sleeps": "4",
+     "beds": "One king, 2 x 2 m",
+     "notes": "Double sitting room, jacuzzi, dining area, kitchen, terrace."
+    }
+   ]
+  },
+  {
+   "name": "Marinn Place Financial District",
+   "slug": "marinn-place",
+   "group_or_brand": "Marinn Hotels, trading as Dann Carlton Marinn Place Panama. Replaced the Novotel on the Panama list.",
+   "property_type": "City hotel",
+   "star_rating": "5 star, per the hotel's own site",
+   "country": "Panama",
+   "city": "Panama City",
+   "district": "Bella Vista, the Financial District",
+   "address": "Avenida Aquilino de La Guardia y Via Espana y calle 52, Bella Vista",
+   "postcode": null,
+   "latitude": 8.9818661,
+   "longitude": -79.5259982,
+   "coordinates_note": "Exact, hotel building",
+   "total_rooms": null,
+   "floors": null,
+   "year_built": null,
+   "year_renovated": null,
+   "check_in": null,
+   "check_out": null,
+   "airport_code": "PTY",
+   "distance_to_airport_km": null,
+   "drive_time_to_airport": null,
+   "nearby_landmarks": "The Financial District, Avenida Balboa, Cinta Costera",
+   "one_line_description": "A Financial District hotel with a rooftop pool and a sofa bed in every room.",
+   "restaurant": "Dann Carlton Restaurant, international and local, breakfast through brunch",
+   "bar": null,
+   "breakfast": "Served in the Dann Carlton restaurant. Confirm whether it is included in the rate.",
+   "room_service": null,
+   "gym": "Fitness centre",
+   "pool": "Rooftop pool with panoramic skyline views",
+   "spa_or_sauna": null,
+   "business_centre": null,
+   "meeting_rooms": "Available for business and social events. Number and capacities not published.",
+   "largest_meeting_capacity": null,
+   "parking": null,
+   "wi_fi": "Free",
+   "airport_transfer": null,
+   "laundry": null,
+   "reception_hours": null,
+   "air_conditioning": "Yes",
+   "pet_policy": null,
+   "accessibility": "Nothing published. Make no accessibility claim without written confirmation.",
+   "languages_spoken": null,
+   "phone": "+507 309 2535",
+   "whatsapp": "+507 6633 4529",
+   "email": "reservas@marinnhotels.com",
+   "website": "https://www.marinnhotels.com/marinn-place-financial-district",
+   "good_to_know": "5 star per the hotel. Three categories, all 34 sq m, all with a sofa bed. Deluxe Double sleeps four. Replaced the Novotel on the Panama list.",
+   "included": null,
+   "costs_extra": null,
+   "kids": null,
+   "photos_on_file": "No, photos still needed",
+   "source_links": "marinnhotels.com accommodations page and booking engine; hoteldanncarltonpanama.com",
+   "last_verified": "2026-09-12",
+   "full_amenity_list": "Rooftop pool, Fitness centre, Restaurant, Meeting rooms, Free Wi-Fi, Air conditioning, Sofa bed in every category, Seating area, Divided living and sleeping space, Room service, Safe, Minibar, Television, Desk, City skyline views, Financial District location",
+   "sheetSlug": "marinn-place",
+   "dest": "panama",
+   "rooms": [
+    {
+     "name": "Deluxe King",
+     "size": "34 sq m",
+     "sleeps": "2",
+     "beds": "One king, plus a sofa bed",
+     "notes": "High floor. Seating area with a couch. Pillow top mattress."
+    },
+    {
+     "name": "Deluxe Double",
+     "size": "34 sq m",
+     "sleeps": "4",
+     "beds": "Two queens, plus a sofa bed",
+     "notes": "Divided living and sleeping area. The family option."
+    },
+    {
+     "name": "Premium King",
+     "size": "34 sq m",
+     "sleeps": "3",
+     "beds": "One king, plus a sofa bed",
+     "notes": "Seating area with armchair and sofa bed, large wardrobe, 42 inch television."
+    }
+   ]
+  },
+  {
+   "name": "Megapolis Hotel Panama",
+   "slug": "megapolis",
+   "group_or_brand": "Megapolis World. Sister property Decapolis Hotel. Group also runs Megapolis Outlets and Megapolis Convention Center.",
+   "property_type": "High rise city hotel",
+   "star_rating": null,
+   "country": "Panama",
+   "city": "Panama City",
+   "district": "Punta Paitilla, per OpenStreetMap",
+   "address": "Avenida Balboa, Boulevard Elhayek, Punta Paitilla",
+   "postcode": "07127",
+   "latitude": 8.9774463,
+   "longitude": -79.51775,
+   "coordinates_note": "Exact, hotel building",
+   "total_rooms": null,
+   "floors": "62 storey tower",
+   "year_built": null,
+   "year_renovated": null,
+   "check_in": null,
+   "check_out": null,
+   "airport_code": "PTY",
+   "distance_to_airport_km": null,
+   "drive_time_to_airport": null,
+   "nearby_landmarks": "Avenida Balboa, Panama Bay, Cinta Costera",
+   "one_line_description": "A 62 storey tower on Avenida Balboa with a pool bar, kosher rooms and a family suite sleeping six.",
+   "restaurant": "Restaurant Ciao, Mediterranean and Panamanian. Bazaar.",
+   "bar": "Mamie Lee's Bar, Stage Bar, Float Bar at the pool. Bling nightclub.",
+   "breakfast": null,
+   "room_service": null,
+   "gym": null,
+   "pool": "Yes, with the Float Bar and sunbeds",
+   "spa_or_sauna": null,
+   "business_centre": null,
+   "meeting_rooms": "Meeting and event rooms on site. Megapolis Convention Center in the same group. Capacities not published.",
+   "largest_meeting_capacity": null,
+   "parking": null,
+   "wi_fi": null,
+   "airport_transfer": null,
+   "laundry": null,
+   "reception_hours": null,
+   "air_conditioning": "Yes",
+   "pet_policy": "Not pet friendly, stated by the hotel",
+   "accessibility": "The hotel publishes a Notice of Accessibility page. No accessible room category is shown in the booking engine. Confirm in writing.",
+   "languages_spoken": null,
+   "phone": "+507 321 6501",
+   "whatsapp": "+507 6948 9982",
+   "email": "reservations@megapolisworld.com",
+   "website": "https://www.megapolishotelpanama.com",
+   "good_to_know": "Avenida Balboa, not Punta Pacifica, and no Multiplaza connection. Kosher rooms available. Not pet friendly. Family suite sleeps six.",
+   "included": null,
+   "costs_extra": null,
+   "kids": null,
+   "photos_on_file": "No, photos still needed",
+   "source_links": "megapolishotelpanama.com hotel, rooms and booking engine; megapolisworld.com group site",
+   "last_verified": "2026-09-12",
+   "full_amenity_list": "Free Wi-Fi, Outdoor pool with Float Bar, Restaurant, Bazaar, Two bars, Nightclub, Kosher rooms available, Meeting and event rooms, Air conditioning, Rainfall walk in showers, Separate living areas in suites, Ocean view categories, City view categories, Family suite, Room service, Safe, Minibar, Television, Convention centre in the group, Outlets mall in the group",
+   "sheetSlug": "megapolis-panama",
+   "dest": "panama",
+   "rooms": [
+    {
+     "name": "Deluxe King City View",
+     "size": "43 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "City view. Rainfall walk in shower."
+    },
+    {
+     "name": "Deluxe Double City View",
+     "size": "43 sq m",
+     "sleeps": "4",
+     "beds": "Two double beds",
+     "notes": "City view. Family option."
+    },
+    {
+     "name": "Junior King Ocean View",
+     "size": "50 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Ocean view. Living area."
+    },
+    {
+     "name": "Junior Double Ocean View",
+     "size": "53 sq m",
+     "sleeps": "4",
+     "beds": "Two double beds",
+     "notes": "Ocean view. Family option."
+    },
+    {
+     "name": "Suite Gold City View",
+     "size": "62 sq m",
+     "sleeps": "3",
+     "beds": "Two beds",
+     "notes": "Spacious living area, city view."
+    },
+    {
+     "name": "Suite Premium Ocean View",
+     "size": "93 sq m",
+     "sleeps": "3",
+     "beds": null,
+     "notes": "Separate living area, ocean view."
+    },
+    {
+     "name": "2 Bedroom Family Suite",
+     "size": "89 sq m",
+     "sleeps": "6",
+     "beds": null,
+     "notes": "Two bedrooms. Sleeps six, the largest capacity in the Panama lineup."
+    },
+    {
+     "name": "Presidential Suite",
+     "size": "127 sq m",
+     "sleeps": "4",
+     "beds": "One king plus a sofa bed",
+     "notes": "Top category."
+    },
+    {
+     "name": "Kosher Rooms",
+     "size": null,
+     "sleeps": null,
+     "beds": null,
+     "notes": null
+    }
+   ]
+  },
+  {
+   "name": "Ramada Plaza Panama Punta Pacifica",
+   "slug": "ramada-plaza",
+   "group_or_brand": "Ramada Plaza by Wyndham",
+   "property_type": "City hotel",
+   "star_rating": null,
+   "country": "Panama",
+   "city": "Panama City",
+   "district": "Punta Pacifica, San Francisco",
+   "address": "Via Israel y Calle 71, San Francisco",
+   "postcode": "00000 per the brand record",
+   "latitude": 8.987836,
+   "longitude": -79.50737,
+   "coordinates_note": "Taken from Wyndham's own directions link on the hotel page. Not in OpenStreetMap.",
+   "total_rooms": "135",
+   "floors": "9",
+   "year_built": "2014",
+   "year_renovated": "2019",
+   "check_in": "3:00 pm",
+   "check_out": "12:00 noon",
+   "airport_code": "PTY",
+   "distance_to_airport_km": "Under 20 km",
+   "drive_time_to_airport": null,
+   "nearby_landmarks": "Multiplaza Pacific Mall, Old Panama, ATLAPA Convention Centre, Cinta Costera",
+   "one_line_description": "A 135 room Wyndham hotel in Punta Pacifica with an outdoor pool and free parking.",
+   "restaurant": "Fontanella Restaurant and Lounge, lobby level",
+   "bar": "Fontanella lounge",
+   "breakfast": "Free buffet breakfast, from 6:30 am",
+   "room_service": "Yes",
+   "gym": "Panoramic fitness centre",
+   "pool": "Outdoor pool",
+   "spa_or_sauna": "Spa, sauna and hot tub on site",
+   "business_centre": "Yes",
+   "meeting_rooms": "Two, 241 sq m of event space total",
+   "largest_meeting_capacity": "100 conference or 80 banquet",
+   "parking": "Onsite parking and valet parking. The hotel description says free garage parking, the amenity list says fees may apply. Confirm.",
+   "wi_fi": "Free",
+   "airport_transfer": "Shuttle to and from Tocumen, at an additional fee",
+   "laundry": "Laundry and dry cleaning",
+   "reception_hours": "24 hours",
+   "air_conditioning": "Yes",
+   "pet_policy": "No pets. Service animals are welcome.",
+   "accessibility": "Wheelchair accessible lifts only. No accessible room category is published. Make no accessibility claim without written confirmation.",
+   "languages_spoken": null,
+   "phone": "+507 322 0000",
+   "whatsapp": null,
+   "email": null,
+   "website": "https://ramadaplazapanama.com",
+   "good_to_know": "Punta Pacifica, not Marbella. Children 12 and under stay free. Free buffet breakfast from 6:30 am suits early Tocumen departures. The airport shuttle is chargeable.",
+   "included": null,
+   "costs_extra": null,
+   "kids": null,
+   "photos_on_file": "No, photos still needed",
+   "source_links": "wyndhamhotels.com overview, rooms and rates and hotel policies, December 2026; ramadaplazapanama.com",
+   "last_verified": "2026-09-13",
+   "full_amenity_list": "Outdoor pool, Panoramic gym, Spa, Sauna, Hot tub, Restaurant and lounge, Cafe, Bar, Free buffet breakfast, Free Wi-Fi, Airport shuttle, at a charge, Onsite and valet parking, Business centre, Two meeting rooms, Banquet and wedding facilities, Car rental desk, 24 hour front desk, Room service, Laundry and dry cleaning, Early check in and late check out available, Balconies in some rooms, Air conditioning, Safe, Minibar, Mini refrigerator, Coffee and tea maker, HDTV, Desk, Hairdryer, 100 per cent smoke free, Children 12 and under stay free, Wheelchair accessible lifts",
+   "sheetSlug": "ramada-plaza-panama",
+   "dest": "panama",
+   "rooms": [
+    {
+     "name": "1 King Bed Deluxe Room",
+     "size": null,
+     "sleeps": null,
+     "beds": "One king",
+     "notes": "Free breakfast, mini refrigerator, minibar, HDTV. Occupancy not published."
+    },
+    {
+     "name": "2 Double Beds Deluxe Room",
+     "size": null,
+     "sleeps": "4",
+     "beds": "Two double beds",
+     "notes": "Sitting area, kitchen supplies, mini refrigerator, wet bar, coffee and tea maker."
+    },
+    {
+     "name": "2 Double Beds Superior Room",
+     "size": null,
+     "sleeps": "4",
+     "beds": "Two double beds",
+     "notes": "Same fit out as the Deluxe. The difference is not published."
+    }
+   ]
+  },
+  {
+   "name": "Hotel Riu Playa Blanca",
+   "slug": "riu-playa-blanca",
+   "group_or_brand": "RIU Hotels and Resorts",
+   "property_type": "All inclusive family resort",
+   "star_rating": "5 star",
+   "country": "Panama",
+   "city": "Playa Blanca",
+   "district": "Provincia de Cocle",
+   "address": "Finca 43.668, Playa Blanca",
+   "postcode": null,
+   "latitude": 8.348692,
+   "longitude": -80.148844,
+   "coordinates_note": "Published by Riu on the hotel fact sheet.",
+   "total_rooms": "573",
+   "floors": "7, one building, 4 lifts",
+   "year_built": "2013/14",
+   "year_renovated": null,
+   "check_in": null,
+   "check_out": null,
+   "airport_code": "RIH, Rio Hato Scarlett Martinez, 7 km. PTY, Tocumen, 150 km, is the usual arrival.",
+   "distance_to_airport_km": "7 km to Rio Hato, 150 km to Tocumen",
+   "drive_time_to_airport": null,
+   "nearby_landmarks": "Playa Blanca, Rio Hato 4 km, Penonome 33 km, Farallon",
+   "one_line_description": "A 573 room all inclusive Riu on Playa Blanca in Cocle, with four pools and three kilometres of Pacific beach.",
+   "restaurant": "Four: Balboa (main buffet), Xian (Asian), Il Palazzo (Italian) and Chiriqui (poolside, lunch and snacks 12.00 to 17.30, steakhouse dinner from 18.30).",
+   "bar": "Five: Burbujas lobby bar 10.00 to 23.00, La Rumba lounge bar 18.00 to 24.00, a 24 hour sports bar, a plaza bar 20.00 to 22.00 subject to occupancy, and the Limon swim up bar 10.30 to 18.00 for over 18s.",
+   "breakfast": "Included",
+   "room_service": null,
+   "gym": "Yes, 24 hour access",
+   "pool": "Four: 470 sq m, 136 sq m, a 590 sq m adults only pool with a swim up bar, and a 290 sq m children's pool with slides.",
+   "spa_or_sauna": "Health and beauty facilities",
+   "business_centre": null,
+   "meeting_rooms": "Conference facilities. Capacities printed blank on the fact sheet.",
+   "largest_meeting_capacity": null,
+   "parking": "Free, open air, limited places, unguarded",
+   "wi_fi": "Free throughout the hotel",
+   "airport_transfer": null,
+   "laundry": null,
+   "reception_hours": "24 hours",
+   "air_conditioning": "Yes, central",
+   "pet_policy": "No pets allowed",
+   "accessibility": "Four adapted rooms in the DBEM category, 35 sq m. Riu publishes full door widths and bathroom measurements on the fact sheet.",
+   "languages_spoken": "Spanish and English at reception",
+   "phone": "+507 907 0900",
+   "whatsapp": null,
+   "email": "hotel.playablanca@riu.com",
+   "website": "https://www.riu.com",
+   "good_to_know": "Two and a half kilometres from Grand Decameron Panama on the same beach, so the two compete directly. Standard rooms are 35 sq m, larger than the Jamaica Rius. A Triple Room category exists. The swim up pool is adults only.",
+   "included": null,
+   "costs_extra": null,
+   "kids": "RIU Land kids club and a 290 sq m children's pool with slides. Fun4All family branding.",
+   "photos_on_file": "No, photos still needed",
+   "source_links": "RIU Hotels official Hotel Fact Sheet, dated 15 September 2026, supplied by Golden",
+   "last_verified": "2026-09-15",
+   "full_amenity_list": "All Inclusive 24H, Family resort, Fun4All, 4 restaurants, 5 bars, 4 pools, Adults only pool with swim up bar, Children pool with slides, RIU Land kids club, Playa Blanca beach, 3 km, Discotheque, Health and beauty facilities, Gym, 24 hour access, Conference facilities, Souvenir shop, Free Wi-Fi throughout, Free parking, 24 hour reception, Air conditioning, Balcony or terrace, Minibar and liquor dispenser, Safe, Bathtub or shower, Sofa bed in some rooms, Two bedroom family rooms and suites, Whirlpool on terrace in the suite, Adapted rooms, No pets",
+   "sheetSlug": "riu-playa-blanca",
+   "dest": "panama",
+   "rooms": [
+    {
+     "name": "Double Room",
+     "size": "35 sq m, 377 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Bathtub or shower. Some with sofa bed. Code DBJB."
+    },
+    {
+     "name": "Double Room Tropical View",
+     "size": "35 sq m, 377 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Balcony. Some with sofa bed. Code DBEB."
+    },
+    {
+     "name": "Double Room Ocean View",
+     "size": "35 sq m, 377 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Balcony. Some with sofa bed. Code DBLB."
+    },
+    {
+     "name": "Double Room Ocean Front",
+     "size": "35 sq m, 377 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Balcony. Some with sofa bed. Code DBMB."
+    },
+    {
+     "name": "Triple Room",
+     "size": "38 sq m, 409 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Sofa bed. Code TBSB."
+    },
+    {
+     "name": "Accessible Double Room Tropical View",
+     "size": "35 sq m, 377 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Adapted. Code DBEM, 4 rooms."
+    },
+    {
+     "name": "2 Bedroom Double Room Tropical View",
+     "size": "70 sq m, 753 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200",
+     "notes": "Two bedrooms. Code DBEF."
+    },
+    {
+     "name": "2 Bedroom Double Room Ocean View",
+     "size": "70 sq m, 753 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or mixed",
+     "notes": "Two bedrooms. Code DBLF."
+    },
+    {
+     "name": "Two Bedroom Family Room",
+     "size": "79 sq m, 850 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Two bedrooms, two bathrooms. Code F2SB."
+    },
+    {
+     "name": "Two Bedroom Family Suite",
+     "size": "79 sq m, 850 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Two bedrooms, integrated lounge. Code S2SB."
+    },
+    {
+     "name": "Suite Ocean View",
+     "size": "53 sq m, 570 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Whirlpool on the terrace. Code SUMB."
+    }
+   ]
+  },
+  {
+   "name": "Hotel Riu Plaza Panama",
+   "slug": "riu-plaza",
+   "group_or_brand": "RIU Hotels and Resorts, Riu Plaza city division",
+   "property_type": "City hotel",
+   "star_rating": null,
+   "country": "Panama",
+   "city": "Panama City",
+   "district": "Marbella",
+   "address": "Calle 50 con Calle 53 Este, Urbanizacion Marbella",
+   "postcode": null,
+   "latitude": 8.98126,
+   "longitude": -79.521042,
+   "coordinates_note": "Published by Riu on the hotel fact sheet.",
+   "total_rooms": "644",
+   "floors": "35, with 7 lifts",
+   "year_built": "2009/10",
+   "year_renovated": "Partial refurbishment 2025, decoration and colours in guest rooms and public areas",
+   "check_in": null,
+   "check_out": null,
+   "airport_code": "PTY, Tocumen International",
+   "distance_to_airport_km": "About 21 km",
+   "drive_time_to_airport": null,
+   "nearby_landmarks": "Calle 50, Marbella, Cinta Costera, Multiplaza Pacific",
+   "one_line_description": "A 644 room Riu city hotel on Calle 50 in Marbella with 35 floors and conference space for 868.",
+   "restaurant": "Two: Arts (buffet breakfast 06.30 to 10.30, live cooking stations, vegetarian and gluten free options) and Tastes (a la carte, 12.00 to 23.00, Monday to Saturday).",
+   "bar": "Three, including Sushi Lounge Studio 50 in the lobby 12.00 to 00.30 and the Ibiza snack bar 11.00 to 00.30.",
+   "breakfast": "Included on the bed and breakfast rate. Buffet 06.30 to 10.30.",
+   "room_service": "24 hours, at an additional charge",
+   "gym": "Yes",
+   "pool": "Outdoor pool",
+   "spa_or_sauna": null,
+   "business_centre": "Crown Level executive lounge with computers and internet access, meeting room and concierge",
+   "meeting_rooms": "Five: Barcelona 928 sq m, Berlin 329, Amsterdam 84, Madrid 77, London 34. All on the second floor.",
+   "largest_meeting_capacity": "Barcelona: 868 theatre, 600 banquet, 414 classroom",
+   "parking": "Valet parking, at a charge, limited places",
+   "wi_fi": "Free throughout the hotel",
+   "airport_transfer": null,
+   "laundry": null,
+   "reception_hours": "24 hours",
+   "air_conditioning": "Yes, central",
+   "pet_policy": "No pets allowed",
+   "accessibility": "Four fully adapted rooms in the DLT category with shower and no bathtub, plus eight further rooms with wider entrance and bathroom doors.",
+   "languages_spoken": "Spanish and English at reception",
+   "phone": "+507 378 9000",
+   "whatsapp": null,
+   "email": "events.panama@riu.com",
+   "website": "https://www.riu.com",
+   "good_to_know": "Bed and breakfast, not all inclusive. The Barcelona conference room seats 868 theatre or 600 banquet, the largest event space in the Panama lineup. Room service and valet parking both carry a charge. The 258 sq m Penthouse is the largest room on the whole file.",
+   "included": null,
+   "costs_extra": null,
+   "kids": null,
+   "photos_on_file": "No, photos still needed",
+   "source_links": "RIU Hotels official Hotel Fact Sheet, dated 12 September 2026, supplied by Golden",
+   "last_verified": "2026-09-15",
+   "full_amenity_list": "Bed and breakfast city hotel, 35 floors, 2 restaurants, 3 bars, Outdoor pool, Gym, Crown Level executive lounge, Conference facilities up to 868, Gift shop, Valet parking, at a charge, Free Wi-Fi throughout, 24 hour reception, Digital key, 24 hour room service, at a charge, Air conditioning, Small fridge, Safe, Coffee maker, Iron and ironing board, Adapted rooms, No pets",
+   "sheetSlug": "riu-plaza-panama",
+   "dest": "panama",
+   "rooms": [
+    {
+     "name": "Deluxe King Room",
+     "size": "34 sq m",
+     "sleeps": null,
+     "beds": "1 bed 200x200",
+     "notes": "Code DLK."
+    },
+    {
+     "name": "Deluxe Twin Room",
+     "size": "39 sq m",
+     "sleeps": null,
+     "beds": "2 beds 125x200",
+     "notes": "Code DLT. The adapted rooms sit in this category."
+    },
+    {
+     "name": "Deluxe Family Twin Room",
+     "size": "39 sq m",
+     "sleeps": null,
+     "beds": "2 beds 125x200 plus sofa bed",
+     "notes": "Code DLTS."
+    },
+    {
+     "name": "Deluxe Family King Room",
+     "size": "34 sq m",
+     "sleeps": null,
+     "beds": "1 bed 200x200 plus sofa bed",
+     "notes": "Code DLKS."
+    },
+    {
+     "name": "Deluxe King Room with Views",
+     "size": "34 sq m",
+     "sleeps": null,
+     "beds": "1 bed 200x200",
+     "notes": "Panoramic city views, top floors. Code DLKV."
+    },
+    {
+     "name": "Executive King Room",
+     "size": "34 sq m",
+     "sleeps": null,
+     "beds": "1 bed 200x200",
+     "notes": "Top floors, Crown Level lounge access. Code EXK."
+    },
+    {
+     "name": "Executive Twin Room",
+     "size": "39 sq m",
+     "sleeps": null,
+     "beds": "2 beds 125x200",
+     "notes": "Top floors, Crown Level lounge access. Code EXT."
+    },
+    {
+     "name": "Senior Suite",
+     "size": "78 sq m",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Crown Level access, bathtub, guest bathroom, dining table. Code SUK."
+    },
+    {
+     "name": "Senior Suite Family Room",
+     "size": "76 sq m",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Crown Level access, bathtub, guest bathroom. Code SUKF."
+    },
+    {
+     "name": "Presidential Suite, Stay with me",
+     "size": "120 sq m",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Crown Level access, guest bathroom, dining table. Code SPR."
+    },
+    {
+     "name": "Penthouse, In the heart of the city",
+     "size": "258 sq m",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Kitchenette, separate lounge, second bathroom, loft bedroom. The largest room on the whole file. Code PENT."
+    }
+   ]
+  },
+  {
+   "name": "Bahia Principe Luxury Runaway Bay",
+   "slug": "bahia-principe-luxury-runaway-bay",
+   "group_or_brand": "Bahia Principe Hotels and Resorts, Luxury division",
+   "property_type": "Adults only all inclusive resort",
+   "star_rating": null,
+   "country": "Jamaica",
+   "city": "Runaway Bay",
+   "district": "Salt Coopers, St Ann",
+   "address": "Salt Coopers, Runaway Bay",
+   "postcode": null,
+   "latitude": null,
+   "longitude": null,
+   "coordinates_note": null,
+   "total_rooms": "523",
+   "floors": null,
+   "year_built": null,
+   "year_renovated": null,
+   "check_in": null,
+   "check_out": null,
+   "airport_code": "MBJ, Sangster International. Kingston, KIN, 122 km.",
+   "distance_to_airport_km": "69 km, 43 miles to Montego Bay",
+   "drive_time_to_airport": null,
+   "nearby_landmarks": "Runaway Bay, north coast. Nearest town 16 km. Shopping area 28 km.",
+   "one_line_description": "A 523 room adults only all inclusive at Runaway Bay where every room is a 53 sq m junior suite.",
+   "restaurant": "Five: Jazmin (main buffet, international), Las Olas (snack, outdoor), Takara (Asian a la carte), Picasso (Mediterranean a la carte), Rodizio (Brazilian a la carte, outdoor). A la carte dining is unlimited but requires a reservation. Complex total is 12 restaurants under exchange privileges.",
+   "bar": "Three: River Fall lobby bar 6.00 to 24.00, La Isla pool bar and Coconut Beach bar, both 10.00 to 18.00. Complex total is 13 bars. Plus the Ska Nightclub, over 18s, and a Karaoke Sports Bar.",
+   "breakfast": "Included. Buffet 7.00 to 10.30 at Jazmin, snack breakfast 8.00 to 10.00 at Las Olas.",
+   "room_service": "24 hours, included",
+   "gym": "New luxury gym",
+   "pool": "Three pools plus four integrated whirlpool baths and a swim up bar. Main pool depth 1.2 m. Complex total is 6 pools.",
+   "spa_or_sauna": "Spa with massages, facial and body treatments, relax room with cold plunge pool, sauna and hair salon. Not included, additional charges apply.",
+   "business_centre": null,
+   "meeting_rooms": "Conference rooms across the Bahia Principe Grand Jamaica complex, including the Tropicana Theatre",
+   "largest_meeting_capacity": "Tropicana Theatre: 1,000 theatre, 500 banquet, 1,000 cocktail",
+   "parking": null,
+   "wi_fi": "Free 24 hour Wi-Fi throughout. Premium Wi-Fi carries a charge.",
+   "airport_transfer": null,
+   "laundry": "At a charge",
+   "reception_hours": null,
+   "air_conditioning": "Yes, plus ceiling fan",
+   "pet_policy": null,
+   "accessibility": "Three accessible guest rooms with wide door access, wide bathroom door, hand wash basin, accessible shower and plastic chair. Ramps to 13 restaurants, 2 bars and 1 pool. Six accessible public bathrooms, an exclusive beach area, three buggies and five lifts.",
+   "languages_spoken": null,
+   "phone": null,
+   "whatsapp": null,
+   "email": "info.runaway@bahia-principe.com",
+   "website": "https://www.bahia-principe.com",
+   "good_to_know": "Adults only. Every room is the same 53 sq m junior suite, three adults maximum. Local taxes and gratuities are included. Exchange privileges lift the complex to 12 restaurants, 13 bars and 6 pools with an internal shuttle. The spa is not included.",
+   "included": "24 hour all inclusive, all meals and beverages including select liquor brands, unlimited drinks at all hotel bars, wide selection of international and premium liquors, unlimited a la carte dining with reservation, 24 hour room service, minibar, pillow menu, bathrobe and slippers, turndown service, exclusive beach and pool bar service, lounge chairs, daily activities and night entertainment, free 24 hour Wi-Fi, all local taxes and gratuities, exchange privileges with the sister hotels.",
+   "costs_extra": "Spa treatments. Telephone calls. Laundry. Premium Wi-Fi. Medical services. Outdoor spa massage and wine tasting.",
+   "kids": null,
+   "photos_on_file": "No, photos still needed",
+   "source_links": "Bahia Principe Luxury Runaway Bay official fact sheet supplied by Golden",
+   "last_verified": "2026-09-15",
+   "full_amenity_list": "Adults only, 24 hour all inclusive, All local taxes and gratuities included, 24 hour room service, 5 restaurants, 3 bars, 3 pools, 4 integrated whirlpools, Swim up bar, Private beach, Exchange privileges with Bahia Principe Grand Jamaica, Spa, at a charge, New luxury gym, Tennis court, Access to nightclub, Pillow menu, Bathrobe and slippers, Turndown service, Free 24 hour Wi-Fi, Hydromassage bathtub in every room, Sofa bed in every room, Sitting area, Minibar, Safe, Coffee maker, Balcony or terrace, Doctor on site, Lobby shop, Conference rooms to 600, Accessible rooms",
+   "sheetSlug": "bahia-principe-luxury-runaway-bay",
+   "dest": null,
+   "rooms": [
+    {
+     "name": "Junior Suite Deluxe",
+     "size": "53 sq m, 570 sq ft",
+     "sleeps": "3",
+     "beds": "1 king or 2 doubles, plus sofa bed",
+     "notes": "Garden view. Hydromassage bathtub, separate shower, separate toilet room."
+    },
+    {
+     "name": "Junior Suite Deluxe Sea View",
+     "size": "53 sq m, 570 sq ft",
+     "sleeps": "3",
+     "beds": "1 king or 2 doubles, plus sofa bed",
+     "notes": "Sea view. Same fit out."
+    },
+    {
+     "name": "Junior Suite Deluxe Ocean Front",
+     "size": "53 sq m, 570 sq ft",
+     "sleeps": "3",
+     "beds": "1 king, plus sofa bed",
+     "notes": "Ocean front. King bed only."
+    }
+   ]
+  },
+  {
+   "name": "Moon Palace Jamaica",
+   "slug": "moon-palace-jamaica",
+   "group_or_brand": "Palace Resorts",
+   "property_type": "All inclusive beach resort",
+   "star_rating": null,
+   "country": "Jamaica",
+   "city": "Ocho Rios",
+   "district": "St Ann",
+   "address": "100 Main Street, PO Box 100, Ocho Rios",
+   "postcode": null,
+   "latitude": 18.4122211,
+   "longitude": -77.1050142,
+   "coordinates_note": "Building level match on OpenStreetMap, Main Street, Buckfield, Ocho Rios.",
+   "total_rooms": "705",
+   "floors": "14",
+   "year_built": "1974",
+   "year_renovated": "2015",
+   "check_in": "3:00 pm",
+   "check_out": "12:00 noon",
+   "airport_code": "OCJ, Ian Fleming. MBJ, Sangster, is the usual arrival.",
+   "distance_to_airport_km": "About 18 km, 11 miles, to Ian Fleming",
+   "drive_time_to_airport": "About 20 minutes to Ian Fleming",
+   "nearby_landmarks": "Ocho Rios town, Dunn's River Falls, Mystic Mountain",
+   "one_line_description": "A 705 room all inclusive in Ocho Rios with five pools, a private beach and the largest spa on the island.",
+   "restaurant": "Nine outlets: Buccaneers Reef (international), Gondola (Italian fine dining), Momo (Asian), Pier 8 (Jamaican by day, steak and seafood at night), Sundeck (pizza and pasta), Boulangerie (cafe, 24 hours), Gourmet Corner (pizza, sushi, paninis), Jerk Hut (Jamaican), Snack Bar and Grill (beachfront).",
+   "bar": "Five: Noir nightclub with resident DJ, Piano Bar (martinis), Loud Bar (sports bar), Lobby Bar, Wet Bar (swim up at the pool). Plus the Snack Bar and Grill on the beach.",
+   "breakfast": "Included, all inclusive",
+   "room_service": "24 hours, including a baby puree menu on advance request",
+   "gym": "Fitness centre with cardio and resistance equipment",
+   "pool": "Five outdoor pools plus a dedicated children's pool",
+   "spa_or_sauna": "O Spa, billed as the largest on the island",
+   "business_centre": "Yes, with high speed internet",
+   "meeting_rooms": "Meetings and weddings facilities. Capacities not published, separate meetings site.",
+   "largest_meeting_capacity": null,
+   "parking": null,
+   "wi_fi": "Free, high speed, resort wide",
+   "airport_transfer": null,
+   "laundry": "Yes",
+   "reception_hours": null,
+   "air_conditioning": "Yes",
+   "pet_policy": null,
+   "accessibility": "Four accessible rooms, all within the Superior Junior Suite Ocean View category. Confirm the specifics in writing.",
+   "languages_spoken": null,
+   "phone": "+1 876 974 2200",
+   "whatsapp": null,
+   "email": null,
+   "website": "https://jamaica.moonpalace.com",
+   "good_to_know": "All inclusive, but O Spa and Palace Discoveries tours cost extra. Eight of ten categories sleep five or more, though the extra guest must be a child on a rollaway. The resort states kids 17 and under stay free, conditions to confirm.",
+   "included": "All meals and drinks across nine outlets and five bars, 24 hour room service, non motorised water sports, pools and beach, entertainment, shows and karaoke, Wi-Fi resort wide, kids club and gaming lounges.",
+   "costs_extra": "O Spa treatments. Palace Discoveries guided tours. Anything else to confirm.",
+   "kids": "The Playroom kids club, supervised, under 4s must have an adult. Wired gaming lounge. The Dreamery. Kids menus, burgers and ice cream. The resort states guests 17 and under stay free, conditions not published.",
+   "photos_on_file": "No, photos still needed",
+   "source_links": "jamaica.moonpalace.com accommodations, all-inclusive, restaurants pages; travelweekly.com property record",
+   "last_verified": "2026-09-12",
+   "full_amenity_list": "All inclusive, Nine restaurants, Five bars and a nightclub, 5 outdoor pools plus a children pool, Private beach, O Spa, at a charge, Fitness centre, Tennis courts, The Playroom kids club, Wired gaming lounge, The Dreamery, Kids 17 and under stay free, per the resort, Non motorised water sports, Snorkelling, Nightly shows and karaoke, 24 hour room service, Free high speed Wi-Fi resort wide, Air conditioning, Balcony or terrace in most categories, Minibar, Safe, Cable and satellite television, Concierge, Laundry, Babysitting, Car rental desk, Hair salon, Currency exchange, Business centre, Weddings and meetings, Accessible rooms in one category",
+   "sheetSlug": "moon-palace-jamaica",
+   "dest": null,
+   "rooms": [
+    {
+     "name": "Deluxe Resort View",
+     "size": "301 sq ft, about 28 sq m",
+     "sleeps": "3",
+     "beds": "One king or two doubles",
+     "notes": "Resort view."
+    },
+    {
+     "name": "Resort View with Balcony",
+     "size": "323 sq ft, about 30 sq m",
+     "sleeps": "5",
+     "beds": "One king or two doubles",
+     "notes": "Private balcony. Fifth guest on a rollaway, child."
+    },
+    {
+     "name": "Deluxe Ocean View",
+     "size": "301 sq ft, about 28 sq m",
+     "sleeps": "3",
+     "beds": "One king or two doubles",
+     "notes": "Ocean view over Ocho Rios."
+    },
+    {
+     "name": "Deluxe Ocean View with Balcony",
+     "size": "323 sq ft, about 30 sq m",
+     "sleeps": "5",
+     "beds": "One king or two doubles",
+     "notes": "Private balcony, ocean view. Fifth guest on a rollaway, child."
+    },
+    {
+     "name": "Superior Honeymoon Deluxe",
+     "size": "323 sq ft, about 30 sq m",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Upgraded liquor brands, exclusive beach access. Couples only."
+    },
+    {
+     "name": "Superior Walk Out Suite",
+     "size": null,
+     "sleeps": "5",
+     "beds": "One king or two doubles",
+     "notes": "Private patio and jacuzzi."
+    },
+    {
+     "name": "Superior Junior Suite Ocean View",
+     "size": "501 sq ft, about 47 sq m",
+     "sleeps": "5",
+     "beds": "One king or two doubles",
+     "notes": "Private balcony and jacuzzi. Four accessible rooms in this category."
+    },
+    {
+     "name": "Superior Governor Suite",
+     "size": null,
+     "sleeps": "5",
+     "beds": "One king",
+     "notes": "Jacuzzi."
+    },
+    {
+     "name": "Superior Family Deluxe",
+     "size": "646 sq ft, about 60 sq m",
+     "sleeps": "7",
+     "beds": "One king plus two doubles",
+     "notes": "Two connecting rooms. Seventh guest on a rollaway, child."
+    },
+    {
+     "name": "Superior Two Bedroom Presidential Suite",
+     "size": null,
+     "sleeps": "7",
+     "beds": "One king plus two doubles",
+     "notes": "Two whirlpool tubs on a private balcony, upgraded premium cocktails."
+    }
+   ]
+  },
+  {
+   "name": "Occidental Papagayo",
+   "slug": "occidental-papagayo",
+   "group_or_brand": "Occidental Hotels and Resorts, Barcelo Hotel Group",
+   "property_type": "Adults only all inclusive resort",
+   "star_rating": null,
+   "country": "Costa Rica",
+   "city": "Playa Hermosa",
+   "district": "Papagayo Gulf, Guanacaste",
+   "address": "Boulevard Playa Hermosa, 800 m north, Guanacaste",
+   "postcode": "48 5000",
+   "latitude": null,
+   "longitude": null,
+   "coordinates_note": "Not in OpenStreetMap under this name. Still to take.",
+   "total_rooms": "163",
+   "floors": "Low rise across 23 buildings",
+   "year_built": null,
+   "year_renovated": null,
+   "check_in": "3:00 pm",
+   "check_out": "12:00 noon",
+   "airport_code": "LIR, Liberia Guanacaste",
+   "distance_to_airport_km": "About 23 km, 14.3 miles",
+   "drive_time_to_airport": "About 25 minutes",
+   "nearby_landmarks": "Papagayo Gulf, Playa Hermosa, Playas del Coco",
+   "one_line_description": "A 163 room adults only all inclusive on the Papagayo Gulf, twenty five minutes from Liberia airport.",
+   "restaurant": "Three: an international buffet, an Italian restaurant and an Asian restaurant.",
+   "bar": "Four, including a snack bar and a lobby bar with ocean views. Premium drinks included.",
+   "breakfast": "Included, except on the arrival day, which is charged at about US$15 per person.",
+   "room_service": null,
+   "gym": "Fitness centre, open 24 hours, cardio and resistance equipment",
+   "pool": "Two outdoor pools: a main activity pool and a relaxation pool with a wet bar.",
+   "spa_or_sauna": "U-Spa with sauna, hot tub and beauty services. At a charge.",
+   "business_centre": null,
+   "meeting_rooms": "Event space for weddings and corporate functions. Capacities not published.",
+   "largest_meeting_capacity": null,
+   "parking": "Accessible parking available. General parking not specified.",
+   "wi_fi": "Free",
+   "airport_transfer": null,
+   "laundry": null,
+   "reception_hours": null,
+   "air_conditioning": "Yes",
+   "pet_policy": null,
+   "accessibility": "Adapted rooms with grab rails and accessible bathrooms. Wheelchair accessible restaurants and pools, and accessible parking. The resort states the beach has no ramp access because of the hillside setting.",
+   "languages_spoken": null,
+   "phone": "+506 2690 8000",
+   "whatsapp": null,
+   "email": null,
+   "website": "https://www.barcelo.com/en-us/occidental-papagayo/",
+   "good_to_know": "Adults only, minimum age 18, and the smallest resort on file at 163 rooms. Premium Level is the upgrade tier. Every category caps at two adults. Breakfast on arrival day is charged separately. The beach has no ramp access.",
+   "included": "All meals across three restaurants, premium drinks, snacks, daytime activities including kayaking, tennis, beach volleyball, water aerobics and dance classes, live music shows and the nightclub.",
+   "costs_extra": "U-Spa treatments. Some premium experiences. Breakfast on the arrival day, about US$15 per person.",
+   "kids": null,
+   "photos_on_file": "No, photos still needed",
+   "source_links": "barcelo.com Occidental Papagayo hotel and rooms pages",
+   "last_verified": "2026-09-15",
+   "full_amenity_list": "Adults only, 18 plus, All inclusive, Premium Level upgrade tier, 3 restaurants, 4 bars, 2 outdoor pools, Relaxation pool with wet bar, Direct beachfront on Papagayo Gulf, U-Spa with sauna and hot tub, Fitness centre, 24 hours, Nightclub, Kayaking, Tennis court, Beach volleyball, Water aerobics, Dance classes, Live music shows, Weddings and corporate events, Free Wi-Fi, Air conditioning, Safe, Television, Hairdryer, Adapted rooms, Accessible restaurants and pools",
+   "sheetSlug": "occidental-papagayo",
+   "dest": null,
+   "rooms": [
+    {
+     "name": "Deluxe",
+     "size": "32 sq m, 344 sq ft",
+     "sleeps": "2",
+     "beds": null,
+     "notes": "Television, hairdryer, safe."
+    },
+    {
+     "name": "Deluxe Bay View",
+     "size": "32 sq m, 344 sq ft",
+     "sleeps": "2",
+     "beds": null,
+     "notes": "Ocean view."
+    },
+    {
+     "name": "Premium Level Luxury",
+     "size": "32 sq m, 344 sq ft",
+     "sleeps": "2",
+     "beds": null,
+     "notes": "Premium Level tier. Shower only."
+    },
+    {
+     "name": "Premium Level Studio",
+     "size": "32 sq m, 344 sq ft",
+     "sleeps": "2",
+     "beds": null,
+     "notes": "Premium Level tier. Shower only."
+    },
+    {
+     "name": "Premium Level Junior Suite",
+     "size": "52 sq m, 560 sq ft",
+     "sleeps": "2",
+     "beds": null,
+     "notes": "Premium Level tier. Bathtub."
+    },
+    {
+     "name": "Premium Level 1 Bedroom",
+     "size": "64 sq m, 689 sq ft",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Premium Level tier."
+    },
+    {
+     "name": "Premium Level Master Suite",
+     "size": "78 sq m, 840 sq ft",
+     "sleeps": "2",
+     "beds": null,
+     "notes": "Premium Level tier. Ocean view."
+    },
+    {
+     "name": "Premium Level 2 Bedroom",
+     "size": "96 sq m, 1,033 sq ft",
+     "sleeps": "2",
+     "beds": "One king",
+     "notes": "Premium Level tier. Shower only. The largest category."
+    }
+   ]
+  },
+  {
+   "name": "Hotel Riu Guanacaste",
+   "slug": "riu-guanacaste",
+   "group_or_brand": "RIU Hotels and Resorts",
+   "property_type": "All inclusive family resort",
+   "star_rating": "5 star",
+   "country": "Costa Rica",
+   "city": "Playa Matapalo",
+   "district": "Sardinal, Carrillo, Guanacaste",
+   "address": "Playa Matapalo, Sardinal, Carrillo, Guanacaste",
+   "postcode": null,
+   "latitude": 10.528469,
+   "longitude": -85.746996,
+   "coordinates_note": "Published by Riu on the hotel fact sheet.",
+   "total_rooms": "1041",
+   "floors": "6 and 3 across two buildings",
+   "year_built": "2008/09",
+   "year_renovated": "Complete refurbishment 2025",
+   "check_in": null,
+   "check_out": null,
+   "airport_code": "LIR, Guanacaste Airport",
+   "distance_to_airport_km": "About 33 km",
+   "drive_time_to_airport": null,
+   "nearby_landmarks": "Playa Matapalo, Nuevo Colon 3.5 km, Playas del Coco 18 km, Liberia 42 km",
+   "one_line_description": "A 1,041 room all inclusive Riu on Playa Matapalo in Guanacaste with six pools and a water park, refurbished in 2025.",
+   "restaurant": "Seven: Liberia and Papagayo (main buffets, Papagayo with an Italian dinner service 18.00 to 20.30), Furama (Asian), Agave (Mexican), a Steak House and Pepe's Food grill.",
+   "bar": "Eight: a 24 hour sports bar, Tamarindo lobby bar 10.00 to 23.00, Pura Vida lounge bar 19.00 to 24.00 with a stage, La Plaza 19.00 to 24.00, and the Santa Cruz and Guaro swim up bars 10.00 to 18.00, both over 18s only.",
+   "breakfast": "Included",
+   "room_service": null,
+   "gym": "At the Riu Resort next door, not on site",
+   "pool": "Six: 722, 716, 197, 192, 200 and 176 sq m. Three have swim up bars for over 18s. Splash Water World park on site with a children's pool and slides, open six days a week.",
+   "spa_or_sauna": "Wellness centre at the Riu Resort, not on site",
+   "business_centre": null,
+   "meeting_rooms": null,
+   "largest_meeting_capacity": null,
+   "parking": "Open air, limited places, unguarded",
+   "wi_fi": "Free throughout the hotel",
+   "airport_transfer": null,
+   "laundry": null,
+   "reception_hours": "24 hours",
+   "air_conditioning": "Yes, central",
+   "pet_policy": "No pets allowed",
+   "accessibility": "Twenty two adapted rooms: fifteen across the DBSM and DBJM categories at 32 sq m, plus seven DGJM at 39 sq m in the hotel extension. Riu publishes full door widths and bathroom measurements.",
+   "languages_spoken": "Spanish and English at reception",
+   "phone": "+506 268 123 00",
+   "whatsapp": null,
+   "email": "hotel.guanacaste@riu.com",
+   "website": "https://www.riu.com",
+   "good_to_know": "Second largest property on file at 1,041 rooms, refurbished 2025. Splash Water World is on site here while the gym, wellness centre and discotheque are next door at the Palace. Swim up rooms have a minimum age of 18.",
+   "included": null,
+   "costs_extra": null,
+   "kids": "Splash Water World park with a children's pool and slides, open six days a week. Fun4All family branding.",
+   "photos_on_file": "No, photos still needed",
+   "source_links": "RIU Hotels official Hotel Fact Sheet, dated 15 September 2026, supplied by Golden",
+   "last_verified": "2026-09-15",
+   "full_amenity_list": "All Inclusive 24H, Family resort, Fun4All, 7 restaurants, 8 bars, 6 pools, Three swim up bars, Splash Water World water park, Matapalo beach, Digital key, Several boutiques and shops, Free Wi-Fi throughout, Parking, 24 hour reception, Air conditioning, Balcony or terrace, Hydromassage bathtub, Minibar and liquor dispenser, Safe, USB power outlets, Swim up double rooms, Two bedroom rooms and family suites, Friends and Family rooms, Gym, wellness centre and discotheque at the Riu Resort, 22 adapted rooms, No pets",
+   "sheetSlug": "riu-guanacaste",
+   "dest": null,
+   "rooms": [
+    {
+     "name": "Double Room",
+     "size": "31 sq m, 334 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200 or 1 bed 200x200",
+     "notes": "Code DBSB."
+    },
+    {
+     "name": "Double Room Garden View",
+     "size": "31 sq m, 334 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200 or 1 bed 200x200",
+     "notes": "Code DBJB."
+    },
+    {
+     "name": "Double Room Ocean View",
+     "size": "31 sq m, 334 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200 or 1 bed 200x200",
+     "notes": "Code DBMB."
+    },
+    {
+     "name": "Deluxe Room",
+     "size": "38 sq m, 409 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200 or 1 bed 200x200",
+     "notes": "Code DGJB."
+    },
+    {
+     "name": "Deluxe Room Pool View",
+     "size": "38 sq m, 409 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200 or 1 bed 200x200",
+     "notes": "Code DGEB."
+    },
+    {
+     "name": "Swim-up Double Room",
+     "size": "41 sq m, 441 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Direct pool access. Minimum age 18. Code DBSP."
+    },
+    {
+     "name": "Friends & Family Room",
+     "size": "37 sq m, 398 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Code F1SB."
+    },
+    {
+     "name": "Friends & Family Room Garden View",
+     "size": "37 sq m, 398 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Code F1JB."
+    },
+    {
+     "name": "Double Room Adapted",
+     "size": "32 sq m, 344 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Adapted. Code DBSM."
+    },
+    {
+     "name": "Double Room Garden View Adapted",
+     "size": "32 sq m, 344 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Adapted. Code DBJM."
+    },
+    {
+     "name": "Deluxe Room Adapted",
+     "size": "39 sq m, 420 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Adapted. Code DGJM, hotel extension."
+    },
+    {
+     "name": "2 Bedroom Double Room",
+     "size": "31 sq m, 334 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Two bedrooms. Code DBSF."
+    },
+    {
+     "name": "2 Bedroom Double Room Garden View",
+     "size": "31 sq m, 334 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Two bedrooms. Code DBJF."
+    },
+    {
+     "name": "2 Bedroom Family Room Superior",
+     "size": "58 sq m, 624 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Two bedrooms. Code F2JB."
+    },
+    {
+     "name": "2 Bedroom Family Room Superior Pool View",
+     "size": "58 sq m, 624 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Two bedrooms. Code F2EB."
+    },
+    {
+     "name": "Two Bedroom Family Suite",
+     "size": "72 sq m, 775 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Two bedrooms, two bathrooms. Code F2SB."
+    },
+    {
+     "name": "Suite Ocean View",
+     "size": "66 sq m, 710 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Two steps between sleeping and lounge. Code SUMB."
+    }
+   ]
+  },
+  {
+   "name": "Hotel Riu Montego Bay",
+   "slug": "riu-montego-bay",
+   "group_or_brand": "RIU Hotels and Resorts",
+   "property_type": "Adults only all inclusive resort",
+   "star_rating": "5 star",
+   "country": "Jamaica",
+   "city": "Montego Bay",
+   "district": "Mahoe Bay, Rose Hall, Ironshore",
+   "address": "Mahoe Bay, Rose Hall, Ironshore P.O.",
+   "postcode": null,
+   "latitude": 18.51767,
+   "longitude": -77.882169,
+   "coordinates_note": "Published by Riu on the hotel fact sheet.",
+   "total_rooms": "826",
+   "floors": null,
+   "year_built": "2006/07",
+   "year_renovated": "Complete refurbishment 2020",
+   "check_in": null,
+   "check_out": null,
+   "airport_code": "MBJ, Sangster International",
+   "distance_to_airport_km": "About 2.7 km",
+   "drive_time_to_airport": null,
+   "nearby_landmarks": "Rose Hall, Mahoe Bay, Montego Bay",
+   "one_line_description": "An 826 room adults only Riu on Mahoe Bay with five pools, a water park and the discotheque for the Rose Hall cluster.",
+   "restaurant": "Six: Rose Hall (main buffet), Kulinarium (gourmet), Sofia (Italian), Golden Dragon (Asian), a poolside steakhouse (a la carte, reservations required) and Pepe's Food Jerk Station.",
+   "bar": "Four: Exodus lounge bar 18.00 to 24.00 with a stage, a lobby bar 10.00 to 24.00, a 24 hour sports bar and the Roots swim up bar 10.00 to 18.00.",
+   "breakfast": "Included",
+   "room_service": null,
+   "gym": "Yes",
+   "pool": "Five outdoor pools of 229, 172, 123, 115 and 217 sq m. The 217 sq m pool has a swim up bar. Splash Water World park on site.",
+   "spa_or_sauna": "Wellness centre",
+   "business_centre": null,
+   "meeting_rooms": null,
+   "largest_meeting_capacity": null,
+   "parking": "Free, open air, limited places, unguarded",
+   "wi_fi": "Free throughout the hotel",
+   "airport_transfer": null,
+   "laundry": null,
+   "reception_hours": "24 hours",
+   "air_conditioning": "Yes, central",
+   "pet_policy": "No pets allowed",
+   "accessibility": "Six adapted rooms in the DBSM category, 32 sq m. Riu publishes full door widths and bathroom measurements.",
+   "languages_spoken": "English, Spanish and French at reception",
+   "phone": "+1 876 940 8010",
+   "whatsapp": null,
+   "email": "hotel.montegobay@riu.com",
+   "website": "https://www.riu.com",
+   "good_to_know": "Adults only, and it holds the Splash Water World park and discotheque that the whole Rose Hall cluster shares. Family Rooms and a two bedroom category exist but serve adult groups, not children.",
+   "included": null,
+   "costs_extra": null,
+   "kids": null,
+   "photos_on_file": "No, photos still needed",
+   "source_links": "RIU Hotels official Hotel Fact Sheet, dated 15 September 2026, supplied by Golden",
+   "last_verified": "2026-09-15",
+   "full_amenity_list": "Adults only, All Inclusive 24H, 6 restaurants, 4 bars, 5 pools, Swim up bar, Splash Water World water park, Discotheque, Mahoe Bay beach, Wellness centre, Gym, Free Wi-Fi throughout, Free parking, 24 hour reception, Air conditioning, Balcony or terrace, Minibar and liquor dispenser, Safe, Bathrobe, Concierge, USB power outlets, Family rooms, Two bedroom rooms, Adapted rooms, No pets",
+   "sheetSlug": "riu-montego-bay",
+   "dest": null,
+   "rooms": [
+    {
+     "name": "Double Room",
+     "size": "29 sq m, 312 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Code DBSB."
+    },
+    {
+     "name": "Double Room Garden View",
+     "size": "29 sq m, 312 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Code DBJB."
+    },
+    {
+     "name": "Double Room Ocean View",
+     "size": "29 sq m, 312 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Code DBMB."
+    },
+    {
+     "name": "Double Room Partial Ocean View",
+     "size": "29 sq m, 312 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Code DBLB."
+    },
+    {
+     "name": "Family Room",
+     "size": "36 sq m, 388 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Sitting area. Code DGSB."
+    },
+    {
+     "name": "Family Room Partial Ocean View",
+     "size": "36 sq m, 388 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Code DGLB."
+    },
+    {
+     "name": "Family Room Ocean View",
+     "size": "36 sq m, 388 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Code DGMB."
+    },
+    {
+     "name": "Accessible Double Room",
+     "size": "32 sq m, 344 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Adapted. Code DBSM, 6 rooms."
+    },
+    {
+     "name": "Suite Ocean View",
+     "size": "58 sq m, 624 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Two steps between sleeping and lounge. Code SUMB."
+    },
+    {
+     "name": "2 Bedroom Double Room Garden View",
+     "size": "58 sq m, 624 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Two bedrooms. Code DBJF."
+    }
+   ]
+  },
+  {
+   "name": "Hotel Riu Negril",
+   "slug": "riu-negril",
+   "group_or_brand": "RIU Hotels and Resorts",
+   "property_type": "All inclusive family resort",
+   "star_rating": "5 star",
+   "country": "Jamaica",
+   "city": "Negril",
+   "district": "Bloody Bay, Norman Manley Boulevard",
+   "address": "Norman Manley Boulevard, Bloody Bay Beach",
+   "postcode": null,
+   "latitude": 18.355512,
+   "longitude": -78.337801,
+   "coordinates_note": "Published by Riu on the hotel fact sheet.",
+   "total_rooms": "600",
+   "floors": "1 main building plus 4 annexes of 3 floors",
+   "year_built": "2003/04",
+   "year_renovated": "Complete refurbishment 2024",
+   "check_in": null,
+   "check_out": null,
+   "airport_code": "MBJ, Sangster International",
+   "distance_to_airport_km": "About 80 km",
+   "drive_time_to_airport": null,
+   "nearby_landmarks": "Bloody Bay, Negril 6 km, Negril West End 7.5 km, Seven Mile Beach",
+   "one_line_description": "A 600 room all inclusive Riu on Bloody Bay in Negril with eight restaurants and five pools, refurbished in 2024.",
+   "restaurant": "Eight: Green Island (main buffet), Kulinarium (theme), a steakhouse, Luigi (Italian), Mandalay (Asian), Island Cove (poolside), Pepe's Food (grill) and a further outlet. The most of any Riu on this file.",
+   "bar": "Six: American Country sports bar and restaurant 10.00 to 07.00, Jammin lobby bar 10.00 to 23.00, Reggae Hall lounge bar 17.00 to 24.00 with a stage, The Plaza 17.00 to 24.00, the Rastaman swim up bar 10.00 to 18.00 over 18s only, and Bob's beach bar 10.00 to 18.00.",
+   "breakfast": "Included",
+   "room_service": null,
+   "gym": "Yes",
+   "pool": "Five: 265, 218, 145 and 98 sq m plus a 76 sq m children's pool with slides. The 145 sq m pool has a swim up bar for over 18s.",
+   "spa_or_sauna": "Wellness centre",
+   "business_centre": null,
+   "meeting_rooms": "One conference room. Capacities not published.",
+   "largest_meeting_capacity": null,
+   "parking": "Free, open air, limited places, unguarded",
+   "wi_fi": "Free throughout the hotel",
+   "airport_transfer": null,
+   "laundry": null,
+   "reception_hours": "24 hours",
+   "air_conditioning": "Yes, central",
+   "pet_policy": "No pets allowed",
+   "accessibility": "Four adapted rooms in the DBSM category, 31 sq m. Riu publishes full door widths and bathroom measurements on the fact sheet.",
+   "languages_spoken": "English and Spanish at reception",
+   "phone": "+1 876 957 5700",
+   "whatsapp": null,
+   "email": "hotel.negril@riu.com",
+   "website": "https://www.riu.com",
+   "good_to_know": "Eight restaurants, the most of any Riu here. Refurbished 2024. The two bedroom categories are connecting pairs via a private hallway, not single suites. Swim up rooms and the swim up suite have a minimum age of 18.",
+   "included": null,
+   "costs_extra": null,
+   "kids": "Children's pool with slides, 76 sq m. Fun4All family branding.",
+   "photos_on_file": "No, photos still needed",
+   "source_links": "RIU Hotels official Hotel Fact Sheet, dated 15 September 2026, supplied by Golden",
+   "last_verified": "2026-09-15",
+   "full_amenity_list": "All Inclusive 24H, Family resort, Fun4All, 8 restaurants, 6 bars, 5 pools, Children pool with slides, Bloody Bay beach, 3 km, Wellness centre, Gym, Conference room, Boutique, Digital key, Free Wi-Fi throughout, Free parking, 24 hour reception, Air conditioning, Balcony or terrace, Minibar and liquor dispenser, Safe, USB power outlets, Swim up rooms and a swim up suite, Two bedroom rooms and family rooms, Connecting rooms via private hallway, Adapted rooms, No pets",
+   "sheetSlug": "riu-negril",
+   "dest": null,
+   "rooms": [
+    {
+     "name": "Double Room",
+     "size": "29 sq m, 312 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200 or 1 bed 200x200",
+     "notes": "Some with sofa or sofa bed. Code DBSB."
+    },
+    {
+     "name": "Double Room Garden View",
+     "size": "29 sq m, 312 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200 or 1 bed 200x200",
+     "notes": "Some with sofa or sofa bed. Code DBJB."
+    },
+    {
+     "name": "Double Room Ocean View",
+     "size": "29 sq m, 312 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200 or 1 bed 200x200",
+     "notes": "Some with sofa or sofa bed. Code DBLB."
+    },
+    {
+     "name": "Double Room Ocean Front",
+     "size": "29 sq m, 312 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200 or 1 bed 200x200",
+     "notes": "Some with sofa or sofa bed. Code DBMB."
+    },
+    {
+     "name": "Swim-up Double Room Ocean Front",
+     "size": "29 sq m, 312 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Direct pool access. Minimum age 18. Code DBMP."
+    },
+    {
+     "name": "Adapted Room",
+     "size": "31 sq m, 334 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200",
+     "notes": "Adapted. Code DBSM, 4 rooms."
+    },
+    {
+     "name": "Swim-up Suite Ocean Front",
+     "size": "50 sq m, 538 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Direct pool access. Minimum age 18. Code SUMP."
+    },
+    {
+     "name": "Two Bedroom Family Room Ocean View",
+     "size": "57 sq m, 614 sq ft",
+     "sleeps": null,
+     "beds": "1 king plus 2 doubles",
+     "notes": "One bedroom with a king, second with two doubles. Code F2MB."
+    },
+    {
+     "name": "2 Bedroom Double Room",
+     "size": "58 sq m, 624 sq ft",
+     "sleeps": null,
+     "beds": "1 king and sofa, plus 2 queens and sofa bed",
+     "notes": "Connecting pair via private hallway. Code DBSF."
+    },
+    {
+     "name": "2 Bedroom Double Room Garden View",
+     "size": "58 sq m, 624 sq ft",
+     "sleeps": null,
+     "beds": "1 king and sofa, plus 2 queens and sofa bed",
+     "notes": "Connecting pair. Code DBJF."
+    },
+    {
+     "name": "2 Bedroom Double Room Ocean View",
+     "size": "58 sq m, 624 sq ft",
+     "sleeps": null,
+     "beds": "1 king and sofa, plus 2 queens and sofa bed",
+     "notes": "Connecting pair. Code DBLF."
+    },
+    {
+     "name": "2 Bedroom Double Room Ocean Front",
+     "size": "58 sq m, 624 sq ft",
+     "sleeps": null,
+     "beds": "1 king and sofa, plus 2 queens and sofa bed",
+     "notes": "Connecting pair. Code DBMF."
+    }
+   ]
+  },
+  {
+   "name": "Hotel Riu Ocho Rios",
+   "slug": "riu-ocho-rios",
+   "group_or_brand": "RIU Hotels and Resorts",
+   "property_type": "All inclusive family resort",
+   "star_rating": "5 star",
+   "country": "Jamaica",
+   "city": "Ocho Rios",
+   "district": "Mammee Bay, St Ann",
+   "address": "PO Box 4442, Mammee Bay, St Ann",
+   "postcode": null,
+   "latitude": 18.430409,
+   "longitude": -77.166221,
+   "coordinates_note": "Published by Riu on the hotel fact sheet.",
+   "total_rooms": "901",
+   "floors": "3 to 6 across four buildings",
+   "year_built": "2004/05",
+   "year_renovated": null,
+   "check_in": null,
+   "check_out": null,
+   "airport_code": "MBJ, Sangster International",
+   "distance_to_airport_km": "About 90 km",
+   "drive_time_to_airport": null,
+   "nearby_landmarks": "Mammee Bay, St Ann's Bay 4 km, Ocho Rios 10 km, Dunn's River Falls",
+   "one_line_description": "A 901 room all inclusive family Riu on Mammee Bay with six pools, a water park and kids and teens clubs.",
+   "restaurant": "Six: St. Ann (main buffet), Kulinarium (gourmet), Mandalay (Asian), Piacenza (Italian), a poolside restaurant and Pepe's Food Jerk Station.",
+   "bar": "Six: Dunn's River lobby bar 10.00 to 24.00, a 24 hour sports bar, Blue 18.00 to 23.00 with a stage, the Reggae and Rastafari swim up bars 10.00 to 18.00 over 18s only, and the Seagrape beach bar 10.00 to 18.00.",
+   "breakfast": "Included",
+   "room_service": null,
+   "gym": "Yes",
+   "pool": "Six outdoor pools of 510, 375, 123, 226 and 163 sq m plus a 516 sq m children's pool with slides. The 226 and 163 have swim up bars for over 18s. Splash Water World park on site.",
+   "spa_or_sauna": "Wellness centre",
+   "business_centre": null,
+   "meeting_rooms": "One conference room next to the kids club. Capacities not filled in on the fact sheet.",
+   "largest_meeting_capacity": null,
+   "parking": "Open air, limited places, unguarded",
+   "wi_fi": "Free throughout the hotel",
+   "airport_transfer": null,
+   "laundry": null,
+   "reception_hours": "24 hours",
+   "air_conditioning": "Yes, central",
+   "pet_policy": "No pets allowed",
+   "accessibility": "Eight adapted rooms, two in category DBSM and six in SJJM, 28 sq m. Riu publishes full door widths and bathroom measurements on the fact sheet.",
+   "languages_spoken": "English, Spanish and French at reception",
+   "phone": "+1 876 972 2200",
+   "whatsapp": null,
+   "email": "hotel.ochorios@riu.com",
+   "website": "https://www.riu.com",
+   "good_to_know": "The family Riu of the lineup, with a water park, a slide pool, a kids club and a teens club. Ninety kilometres from Montego Bay airport, so the transfer is long and must be priced. Swim up bars are over 18s only.",
+   "included": null,
+   "costs_extra": null,
+   "kids": "RIU Land kids club and Riu4U club for teenagers. Children's pool with slides, 516 sq m, open six days a week. Splash Water World park, minimum height 1.20 m and minimum recommended age 12.",
+   "photos_on_file": "No, photos still needed",
+   "source_links": "RIU Hotels official Hotel Fact Sheet, dated 13 September 2026, supplied by Golden",
+   "last_verified": "2026-09-15",
+   "full_amenity_list": "All Inclusive 24H, Family resort, Fun4All, 6 restaurants, 6 bars, 6 pools, Splash Water World water park, Children pool with slides, RIU Land kids club, Riu4U teens club, Mammee Bay beach, Wellness centre, Gym, Conference room, Free Wi-Fi throughout, Parking, 24 hour reception, Air conditioning, Balcony or terrace, Minibar and liquor dispenser, Safe, Two bedroom family rooms and suites, Adapted rooms, No pets",
+   "sheetSlug": "riu-ocho-rios",
+   "dest": null,
+   "rooms": [
+    {
+     "name": "Double Room",
+     "size": "28 sq m, 301 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Code DBSB."
+    },
+    {
+     "name": "Double Room Ocean View",
+     "size": "28 sq m, 301 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Balcony. Code DBLB."
+    },
+    {
+     "name": "Double Room Ocean Front",
+     "size": "28 sq m, 301 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Balcony. Code DBMB."
+    },
+    {
+     "name": "Family Room",
+     "size": "35 sq m, 377 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Two bedrooms. Code DGSB."
+    },
+    {
+     "name": "Junior Suite Garden View",
+     "size": "34 sq m, 366 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Two steps between sleeping and lounge. Code SJJB."
+    },
+    {
+     "name": "Junior Suite Ocean View",
+     "size": "34 sq m, 366 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Code SJMB."
+    },
+    {
+     "name": "Junior Suite Ocean Front",
+     "size": "34 sq m, 366 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Code SJFB."
+    },
+    {
+     "name": "Double Room Connecting",
+     "size": "56 sq m, 603 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Connecting pair. Code DBSF."
+    },
+    {
+     "name": "Two Bedroom Family Room",
+     "size": "60 sq m, 646 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Two bedrooms. Code F2SB."
+    },
+    {
+     "name": "2 Bedroom Double Room Ocean View",
+     "size": "56 sq m, 603 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Code DBLF."
+    },
+    {
+     "name": "2 Bedroom Junior Suite Garden View",
+     "size": "68 sq m, 732 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Code SJJF."
+    },
+    {
+     "name": "2 Bedroom Junior Suite Ocean View",
+     "size": "68 sq m, 732 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Code SJMF."
+    },
+    {
+     "name": "Suite",
+     "size": "69 sq m, 743 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Two steps between sleeping and lounge. Code SULB."
+    },
+    {
+     "name": "Suite Ocean View",
+     "size": "69 sq m, 743 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "The largest category. Code SUMB."
+    },
+    {
+     "name": "Accessible Double Room",
+     "size": "28 sq m, 301 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Adapted. Code DBSM, 2 rooms."
+    },
+    {
+     "name": "Accessible Junior Suite",
+     "size": "35 sq m, 377 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Adapted. Code SJJM, 6 rooms."
+    }
+   ]
+  },
+  {
+   "name": "Hotel Riu Palace Aquarelle",
+   "slug": "riu-palace-aquarelle",
+   "group_or_brand": "RIU Hotels and Resorts, Palace grade",
+   "property_type": "All inclusive resort",
+   "star_rating": "5 star",
+   "country": "Jamaica",
+   "city": "Falmouth",
+   "district": "Coopers Pen, Trelawny",
+   "address": "1220 New Court, Coopers Pen, Falmouth",
+   "postcode": null,
+   "latitude": 18.485809,
+   "longitude": -77.61244,
+   "coordinates_note": "Published by Riu on the hotel fact sheet.",
+   "total_rooms": "753",
+   "floors": "13, one building, 6 lifts",
+   "year_built": "2024",
+   "year_renovated": null,
+   "check_in": null,
+   "check_out": null,
+   "airport_code": "MBJ, Sangster International",
+   "distance_to_airport_km": "About 36 km",
+   "drive_time_to_airport": null,
+   "nearby_landmarks": "White Bay, Falmouth 6 km and its cruise pier, Montego Bay 40 km",
+   "one_line_description": "A 753 room Riu Palace on White Bay at Falmouth, opened 2024, with five pools and a water park.",
+   "restaurant": "Six: White Bay (main buffet), Krystal (gourmet), Napoli (Italian, reservations required), Kyoto (Asian), a steakhouse and Pepe's Food Jerk Station.",
+   "bar": "Six: Daiquiri lobby bar 10.00 to 23.00, Ska lounge bar 18.00 to 24.00, the Marley and Kingston swim up bars 10.00 to 18.00 over 18s only, and the American Country sports bar open 24 hours.",
+   "breakfast": "Included",
+   "room_service": null,
+   "gym": "Yes",
+   "pool": "Five: 440, 231, 162 and 150 sq m plus a children's pool with slides. Two have swim up bars for over 18s. Splash Water World park on site.",
+   "spa_or_sauna": "Wellness centre",
+   "business_centre": null,
+   "meeting_rooms": null,
+   "largest_meeting_capacity": null,
+   "parking": "Open air, limited places, unguarded",
+   "wi_fi": "Free throughout the hotel",
+   "airport_transfer": null,
+   "laundry": null,
+   "reception_hours": "24 hours",
+   "air_conditioning": "Yes, central",
+   "pet_policy": "No pets allowed",
+   "accessibility": "Four adapted rooms in the SJLM category, 35 sq m. Riu publishes full door widths and bathroom measurements.",
+   "languages_spoken": "English at reception",
+   "phone": "+1 876 676 6431",
+   "whatsapp": null,
+   "email": "palace.aquarelle@riu.com",
+   "website": "https://www.riu.com",
+   "good_to_know": "Opened 2024, the newest build on file. A single 13 storey tower at Falmouth, 36 km from Sangster and near the cruise pier. All swim up categories are 18 plus, including the Swim-up Two Bedroom Family Room. Power is 220V, unlike every other Riu here.",
+   "included": null,
+   "costs_extra": null,
+   "kids": "RIU Land kids club, a children's pool with slides and Splash Water World on site.",
+   "photos_on_file": "No, photos still needed",
+   "source_links": "RIU Hotels official Hotel Fact Sheet, dated 15 September 2026, supplied by Golden",
+   "last_verified": "2026-09-15",
+   "full_amenity_list": "All Inclusive 24H, Opened 2024, 6 restaurants, 6 bars, 5 pools, Two swim up bars, Splash Water World water park, Children pool with slides, RIU Land kids club, White Bay beach, 1.9 km, Wellness centre, Gym, Boutique, Digital key, Free Wi-Fi throughout, Parking, 24 hour reception, Air conditioning, Balcony or terrace, Hydromassage bathtub, Minibar and liquor dispenser, Safe, USB power outlets, TV casting, Swim up junior suites and family rooms, Two bedroom junior suites, Adapted rooms, No pets",
+   "sheetSlug": "riu-palace-aquarelle",
+   "dest": null,
+   "rooms": [
+    {
+     "name": "Junior Suite Standard",
+     "size": "35 sq m, 377 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Code SJSB."
+    },
+    {
+     "name": "Junior Suite Ocean View",
+     "size": "35 sq m, 377 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Code SJMB."
+    },
+    {
+     "name": "Junior Suite Partial Ocean View",
+     "size": "35 sq m, 377 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Code SJLB."
+    },
+    {
+     "name": "Junior Suite Ocean Front",
+     "size": "35 sq m, 377 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Code SJFB."
+    },
+    {
+     "name": "Swim-up Junior Suite",
+     "size": "35 sq m, 377 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Direct pool access. Minimum age 18. Code SJSP."
+    },
+    {
+     "name": "Swim-up Junior Suite Ocean View",
+     "size": "35 sq m, 377 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Direct pool access. Minimum age 18. Code SJMP."
+    },
+    {
+     "name": "Adapted Junior Suite Ocean View",
+     "size": "35 sq m, 377 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Adapted. Code SJLM, 4 rooms."
+    },
+    {
+     "name": "Suite Ocean View",
+     "size": "55 sq m, 592 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Bathtub and shower. Code SUMB."
+    },
+    {
+     "name": "Two Bedroom Family Room",
+     "size": "58 sq m, 624 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Two bedrooms. Code F2SB."
+    },
+    {
+     "name": "Swim-up Two Bedroom Family Room",
+     "size": "60 sq m, 646 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Direct pool access. Minimum age 18. Code F2SP."
+    },
+    {
+     "name": "2 Bedroom Junior Suite Ocean View",
+     "size": "70 sq m, 753 sq ft",
+     "sleeps": null,
+     "beds": "1 king plus 2 doubles",
+     "notes": "Two bedrooms. Code SJMF."
+    },
+    {
+     "name": "2 Bedroom Junior Suite Partial Ocean View",
+     "size": "70 sq m, 753 sq ft",
+     "sleeps": null,
+     "beds": "1 king plus 2 doubles",
+     "notes": "Two bedrooms. Code SJLF."
+    },
+    {
+     "name": "Two Bedroom Family Superior Ocean View",
+     "size": "77 sq m, 829 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Two bedrooms, two bathrooms. The largest category. Code F2M2."
+    }
+   ]
+  },
+  {
+   "name": "Hotel Riu Palace Costa Rica",
+   "slug": "riu-palace-costa-rica",
+   "group_or_brand": "RIU Hotels and Resorts, Palace grade, with Elite Club by Riu",
+   "property_type": "All inclusive resort",
+   "star_rating": "5 star",
+   "country": "Costa Rica",
+   "city": "Playa Matapalo",
+   "district": "Sardinal, Guanacaste",
+   "address": "Playa Matapalo, Sardinal, Guanacaste",
+   "postcode": null,
+   "latitude": 10.52767,
+   "longitude": -85.749076,
+   "coordinates_note": "Published by Riu on the hotel fact sheet.",
+   "total_rooms": "679",
+   "floors": "6 in the main building, 3 in the annexe",
+   "year_built": "2011/12",
+   "year_renovated": "Complete refurbishment 2026/27",
+   "check_in": null,
+   "check_out": null,
+   "airport_code": "LIR, Guanacaste Airport",
+   "distance_to_airport_km": "About 33 km",
+   "drive_time_to_airport": null,
+   "nearby_landmarks": "Playa Matapalo, Nuevo Colon 3.5 km, Playas del Coco 18 km, Liberia 42 km",
+   "one_line_description": "A 679 room Riu Palace on Playa Matapalo in Guanacaste with six pools and the Elite Club by Riu tier.",
+   "restaurant": "Nine: Arenal (main buffet), Krystal (gourmet), Sakura (Asian), a steakhouse, L'Anfora (Italian), Samara (poolside), Pepe's Food (grill) and the Elite Club Restaurant for Elite Club guests.",
+   "bar": "Seven, including a lobby bar with a mixologist and daily signature cocktails, Marimba lounge bar, Melody plaza bar with a stage, American Country sports bar, the Pura Vida swim up bar for over 18s, and the Elite Club beach bar. Opening hours printed as TBC on the fact sheet.",
+   "breakfast": "Included",
+   "room_service": "24 hours, free of charge",
+   "gym": "Yes",
+   "pool": "Six: 506, 520, 520 and 170 sq m with a swim up bar, a 197 sq m Elite Club pool and a 12 sq m children's pool. Splash Water World is at the Riu Resort next door.",
+   "spa_or_sauna": "Wellness centre at the Riu Resort, not on site",
+   "business_centre": null,
+   "meeting_rooms": null,
+   "largest_meeting_capacity": null,
+   "parking": "Free, open air, limited places, unguarded",
+   "wi_fi": "Free throughout the hotel",
+   "airport_transfer": null,
+   "laundry": null,
+   "reception_hours": "24 hours",
+   "air_conditioning": "Yes, central",
+   "pet_policy": "No pets allowed",
+   "accessibility": "Sixteen adapted rooms: nine in the SJSM category and seven in SJJM, both 39 sq m. The most adapted rooms of any property on this file. Riu publishes full door widths and bathroom measurements.",
+   "languages_spoken": null,
+   "phone": "+506 268 12300",
+   "whatsapp": null,
+   "email": "palace.costarica@riu.com",
+   "website": "https://www.riu.com",
+   "good_to_know": "Under complete refurbishment into 2026/27, adding the Elite Club by Riu tier. Minimum age 18 on the Junior Suite Deluxe and all Elite Club categories. Free 24 hour room service and turndown. Sixteen adapted rooms.",
+   "included": null,
+   "costs_extra": null,
+   "kids": "RIU Land kids club and a 12 sq m children's pool. Splash Water World at the Riu Resort next door.",
+   "photos_on_file": "No, photos still needed",
+   "source_links": "RIU Hotels official Hotel Fact Sheet, dated 15 September 2026, supplied by Golden",
+   "last_verified": "2026-09-15",
+   "full_amenity_list": "All Inclusive 24H, Elite Club by Riu tier, 24 hour room service, free, Turndown service, Digital key, 9 restaurants, 7 bars, 6 pools, Elite Club pool and beach bar, Elite Club restaurant, Matapalo beach, RIU Land kids club, Gym, Free Wi-Fi throughout, Free parking, 24 hour reception, Air conditioning, Balcony or terrace, Hydromassage bathtub, Minibar and liquor dispenser, Safe, USB power outlets, TV casting, Swim up junior suites, Two bedroom junior suites, Friends and Family rooms, Water park, discotheque and wellness centre at the Riu Resort, Adapted rooms, No pets",
+   "sheetSlug": "riu-palace-costa-rica",
+   "dest": null,
+   "rooms": [
+    {
+     "name": "Junior Suite",
+     "size": "37 sq m, 398 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200 or 1 bed 200x200",
+     "notes": "Code SJSB."
+    },
+    {
+     "name": "Junior Suite Garden View",
+     "size": "37 sq m, 398 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200 or 1 bed 200x200",
+     "notes": "Code SJJB."
+    },
+    {
+     "name": "Junior Suite Partial Ocean View",
+     "size": "37 sq m, 398 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200 or 1 bed 200x200",
+     "notes": "Code SJLB."
+    },
+    {
+     "name": "Junior Suite Ocean View",
+     "size": "39 sq m, 420 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Some with sofa bed. Code SJMB."
+    },
+    {
+     "name": "Junior Suite Deluxe",
+     "size": "39 sq m, 420 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200 or 1 bed 200x200",
+     "notes": "Minimum age 18. Code SJEB."
+    },
+    {
+     "name": "Junior Suite Elite Club by Riu",
+     "size": "39 sq m, 420 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200 or 1 bed 200x200",
+     "notes": "Elite Club tier. Minimum age 18. Code SJJE."
+    },
+    {
+     "name": "Swim-up Junior Suite Elite Club",
+     "size": "39 sq m, 420 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Elite Club, ground floor, terrace. Minimum age 18. Code SJPE."
+    },
+    {
+     "name": "Accessible Junior Suite",
+     "size": "39 sq m, 420 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Adapted. Code SJSM, 9 rooms."
+    },
+    {
+     "name": "Accessible Junior Suite Garden View",
+     "size": "39 sq m, 420 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Adapted. Code SJJM, 7 rooms."
+    },
+    {
+     "name": "Friends & Family Room Ocean View",
+     "size": "42 sq m, 452 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Code F1MB."
+    },
+    {
+     "name": "2 Bedroom Junior Suite Garden View",
+     "size": "74 sq m, 797 sq ft",
+     "sleeps": null,
+     "beds": "1 king plus 2 doubles",
+     "notes": "Two bedrooms. Code SJJF."
+    },
+    {
+     "name": "2 Bedroom Junior Suite",
+     "size": "74 sq m, 797 sq ft",
+     "sleeps": null,
+     "beds": "1 king plus 2 doubles",
+     "notes": "Two bedrooms. Code SJSF."
+    },
+    {
+     "name": "Two Bedroom Family Suite",
+     "size": "72 sq m, 775 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Two bedrooms, two bathrooms. Code F2SB."
+    },
+    {
+     "name": "Suite Garden View Elite Club by Riu",
+     "size": "73 sq m, 786 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Elite Club tier. Minimum age 18. The largest category. Code SUJE."
+    }
+   ]
+  },
+  {
+   "name": "Hotel Riu Palace Jamaica",
+   "slug": "riu-palace-jamaica",
+   "group_or_brand": "RIU Hotels and Resorts, Palace grade, with Elite Club by Riu",
+   "property_type": "Adults only all inclusive resort",
+   "star_rating": "5 star",
+   "country": "Jamaica",
+   "city": "Montego Bay",
+   "district": "Mahoe Bay, Rose Hall, Ironshore",
+   "address": "Mahoe Bay, Rose Hall, Ironshore P.O.",
+   "postcode": null,
+   "latitude": 18.517044,
+   "longitude": -77.884036,
+   "coordinates_note": "Published by Riu on the hotel fact sheet.",
+   "total_rooms": "288",
+   "floors": "4 in the main building, 3 in the annexe",
+   "year_built": "2012/13",
+   "year_renovated": "Complete refurbishment 2026",
+   "check_in": null,
+   "check_out": null,
+   "airport_code": "MBJ, Sangster International",
+   "distance_to_airport_km": "About 2.7 km",
+   "drive_time_to_airport": null,
+   "nearby_landmarks": "Rose Hall, Mahoe Bay, Montego Bay 4.5 km",
+   "one_line_description": "A 288 room adults only Riu Palace on Mahoe Bay, refurbished in 2026, where every room is a junior suite.",
+   "restaurant": "Seven: a main buffet, Krystal (gourmet), Zen (Asian), an Italian restaurant, a steakhouse, the Jerk Station, and the Elite Club Restaurant for Elite Club guests only.",
+   "bar": "Five, including a lobby bar with a mixologist and daily signature cocktails, a poolside swim up bar, a chill out bar and the Elite Pool Bar for Elite Club guests.",
+   "breakfast": "Included",
+   "room_service": "24 hours, free of charge, menu includes vegetarian options",
+   "gym": "Yes",
+   "pool": "Three outdoor infinity pools of 369, 253 and 168 sq m. Two have swim up bars. The 168 sq m pool is exclusive to Elite Club guests.",
+   "spa_or_sauna": "Wellness centre at Riu Reggae, not on site",
+   "business_centre": null,
+   "meeting_rooms": "One conference room. Capacities not published.",
+   "largest_meeting_capacity": null,
+   "parking": "Free, open air, limited places, unguarded",
+   "wi_fi": "Free throughout the hotel",
+   "airport_transfer": null,
+   "laundry": null,
+   "reception_hours": "24 hours",
+   "air_conditioning": "Yes, central",
+   "pet_policy": "No pets allowed",
+   "accessibility": "The room table lists an Accessible Junior Suite Standard, code SJSM, at 41 sq m. The accessibility page on the same fact sheet states no adapted rooms are available. The sheet contradicts itself, so confirm in writing before promising anything.",
+   "languages_spoken": "English, Spanish, German and Italian at reception",
+   "phone": "+1 876 940 8022",
+   "whatsapp": null,
+   "email": "palace.jamaica@riu.com",
+   "website": "https://www.riu.com",
+   "good_to_know": "Refurbished 2026, the freshest product on file. Adults only, every room a junior suite of 41 sq m or more. Elite Club by Riu adds its own restaurant, pool, pool bar and swim up suites. Free 24 hour room service and turndown.",
+   "included": null,
+   "costs_extra": null,
+   "kids": null,
+   "photos_on_file": "No, photos still needed",
+   "source_links": "RIU Hotels official Hotel Fact Sheet, dated 15 September 2026, supplied by Golden",
+   "last_verified": "2026-09-15",
+   "full_amenity_list": "Adults only, All Inclusive 24H, Elite Club by Riu tier, 24 hour room service, free, Turndown service, 7 restaurants, 5 bars, 3 infinity pools, Elite Club pool and pool bar, Mahoe Bay beach, Gym, Conference room, Free Wi-Fi throughout, Free parking, 24 hour reception, Air conditioning, Balcony or terrace, Hydromassage bathtub, Minibar and liquor dispenser, Safe, Bathrobe, USB power outlets, TV casting, Swim up junior suites, Whirlpool on terrace in Elite Club, Water park and discotheque at Riu Montego Bay, Wellness centre at Riu Reggae, No pets",
+   "sheetSlug": "riu-palace-jamaica",
+   "dest": null,
+   "rooms": [
+    {
+     "name": "Junior Suite Standard",
+     "size": "41 sq m, 441 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200 or 1 bed 200x200",
+     "notes": "Hydromassage bathtub. Code SJSB."
+    },
+    {
+     "name": "Junior Suite Garden View",
+     "size": "41 sq m, 441 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200 or 1 bed 200x200",
+     "notes": "Code SJJB."
+    },
+    {
+     "name": "Junior Suite Ocean View",
+     "size": "41 sq m, 441 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200 or 1 bed 200x200",
+     "notes": "Code SJLB."
+    },
+    {
+     "name": "Junior Suite",
+     "size": "41 sq m, 441 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 150x200 or 1 bed 180x200",
+     "notes": "Code SPRO."
+    },
+    {
+     "name": "Junior Suite Ocean Front, Elite Club",
+     "size": "41 sq m, 441 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Elite Club tier. Balcony or terrace. Code SJFE."
+    },
+    {
+     "name": "Swim-up Junior Suite, Elite Club",
+     "size": "See note",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Elite Club tier. Small private pool on the terrace. Code SJPE."
+    },
+    {
+     "name": "Suite Ocean Front, Elite Club",
+     "size": "59 sq m, 635 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Elite Club tier. Whirlpool on terrace. The largest category. Code SUFE."
+    },
+    {
+     "name": "Accessible Junior Suite Standard",
+     "size": "41 sq m, 441 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Adapted. Code SJSM."
+    }
+   ]
+  },
+  {
+   "name": "Hotel Riu Palace Tropical Bay",
+   "slug": "riu-palace-tropical-bay",
+   "group_or_brand": "RIU Hotels and Resorts, Palace grade",
+   "property_type": "All inclusive resort",
+   "star_rating": "5 star",
+   "country": "Jamaica",
+   "city": "Negril",
+   "district": "Bloody Bay, Norman Manley Boulevard",
+   "address": "Norman Manley Boulevard, Bloody Bay Beach",
+   "postcode": null,
+   "latitude": 18.345312,
+   "longitude": -78.333757,
+   "coordinates_note": "Published by Riu on the hotel fact sheet.",
+   "total_rooms": "452",
+   "floors": "2 to 3 across a main building and 8 annexes",
+   "year_built": "2000/01",
+   "year_renovated": "Complete refurbishment 2018",
+   "check_in": null,
+   "check_out": null,
+   "airport_code": "MBJ, Sangster International",
+   "distance_to_airport_km": "About 80 km",
+   "drive_time_to_airport": null,
+   "nearby_landmarks": "Bloody Bay, Negril 6 km, Negril West End 7.5 km, Seven Mile Beach",
+   "one_line_description": "A 452 room Riu Palace on Bloody Bay in Negril with three kilometres of beach and free 24 hour room service.",
+   "restaurant": "Six: Negril (main buffet), Krystal (fusion), Rimini (Italian, reservations required), Hakuchi (Japanese), a poolside restaurant and the Jerk Station.",
+   "bar": "Six: Daiquiri lobby bar 10.00 to 24.00, Reggae lounge bar 18.00 to 24.00, a plaza bar 18.00 to 24.00, The Sun swim up bar 10.00 to 17.00 over 18s only, and Lounge 24 open 24 hours.",
+   "breakfast": "Included",
+   "room_service": "24 hours, free of charge",
+   "gym": "Yes",
+   "pool": "Four outdoor pools of 75, 209 and 121 sq m plus a children's pool. The 209 sq m pool has a swim up bar for over 18s.",
+   "spa_or_sauna": "Wellness centre",
+   "business_centre": null,
+   "meeting_rooms": null,
+   "largest_meeting_capacity": null,
+   "parking": "Free, open air, limited places, unguarded",
+   "wi_fi": "Free throughout the hotel",
+   "airport_transfer": null,
+   "laundry": null,
+   "reception_hours": "24 hours",
+   "air_conditioning": "Yes, central",
+   "pet_policy": "No pets allowed",
+   "accessibility": "Four adapted rooms in the SJSM category, 32 sq m. Riu publishes full door widths and bathroom measurements on the fact sheet.",
+   "languages_spoken": "English and Spanish at reception",
+   "phone": "+1 876 957 5900",
+   "whatsapp": null,
+   "email": "palace.tropicalbay@riu.com",
+   "website": "https://www.riu.com",
+   "good_to_know": "Palace grade, so 24 hour room service is free and turndown is included. Three kilometres of beach at Bloody Bay, the longest on file. Almost every category is a junior suite with a hydromassage bathtub. Eighty kilometres from Montego Bay airport.",
+   "included": null,
+   "costs_extra": null,
+   "kids": "RIU Land kids club and a children's pool.",
+   "photos_on_file": "No, photos still needed",
+   "source_links": "RIU Hotels official Hotel Fact Sheet, dated 13 September 2026, supplied by Golden",
+   "last_verified": "2026-09-15",
+   "full_amenity_list": "All Inclusive 24H, 24 hour room service, free, Turndown service, 6 restaurants, 6 bars, 4 pools, Bloody Bay beach, 3 km, RIU Land kids club, Wellness centre, Gym, Boutique, Free Wi-Fi throughout, Free parking, 24 hour reception, Air conditioning, Balcony or terrace, Minibar and liquor dispenser, Safe, Bathrobe, Hydromassage bathtub in most categories, Two bedroom junior suites, Adapted rooms, No pets",
+   "sheetSlug": "riu-palace-tropical-bay",
+   "dest": null,
+   "rooms": [
+    {
+     "name": "Double Room",
+     "size": "28 sq m, 301 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Garden view. Code DBSB."
+    },
+    {
+     "name": "Junior Suite Garden View",
+     "size": "32 sq m, 344 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Hydromassage bathtub. Code SJSB."
+    },
+    {
+     "name": "Junior Suite Ocean View",
+     "size": "32 sq m, 344 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Balcony. Code SJLB."
+    },
+    {
+     "name": "Junior Suite Ocean Front",
+     "size": "32 sq m, 344 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Balcony. Code SJMB."
+    },
+    {
+     "name": "Suite Ocean View",
+     "size": "47 sq m, 506 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Sitting area. Code SUMB."
+    },
+    {
+     "name": "2 Bedroom Junior Suite Ocean View",
+     "size": "64 sq m, 689 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Two bedrooms. Code SJLF."
+    },
+    {
+     "name": "2 Bedroom Junior Suite Ocean Front",
+     "size": "64 sq m, 689 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 or 1 bed 200x200",
+     "notes": "Two bedrooms. Code SJMF."
+    },
+    {
+     "name": "Accessible Junior Suite Garden View",
+     "size": "32 sq m, 344 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Adapted. Code SJSM, 4 rooms."
+    }
+   ]
+  },
+  {
+   "name": "Hotel Riu Reggae",
+   "slug": "riu-reggae",
+   "group_or_brand": "RIU Hotels and Resorts",
+   "property_type": "Adults only all inclusive resort",
+   "star_rating": "5 star",
+   "country": "Jamaica",
+   "city": "Montego Bay",
+   "district": "Mahoe Bay, Rose Hall, Ironshore",
+   "address": "Mahoe Bay, Rose Hall, Ironshore P.O.",
+   "postcode": null,
+   "latitude": 18.517,
+   "longitude": -77.885627,
+   "coordinates_note": "Published by Riu on the hotel fact sheet.",
+   "total_rooms": "454",
+   "floors": "3, one main building",
+   "year_built": "2016",
+   "year_renovated": null,
+   "check_in": null,
+   "check_out": null,
+   "airport_code": "MBJ, Sangster International",
+   "distance_to_airport_km": "About 2.7 km",
+   "drive_time_to_airport": null,
+   "nearby_landmarks": "Rose Hall, Mahoe Bay, Montego Bay 4.5 km",
+   "one_line_description": "A 454 room adults only Riu on Mahoe Bay, under three kilometres from Montego Bay airport.",
+   "restaurant": "Six: Ackee (main buffet), Dolce Vita (Italian a la carte), Bamboo (Asian buffet), Kulinarium (gourmet a la carte), a poolside steakhouse (a la carte) and the Jerk Station. A la carte venues require reservations.",
+   "bar": "Four: Daiquiri lobby bar 24 hours, Roots plaza bar 17.00 to 24.00, Mojito swim up 10.00 to 24.00, Margarita swim up 10.00 to 18.00.",
+   "breakfast": "Included. Buffet from 07.00 to 10.30.",
+   "room_service": null,
+   "gym": "Yes, 24 hour access. Sports shoes compulsory.",
+   "pool": "Three outdoor infinity pools, 470, 226 and 111 sq m. Two have swim up bars, over 18s only.",
+   "spa_or_sauna": "Renova Spa, beauty salon and hairdresser, at a charge. Steam bath and whirlpool bath included.",
+   "business_centre": null,
+   "meeting_rooms": null,
+   "largest_meeting_capacity": null,
+   "parking": "Free, open air, limited places, unguarded",
+   "wi_fi": "Free throughout the hotel",
+   "airport_transfer": null,
+   "laundry": null,
+   "reception_hours": "24 hours",
+   "air_conditioning": "Yes, central",
+   "pet_policy": "No pets allowed",
+   "accessibility": "Four adapted rooms in the DDSM category, 29 sq m, on the ground floor. All public areas accessible by ramp or lift. Lift door width 91 cm. Wheelchair hire available. No wheelchair access to the sea.",
+   "languages_spoken": "English and Spanish at reception",
+   "phone": "+1 876 940 8017",
+   "whatsapp": null,
+   "email": "hotel.reggae@riu.com",
+   "website": "https://www.riu.com",
+   "good_to_know": "Adults only, wristband required. Closest Jamaica property to an airport at 2.7 km. Water park, nightclub and discotheque are at Riu Montego Bay under exchange privileges, which exclude breakfast and dinner there.",
+   "included": "All meals, snacks and beverages at hotel bars and restaurants, international top brand drinks, 24 hour snacks and drinks, minibar and liquor dispenser restocked regularly, in room safe, sports and entertainment programme, Splash Water World and free entry to the discotheque at Riu Montego Bay, wellness facilities, Wi-Fi throughout.",
+   "costs_extra": "Renova Spa treatments, beauty salon and hairdresser. Romantic open air dinner. Speciality wine list. Scuba diving, horse riding and golf. Laundry, car hire and doctor.",
+   "kids": null,
+   "photos_on_file": "No, photos still needed",
+   "source_links": "RIU Hotels official Hotel Fact Sheet, dated 13 September 2026, supplied by Golden",
+   "last_verified": "2026-09-15",
+   "full_amenity_list": "Adults only, All Inclusive 24H, 6 restaurants, 4 bars, 3 pools, two with swim up bars, Mahoe Bay beach, reserved area, Renova Spa, Gym, 24 hour access, Steam bath and whirlpool, Beach volleyball, Kayaks, paddle boards and pedalos, Snorkelling, Scuba tryout in the pool, Water park at Riu Montego Bay, Nightclub at Riu Montego Bay, Exchange privileges with Riu Montego Bay, Nightly live music and shows, Free Wi-Fi throughout, Free parking, 24 hour reception, Laundry, at a charge, Air conditioning, Balcony or terrace, Minibar and liquor dispenser, Safe, Bathrobe, Concierge, Adapted rooms, Wristband required, No pets",
+   "sheetSlug": "riu-reggae",
+   "dest": null,
+   "rooms": [
+    {
+     "name": "Double Room",
+     "size": "29 sq m, 312 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 cm or 1 bed 200x200 cm",
+     "notes": "RIU code DDSB."
+    },
+    {
+     "name": "Double Room Tropical View",
+     "size": "29 sq m, 312 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 cm or 1 bed 200x200 cm",
+     "notes": "Balcony. Code DDEB."
+    },
+    {
+     "name": "Double Room Partial Ocean View",
+     "size": "29 sq m, 312 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 cm or 1 bed 200x200 cm",
+     "notes": "Balcony. Code DDLB."
+    },
+    {
+     "name": "Double Room Ocean Front",
+     "size": "29 sq m, 312 sq ft",
+     "sleeps": null,
+     "beds": "2 beds 125x200 cm or 1 bed 200x200 cm",
+     "notes": "Balcony. Code DDMB."
+    },
+    {
+     "name": "Junior Suite Ocean Front",
+     "size": "43 sq m, 463 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Sitting area, hydromassage bathtub. Code SJMB."
+    },
+    {
+     "name": "Accessible Double Room",
+     "size": "29 sq m, 312 sq ft",
+     "sleeps": null,
+     "beds": null,
+     "notes": "Adapted room, ground floor. Code DDSM."
+    },
+    {
+     "name": "Family Room",
+     "size": "63 sq m, 678 sq ft",
+     "sleeps": null,
+     "beds": "Sofa bed plus main beds",
+     "notes": "Two bedrooms, two bathrooms. Code F2SB."
+    }
+   ]
+  },
+  {
+   "name": "Sunscape Coco Punta Cana",
+   "slug": "sunscape-coco-punta-cana",
+   "group_or_brand": "Sunscape Resorts and Spas, Hyatt Inclusive Collection",
+   "property_type": "All inclusive beach resort",
+   "star_rating": null,
+   "country": "Dominican Republic",
+   "city": "Punta Cana",
+   "district": "Cabeza de Toro, La Altagracia",
+   "address": "Carretera Cabeza de Toro, Kilometro 7",
+   "postcode": "23000",
+   "latitude": 18.647824,
+   "longitude": -68.359466,
+   "coordinates_note": "Taken from Hyatt's own map link on the property page.",
+   "total_rooms": "1,091 per the resort site. The November 2023 opening announcement said 1,059.",
+   "floors": null,
+   "year_built": null,
+   "year_renovated": "Remodelled and opened as Sunscape, November 2023",
+   "check_in": null,
+   "check_out": null,
+   "airport_code": "PUJ, Punta Cana International",
+   "distance_to_airport_km": "About 9.5 km, 5.9 miles",
+   "drive_time_to_airport": "About 10 to 15 minutes",
+   "nearby_landmarks": "Cabeza de Toro beach, Bavaro, Laguna Bavaro, Punta Cana Village",
+   "one_line_description": "A 1,091 room all inclusive at Cabeza de Toro, ten minutes from Punta Cana airport, with twelve restaurants and seven pools.",
+   "restaurant": "Twelve: Windows (international buffet), Kaleidoscope (international), Blue Water Grill (steakhouse), Da Mario (Italian), Chopsticks (Asian), Tierra (Amazonian), Tiki Taco (Mexican), Sunny Side Grill (Caribbean), The Pizza Shop, The Snack Machine, Coco Cafe, All Star Sports Bar. Plus Un-Wined Cellar for private dining, reservations required. No reservations needed elsewhere except Chopsticks at lunch.",
+   "bar": "Ten: Sea Breeze (lobby), Sip and Dip (swim up), Coconuts and Sharky's (beach), Starstruck (theatre), Tropicalia (disco), plus Flip Flopz, The Sun Club Bar, Barracuda, Tortuga and The Sun Club Pool Bar for Sun Club guests.",
+   "breakfast": "Included. Buffet from 7:00 am at Windows and Kaleidoscope. Coco Cafe opens 6:00 am.",
+   "room_service": "Yes. Sun Club guests get 7:00 am to 11:00 pm. Standard tier hours not published.",
+   "gym": null,
+   "pool": "Seven, including a kids' splash pool, one with a swim up bar, and two reserved for Sun Club guests",
+   "spa_or_sauna": "Sunscape Spa: massages, facials, body scrubs, reflexology. At a charge.",
+   "business_centre": "Complimentary computer access in the Sun Club lounge. Nothing published for the standard tier.",
+   "meeting_rooms": "Meeting and event facilities available. No count or capacities published.",
+   "largest_meeting_capacity": null,
+   "parking": null,
+   "wi_fi": "Free. Sun Club covers two devices per room in the room and across the property. Standard tier allowance not published.",
+   "airport_transfer": null,
+   "laundry": null,
+   "reception_hours": null,
+   "air_conditioning": "Yes",
+   "pet_policy": "Small dogs under 22 lbs, about 10 kg, welcome for an additional fee. Dog bed, food and water bowls and toys provided.",
+   "accessibility": null,
+   "languages_spoken": null,
+   "phone": "+1 809 686 9898",
+   "whatsapp": null,
+   "email": null,
+   "website": "https://www.hyattinclusivecollection.com/en/resorts-hotels/sunscape/dominican-republic/coco-punta-cana/",
+   "good_to_know": "Ten minutes from Punta Cana airport, the shortest transfer on file. All taxes and gratuities included, no wristbands, and no reservations needed at most restaurants. Eleven Sun Club room categories are named with no sizes or occupancy published.",
+   "included": "All meals across twelve restaurants with no reservations at most, drinks at ten bars, 24 hour food and beverage, stocked minibar, room service, daily land and water activities, beach volleyball, yoga and Zumba, nightly entertainment, kids and teens clubs, Wi-Fi, and all taxes and gratuities. No wristbands.",
+   "costs_extra": "Sunscape Spa treatments. Un-Wined Cellar private dining. The dog fee. The Sun Club upgrade. Anything else to confirm.",
+   "kids": "Explorer's Club for kids from age 3, supervised, with arts and crafts, movie nights and sandcastle competitions. Core Zone teens club. Kids' splash pool. Family sections on the beach. Two and three bedroom family suites in the Sun Club tier.",
+   "photos_on_file": "No, photos still needed",
+   "source_links": "hyattinclusivecollection.com rooms and suites, club level and dining pages; hyatt.com property page SUCDP; Hyatt newsroom opening announcement, November 2023",
+   "last_verified": "2026-09-14",
+   "full_amenity_list": "All inclusive, All taxes and gratuities included, No wristbands, 24 hour food and beverage, 12 restaurants, 10 bars including a swim up and a disco, No dinner reservations at most restaurants, 7 pools including a kids splash pool, 2 Sun Club pools, Swimmable white sand beach, Sunscape Spa, at a charge, Explorer Club for kids, Core Zone teens club, Sun Club upgrade tier, Nightly entertainment and theatre, Water sports, Wedding coordinator, Room service, Stocked minibar, Free Wi-Fi, Air conditioning, Balcony or terrace, Swim out and pool access rooms, Family suites sleeping 6 and 8, Small dogs welcome",
+   "sheetSlug": "sunscape-coco-punta-cana",
+   "dest": null,
+   "rooms": [
+    {
+     "name": "Deluxe Tropical View",
+     "size": "433 sq ft, about 40 sq m",
+     "sleeps": "3",
+     "beds": "One king or two doubles",
+     "notes": "Private furnished balcony, garden view."
+    },
+    {
+     "name": "Deluxe Pool View",
+     "size": "600 sq ft, about 56 sq m",
+     "sleeps": "3",
+     "beds": "One king or two doubles",
+     "notes": "The largest standard room. Balcony, pool view."
+    },
+    {
+     "name": "Deluxe Family Room",
+     "size": "599 sq ft, about 56 sq m",
+     "sleeps": "4",
+     "beds": "One king plus two doubles",
+     "notes": "Two full bathrooms. Balcony, garden view."
+    },
+    {
+     "name": "Superior Deluxe Tropical View",
+     "size": "492 sq ft, about 46 sq m",
+     "sleeps": "3",
+     "beds": "One king or two doubles",
+     "notes": "Private furnished balcony, garden view."
+    },
+    {
+     "name": "Superior Deluxe Pool View",
+     "size": "490 sq ft, about 46 sq m",
+     "sleeps": "4",
+     "beds": "One king or two doubles",
+     "notes": "Terrace, pool view."
+    },
+    {
+     "name": "Superior Deluxe Ocean View",
+     "size": "446 sq ft, about 41 sq m",
+     "sleeps": "4",
+     "beds": "One king or two doubles",
+     "notes": "Terrace, ocean view."
+    },
+    {
+     "name": "Superior Deluxe Swim Out",
+     "size": "434 sq ft, about 40 sq m",
+     "sleeps": "4",
+     "beds": "One king or two doubles",
+     "notes": "Balcony with direct pool access."
+    },
+    {
+     "name": "Deluxe Suite",
+     "size": "452 sq ft, about 42 sq m",
+     "sleeps": "4",
+     "beds": "One king plus two doubles, or king with full and sofa bed",
+     "notes": "Two bedrooms, living area, second television, terrace."
+    },
+    {
+     "name": "Sun Club Deluxe Junior Suite",
+     "size": "387 sq ft, about 36 sq m",
+     "sleeps": "2",
+     "beds": null,
+     "notes": "Sun Club tier. The smallest room on the resort."
+    },
+    {
+     "name": "Sun Club Superior Tropical View",
+     "size": "575 sq ft, about 53 sq m",
+     "sleeps": "2",
+     "beds": null,
+     "notes": "Sun Club tier, garden view."
+    },
+    {
+     "name": "Sun Club Junior Suite Tropical View",
+     "size": "600 sq ft, about 56 sq m",
+     "sleeps": "4",
+     "beds": null,
+     "notes": "Sun Club tier, garden view."
+    },
+    {
+     "name": "Sun Club Junior Suite Pool View",
+     "size": "600 sq ft, about 56 sq m",
+     "sleeps": "3",
+     "beds": null,
+     "notes": "Sun Club tier, pool view."
+    },
+    {
+     "name": "Sun Club Junior Suite Pool Access",
+     "size": "600 sq ft, about 56 sq m",
+     "sleeps": "4",
+     "beds": null,
+     "notes": "Sun Club tier, direct pool access."
+    },
+    {
+     "name": "Sun Club Junior Suite Swim Out",
+     "size": "603 sq ft, about 56 sq m",
+     "sleeps": "3",
+     "beds": null,
+     "notes": "Sun Club tier, private swim out."
+    },
+    {
+     "name": "Sun Club Junior Suite Ocean Front",
+     "size": "603 sq ft, about 56 sq m",
+     "sleeps": "2",
+     "beds": null,
+     "notes": "Sun Club tier, ocean front."
+    },
+    {
+     "name": "Sun Club Premium Suite",
+     "size": "603 sq ft, about 56 sq m",
+     "sleeps": "2",
+     "beds": null,
+     "notes": "Sun Club tier."
+    },
+    {
+     "name": "Sun Club Premium Suite Ocean Front",
+     "size": "603 sq ft, about 56 sq m",
+     "sleeps": "2",
+     "beds": null,
+     "notes": "Sun Club tier, ocean front."
+    },
+    {
+     "name": "Sun Club 2 Bedroom Family Suite Ocean Front",
+     "size": "904 sq ft, about 84 sq m",
+     "sleeps": "6",
+     "beds": null,
+     "notes": "Sun Club tier. Two bedrooms, ocean front."
+    },
+    {
+     "name": "Sun Club 3 Bedroom Family Suite Tropical View",
+     "size": "904 sq ft, about 84 sq m",
+     "sleeps": "8",
+     "beds": null,
+     "notes": "Sun Club tier. Three bedrooms. The largest occupancy on the whole file."
+    }
+   ]
+  }
+ ],
+ "toConfirm": {
+  "All five": [
+   {
+    "what": "Contracted rate and what each rate includes",
+    "status": "Open"
+   },
+   {
+    "what": "Accessible rooms: do they exist and what exactly is accessible",
+    "status": "Open"
+   },
+   {
+    "what": "Whether the minors rule Hilton publishes, passport plus notarised authorisation, applies at the other Lima hotels",
+    "status": "Open"
+   }
+  ],
+  "Suites del Bosque": [
+   {
+    "what": "Permitted maximum occupancy per suite",
+    "status": "Open"
+   },
+   {
+    "what": "Size of the two kitchenette suites in sq m",
+    "status": "Open"
+   },
+   {
+    "what": "Bed type in Suite El Bosque",
+    "status": "Open"
+   },
+   {
+    "what": "Pet fee and size limit for dogs",
+    "status": "Open"
+   },
+   {
+    "what": "Exact distance in km to Jorge Chavez",
+    "status": "Open"
+   }
+  ],
+  "Nobility Hotel": [
+   {
+    "what": "Check in 2pm, check out 12 noon, about 20 km to LIM, 24 hour room service, laundry, business centre",
+    "status": "Open"
+   },
+   {
+    "what": "Official star rating",
+    "status": "Open"
+   },
+   {
+    "what": "Exact extra bed type in the Triple",
+    "status": "Open"
+   },
+   {
+    "what": "Photos Golden is licensed to use",
+    "status": "Open"
+   }
+  ],
+  "nhow Lima": [
+   {
+    "what": "Meeting and conference room capacities by setup",
+    "status": "Open"
+   },
+   {
+    "what": "Official star rating",
+    "status": "Open"
+   },
+   {
+    "what": "Room service, laundry and business centre",
+    "status": "Open"
+   },
+   {
+    "what": "Photos Golden is licensed to use",
+    "status": "Open"
+   },
+   {
+    "what": "GPS coordinates are street level only",
+    "status": "Open"
+   }
+  ],
+  "Souma Lima": [
+   {
+    "what": "Total room count, check in and check out times",
+    "status": "Open"
+   },
+   {
+    "what": "Size of the entry Standard Room",
+    "status": "Open"
+   },
+   {
+    "what": "Breakfast: included or not, and where it is served",
+    "status": "Open"
+   },
+   {
+    "what": "Meeting and event capacities",
+    "status": "Open"
+   },
+   {
+    "what": "Photos Golden is licensed to use",
+    "status": "Open"
+   }
+  ],
+  "ESTELAR Miraflores": [
+   {
+    "what": "Room sizes and maximum occupancy for all six categories",
+    "status": "Open"
+   },
+   {
+    "what": "Capacities by setup for the 11 event rooms",
+    "status": "Open"
+   },
+   {
+    "what": "Check in and check out times, and official star rating",
+    "status": "Open"
+   },
+   {
+    "what": "Photos Golden is licensed to use",
+    "status": "Open"
+   }
+  ],
+  "Melia Lima": [
+   {
+    "what": "Capacity chart by setup for the 10 event rooms",
+    "status": "Open"
+   },
+   {
+    "what": "Room service and business centre",
+    "status": "Open"
+   },
+   {
+    "what": "Conditions on the free airport transportation",
+    "status": "Open"
+   },
+   {
+    "what": "Permitted maximum occupancy and extra bed charges",
+    "status": "Open"
+   },
+   {
+    "what": "Photos Golden is licensed to use",
+    "status": "Open"
+   }
+  ],
+  "Hilton Lima Miraflores": [
+   {
+    "what": "Full meeting capacity chart by setup",
+    "status": "Open"
+   },
+   {
+    "what": "Whether Hilton Garden Inn Lima Miraflores should also be on file",
+    "status": "Open"
+   },
+   {
+    "what": "Photos Golden is licensed to use",
+    "status": "Open"
+   },
+   {
+    "what": "The minors rule is this hotel's own policy, not Peruvian law",
+    "status": "Open"
+   }
+  ],
+  "WEBSITE FIX": [
+   {
+    "what": "Las Americas Golden Tower is in Marbella, the Getaways page says Obarrio",
+    "status": "Open"
+   },
+   {
+    "what": "Ramada Plaza is in Punta Pacifica, San Francisco, the Getaways page says Marbella",
+    "status": "Open"
+   },
+   {
+    "what": "Megapolis is on Avenida Balboa, Boulevard Elhayek, not Punta Pacifica, and has no Multiplaza connection",
+    "status": "Open"
+   }
+  ],
+  "All five Panama": [
+   {
+    "what": "Room sizes, bed configurations and maximum occupancy",
+    "status": "Open"
+   },
+   {
+    "what": "Whether breakfast is included in the rate",
+    "status": "Open"
+   },
+   {
+    "what": "Accessible rooms",
+    "status": "Open"
+   },
+   {
+    "what": "Panama accommodation tax",
+    "status": "Open"
+   },
+   {
+    "what": "Photos Golden is licensed to use",
+    "status": "Open"
+   }
+  ],
+  "Four Panama city hotels": [
+   {
+    "what": "Check in and check out times",
+    "status": "Open"
+   }
+  ],
+  "Megapolis": [
+   {
+    "what": "Total room count",
+    "status": "Open"
+   }
+  ],
+  "Hospedium Princess": [
+   {
+    "what": "Whether the Habitacion Doble Ejecutiva is still sold",
+    "status": "Open"
+   },
+   {
+    "what": "The long stay rates for 7 and 30 nights",
+    "status": "Open"
+   }
+  ],
+  "All twelve": [
+   {
+    "what": "Languages spoken at reception",
+    "status": "Open"
+   }
+  ],
+  "Ten hotels": [
+   {
+    "what": "Reception hours",
+    "status": "Open"
+   }
+  ],
+  "Panama bookings": [
+   {
+    "what": "Minors entering Panama need a passport plus an apostilled or authenticated birth certificate",
+    "status": "Open"
+   }
+  ],
+  "Peru bookings": [
+   {
+    "what": "No travel permit is required for foreign tourist minors entering Peru",
+    "status": "Open"
+   }
+  ],
+  "Moon Palace Jamaica": [
+   {
+    "what": "Bar names and opening hours",
+    "status": "Open"
+   },
+   {
+    "what": "What the all inclusive actually covers",
+    "status": "Open"
+   },
+   {
+    "what": "Whether the rollaway fifth and seventh guest must be a child",
+    "status": "Open"
+   },
+   {
+    "what": "Sizes for Walk Out Suite, Governor Suite and Presidential Suite",
+    "status": "Open"
+   },
+   {
+    "what": "Gym, parking and airport transfer",
+    "status": "Open"
+   },
+   {
+    "what": "Meeting and wedding capacities",
+    "status": "Open"
+   },
+   {
+    "what": "Photos Golden is licensed to use",
+    "status": "Open"
+   },
+   {
+    "what": "Kids 17 and under stay free: the exact conditions",
+    "status": "Open"
+   },
+   {
+    "what": "Full list of what costs extra",
+    "status": "Open"
+   },
+   {
+    "what": "Bar and restaurant opening hours and reservation rules",
+    "status": "Open"
+   }
+  ],
+  "Grand Decameron Panama": [
+   {
+    "what": "Room sizes for all six categories",
+    "status": "Open"
+   },
+   {
+    "what": "The full room category list",
+    "status": "Open"
+   },
+   {
+    "what": "Bar count: the services page says 13 against 8 named",
+    "status": "Open"
+   },
+   {
+    "what": "What the All Inclusive Plus upgrade costs",
+    "status": "Open"
+   },
+   {
+    "what": "Accessible rooms",
+    "status": "Open"
+   },
+   {
+    "what": "Whether the 7.735 per cent tax applies to a contracted rate",
+    "status": "Open"
+   },
+   {
+    "what": "Airport transfer terms",
+    "status": "Open"
+   },
+   {
+    "what": "Room service, parking, pet policy and languages spoken",
+    "status": "Open"
+   },
+   {
+    "what": "Photos Golden is licensed to use",
+    "status": "Open"
+   },
+   {
+    "what": "Brand name on the Getaways page",
+    "status": "Open"
+   }
+  ],
+  "Ramada Plaza Panama": [
+   {
+    "what": "Room sizes for all three categories",
+    "status": "Open"
+   },
+   {
+    "what": "Maximum occupancy of the 1 King Bed Deluxe",
+    "status": "Open"
+   },
+   {
+    "what": "Whether the King Room with Terrace still exists",
+    "status": "Open"
+   },
+   {
+    "what": "Difference between the Deluxe and Superior double rooms",
+    "status": "Open"
+   },
+   {
+    "what": "Is parking free or chargeable",
+    "status": "Open"
+   },
+   {
+    "what": "Airport shuttle price and schedule",
+    "status": "Open"
+   },
+   {
+    "what": "Accessible rooms",
+    "status": "Open"
+   },
+   {
+    "what": "Children 12 and under stay free: the conditions",
+    "status": "Open"
+   },
+   {
+    "what": "Languages spoken and email address",
+    "status": "Open"
+   },
+   {
+    "what": "Photos Golden is licensed to use",
+    "status": "Open"
+   },
+   {
+    "what": "District on the Getaways page",
+    "status": "Open"
+   }
+  ],
+  "Dreams Playa Bonita": [
+   {
+    "what": "Re verify the whole record against a current resort fact sheet",
+    "status": "Open"
+   },
+   {
+    "what": "Check in and check out times",
+    "status": "Open"
+   },
+   {
+    "what": "Accessible rooms: how many and which categories",
+    "status": "Open"
+   },
+   {
+    "what": "What the Preferred Club upgrade costs",
+    "status": "Open"
+   },
+   {
+    "what": "Restaurant count: four a la carte or three",
+    "status": "Open"
+   },
+   {
+    "what": "Bar count: four or five",
+    "status": "Open"
+   },
+   {
+    "what": "Airport transfer price and whether Golden can contract it",
+    "status": "Open"
+   },
+   {
+    "what": "Current wedding package pricing",
+    "status": "Open"
+   },
+   {
+    "what": "Whether the resort still takes small dogs, and the current fee",
+    "status": "Open"
+   },
+   {
+    "what": "Parking, business centre and languages spoken",
+    "status": "Open"
+   },
+   {
+    "what": "Photos Golden is licensed to use",
+    "status": "Open"
+   }
+  ],
+  "Sunscape Coco Punta Cana": [
+   {
+    "what": "Check in and check out times",
+    "status": "Open"
+   },
+   {
+    "what": "Accessible rooms",
+    "status": "Open"
+   },
+   {
+    "what": "Total rooms: 1,091 or 1,059",
+    "status": "Open"
+   },
+   {
+    "what": "Whether the Deluxe Family Room and Deluxe Suite really cap at four",
+    "status": "Open"
+   },
+   {
+    "what": "What the Sun Club upgrade costs",
+    "status": "Open"
+   },
+   {
+    "what": "Standard tier Wi-Fi allowance and room service hours",
+    "status": "Open"
+   },
+   {
+    "what": "Meeting space: rooms, dimensions and capacities",
+    "status": "Open"
+   },
+   {
+    "what": "Airport transfer, parking, laundry, gym and languages spoken",
+    "status": "Open"
+   },
+   {
+    "what": "The dog fee",
+    "status": "Open"
+   },
+   {
+    "what": "Photos Golden is licensed to use",
+    "status": "Open"
+   },
+   {
+    "what": "Bed configurations for all eleven Sun Club categories",
+    "status": "Open"
+   },
+   {
+    "what": "Why the 2 and 3 bedroom family suites are both 904 sq ft",
+    "status": "Open"
+   },
+   {
+    "what": "Whether the Sun Club Deluxe Junior Suite is really 387 sq ft",
+    "status": "Open"
+   }
+  ],
+  "Dominican Republic bookings": [
+   {
+    "what": "Entry requirements and tourist card position for Jamaican and UK passport holders",
+    "status": "Open"
+   }
+  ],
+  "All five Riu properties": [
+   {
+    "what": "Maximum occupancy for every room category",
+    "status": "Open"
+   },
+   {
+    "what": "Check in and check out times",
+    "status": "Open"
+   },
+   {
+    "what": "Airport transfer: whether Riu contracts it and at what price",
+    "status": "Open"
+   }
+  ],
+  "Riu Ocho Rios": [
+   {
+    "what": "Conference room capacities",
+    "status": "Open"
+   }
+  ],
+  "Riu Reggae": [
+   {
+    "what": "What the Riu Montego Bay exchange privileges actually cover",
+    "status": "Open"
+   }
+  ],
+  "Riu Plaza Panama": [
+   {
+    "what": "Conference rates and whether Golden can contract group space",
+    "status": "Open"
+   }
+  ],
+  "Bahia Principe Runaway Bay": [
+   {
+    "what": "GPS coordinates",
+    "status": "Open"
+   },
+   {
+    "what": "Check in and check out, reception hours, parking and pet policy",
+    "status": "Open"
+   },
+   {
+    "what": "Conference capacity: 600 or 1,000",
+    "status": "Open"
+   },
+   {
+    "what": "Which sister hotels the exchange privileges cover and whether the shuttle is included",
+    "status": "Open"
+   }
+  ],
+  "All six new properties": [
+   {
+    "what": "Photos Golden is licensed to use",
+    "status": "Open"
+   }
+  ],
+  "Riu Palace Jamaica": [
+   {
+    "what": "Adapted rooms: the fact sheet contradicts itself",
+    "status": "Open"
+   },
+   {
+    "what": "The Swim-up Junior Suite is printed as 10 sq m",
+    "status": "Open"
+   },
+   {
+    "what": "What the Elite Club by Riu upgrade costs",
+    "status": "Open"
+   }
+  ],
+  "Riu Negril": [
+   {
+    "what": "Confirm the eighth restaurant",
+    "status": "Open"
+   },
+   {
+    "what": "Whether the 18 plus minimum age on swim up rooms is firm",
+    "status": "Open"
+   }
+  ],
+  "Riu Playa Blanca": [
+   {
+    "what": "Conference capacities",
+    "status": "Open"
+   },
+   {
+    "what": "How it compares commercially with Grand Decameron Panama",
+    "status": "Open"
+   }
+  ],
+  "Riu Montego Bay and Riu Palace Aquarelle": [
+   {
+    "what": "Fact sheets still needed",
+    "status": "Open"
+   }
+  ],
+  "Riu Palace Costa Rica": [
+   {
+    "what": "What is open during the 2026/27 refurbishment",
+    "status": "Open"
+   },
+   {
+    "what": "Bar opening hours",
+    "status": "Open"
+   },
+   {
+    "what": "What the Elite Club by Riu upgrade costs",
+    "status": "Open"
+   }
+  ],
+  "Both Costa Rica properties": [
+   {
+    "what": "Which facilities sit at which hotel",
+    "status": "Open"
+   },
+   {
+    "what": "Whether guests can use both hotels freely",
+    "status": "Open"
+   },
+   {
+    "what": "Group and meeting space across the shared complex",
+    "status": "Open"
+   }
+  ],
+  "Costa Rica bookings": [
+   {
+    "what": "Entry requirements for Jamaican and UK passport holders",
+    "status": "Open"
+   },
+   {
+    "what": "Air access from Jamaica to Liberia, LIR",
+    "status": "Open"
+   }
+  ],
+  "Riu Palace Aquarelle": [
+   {
+    "what": "Why the Swim-up Two Bedroom Family Room is 18 plus",
+    "status": "Open"
+   },
+   {
+    "what": "Confirm 220V power",
+    "status": "Open"
+   }
+  ],
+  "Riu Montego Bay": [
+   {
+    "what": "Whether the water park is genuinely adults only",
+    "status": "Open"
+   },
+   {
+    "what": "What the Family Rooms mean in an adults only hotel",
+    "status": "Open"
+   }
+  ],
+  "Occidental Papagayo": [
+   {
+    "what": "Maximum occupancy on the 96 sq m 2 Bedroom and 78 sq m Master Suite",
+    "status": "Open"
+   },
+   {
+    "what": "GPS coordinates",
+    "status": "Open"
+   },
+   {
+    "what": "Arrival day breakfast charge",
+    "status": "Open"
+   },
+   {
+    "what": "Room service, laundry, parking, reception hours, pet policy and languages",
+    "status": "Open"
+   }
+  ],
+  "Rose Hall cluster": [
+   {
+    "what": "How the three Riu exchange privileges actually work",
+    "status": "Open"
+   }
+  ]
+ }
+}

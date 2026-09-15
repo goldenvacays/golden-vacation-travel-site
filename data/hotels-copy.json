@@ -1,0 +1,157 @@
+{
+  "_about": "Guest-facing copy for the hotel pages, keyed by the page slug. The facts come from data/hotels.json (the spreadsheet); this file is the words. No em dashes, no supplier names, guide prices only, nothing internal.",
+  "riu-plaza": {
+    "tags": ["Most popular", "Bed & breakfast"],
+    "intro": "The one most of our Panama guests pick. A 644 room tower on Calle 50 in Marbella, right in the middle of the business and shopping streets, with an outdoor pool, a gym and a lobby sushi lounge that stays open late. Rooms were refreshed in 2025.",
+    "goodToKnow": [
+      "Bed and breakfast, not all-inclusive: the buffet runs 6:30 to 10:30 with live cooking stations and gluten-free options, and the city is on your doorstep for everything else.",
+      "Room service runs 24 hours and valet parking is available, both at a charge.",
+      "Marbella is walkable to Calle 50's restaurants and a short taxi to the Cinta Costera and Multiplaza."
+    ]
+  },
+  "megapolis": {
+    "tags": ["City views", "Bed & breakfast"],
+    "intro": "A 62 storey tower on Avenida Balboa, the seafront boulevard, so the views from the upper floors are the reason people book it. There is a pool with the Float Bar and sunbeds, a Mediterranean and Panamanian restaurant, two bars and a nightclub in the building.",
+    "goodToKnow": [
+      "On Avenida Balboa by Panama Bay, a short taxi to the Cinta Costera waterfront and Casco Viejo.",
+      "Kosher rooms are available, and there is a family suite that sleeps six.",
+      "Not pet friendly."
+    ]
+  },
+  "las-americas": {
+    "tags": ["5 star", "Breakfast included"],
+    "intro": "A five star tower in Marbella, a block off Avenida Balboa, with 285 rooms that start at a generous 44 square metres. Aurum on the fifth floor does the fine dining, Union Market is the food hall, and the sixth floor holds the spa and a gym that never closes.",
+    "goodToKnow": [
+      "Buffet breakfast is included on the standard rate.",
+      "The pool is indoor and climate controlled, so it works whatever the weather is doing.",
+      "Two accessible room categories are sold in their own right, both 44 square metres."
+    ]
+  },
+  "marinn-place": {
+    "tags": ["Rooftop pool", "Financial District"],
+    "intro": "A five star hotel in Bella Vista, the Financial District, with a rooftop pool that looks across the skyline. Every room is 34 square metres with a sofa bed and a divided living and sleeping space, which is why families and friends sharing like it.",
+    "goodToKnow": [
+      "Three room categories, all the same size, all with a sofa bed; the Deluxe Double sleeps four.",
+      "Breakfast is served in the Dann Carlton restaurant, from breakfast through to brunch.",
+      "Walking distance to the Financial District's restaurants, a short taxi to Avenida Balboa and the Cinta Costera."
+    ]
+  },
+  "ramada-plaza": {
+    "tags": ["Free breakfast", "Outdoor pool"],
+    "intro": "A 135 room hotel in Punta Pacifica, the newer district beside Multiplaza Pacific Mall, with an outdoor pool, a panoramic gym, a spa with a sauna and hot tub, and a free buffet breakfast that starts at 6:30, which suits an early flight home.",
+    "goodToKnow": [
+      "Children 12 and under stay free.",
+      "Check-in 3:00 pm, check-out 12:00 noon.",
+      "Multiplaza Pacific Mall and the ATLAPA Convention Centre are close by; the Cinta Costera is a short taxi.",
+      "No pets, though service animals are welcome."
+    ]
+  },
+  "hospedium-princess": {
+    "tags": ["Best value", "Pool and gym"],
+    "intro": "Our best value in the city. A 124 room hotel at the World Trade Centre in Marbella with an outdoor pool, a gym, a sauna and spa, a volleyball court and a buffet restaurant doing Andean and international dishes. Rooms run from a compact 20 square metres up to 52.",
+    "goodToKnow": [
+      "Rates come room only or with breakfast; tell us which you want when you ask for a quote.",
+      "About 15 minutes from the airport, and Panama Viejo is around 10 minutes away.",
+      "Long stays of 7 and 30 nights have their own rates."
+    ]
+  },
+  "dreams-playa-bonita": {
+    "tags": ["All-inclusive", "20 min from the city"],
+    "intro": "The beach resort that pairs with Panama City without a long drive. Dreams Playa Bonita sits twenty minutes from the centre and forty from the airport, with 301 rooms in eleven seaside towers, every one with an ocean view and a private balcony, two kilometres of beach in the Punta Bruja nature reserve and four pools, two of them adults only.",
+    "goodToKnow": [
+      "Unlimited Luxury means taxes and gratuities are in, there are no wristbands, and dinner at the four a la carte restaurants never needs a reservation.",
+      "Rooms with two double beds take four people but no more than three adults; every suite sleeps two.",
+      "Explorer's Club keeps children aged 3 to 12 busy from 9:00 am to 9:00 pm.",
+      "Spa treatments, golf, tours and airport transfers are charged extra."
+    ]
+  },
+  "decameron-panama": {
+    "tags": ["All-inclusive", "Water slides"],
+    "intro": "The big one. Grand Decameron Panama is an 852 room all-inclusive at Farallon on the Pacific coast, about ninety minutes from Panama City, with six pools in one beachfront complex, a three flume water slide park, an outdoor cinema, nightly shows, seven a la carte restaurants and two buffets. Families and groups love it.",
+    "goodToKnow": [
+      "All Inclusive Plus adds a private restaurant for breakfast and lunch, an exclusive pool and lounge bar, premium drinks, unlimited Wi-Fi and a separate check-in. Say if you want it quoted.",
+      "King rooms sleep three, two double bed rooms sleep four adults.",
+      "Bars run from 9:00 am to 2:00 am, with a hydration station covering the small hours.",
+      "Golf next door at Mantarraya, spa treatments and motorised water sports cost extra."
+    ]
+  },
+  "riu-playa-blanca": {
+    "tags": ["All-inclusive 24h", "5 star"],
+    "intro": "A five star all-inclusive on Playa Blanca in Cocle with 573 rooms, four pools including an adults only pool with a swim-up bar, a children's pool with slides, and three kilometres of Pacific beach. All-inclusive runs 24 hours, with four restaurants and five bars.",
+    "goodToKnow": [
+      "Standard rooms are 35 square metres, and there is a triple room category for three sharing.",
+      "RIU Land kids club and the slides pool make it an easy pick with children.",
+      "Free Wi-Fi throughout, a 24 hour gym, and free open-air parking.",
+      "No pets."
+    ]
+  },
+  "suites-del-bosque": {
+    "tags": ["All suites", "San Isidro"],
+    "intro": "The hotel from our two-country trip. Suites del Bosque is a 55 suite boutique hotel in San Isidro, the leafy financial and residential heart of Lima, a short walk from the El Olivar olive grove. Every room is a suite, most of them loft style with a sitting area and a sofa bed, so couples get space and families skip the second room.",
+    "goodToKnow": [
+      "Quiet and residential, not a resort: there is no pool.",
+      "Two kitchenette categories suit a week or more.",
+      "Free parking, free Wi-Fi, a gym on the third floor, and dogs are welcome (ask us about size limits and fees).",
+      "About 30 minutes from the airport, traffic depending."
+    ]
+  },
+  "nobility": {
+    "tags": ["4 star", "Miraflores"],
+    "intro": "A 58 room four star hotel in Miraflores with its own Mediterranean restaurant, a cafe bar, a gym, a sauna and a jacuzzi. Small enough to be looked after, and the price sits with Suites del Bosque.",
+    "goodToKnow": [
+      "Breakfast is a daily hot and cold buffet from 6:30 to 10:30, with a Creole breakfast on Sundays.",
+      "Free parking on site, free Wi-Fi, 24 hour room service, and an airport shuttle on request at a charge.",
+      "Check-in 2:00 pm, check-out 12:00 noon.",
+      "About 20 to 30 minutes from the airport, traffic depending."
+    ]
+  },
+  "nhow": {
+    "tags": ["Rooftop pool", "Design hotel"],
+    "intro": "The design hotel. nhow Lima is a 243 room tower in the middle of Miraflores built around contemporary Peruvian art, and the draw is the rooftop: a pool and a bar with the city laid out below. Rooms are bright and modern with rain showers and a Nespresso machine as standard.",
+    "goodToKnow": [
+      "Every room sleeps three except the penthouse; only the entry nhow room can be set up as two twins.",
+      "Walkable to Parque Kennedy and Larcomar.",
+      "Dogs and cats up to 25 kg are welcome at a nightly charge, maximum two.",
+      "About 35 minutes from the airport by taxi."
+    ]
+  },
+  "estelar-miraflores": {
+    "tags": ["Rooftop restaurant", "Miraflores"],
+    "intro": "A 151 room hotel on Avenida Benavides, in the thick of Miraflores and a short walk from Parque Kennedy. Piso 21, the restaurant and bar on the top floor, is the reason to pick it: Peruvian and international cooking with the city spread out below. There is an outdoor pool, a fitness centre, a Turkish bath and a jacuzzi.",
+    "goodToKnow": [
+      "Breakfast is included on every rate the hotel sells.",
+      "The Standard Twin has two queen beds, the best value family option here.",
+      "Cafe Juan Valdez is on site for coffee."
+    ]
+  },
+  "souma": {
+    "tags": ["5 star", "Oceanfront"],
+    "intro": "The top of the Lima lineup. Souma is a five star oceanfront hotel on the Malecon in Miraflores, the first Vignette Collection property in Latin America, with a rooftop infinity pool looking straight out over the Pacific, three restaurants, a spa built around Andean and Amazonian treatments and a gym that never closes.",
+    "goodToKnow": [
+      "Four categories take two double beds and sleep four, and the SOUMA Suite sleeps seven, so it is the best bet for a family or a group of friends.",
+      "The pool is open 8:00 am to 5:00 pm, a daytime feature rather than an evening one.",
+      "Accessibility is properly documented: accessible rooms, lifts, restrooms, ramps and accessible parking.",
+      "Dogs up to 15 kg stay in Premium City View rooms only, at a nightly charge."
+    ]
+  },
+  "melia-lima": {
+    "tags": ["5 star", "Free airport transfer"],
+    "intro": "A five star hotel on Avenida Salaverry in San Isidro, Lima's financial district, with an outdoor pool, a wellness centre with a gym and a Turkish bath, and El Tambo for Peruvian cooking. The Level is the hotel within the hotel, upgraded rooms with their own lounge.",
+    "goodToKnow": [
+      "The hotel includes airport transportation on its own rates; ask us whether it applies to your booking.",
+      "Deluxe and The Level Supreme rooms have two double beds, the family options here.",
+      "San Isidro is greener and quieter than Miraflores and closer to the airport, about 15 minutes.",
+      "Adapted rooms are sold as a category of their own."
+    ]
+  },
+  "hilton-lima": {
+    "tags": ["Outdoor pool", "Free parking"],
+    "intro": "A 207 room hotel on Avenida La Paz in Miraflores with an outdoor pool with whirlpools, a fitness centre, a seasonal rooftop bar and Social, the Peruvian and American restaurant on the ground floor. Parking is free, secured and covered.",
+    "goodToKnow": [
+      "Breakfast is available at a charge; the hotel sells rooms with and without it.",
+      "No airport shuttle, and the drive is about 40 minutes.",
+      "Pets up to 25 kg are welcome for a fee, with a bed and feeder provided.",
+      "Under 18s are admitted only with a parent or guardian, so bring the passports and a notarised authorisation if a minor travels with anyone else."
+    ]
+  }
+}
