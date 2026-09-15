@@ -1,16 +1,104 @@
 {
-  "_about": "Guest-facing copy for the hotel pages, keyed by the page slug. The facts come from data/hotels.json (the spreadsheet); this file is the words. No em dashes, no supplier names, guide prices only, nothing internal.",
+  "_about": "Guest-facing copy for the hotel pages, keyed by the page slug. The facts come from data/hotels.json (the spreadsheet); this file is the words. No em dashes, no supplier names, guide prices only, nothing internal. photos: [{file, small, alt}] per hotel, files under public/getaways/img/hotels/; the first is the hero, the rest make the swipe strip and the viewer.",
   "riu-plaza": {
-    "tags": ["Most popular", "Bed & breakfast"],
+    "tags": [
+      "Most popular",
+      "Bed & breakfast"
+    ],
     "intro": "The one most of our Panama guests pick. A 644 room tower on Calle 50 in Marbella, right in the middle of the business and shopping streets, with an outdoor pool, a gym and a lobby sushi lounge that stays open late. Rooms were refreshed in 2025.",
     "goodToKnow": [
       "Bed and breakfast, not all-inclusive: the buffet runs 6:30 to 10:30 with live cooking stations and gluten-free options, and the city is on your doorstep for everything else.",
       "Room service runs 24 hours and valet parking is available, both at a charge.",
       "Marbella is walkable to Calle 50's restaurants and a short taxi to the Cinta Costera and Multiplaza."
+    ],
+    "photos": [
+      {
+        "file": "hotels/riu-plaza-01.jpg",
+        "small": "hotels/riu-plaza-01-s.jpg",
+        "alt": "Hotel Riu Plaza Panama on Calle 50, Marbella"
+      },
+      {
+        "file": "hotels/riu-plaza-02.jpg",
+        "small": "hotels/riu-plaza-02-s.jpg",
+        "alt": "The outdoor pool"
+      },
+      {
+        "file": "hotels/riu-plaza-03.jpg",
+        "small": "hotels/riu-plaza-03-s.jpg",
+        "alt": "The pool and the Ibiza bar at night"
+      },
+      {
+        "file": "hotels/riu-plaza-04.jpg",
+        "small": "hotels/riu-plaza-04-s.jpg",
+        "alt": "Ibiza, the pool snack bar"
+      },
+      {
+        "file": "hotels/riu-plaza-05.jpg",
+        "small": "hotels/riu-plaza-05-s.jpg",
+        "alt": "The lobby"
+      },
+      {
+        "file": "hotels/riu-plaza-06.jpg",
+        "small": "hotels/riu-plaza-06-s.jpg",
+        "alt": "The lobby bar"
+      },
+      {
+        "file": "hotels/riu-plaza-07.jpg",
+        "small": "hotels/riu-plaza-07-s.jpg",
+        "alt": "Sushi Lounge Studio 50"
+      },
+      {
+        "file": "hotels/riu-plaza-08.jpg",
+        "small": "hotels/riu-plaza-08-s.jpg",
+        "alt": "One of the restaurants"
+      },
+      {
+        "file": "hotels/riu-plaza-09.jpg",
+        "small": "hotels/riu-plaza-09-s.jpg",
+        "alt": "Arts, the buffet restaurant"
+      },
+      {
+        "file": "hotels/riu-plaza-10.jpg",
+        "small": "hotels/riu-plaza-10-s.jpg",
+        "alt": "Deluxe King room with city views"
+      },
+      {
+        "file": "hotels/riu-plaza-11.jpg",
+        "small": "hotels/riu-plaza-11-s.jpg",
+        "alt": "Deluxe Family King room, with a sofa bed"
+      },
+      {
+        "file": "hotels/riu-plaza-12.jpg",
+        "small": "hotels/riu-plaza-12-s.jpg",
+        "alt": "Deluxe Family Twin room"
+      },
+      {
+        "file": "hotels/riu-plaza-13.jpg",
+        "small": "hotels/riu-plaza-13-s.jpg",
+        "alt": "Senior Suite living room"
+      },
+      {
+        "file": "hotels/riu-plaza-14.jpg",
+        "small": "hotels/riu-plaza-14-s.jpg",
+        "alt": "Penthouse living room"
+      },
+      {
+        "file": "hotels/riu-plaza-15.jpg",
+        "small": "hotels/riu-plaza-15-s.jpg",
+        "alt": "Penthouse kitchen"
+      },
+      {
+        "file": "hotels/riu-plaza-16.jpg",
+        "small": "hotels/riu-plaza-16-s.jpg",
+        "alt": "Bathroom with a walk-in shower"
+      }
     ]
   },
   "megapolis": {
-    "tags": ["City views", "Bed & breakfast"],
+    "tags": [
+      "City views",
+      "Bed & breakfast"
+    ],
     "intro": "A 62 storey tower on Avenida Balboa, the seafront boulevard, so the views from the upper floors are the reason people book it. There is a pool with the Float Bar and sunbeds, a Mediterranean and Panamanian restaurant, two bars and a nightclub in the building.",
     "goodToKnow": [
       "On Avenida Balboa by Panama Bay, a short taxi to the Cinta Costera waterfront and Casco Viejo.",
@@ -19,7 +107,10 @@
     ]
   },
   "las-americas": {
-    "tags": ["5 star", "Breakfast included"],
+    "tags": [
+      "5 star",
+      "Breakfast included"
+    ],
     "intro": "A five star tower in Marbella, a block off Avenida Balboa, with 285 rooms that start at a generous 44 square metres. Aurum on the fifth floor does the fine dining, Union Market is the food hall, and the sixth floor holds the spa and a gym that never closes.",
     "goodToKnow": [
       "Buffet breakfast is included on the standard rate.",
@@ -28,7 +119,10 @@
     ]
   },
   "marinn-place": {
-    "tags": ["Rooftop pool", "Financial District"],
+    "tags": [
+      "Rooftop pool",
+      "Financial District"
+    ],
     "intro": "A five star hotel in Bella Vista, the Financial District, with a rooftop pool that looks across the skyline. Every room is 34 square metres with a sofa bed and a divided living and sleeping space, which is why families and friends sharing like it.",
     "goodToKnow": [
       "Three room categories, all the same size, all with a sofa bed; the Deluxe Double sleeps four.",
@@ -37,7 +131,10 @@
     ]
   },
   "ramada-plaza": {
-    "tags": ["Free breakfast", "Outdoor pool"],
+    "tags": [
+      "Free breakfast",
+      "Outdoor pool"
+    ],
     "intro": "A 135 room hotel in Punta Pacifica, the newer district beside Multiplaza Pacific Mall, with an outdoor pool, a panoramic gym, a spa with a sauna and hot tub, and a free buffet breakfast that starts at 6:30, which suits an early flight home.",
     "goodToKnow": [
       "Children 12 and under stay free.",
@@ -47,7 +144,10 @@
     ]
   },
   "hospedium-princess": {
-    "tags": ["Best value", "Pool and gym"],
+    "tags": [
+      "Best value",
+      "Pool and gym"
+    ],
     "intro": "Our best value in the city. A 124 room hotel at the World Trade Centre in Marbella with an outdoor pool, a gym, a sauna and spa, a volleyball court and a buffet restaurant doing Andean and international dishes. Rooms run from a compact 20 square metres up to 52.",
     "goodToKnow": [
       "Rates come room only or with breakfast; tell us which you want when you ask for a quote.",
@@ -56,7 +156,10 @@
     ]
   },
   "dreams-playa-bonita": {
-    "tags": ["All-inclusive", "20 min from the city"],
+    "tags": [
+      "All-inclusive",
+      "20 min from the city"
+    ],
     "intro": "The beach resort that pairs with Panama City without a long drive. Dreams Playa Bonita sits twenty minutes from the centre and forty from the airport, with 301 rooms in eleven seaside towers, every one with an ocean view and a private balcony, two kilometres of beach in the Punta Bruja nature reserve and four pools, two of them adults only.",
     "goodToKnow": [
       "Unlimited Luxury means taxes and gratuities are in, there are no wristbands, and dinner at the four a la carte restaurants never needs a reservation.",
@@ -66,7 +169,10 @@
     ]
   },
   "decameron-panama": {
-    "tags": ["All-inclusive", "Water slides"],
+    "tags": [
+      "All-inclusive",
+      "Water slides"
+    ],
     "intro": "The big one. Grand Decameron Panama is an 852 room all-inclusive at Farallon on the Pacific coast, about ninety minutes from Panama City, with six pools in one beachfront complex, a three flume water slide park, an outdoor cinema, nightly shows, seven a la carte restaurants and two buffets. Families and groups love it.",
     "goodToKnow": [
       "All Inclusive Plus adds a private restaurant for breakfast and lunch, an exclusive pool and lounge bar, premium drinks, unlimited Wi-Fi and a separate check-in. Say if you want it quoted.",
@@ -76,7 +182,10 @@
     ]
   },
   "riu-playa-blanca": {
-    "tags": ["All-inclusive 24h", "5 star"],
+    "tags": [
+      "All-inclusive 24h",
+      "5 star"
+    ],
     "intro": "A five star all-inclusive on Playa Blanca in Cocle with 573 rooms, four pools including an adults only pool with a swim-up bar, a children's pool with slides, and three kilometres of Pacific beach. All-inclusive runs 24 hours, with four restaurants and five bars.",
     "goodToKnow": [
       "Standard rooms are 35 square metres, and there is a triple room category for three sharing.",
@@ -86,7 +195,10 @@
     ]
   },
   "suites-del-bosque": {
-    "tags": ["All suites", "San Isidro"],
+    "tags": [
+      "All suites",
+      "San Isidro"
+    ],
     "intro": "The hotel from our two-country trip. Suites del Bosque is a 55 suite boutique hotel in San Isidro, the leafy financial and residential heart of Lima, a short walk from the El Olivar olive grove. Every room is a suite, most of them loft style with a sitting area and a sofa bed, so couples get space and families skip the second room.",
     "goodToKnow": [
       "Quiet and residential, not a resort: there is no pool.",
@@ -96,7 +208,10 @@
     ]
   },
   "nobility": {
-    "tags": ["4 star", "Miraflores"],
+    "tags": [
+      "4 star",
+      "Miraflores"
+    ],
     "intro": "A 58 room four star hotel in Miraflores with its own Mediterranean restaurant, a cafe bar, a gym, a sauna and a jacuzzi. Small enough to be looked after, and the price sits with Suites del Bosque.",
     "goodToKnow": [
       "Breakfast is a daily hot and cold buffet from 6:30 to 10:30, with a Creole breakfast on Sundays.",
@@ -106,7 +221,10 @@
     ]
   },
   "nhow": {
-    "tags": ["Rooftop pool", "Design hotel"],
+    "tags": [
+      "Rooftop pool",
+      "Design hotel"
+    ],
     "intro": "The design hotel. nhow Lima is a 243 room tower in the middle of Miraflores built around contemporary Peruvian art, and the draw is the rooftop: a pool and a bar with the city laid out below. Rooms are bright and modern with rain showers and a Nespresso machine as standard.",
     "goodToKnow": [
       "Every room sleeps three except the penthouse; only the entry nhow room can be set up as two twins.",
@@ -116,7 +234,10 @@
     ]
   },
   "estelar-miraflores": {
-    "tags": ["Rooftop restaurant", "Miraflores"],
+    "tags": [
+      "Rooftop restaurant",
+      "Miraflores"
+    ],
     "intro": "A 151 room hotel on Avenida Benavides, in the thick of Miraflores and a short walk from Parque Kennedy. Piso 21, the restaurant and bar on the top floor, is the reason to pick it: Peruvian and international cooking with the city spread out below. There is an outdoor pool, a fitness centre, a Turkish bath and a jacuzzi.",
     "goodToKnow": [
       "Breakfast is included on every rate the hotel sells.",
@@ -125,7 +246,10 @@
     ]
   },
   "souma": {
-    "tags": ["5 star", "Oceanfront"],
+    "tags": [
+      "5 star",
+      "Oceanfront"
+    ],
     "intro": "The top of the Lima lineup. Souma is a five star oceanfront hotel on the Malecon in Miraflores, the first Vignette Collection property in Latin America, with a rooftop infinity pool looking straight out over the Pacific, three restaurants, a spa built around Andean and Amazonian treatments and a gym that never closes.",
     "goodToKnow": [
       "Four categories take two double beds and sleep four, and the SOUMA Suite sleeps seven, so it is the best bet for a family or a group of friends.",
@@ -135,7 +259,10 @@
     ]
   },
   "melia-lima": {
-    "tags": ["5 star", "Free airport transfer"],
+    "tags": [
+      "5 star",
+      "Free airport transfer"
+    ],
     "intro": "A five star hotel on Avenida Salaverry in San Isidro, Lima's financial district, with an outdoor pool, a wellness centre with a gym and a Turkish bath, and El Tambo for Peruvian cooking. The Level is the hotel within the hotel, upgraded rooms with their own lounge.",
     "goodToKnow": [
       "The hotel includes airport transportation on its own rates; ask us whether it applies to your booking.",
@@ -145,7 +272,10 @@
     ]
   },
   "hilton-lima": {
-    "tags": ["Outdoor pool", "Free parking"],
+    "tags": [
+      "Outdoor pool",
+      "Free parking"
+    ],
     "intro": "A 207 room hotel on Avenida La Paz in Miraflores with an outdoor pool with whirlpools, a fitness centre, a seasonal rooftop bar and Social, the Peruvian and American restaurant on the ground floor. Parking is free, secured and covered.",
     "goodToKnow": [
       "Breakfast is available at a charge; the hotel sells rooms with and without it.",
