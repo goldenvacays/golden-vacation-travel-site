@@ -1,0 +1,514 @@
+{
+ "_about": "Guest-facing copy for the hotel pages, keyed by the page slug. The facts come from data/hotels.json (the spreadsheet); this file is the words. No em dashes, no supplier names, guide prices only, nothing internal. photos: [{file (1600px), small (800px, tiles), large (2400px, hero on sharp screens and the viewer), alt}] per hotel, files under public/getaways/img/hotels/; the list order is the display order (the first is the hero, the rest make the swipe strip and the viewer), the file numbers are just names. roomPhotos: {room name exactly as the sheet has it: file} puts that photo on the room card; a photo that is also in the photos list opens the viewer. about: the About the hotel block, an array of paragraphs; a paragraph is either a string or [lead, text] for a bold lead-in. It replaces goodToKnow (kept for reference only). roomsUpFront: the room names shown before the See more fold (default: all when 6 or fewer, else the first 5). No square metres, no airport distances, no supplier notes.",
+ "riu-plaza": {
+  "tags": [
+   "Most popular",
+   "Bed & breakfast"
+  ],
+  "intro": "Most popular Panama pick. Right in the middle of the business and shopping streets, with an outdoor pool, a gym and a lobby sushi lounge that stays open late. Rooms were updated in 2025.",
+  "goodToKnow": [
+   "Bed and breakfast, not all-inclusive: the buffet runs 6:30 to 10:30 with live cooking stations and gluten-free options, and the city is on your doorstep for everything else.",
+   "Room service runs 24 hours and valet parking is available, both at a charge.",
+   "Marbella is walkable to Calle 50's restaurants and a short taxi to Multiplaza."
+  ],
+  "photos": [
+   {
+    "file": "hotels/riu-plaza-02.jpg",
+    "small": "hotels/riu-plaza-02-s.jpg",
+    "alt": "The outdoor pool",
+    "large": "hotels/riu-plaza-02-l.jpg"
+   },
+   {
+    "file": "hotels/riu-plaza-01.jpg",
+    "small": "hotels/riu-plaza-01-s.jpg",
+    "alt": "Hotel Riu Plaza Panama on Calle 50, Marbella",
+    "large": "hotels/riu-plaza-01-l.jpg"
+   },
+   {
+    "file": "hotels/riu-plaza-03.jpg",
+    "small": "hotels/riu-plaza-03-s.jpg",
+    "alt": "The pool and the Ibiza bar at night",
+    "large": "hotels/riu-plaza-03-l.jpg"
+   },
+   {
+    "file": "hotels/riu-plaza-04.jpg",
+    "small": "hotels/riu-plaza-04-s.jpg",
+    "alt": "Ibiza, the pool snack bar",
+    "large": "hotels/riu-plaza-04-l.jpg"
+   },
+   {
+    "file": "hotels/riu-plaza-05.jpg",
+    "small": "hotels/riu-plaza-05-s.jpg",
+    "alt": "The lobby",
+    "large": "hotels/riu-plaza-05-l.jpg"
+   },
+   {
+    "file": "hotels/riu-plaza-06.jpg",
+    "small": "hotels/riu-plaza-06-s.jpg",
+    "alt": "The lobby bar",
+    "large": "hotels/riu-plaza-06-l.jpg"
+   },
+   {
+    "file": "hotels/riu-plaza-07.jpg",
+    "small": "hotels/riu-plaza-07-s.jpg",
+    "alt": "Sushi Lounge Studio 50",
+    "large": "hotels/riu-plaza-07-l.jpg"
+   },
+   {
+    "file": "hotels/riu-plaza-08.jpg",
+    "small": "hotels/riu-plaza-08-s.jpg",
+    "alt": "One of the restaurants",
+    "large": "hotels/riu-plaza-08-l.jpg"
+   },
+   {
+    "file": "hotels/riu-plaza-09.jpg",
+    "small": "hotels/riu-plaza-09-s.jpg",
+    "alt": "Arts, the buffet restaurant",
+    "large": "hotels/riu-plaza-09-l.jpg"
+   },
+   {
+    "file": "hotels/riu-plaza-10.jpg",
+    "small": "hotels/riu-plaza-10-s.jpg",
+    "alt": "Deluxe King room",
+    "large": "hotels/riu-plaza-10-l.jpg"
+   },
+   {
+    "file": "hotels/riu-plaza-11.jpg",
+    "small": "hotels/riu-plaza-11-s.jpg",
+    "alt": "Deluxe Family King room, with the sofa bed made up",
+    "large": "hotels/riu-plaza-11-l.jpg"
+   },
+   {
+    "file": "hotels/riu-plaza-12.jpg",
+    "small": "hotels/riu-plaza-12-s.jpg",
+    "alt": "Deluxe Family Twin room",
+    "large": "hotels/riu-plaza-12-l.jpg"
+   },
+   {
+    "file": "hotels/riu-plaza-13.jpg",
+    "small": "hotels/riu-plaza-13-s.jpg",
+    "alt": "Suite living room",
+    "large": "hotels/riu-plaza-13-l.jpg"
+   },
+   {
+    "file": "hotels/riu-plaza-14.jpg",
+    "small": "hotels/riu-plaza-14-s.jpg",
+    "alt": "Penthouse living room",
+    "large": "hotels/riu-plaza-14-l.jpg"
+   },
+   {
+    "file": "hotels/riu-plaza-15.jpg",
+    "small": "hotels/riu-plaza-15-s.jpg",
+    "alt": "Penthouse kitchen",
+    "large": "hotels/riu-plaza-15-l.jpg"
+   },
+   {
+    "file": "hotels/riu-plaza-16.jpg",
+    "small": "hotels/riu-plaza-16-s.jpg",
+    "alt": "Bathroom with a walk-in shower",
+    "large": "hotels/riu-plaza-16-l.jpg"
+   }
+  ],
+  "roomPhotos": {
+   "Deluxe King Room": "hotels/riu-plaza-10.jpg",
+   "Deluxe Family King Room": "hotels/riu-plaza-11.jpg",
+   "Deluxe Family Twin Room": "hotels/riu-plaza-12.jpg",
+   "Penthouse, In the heart of the city": "hotels/riu-plaza-14.jpg",
+   "Deluxe Twin Room": "hotels/riu-plaza-twin.jpg",
+   "Senior Suite Family Room": "hotels/riu-plaza-senior-family.jpg"
+  },
+  "about": [
+   "Bed and breakfast, not all-inclusive: the buffet runs 6:30 to 10:30 with live cooking stations and gluten-free options, and the city is on your doorstep for everything else. Marbella is walkable to Calle 50's restaurants and a short taxi to Multiplaza.",
+   [
+    "Eating and drinking",
+    "Two restaurants: Arts, the buffet with the breakfast and the live cooking stations, and Tastes, a la carte from midday to 11pm, Monday to Saturday. Three bars, including Sushi Lounge Studio 50 in the lobby from midday to 12:30am and the Ibiza snack bar by the pool from 11am. Room service runs 24 hours, at a charge."
+   ],
+   [
+    "The practical bits",
+    "Valet parking at a charge with limited places, free Wi-Fi throughout, a 24 hour reception with Spanish and English, and no pets. Four fully adapted rooms with a walk-in shower, plus eight more with wider doors. Built in 2009 and 2010; the rooms and public areas were refreshed in 2025."
+   ]
+  ],
+  "roomsUpFront": [
+   "Deluxe King Room",
+   "Deluxe Twin Room",
+   "Deluxe Family Twin Room",
+   "Deluxe Family King Room",
+   "Senior Suite Family Room"
+  ]
+ },
+ "megapolis": {
+  "tags": [
+   "City views",
+   "Bed & breakfast"
+  ],
+  "intro": "A 62 storey tower on Avenida Balboa, the seafront boulevard, so the views from the upper floors are the reason people book it. There is a pool with the Float Bar and sunbeds, a Mediterranean and Panamanian restaurant, two bars and a nightclub in the building.",
+  "goodToKnow": [
+   "On Avenida Balboa by Panama Bay, a short taxi to Casco Viejo.",
+   "Kosher rooms are available, and there is a family suite that sleeps six.",
+   "Not pet friendly."
+  ],
+  "about": [
+   "On Avenida Balboa by Panama Bay, a short taxi to Casco Viejo. Kosher rooms are available, and there is a family suite that sleeps six. Not pet friendly.",
+   [
+    "Eating and drinking",
+    "Restaurant Ciao does Mediterranean and Panamanian cooking, with the Bazaar alongside. Mamie Lee's Bar and the Stage Bar in the building, the Float Bar at the pool, and Bling, the nightclub, for late."
+   ],
+   [
+    "The practical bits",
+    "Free Wi-Fi, air conditioning, rainfall walk-in showers, and a safe and a minibar in every room. Meeting and event rooms, with a convention centre and an outlets mall in the same group."
+   ]
+  ]
+ },
+ "las-americas": {
+  "tags": [
+   "5 star",
+   "Breakfast included"
+  ],
+  "intro": "A five star tower in Marbella, a block off Avenida Balboa, with 285 generously sized rooms. Aurum on the fifth floor does the fine dining, Union Market is the food hall, and the sixth floor holds the spa and a gym that never closes.",
+  "goodToKnow": [
+   "Buffet breakfast is included on the standard rate.",
+   "The pool is indoor and climate controlled, so it works whatever the weather is doing.",
+   "Two accessible room categories are sold in their own right."
+  ],
+  "about": [
+   "Buffet breakfast is included on the standard rate. The pool is indoor and climate controlled, so it works whatever the weather is doing. Two accessible room categories are sold in their own right.",
+   [
+    "Eating and drinking",
+    "Aurum on the fifth floor is the fine dining restaurant, Union Market is the food hall, and Bar 507 is on the fourth floor. Room service is available."
+   ],
+   [
+    "The practical bits",
+    "Free Wi-Fi, parking, a concierge, laundry and business facilities, with a 24 hour gym and Sona Spa on the sixth floor and event space on the 28th. Built in 2016."
+   ]
+  ]
+ },
+ "marinn-place": {
+  "tags": [
+   "Rooftop pool",
+   "Financial District"
+  ],
+  "intro": "A five star hotel in Bella Vista, the Financial District, with a rooftop pool that looks across the skyline. Every room has a sofa bed and a divided living and sleeping space, which is why families and friends sharing like it.",
+  "goodToKnow": [
+   "Three room categories, all the same size, all with a sofa bed; the Deluxe Double sleeps four.",
+   "Breakfast is served in the Dann Carlton restaurant, from breakfast through to brunch.",
+   "Walking distance to the Financial District's restaurants, a short taxi to Avenida Balboa."
+  ],
+  "about": [
+   "Three room categories, all the same size, all with a sofa bed; the Deluxe Double sleeps four. Walking distance to the Financial District's restaurants and a short taxi to Avenida Balboa.",
+   [
+    "Eating and drinking",
+    "The Dann Carlton Restaurant serves international and local dishes from breakfast through to brunch. Whether breakfast is in your rate depends on the rate, and we say so on the quote."
+   ],
+   [
+    "The practical bits",
+    "Free Wi-Fi, a fitness centre, meeting rooms and room service. Every room has a seating area with the living and sleeping space divided, a safe, a minibar and a desk."
+   ]
+  ]
+ },
+ "ramada-plaza": {
+  "tags": [
+   "Free breakfast",
+   "Outdoor pool"
+  ],
+  "intro": "A 135 room hotel in Punta Pacifica, the newer district beside Multiplaza Pacific Mall, with an outdoor pool, a panoramic gym, a spa with a sauna and hot tub, and a free buffet breakfast that starts at 6:30, which suits an early flight home.",
+  "goodToKnow": [
+   "Children 12 and under stay free.",
+   "Check-in 3:00 pm, check-out 12:00 noon.",
+   "Multiplaza Pacific Mall and the ATLAPA Convention Centre are close by.",
+   "No pets, though service animals are welcome."
+  ],
+  "about": [
+   "Children 12 and under stay free. Multiplaza Pacific Mall and the ATLAPA Convention Centre are close by. No pets, though service animals are welcome.",
+   [
+    "Eating and drinking",
+    "Fontanella Restaurant and Lounge on the lobby level, with a free buffet breakfast from 6:30 am, plus a cafe. Room service is available."
+   ],
+   [
+    "The practical bits",
+    "Check-in 3:00 pm, check-out 12:00 noon, with early check-in and late check-out when available. Free Wi-Fi, a 24 hour front desk, onsite and valet parking, a business centre, a car rental desk, and laundry and dry cleaning. Balconies in some rooms, and the whole hotel is smoke free. Wheelchair accessible lifts. Built in 2014, renovated in 2019."
+   ]
+  ]
+ },
+ "hospedium-princess": {
+  "tags": [
+   "Best value",
+   "Pool and gym"
+  ],
+  "intro": "Our best value in the city. A 124 room hotel at the World Trade Centre in Marbella with an outdoor pool, a gym, a sauna and spa, a volleyball court and a buffet restaurant doing Andean and international dishes.",
+  "goodToKnow": [
+   "Rates come room only or with breakfast; tell us which you want when you ask for a quote.",
+   "About 15 minutes from the airport, and Panama Viejo is around 10 minutes away.",
+   "Long stays of 7 and 30 nights have their own rates."
+  ],
+  "about": [
+   "Rates come room only or with breakfast; tell us which you want when you ask for a quote. Panama Viejo is around 10 minutes away. Long stays of 7 and 30 nights have their own rates.",
+   [
+    "Eating and drinking",
+    "Restaurant Saloma is the buffet, Andean and international, and there is a bar."
+   ],
+   [
+    "The practical bits",
+    "Free Wi-Fi, parking, a 24 hour reception and laundry. Rooms have air conditioning, a safe, a minibar, cable television and a private bathroom with a shower; some look over the pool, some over the city. Built in 1997, renovated in 2015."
+   ]
+  ]
+ },
+ "dreams-playa-bonita": {
+  "tags": [
+   "All-inclusive",
+   "20 min from the city"
+  ],
+  "intro": "The beach resort that pairs with Panama City without a long drive. Dreams Playa Bonita sits twenty minutes from the centre and forty from the airport, with 301 rooms in eleven seaside towers, every one with an ocean view and a private balcony, two kilometres of beach in the Punta Bruja nature reserve and four pools, two of them adults only.",
+  "goodToKnow": [
+   "Unlimited Luxury means taxes and gratuities are in, there are no wristbands, and dinner at the four a la carte restaurants never needs a reservation.",
+   "Rooms with two double beds take four people but no more than three adults; every suite sleeps two.",
+   "Explorer's Club keeps children aged 3 to 12 busy from 9:00 am to 9:00 pm.",
+   "Spa treatments, golf, tours and airport transfers are charged extra."
+  ],
+  "about": [
+   "Unlimited Luxury means taxes and gratuities are in, there are no wristbands, and dinner at the four a la carte restaurants never needs a reservation. Rooms with two double beds take four people but no more than three adults; every suite sleeps two.",
+   [
+    "What all-inclusive covers",
+    "All meals across eight outlets, top shelf international and domestic spirits, 24 hour room service and concierge, pool and beach wait service, a minibar restocked daily, daytime activities, nightly entertainment and theme parties, the kids club, Wi-Fi, and all taxes and gratuities. Golf, Dreams Spa treatments, tours, the beauty salon, private romantic dinners and the Preferred Club upgrade cost extra."
+   ],
+   [
+    "Eating and drinking",
+    "Eight outlets: Bordeaux (French, adults only, formal), Oceana (seafood), Portofino (Italian), Market Cafe for the breakfast buffet, Seaside Grill for the lunch buffet, Barefoot Grill on the ocean, Coco Cafe and the Preferred Club Lounge, with a gluten free menu at every restaurant. Five bars: Rendezvous in the lobby, Manatees swim-up, Barracuda, Desires music lounge until 1am, and the Preferred Club pool bar."
+   ],
+   [
+    "For children",
+    "Explorer's Club for ages 3 to 12 runs 9:00 am to 9:00 pm, fully supervised: arts and crafts, a playground, a children's pool, treasure hunts, sandcastle contests, movies on the beach and a children's dinner, with parental beepers. Children must be fully potty trained."
+   ],
+   [
+    "The practical bits",
+    "Free Wi-Fi, a 24 hour reception, laundry, a beauty salon and car rental. Small dogs under 10 kg are welcome in set room categories at a nightly charge, with a vaccination certificate at check-in; not at the pool, gym, spa, shops, golf or the beach. Accessible rooms on request."
+   ]
+  ]
+ },
+ "decameron-panama": {
+  "tags": [
+   "All-inclusive",
+   "Water slides"
+  ],
+  "intro": "The big one. Grand Decameron Panama is an 852 room all-inclusive at Farallon on the Pacific coast, about ninety minutes from Panama City, with six pools in one beachfront complex, a three flume water slide park, an outdoor cinema, nightly shows, seven a la carte restaurants and two buffets. Families and groups love it.",
+  "goodToKnow": [
+   "All Inclusive Plus adds a private restaurant for breakfast and lunch, an exclusive pool and lounge bar, premium drinks, unlimited Wi-Fi and a separate check-in. Say if you want it quoted.",
+   "King rooms sleep three, two double bed rooms sleep four adults.",
+   "Bars run from 9:00 am to 2:00 am, with a hydration station covering the small hours.",
+   "Golf next door at Mantarraya, spa treatments and motorised water sports cost extra."
+  ],
+  "about": [
+   "All Inclusive Plus adds a private restaurant for breakfast and lunch, an exclusive pool and lounge bar, premium drinks, unlimited Wi-Fi and a separate check-in. Say if you want it quoted. King rooms sleep three, two double bed rooms sleep four adults.",
+   [
+    "What all-inclusive covers",
+    "All meals across nine outlets, national and international drinks, day and night snacks, the daily activities programme, non motorised water sports (kayak, paddle, sailing), beach towels, tennis and multi use courts, nightly entertainment, the kids programme, the gym, Wi-Fi and the in-room safe. Mantarraya golf next door, spa treatments and massages, motorised water sports, Decameron Explorer tours and the All Inclusive Plus upgrade cost extra."
+   ],
+   [
+    "Eating and drinking",
+    "Nine outlets: Cafe Med (Mediterranean), El Canal (seafood), El Pilon (Panamanian), Pannamai (Italian), La Esquina Asiatica (Asian), Mezcal (Mexican) and Cowboy Steakhouse, plus the Atlantis and Pacifiko buffets; a la carte dinner 6:30 to 10:00 pm. Breakfast buffet 7:00 to 10:30 am. Eight bars from 9:00 am to 2:00 am, the nightclub from 11:00 pm, with a hydration station covering the small hours."
+   ],
+   [
+    "For children",
+    "A daily children's programme with magic classes, balloon modelling, crafts, origami, plasticine, face painting and treasure hunts, a playground, the three flume water slide park and family pools."
+   ],
+   [
+    "The practical bits",
+    "Check-in 3:00 pm, check-out 12:00 noon, three receptions open 24 hours. Wi-Fi is included on the standard plan, with better in-room coverage on All Inclusive Plus. Rooms have air conditioning, a balcony or terrace, a minibar and a safe; a cot on request. A pharmacy, a nurse station, a hair salon and a tour desk in every lobby."
+   ]
+  ]
+ },
+ "riu-playa-blanca": {
+  "tags": [
+   "All-inclusive 24h",
+   "5 star"
+  ],
+  "intro": "A five star all-inclusive on Playa Blanca in Cocle with 573 rooms, four pools including an adults only pool with a swim-up bar, a children's pool with slides, and three kilometres of Pacific beach. All-inclusive runs 24 hours, with four restaurants and five bars.",
+  "goodToKnow": [
+   "There is a triple room category for three sharing.",
+   "RIU Land kids club and the slides pool make it an easy pick with children.",
+   "Free Wi-Fi throughout, a 24 hour gym, and free open-air parking.",
+   "No pets."
+  ],
+  "about": [
+   "There is a triple room category for three sharing, and two bedroom family rooms and suites. RIU Land kids club and the slides pool make it an easy pick with children. No pets.",
+   [
+    "Eating and drinking",
+    "All-inclusive runs 24 hours. Four restaurants: Balboa, the main buffet; Xian, Asian; Il Palazzo, Italian; and Chiriqui by the pool, lunch and snacks from midday and a steakhouse dinner from 6:30 pm. Five bars: Burbujas in the lobby, the La Rumba lounge bar in the evenings, a 24 hour sports bar, a plaza bar, and the Limon swim-up bar for over 18s."
+   ],
+   [
+    "For children",
+    "RIU Land kids club and a children's pool with slides, under the Fun4All family banner."
+   ],
+   [
+    "The practical bits",
+    "Free Wi-Fi throughout, a 24 hour gym, free open-air parking, a 24 hour reception with Spanish and English, a discotheque and a souvenir shop. Rooms have air conditioning, a balcony or terrace, a minibar and liquor dispenser, and a safe; some have a sofa bed. Four adapted rooms. Built in 2013 and 2014."
+   ]
+  ]
+ },
+ "suites-del-bosque": {
+  "tags": [
+   "All suites",
+   "San Isidro"
+  ],
+  "intro": "The hotel from our two-country trip. Suites del Bosque is a 55 suite boutique hotel in San Isidro, the leafy financial and residential heart of Lima, a short walk from the El Olivar olive grove. Every room is a suite, most of them loft style with a sitting area and a sofa bed, so couples get space and families skip the second room.",
+  "goodToKnow": [
+   "Quiet and residential, not a resort: there is no pool.",
+   "Two kitchenette categories suit a week or more.",
+   "Free parking, free Wi-Fi, a gym on the third floor, and dogs are welcome (ask us about size limits and fees).",
+   "About 30 minutes from the airport, traffic depending."
+  ],
+  "about": [
+   "Quiet and residential, not a resort: there is no pool. Two kitchenette categories suit a week or more, and every suite has a sofa bed. Dogs are welcome (ask us about size limits and fees).",
+   [
+    "Eating and drinking",
+    "Cafeteria Los Cristales serves breakfast daily, and Los Cristales Bar is open until 8:30 pm. Room service 7:00 am to 3:00 pm. Whether breakfast is in your rate depends on the rate, and we say so on the quote."
+   ],
+   [
+    "The practical bits",
+    "Check-in 3:00 pm, check-out 12:00 noon, a 24 hour reception. Free parking, free Wi-Fi throughout, a gym on the third floor, a business centre, laundry and dry cleaning, and a lift to all 12 floors. Suites have air conditioning, a safe, a minibar, a bathtub and a desk; connecting rooms are available."
+   ]
+  ]
+ },
+ "nobility": {
+  "tags": [
+   "4 star",
+   "Miraflores"
+  ],
+  "intro": "A 58 room four star hotel in Miraflores with its own Mediterranean restaurant, a cafe bar, a gym, a sauna and a jacuzzi. Small enough to be looked after, and the price sits with Suites del Bosque.",
+  "goodToKnow": [
+   "Breakfast is a daily hot and cold buffet from 6:30 to 10:30, with a Creole breakfast on Sundays.",
+   "Free parking on site, free Wi-Fi, 24 hour room service, and an airport shuttle on request at a charge.",
+   "Check-in 2:00 pm, check-out 12:00 noon.",
+   "About 20 to 30 minutes from the airport, traffic depending."
+  ],
+  "about": [
+   "Small enough to be looked after. Breakfast is a daily hot and cold buffet from 6:30 to 10:30, with a Creole breakfast on Sundays.",
+   [
+    "Eating and drinking",
+    "A la Vista, the Mediterranean restaurant, runs 6:00 am to 11:00 pm with vegetarian options, and the Nobility Cafe Bar sits alongside. Room service 24 hours."
+   ],
+   [
+    "The practical bits",
+    "Check-in 2:00 pm, check-out 12:00 noon. Free parking on site, free Wi-Fi wired and wireless, a gym, a sauna and a jacuzzi, a business centre, laundry and dry cleaning, a tour and ticket desk, and an airport shuttle on request at a charge. Rooms have air conditioning, a safe, a bar fridge, a coffee kit and a rain shower."
+   ]
+  ]
+ },
+ "nhow": {
+  "tags": [
+   "Rooftop pool",
+   "Design hotel"
+  ],
+  "intro": "The design hotel. nhow Lima is a 243 room tower in the middle of Miraflores built around contemporary Peruvian art, and the draw is the rooftop: a pool and a bar with the city laid out below. Rooms are bright and modern with rain showers and a Nespresso machine as standard.",
+  "goodToKnow": [
+   "Every room sleeps three except the penthouse; only the entry nhow room can be set up as two twins.",
+   "Walkable to Parque Kennedy and Larcomar.",
+   "Dogs and cats up to 25 kg are welcome at a nightly charge, maximum two.",
+   "About 35 minutes from the airport by taxi."
+  ],
+  "about": [
+   "Every room sleeps three except the penthouse; only the entry nhow room can be set up as two twins. Walkable to Parque Kennedy and Larcomar. Dogs and cats up to 25 kg are welcome at a nightly charge, maximum two; guide dogs free.",
+   [
+    "Eating and drinking",
+    "The restaurant serves breakfast and international and regional dishes, with a lobby bar and the rooftop bar by the pool. The meal plan depends on the rate booked, and we say so on the quote."
+   ],
+   [
+    "The practical bits",
+    "Check-in 3:00 pm, check-out 12:00 noon. Free Wi-Fi, indoor parking with self park and valet, a gym and a sauna, an executive floor, and seven conference rooms. Rooms have a Nespresso machine, a kettle, a minibar, a safe, a bathrobe, a rain shower and a sitting area."
+   ]
+  ]
+ },
+ "estelar-miraflores": {
+  "tags": [
+   "Rooftop restaurant",
+   "Miraflores"
+  ],
+  "intro": "A 151 room hotel on Avenida Benavides, in the thick of Miraflores and a short walk from Parque Kennedy. Piso 21, the restaurant and bar on the top floor, is the reason to pick it: Peruvian and international cooking with the city spread out below. There is an outdoor pool, a fitness centre, a Turkish bath and a jacuzzi.",
+  "goodToKnow": [
+   "Breakfast is included on every rate the hotel sells.",
+   "The Standard Twin has two queen beds, the best value family option here.",
+   "Cafe Juan Valdez is on site for coffee."
+  ],
+  "about": [
+   "Breakfast is included on every rate the hotel sells. The Standard Twin has two queen beds, the best value family option here.",
+   [
+    "Eating and drinking",
+    "Piso 21 on the top floor is the restaurant and bar, Peruvian and international, and Cafe Juan Valdez is on site for coffee. Room service is available."
+   ],
+   [
+    "The practical bits",
+    "Free Wi-Fi throughout, secure parking, a 24 hour reception, laundry, and airport transfers on request. Rooms have air conditioning, a safe, a minibar and a 55 inch television; the Junior Suite has a hydromassage bathtub, the Premium a private sauna, and the suites a separate sitting room."
+   ]
+  ]
+ },
+ "souma": {
+  "tags": [
+   "5 star",
+   "Oceanfront"
+  ],
+  "intro": "The top of the Lima lineup. Souma is a five star oceanfront hotel on the Malecon in Miraflores, the first Vignette Collection property in Latin America, with a rooftop infinity pool looking straight out over the Pacific, three restaurants, a spa built around Andean and Amazonian treatments and a gym that never closes.",
+  "goodToKnow": [
+   "Four categories take two double beds and sleep four, and the SOUMA Suite sleeps seven, so it is the best bet for a family or a group of friends.",
+   "The pool is open 8:00 am to 5:00 pm, a daytime feature rather than an evening one.",
+   "Accessibility is properly documented: accessible rooms, lifts, restrooms, ramps and accessible parking.",
+   "Dogs up to 15 kg stay in Premium City View rooms only, at a nightly charge."
+  ],
+  "about": [
+   "Four categories take two double beds and sleep four, and the SOUMA Suite sleeps seven, so it is the best bet for a family or a group of friends. The pool is open 8:00 am to 5:00 pm, a daytime feature rather than an evening one. Dogs up to 15 kg stay in Premium City View rooms only, at a nightly charge.",
+   [
+    "Eating and drinking",
+    "Three restaurants: KIMO for Nikkei, Ortega y Huaman, Mediterranean inspired, and 27 Tapas. Room service 24 hours."
+   ],
+   [
+    "The practical bits",
+    "Valet parking, free Wi-Fi, a gym open 24 hours, yoga classes, Bambu Spa, a business centre and same day dry cleaning. Accessibility is properly documented: accessible rooms, lifts and restrooms, ramps, four accessible parking bays and audible fire alarms. Rooms have floor to ceiling windows, a minibar, a safe and a coffee maker; the Junior Suites have a balcony."
+   ]
+  ]
+ },
+ "melia-lima": {
+  "tags": [
+   "5 star",
+   "Free airport transfer"
+  ],
+  "intro": "A five star hotel on Avenida Salaverry in San Isidro, Lima's financial district, with an outdoor pool, a wellness centre with a gym and a Turkish bath, and El Tambo for Peruvian cooking. The Level is the hotel within the hotel, upgraded rooms with their own lounge.",
+  "goodToKnow": [
+   "The hotel includes airport transportation on its own rates; ask us whether it applies to your booking.",
+   "Deluxe and The Level Supreme rooms have two double beds, the family options here.",
+   "San Isidro is greener and quieter than Miraflores and closer to the airport, about 15 minutes.",
+   "Adapted rooms are sold as a category of their own."
+  ],
+  "about": [
+   "The Level is the hotel within the hotel: upgraded rooms with their own lounge. Deluxe and The Level Supreme rooms have two double beds, the family options here. San Isidro is greener and quieter than Miraflores. The hotel includes airport transportation on its own rates; ask us whether it applies to your booking. Adapted rooms are sold as a category of their own.",
+   [
+    "Eating and drinking",
+    "El Tambo does Peruvian cuisine. The hotel sells room only and bed and breakfast rates, so say which you want when you ask for a quote."
+   ],
+   [
+    "The practical bits",
+    "Check-in 3:00 pm, check-out 12:00 noon. Free Wi-Fi, parking at a charge, a wellness centre with a gym and a Turkish bath, a jacuzzi at a charge, and ten event rooms. Rooms have air conditioning, a minibar, a safe and a desk; the suites a lounge area, and the Grand Suite its own private bar."
+   ]
+  ]
+ },
+ "hilton-lima": {
+  "tags": [
+   "Outdoor pool",
+   "Free parking"
+  ],
+  "intro": "A 207 room hotel on Avenida La Paz in Miraflores with an outdoor pool with whirlpools, a fitness centre, a seasonal rooftop bar and Social, the Peruvian and American restaurant on the ground floor. Parking is free, secured and covered.",
+  "goodToKnow": [
+   "Breakfast is available at a charge; the hotel sells rooms with and without it.",
+   "No airport shuttle, and the drive is about 40 minutes.",
+   "Pets up to 25 kg are welcome for a fee, with a bed and feeder provided.",
+   "Under 18s are admitted only with a parent or guardian, so bring the passports and a notarised authorisation if a minor travels with anyone else."
+  ],
+  "about": [
+   "Breakfast is available at a charge; the hotel sells rooms with and without it. Pets up to 25 kg are welcome for a fee, with a bed and feeder provided. Under 18s are admitted only with a parent or guardian, so bring the passports and a notarised authorisation if a minor travels with anyone else.",
+   [
+    "Eating and drinking",
+    "Social Restaurant and Bar does Peruvian and American, there is a lobby cafe, and the rooftop bar opens in season. Room service is available, with a kids menu."
+   ],
+   [
+    "The practical bits",
+    "Check-in 3:00 pm, check-out 12:00 noon. Free Wi-Fi, free self parking that is secured and covered with in and out privileges, two EV charging points, a fitness centre, an executive lounge, a concierge and nine meeting rooms. The whole hotel is smoke free. An accessible room is sold as its own category. Rooms have air conditioning, a minibar, a safe, a workspace and a rain shower; cribs on request."
+   ]
+  ]
+ }
+}
