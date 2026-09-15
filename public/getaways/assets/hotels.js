@@ -1,6 +1,6 @@
 /* Hotel pages under /getaways: the photo strip and the full-screen viewer.
    Same behaviour as the tour pages (experiences.js initPhotos): native scroll-snap does the swiping, the dots and
-   arrows follow, and tapping any photo opens the viewer at that photo. Data comes from window.GV_HOTEL. */
+   arrows follow, and tapping any photo opens the viewer at that photo. Data comes from window.GV_HOTEL: photos as [src1600, alt, src2400 or null]. */
 (function () {
   "use strict";
   var H = window.GV_HOTEL || {}; var photos = H.photos || [];
@@ -52,10 +52,11 @@
   function show(i) {
     cur = (i + photos.length) % photos.length;
     var p = photos[cur], im = $(".lb-img", box);
+    if (p[2]) { im.srcset = p[0] + " 1600w, " + p[2] + " 2400w"; im.sizes = "100vw"; } else { im.removeAttribute("srcset"); im.removeAttribute("sizes"); }
     im.src = p[0]; im.alt = p[1] || "";
     $(".lb-alt", box).textContent = p[1] || "";
     $(".lb-n", box).textContent = (cur + 1) + " / " + photos.length;
-    [cur + 1, cur - 1].forEach(function (j) { var q = photos[(j + photos.length) % photos.length]; if (q && q !== p) { var pre = new Image(); pre.src = q[0]; } });
+    [cur + 1, cur - 1].forEach(function (j) { var q = photos[(j + photos.length) % photos.length]; if (q && q !== p) { var pre = new Image(); if (q[2]) { pre.srcset = q[0] + " 1600w, " + q[2] + " 2400w"; pre.sizes = "100vw"; } pre.src = q[0]; } });
   }
   function go(d) { show(cur + d); }
   function onKey(e) {
