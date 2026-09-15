@@ -29,8 +29,17 @@ const guest = (s) => {
   return parts.join(" ").trim();
 };
 const short = (s) => { const g = guest(s); return g && !TRADE.test(g) ? g : ""; };
-/* hotel room codes (DLK, SUK) mean nothing to a guest: drop "Code XXX." sentences and "in the XXX category" asides; write bed sizes out */
-const decode = (s) => String(s || "").replace(/\s*Codes?\s+[A-Z0-9]{2,6}(\s*,\s*[A-Z0-9]{2,6})*\.?/g, "").replace(/\s*\(?\bin the [A-Z0-9]{2,6} category\b\)?/g, "").replace(/(\d{2,3})x(\d{2,3})/g, "$1 x $2 cm").replace(/\s{2,}/g, " ").trim();
+/* hotel room codes (DLK, SUK) mean nothing to a guest: drop "Code XXX." sentences and "in the XXX category" asides */
+const decode = (s) => String(s || "").replace(/\s*Codes?\s+[A-Z0-9]{2,6}(\s*,\s*[A-Z0-9]{2,6})*\.?/g, "").replace(/\s*\(?\bin the [A-Z0-9]{2,6} category\b\)?/g, "").replace(/\s{2,}/g, " ").trim();
+/* beds: the generic type only (king, queen, double, twin), never the dimensions. A width in the sheet decides the type
+   when the sheet only gives sizes: 180 cm and up is a king, 140 to 179 a double, under 140 a twin. */
+const bedText = (s) => {
+  if (!s) return "";
+  let t = String(s);
+  t = t.replace(/(\d+)\s*beds?\s+(\d{2,3})\s*x\s*\d{2,3}(\s*cm)?/gi, (m, n, w) => { const k = +w >= 180 ? "king" : +w >= 140 ? "double" : "twin"; return `${n} ${k} bed${+n === 1 ? "" : "s"}`; });
+  t = t.replace(/,?\s*\b\d+(\.\d+)?\s*x\s*\d+(\.\d+)?\s*(m|cm)?\b/gi, "");
+  return t.replace(/\s{2,}/g, " ").replace(/\s+,/g, ",").trim();
+};
 const starOf = (s) => { const m = /(\d)\s*star/i.exec(s || ""); return m ? `${m[1]} star` : ""; };
 const splitList = (s) => {
   const out = [];
@@ -118,7 +127,7 @@ function hotelPage(hotel) {
   const roomPhotos = copy.roomPhotos || {};
   Object.keys(roomPhotos).forEach((n) => { if (!hotel.rooms.some((r) => r.name === n)) console.warn(`  ${hotel.slug}: roomPhotos "${n}" matches no room in the sheet`); });
   const roomCard = (r) => {
-      const meta = [r.sleeps ? `sleeps ${r.sleeps}` : "", decode(r.beds)].filter(Boolean).map((x) => esc(x)).join(" · ");
+      const meta = [r.sleeps ? `sleeps ${r.sleeps}` : "", bedText(decode(r.beds))].filter(Boolean).map((x) => esc(x)).join(" · ");
       const note = decode(guest(r.notes));
       const rp = roomPhotos[r.name];
       const idx = rp ? photos.findIndex((p) => p.file === rp) : -1;
@@ -133,7 +142,7 @@ function hotelPage(hotel) {
   if (copy.roomsUpFront) copy.roomsUpFront.forEach((n) => { if (!hotel.rooms.some((r) => r.name === n)) console.warn(`  ${hotel.slug}: roomsUpFront "${n}" matches no room in the sheet`); });
   const upFront = copy.roomsUpFront ? hotel.rooms.filter((r) => copy.roomsUpFront.includes(r.name)) : (hotel.rooms.length > 6 ? hotel.rooms.slice(0, 5) : hotel.rooms);
   const moreRooms = hotel.rooms.filter((r) => !upFront.includes(r));
-  const rooms = hotel.rooms.length ? `<section class="hp-sec"><div>${kicker("Rooms")}<p class="sec-sub">${moreRooms.length ? `The categories most people book; ${moreRooms.length} more below. ` : ""}Sleeps counts the beds, including sofa beds; we confirm the maximum for your party when we quote.</p></div>
+  const rooms = hotel.rooms.length ? `<section class="hp-sec"><div>${kicker("Rooms")}</div>
     <div class="hp-rooms">${upFront.map(roomCard).join("")}</div>
     ${moreRooms.length ? `<details class="hp-more"><summary><span class="chip">See ${moreRooms.length} more categor${moreRooms.length === 1 ? "y" : "ies"}${icon("arrow", 16, 2.6)}</span></summary><div class="hp-rooms">${moreRooms.map(roomCard).join("")}</div></details>` : ""}</section>` : "";
 
@@ -154,8 +163,6 @@ function hotelPage(hotel) {
     ${mapUrl ? `<div class="hp-map"><iframe src="${mapUrl}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Map of ${esc(name)}" allowfullscreen></iframe></div><a class="biglink" href="${mapLink}" target="_blank" rel="noopener">Open in Google Maps${icon("arrow", 20, 2.4)}</a>` : ""}
     ${hotel.nearby_landmarks ? `<p class="hp-p"><b>Nearby:</b> ${esc(guest(hotel.nearby_landmarks))}</p>` : ""}</section>`;
 
-  const tours = d.tours && d.tours.length ? `<section class="list hp-sec"><div>${kicker(d.toursTitle || "Days out")}</div><p class="sec-sub">${esc(d.toursNote || "")}</p>
-    ${d.tours.map((t) => `<div class="tour">${pic(t.img, t.alt)}<div class="tour-t"><b>${esc(t.name)}</b><small>${esc(t.text)}</small></div><span class="hh">${usd(t.price)}</span></div>`).join("")}</section>` : "";
   const faq = `<section class="gtk"><div>${kicker("Questions")}</div><div class="faq">${d.faq.map(([q, a]) => faqItem(q, a)).join("")}</div></section>`;
 
   const description = copy.intro ? copy.intro : guest(hotel.one_line_description);
@@ -179,7 +186,6 @@ ${hero}
     ${rooms}
     ${about}
     ${where}
-    ${tours}
     ${faq}
   </div>
 </div>
