@@ -38,6 +38,7 @@ const bedText = (s) => {
   let t = String(s);
   t = t.replace(/(\d+)\s*beds?\s+(\d{2,3})\s*x\s*\d{2,3}(\s*cm)?/gi, (m, n, w) => { const k = +w >= 180 ? "king" : +w >= 140 ? "double" : "twin"; return `${n} ${k} bed${+n === 1 ? "" : "s"}`; });
   t = t.replace(/,?\s*\b\d+(\.\d+)?\s*x\s*\d+(\.\d+)?\s*(m|cm)?\b/gi, "");
+  t = t.replace(/\s+or\s+mixed\b/i, ""); // "2 beds or mixed" is trade shorthand; the two-bed line stands on its own
   return t.replace(/\s{2,}/g, " ").replace(/\s+,/g, ",").trim();
 };
 const starOf = (s) => { const m = /(\d)\s*star/i.exec(s || ""); return m ? `${m[1]} star` : ""; };
@@ -49,6 +50,12 @@ const splitList = (s) => {
     if (out.length && (/^[a-z]/.test(f) || /^\d+\s*(hour access|hours)$/i.test(f))) out[out.length - 1] += `, ${f}`; else out.push(f);
   });
   return out.filter((f) => !TRADE.test(f));
+};
+/* "Calle Atahualpa 155, Miraflores" + district "Miraflores" + "Lima" -> one Miraflores, not two */
+const whereLine = (parts) => {
+  const out = [];
+  parts.filter(Boolean).join(", ").split(/,\s*/).forEach((t) => { t = t.trim(); if (t && !out.some((o) => o.toLowerCase().includes(t.toLowerCase()))) out.push(t); });
+  return out.join(", ");
 };
 const slugOf = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 const kv = (rows) => `<dl class="hp-kv">${rows.filter(([, v]) => v).map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>`;
@@ -65,6 +72,8 @@ function hotelPage(hotel) {
   const board = group && group.board ? group.board : (/all inclusive/i.test(hotel.property_type || "") ? "all-inclusive" : "bed & breakfast");
   const isAI = /all.inclusive/i.test(board);
   const district = copy.district || short(hotel.district);
+  /* a beach resort two hours down the coast is not "in Panama City": the page names the country and the beach instead (copy.place, e.g. "Panama" with district "Playa Blanca, Cocle") */
+  const place = copy.place || d.name;
   const star = starOf(hotel.star_rating);
   const pathname = `${BASE}/${d.slug}/${hotel.slug}`; // a flat file, served at the bare path like the Experiences pages (no trailing slash)
   const quoteUrl = `${BASE}/quote/?d=${d.slug}&h=${hotel.slug}&n=${d.defaultNights}&a=${d.airports[0].code}`;
@@ -83,7 +92,7 @@ function hotelPage(hotel) {
     board.replace(/^\w/, (c) => c.toUpperCase()),
   ].filter(Boolean);
 
-  const heroTags = (copy.tags || []).slice(0, 2);
+  const heroTags = (copy.tags || []).slice(0, 3);
   const tagsHtml = `<div class="hero-tags">${heroTags.map((t, i) => tag(t, i ? "white" : "gold")).join("")}</div>`;
   const PHOTO_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="12" cy="12" r="3.5"></circle><path d="M8 5l1.5-2h5L16 5"></path></svg>';
   let hero;
@@ -99,7 +108,7 @@ function hotelPage(hotel) {
   } else if (photo) {
     hero = `<section class="hero-photo hp-hero">${heroPic(photo, `${name}`)}${tagsHtml}</section>`;
   } else {
-    hero = `<section class="hp-hero-empty"><div class="wrap"><span class="kicker kicker-light">${esc(d.name)}${district ? ` · ${esc(district)}` : ""} · photos coming</span><div class="hero-tags-inline">${heroTags.map((t, i) => tag(t, i ? "white" : "gold")).join("")}</div></div></section>`;
+    hero = `<section class="hp-hero-empty"><div class="wrap"><span class="kicker kicker-light">${esc(place)}${district ? ` · ${esc(district)}` : ""} · photos coming</span><div class="hero-tags-inline">${heroTags.map((t, i) => tag(t, i ? "white" : "gold")).join("")}</div></div></section>`;
   }
   const photoData = photos.length > 1 ? `<script>window.GV_HOTEL=${JSON.stringify({ slug: hotel.slug, name: shortName, photos: photos.map((p) => [img(p.file), p.alt, p.large ? img(p.large) : null]) })};</script><script src="${BASE}/assets/hotels.js" defer></script>` : "";
 
@@ -152,7 +161,7 @@ function hotelPage(hotel) {
 
   /* the chips are facilities a guest scans for (pools, restaurants, gym, spa, kids club, lounge); the things the paragraph above
      already says (Wi-Fi, parking, reception, room service, pets, in-room basics, board, policies) stay out of the chips */
-  const CHIP_DROP = /\b(wi-?fi|parking|reception|front desk|room service|pets?\b|pet friendly|dogs?\b|air conditioning|safe\b|coffee|kettle|nespresso|iron\b|ironing|fridge|refrigerator|minibar|liquor dispenser|television|tv\b|hdtv|hairdryer|desk\b|workspace|wardrobe|digital key|check ?in|check ?out|laundry|dry cleaning|smok(e|ing)|adapted|accessib|wheelchair|breakfast|bed and breakfast|all inclusive|unlimited luxury|taxes|gratuities|wristband|reservations|languages|concierge|luggage|cots?\b|cribs?\b|amenities kit|bathrobe|prices quoted|cancellation|room only|refundable|towels|first aid|nurse|pharmacy|ev charging|airport|shuttle|transfer|kosher rooms|non motorised|telephone|mattress|printing|business (centre|facilities)|car rental|tour desk|ticket desk|in the group|stay free|sq ?(ft|m)\b|private bathroom|ramps|fire alarm)/i;
+  const CHIP_DROP = /\b(wi-?fi|parking|reception|front desk|room service|pets?\b|pet friendly|dogs?\b|air conditioning|safe\b|coffee|kettle|nespresso|iron\b|ironing|fridge|refrigerator|minibar|liquor dispenser|television|tv\b|hdtv|hairdryer|desk\b|workspace|wardrobe|digital key|check ?in|check ?out|laundry|dry cleaning|smok(e|ing)|adapted|accessib|wheelchair|breakfast|bed and breakfast|all inclusive|unlimited luxury|taxes|gratuities|wristband|reservations|languages|concierge|luggage|cots?\b|cribs?\b|amenities kit|bathrobe|prices quoted|cancellation|room only|refundable|towels|first aid|nurse|pharmacy|ev charging|airport|shuttle|transfer|kosher rooms|non motorised|telephone|mattress|printing|business (centre|facilities)|car rental|tour desk|ticket desk|in the group|stay free|sq ?(ft|m)\b|private bathroom|ramps|fire alarm|balcony|terrace|bathtub|shower|sofa bed|family rooms?\b|family suites?\b|fun4all|family resort|in the suite|kids? (menu|programme))/i;
   const amenities = splitList(hotel.full_amenity_list).filter((a) => !CHIP_DROP.test(a));
   /* About the hotel: the written block from hotels-copy.json (about: strings or [lead, text]), the amenity chips under it.
      Without an about block, the sheet fields are joined into plain paragraphs. */
@@ -166,26 +175,26 @@ function hotelPage(hotel) {
   const lat = hotel.latitude, lng = hotel.longitude;
   const mapUrl = lat != null && lng != null ? `https://www.google.com/maps?q=${lat},${lng}&z=15&output=embed` : "";
   const mapLink = lat != null && lng != null ? `https://www.google.com/maps/search/?api=1&query=${lat},${lng}` : "";
-  const where = `<section class="hp-sec"><div>${kicker("Where it is")}<p class="sec-sub">${esc([short(hotel.address), district, d.name].filter(Boolean).join(", "))}</p></div>
+  const where = `<section class="hp-sec"><div>${kicker("Where it is")}<p class="sec-sub">${esc(whereLine([short(hotel.address), district, place]))}</p></div>
     ${mapUrl ? `<div class="hp-map"><iframe src="${mapUrl}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Map of ${esc(name)}" allowfullscreen></iframe></div><a class="biglink" href="${mapLink}" target="_blank" rel="noopener">Open in Google Maps${icon("arrow", 20, 2.4)}</a>` : ""}
-    ${hotel.nearby_landmarks ? `<p class="hp-p"><b>Nearby:</b> ${esc(guest(hotel.nearby_landmarks))}</p>` : ""}</section>`;
+    ${hotel.nearby_landmarks ? `<p class="hp-p"><b>Nearby:</b> ${esc(guest(hotel.nearby_landmarks).replace(/\s+\d+(\.\d+)?\s*km\b/gi, ""))}</p>` : ""}</section>`;
 
   const faq = `<section class="gtk"><div>${kicker("Questions")}</div><div class="faq">${d.faq.map(([q, a]) => faqItem(q, a)).join("")}</div></section>`;
 
   const description = copy.intro ? copy.intro : guest(hotel.one_line_description);
-  const metaDescription = `${shortName} in ${d.name}${district ? ` (${district})` : ""}: ${guest(hotel.one_line_description) || description.split(". ")[0]}. From Jamaica with flights and transfers, ${defaultPrice != null ? `from ${usd(defaultPrice)} per person` : "quoted with your dates"}.`.replace(/\.\./g, ".").slice(0, 300);
-  const title = `${shortName}, ${d.name}: ${d.defaultNights} nights from Jamaica with flights${defaultPrice != null ? ` from ${usd(defaultPrice)}` : ""} | Golden Vacation & Travel`;
+  const metaDescription = `${shortName} in ${place}${district ? ` (${district})` : ""}: ${guest(hotel.one_line_description) || description.split(". ")[0]}. From Jamaica with flights and transfers, ${defaultPrice != null ? `from ${usd(defaultPrice)} per person` : "quoted with your dates"}.`.replace(/\.\./g, ".").slice(0, 300);
+  const title = `${shortName}, ${place}: ${d.defaultNights} nights from Jamaica with flights${defaultPrice != null ? ` from ${usd(defaultPrice)}` : ""} | Golden Vacation & Travel`;
 
   const jsonld = [
     { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: `${S.origin}/` }, { "@type": "ListItem", position: 2, name: "Getaways", item: `${S.origin}${BASE}/` }, { "@type": "ListItem", position: 3, name: d.name, item: `${S.origin}${BASE}/${d.slug}/` }, { "@type": "ListItem", position: 4, name: shortName, item: `${S.origin}${pathname}` }] },
-    { "@context": "https://schema.org", "@type": "Hotel", name, ...(photo ? { image: `${S.origin}${img(photo)}` } : {}), address: { "@type": "PostalAddress", streetAddress: short(hotel.address) || undefined, addressLocality: d.name, addressCountry: hotel.country || d.country }, ...(lat != null ? { geo: { "@type": "GeoCoordinates", latitude: lat, longitude: lng } } : {}), ...(star ? { starRating: { "@type": "Rating", ratingValue: star[0] } } : {}), url: `${S.origin}${pathname}` },
+    { "@context": "https://schema.org", "@type": "Hotel", name, ...(photo ? { image: `${S.origin}${img(photo)}` } : {}), address: { "@type": "PostalAddress", streetAddress: short(hotel.address) || undefined, addressLocality: short(hotel.city) || d.name, addressCountry: hotel.country || d.country }, ...(lat != null ? { geo: { "@type": "GeoCoordinates", latitude: lat, longitude: lng } } : {}), ...(star ? { starRating: { "@type": "Rating", ratingValue: star[0] } } : {}), url: `${S.origin}${pathname}` },
   ];
 
   const body = `<body class="has-bar hp" data-dest="${d.slug}" data-default-airport="${d.airports[0].code}" data-default-nights="${d.defaultNights}" data-lead="${hotel.slug}">
 ${nav({ back: `${BASE}/${d.slug}/`, title: `the ${shortName} page` })}
 ${hero}
 <div class="wrap">
-<div class="dest-head hp-head"><a class="hp-crumb" href="${BASE}/${d.slug}/">${icon("back", 16, 2.6)}All ${esc(d.name)} hotels</a>${kicker(`Getaways from Jamaica · ${d.name}${district ? ` · ${district}` : ""}`)}<h1 class="hh">${esc(name)}</h1><p>${esc(description)}</p></div>
+<div class="dest-head hp-head"><a class="hp-crumb" href="${BASE}/${d.slug}/">${icon("back", 16, 2.6)}All ${esc(d.name)} hotels</a>${kicker(`Getaways from Jamaica · ${place}${district ? ` · ${district}` : ""}`)}<h1 class="hh">${esc(name)}</h1><p>${esc(description)}</p></div>
 <div class="hp-facts">${facts.map((f) => `<span>${esc(f)}</span>`).join("")}</div>
 <div class="dest-grid">
   <div class="dest-side">${priceCard}</div>
