@@ -107,11 +107,11 @@
           "title": "City hotels · bed & breakfast",
           "note": "Per person sharing. Prices shown are Kingston, 3 nights. Tap Montego Bay, 4 or 7 nights and they change.",
           "hotels": [
-            { "slug": "riu-plaza", "name": "Riu Plaza Panama", "note": "Calle 50 · rooftop pool, financial district", "prices": { "3": 660, "4": 760, "7": 990 }, "top": true, "img": "h-riu-plaza.jpg" },
-            { "slug": "megapolis", "name": "Megapolis", "note": "Punta Pacífica · connected to Multiplaza mall", "prices": { "3": 665, "4": 730, "7": 920 }, "img": "h-megapolis.jpg" },
-            { "slug": "las-americas", "name": "Las Americas Golden", "note": "Obarrio · business district", "prices": { "3": 690, "4": 750, "7": 960 }, "img": "h-las-americas.jpg" },
+            { "slug": "riu-plaza", "name": "Riu Plaza Panama", "note": "Calle 50, Marbella · outdoor pool, refreshed 2025", "prices": { "3": 660, "4": 760, "7": 990 }, "top": true, "img": "h-riu-plaza.jpg" },
+            { "slug": "megapolis", "name": "Megapolis", "note": "Avenida Balboa · 62 storey tower, pool bar", "prices": { "3": 665, "4": 730, "7": 920 }, "img": "h-megapolis.jpg" },
+            { "slug": "las-americas", "name": "Las Americas Golden", "note": "Marbella · 5 star tower, breakfast included", "prices": { "3": 690, "4": 750, "7": 960 }, "img": "h-las-americas.jpg" },
             { "slug": "marinn-place", "name": "Marinn Place", "note": "Financial District · by Dann Carlton", "prices": { "3": 635, "4": 690, "7": 845 }, "img": "h-marinn.jpg" },
-            { "slug": "ramada-plaza", "name": "Ramada Plaza", "note": "Marbella · rooftop pool", "prices": { "3": 630, "4": 680, "7": 860 }, "img": "h-ramada.jpg" },
+            { "slug": "ramada-plaza", "name": "Ramada Plaza", "note": "Punta Pacífica · free breakfast, outdoor pool", "prices": { "3": 630, "4": 680, "7": 860 }, "img": "h-ramada.jpg" },
             { "slug": "hospedium-princess", "name": "Hospedium Princess", "note": "Best value in the city", "prices": { "3": 575, "4": 609, "7": 690 }, "img": "h-hospedium.jpg" }
           ]
         },
@@ -352,6 +352,14 @@
             { "slug": "nhow", "name": "nhow Lima", "note": "Design hotel, bold and new", "prices": { "3": 695 }, "img": "h-nhow.jpg" },
             { "slug": "estelar-miraflores", "name": "Hotel Estelar Miraflores", "note": "Miraflores · rooms with the city view", "prices": { "3": 680 }, "img": "h-estelar.jpg" },
             { "slug": "souma", "name": "Souma", "note": "Rooftop bar over the sea", "prices": { "3": 740 }, "img": "h-souma.jpg" }
+          ]
+        },
+        {
+          "title": "Also in Lima · quoted with your dates",
+          "note": "Two more we sell. No starting price on the page yet; send your dates and the quote comes back the same day.",
+          "hotels": [
+            { "slug": "melia-lima", "name": "Melia Lima", "note": "San Isidro · 5 star, outdoor pool", "prices": {}, "img": null },
+            { "slug": "hilton-lima", "name": "Hilton Lima Miraflores", "note": "Miraflores · outdoor pool, free parking", "prices": {}, "img": null }
           ]
         }
       ],
