@@ -110,7 +110,9 @@ function hotelPage(hotel) {
   } else {
     hero = `<section class="hp-hero-empty"><div class="wrap"><span class="kicker kicker-light">${esc(place)}${district ? ` · ${esc(district)}` : ""} · photos coming</span><div class="hero-tags-inline">${heroTags.map((t, i) => tag(t, i ? "white" : "gold")).join("")}</div></div></section>`;
   }
-  const photoData = photos.length > 1 ? `<script>window.GV_HOTEL=${JSON.stringify({ slug: hotel.slug, name: shortName, photos: photos.map((p) => [img(p.file), p.alt, p.large ? img(p.large) : null]) })};</script><script src="${BASE}/assets/hotels.js" defer></script>` : "";
+  /* a short room tour clip (roomVideos: name -> {file}) gets a play badge on the card; hotels.js plays it in the viewer, muted, looping */
+  const roomVideos = copy.roomVideos || {};
+  const photoData = photos.length > 1 || Object.keys(roomVideos).length ? `<script>window.GV_HOTEL=${JSON.stringify({ slug: hotel.slug, name: shortName, photos: photos.map((p) => [img(p.file), p.alt, p.large ? img(p.large) : null]) })};</script><script src="${BASE}/assets/hotels.js" defer></script>` : "";
 
   /* price card, driven by getaways.js like the destination page (airport chips + data-lead), but every stay length is listed
      instead of nights chips: one row per length, each a link to the quote page with that length filled in. A hotel with no
@@ -139,6 +141,8 @@ function hotelPage(hotel) {
      Sizes in square metres are left out on purpose. A room photo that is also in the strip opens the viewer at that photo. */
   const roomPhotos = copy.roomPhotos || {};
   Object.keys(roomPhotos).forEach((n) => { if (!hotel.rooms.some((r) => r.name === n)) console.warn(`  ${hotel.slug}: roomPhotos "${n}" matches no room in the sheet`); });
+  Object.keys(roomVideos).forEach((n) => { if (!hotel.rooms.some((r) => r.name === n)) console.warn(`  ${hotel.slug}: roomVideos "${n}" matches no room in the sheet`); });
+  const PLAY_ICON = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex:none;display:block"><path d="M7 4.5v15l12-7.5z"></path></svg>';
   const roomCard = (r) => {
       const meta = [r.sleeps ? `sleeps ${r.sleeps}` : "", bedText(decode(r.beds))].filter(Boolean).map((x) => esc(x)).join(" · ");
       const note = decode(guest(r.notes));
@@ -149,7 +153,10 @@ function hotelPage(hotel) {
       const shot = !rp ? "" : idx >= 0
         ? `<button type="button" class="hp-room-img lb-open" data-i="${idx}" aria-label="Open the ${esc(r.name)} photo">${pic(small, photos[idx].alt, "", roomSet)}</button>`
         : `<div class="hp-room-img">${pic(small, r.name)}</div>`;
-      return `<div class="hp-room${shot ? " has-img" : ""}">${shot}<div class="hp-room-t"><b>${esc(r.name)}</b>${meta ? `<small>${meta}</small>` : ""}${note ? `<p>${esc(note)}</p>` : ""}</div></div>`;
+      const rv = roomVideos[r.name];
+      const play = rv && rv.file ? `<button type="button" class="hp-room-play lb-video" data-video="${img(rv.file)}"${small ? ` data-poster="${img(small)}"` : ""} data-title="${esc(r.name)}, room tour" aria-label="Play the ${esc(r.name)} room tour">${PLAY_ICON}Room tour</button>` : "";
+      const media = play ? (shot ? `<div class="hp-room-media">${shot}${play}</div>` : `<div class="hp-room-media hp-room-media-empty">${play}</div>`) : shot;
+      return `<div class="hp-room${shot ? " has-img" : ""}">${media}<div class="hp-room-t"><b>${esc(r.name)}</b>${meta ? `<small>${meta}</small>` : ""}${note ? `<p>${esc(note)}</p>` : ""}</div></div>`;
   };
   /* the categories people book go up front; the rest sit behind See more (roomsUpFront in hotels-copy.json, else the first 5 when there are more than 6) */
   if (copy.roomsUpFront) copy.roomsUpFront.forEach((n) => { if (!hotel.rooms.some((r) => r.name === n)) console.warn(`  ${hotel.slug}: roomsUpFront "${n}" matches no room in the sheet`); });
