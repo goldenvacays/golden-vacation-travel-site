@@ -1,6 +1,7 @@
 /* Hotel pages under /getaways: the photo strip and the full-screen viewer.
    Same behaviour as the tour pages (experiences.js initPhotos): native scroll-snap does the swiping, the dots and
-   arrows follow, and tapping any photo opens the viewer at that photo. Data comes from window.GV_HOTEL: photos as [src1600, alt, src2400 or null]. */
+   arrows follow, and tapping any photo opens the viewer at that photo. Data comes from window.GV_HOTEL: photos as [src1600, alt, src2400 or null].
+   A "Room tour" badge on a room card (.lb-video, data-video / data-poster / data-title) plays a short clip in the same viewer: muted, looping, with the browser's controls. */
 (function () {
   "use strict";
   var H = window.GV_HOTEL || {}; var photos = H.photos || [];
@@ -8,8 +9,8 @@
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
   function track(name, params) { try { if (window.gtag) window.gtag("event", name, params || {}); } catch (e) {} }
   var root = document;
-  var openers = $$(".lb-open", root);
-  if (!photos.length || !openers.length) return;
+  var openers = $$(".lb-open", root), players = $$(".lb-video", root);
+  if (!(photos.length && openers.length) && !players.length) return;
   var box = null, cur = 0, opener = null, touchX = null;
   var strip = $("#hero-track", root), slides = strip ? $$(".hero-slide", strip) : [], dots = $$(".hero-dots button", root), sCur = 0, sTimer = null;
   function slideIdx() { return strip && strip.clientWidth ? Math.max(0, Math.min(slides.length - 1, Math.round(strip.scrollLeft / strip.clientWidth))) : 0; }
@@ -37,19 +38,39 @@
     box.className = "lb"; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true"); box.setAttribute("aria-label", (H.name || "") + " photos"); box.hidden = true;
     box.innerHTML = '<button type="button" class="lb-x" aria-label="Close the photos">' + SVG_X + '</button>' +
       '<button type="button" class="lb-prev" aria-label="Previous photo">' + SVG_ARROW + '</button>' +
-      '<figure class="lb-fig"><img class="lb-img" alt=""><figcaption class="lb-cap"><span class="lb-alt"></span><span class="lb-n"></span></figcaption></figure>' +
+      '<figure class="lb-fig"><img class="lb-img" alt=""><video class="lb-vid" muted loop playsinline controls preload="none" hidden></video><figcaption class="lb-cap"><span class="lb-alt"></span><span class="lb-n"></span></figcaption></figure>' +
       '<button type="button" class="lb-next" aria-label="Next photo">' + SVG_ARROW + '</button>';
     document.body.appendChild(box);
     if (photos.length < 2) { $(".lb-prev", box).hidden = true; $(".lb-next", box).hidden = true; $(".lb-n", box).hidden = true; }
+    $(".lb-vid", box).addEventListener("click", function (e) { e.stopPropagation(); });
     $(".lb-x", box).addEventListener("click", close);
     $(".lb-prev", box).addEventListener("click", function () { go(-1); });
     $(".lb-next", box).addEventListener("click", function () { go(1); });
     $(".lb-img", box).addEventListener("click", function (e) { if (photos.length < 2) return; var r = e.currentTarget.getBoundingClientRect(); go(e.clientX - r.left > r.width / 2 ? 1 : -1); });
     box.addEventListener("click", function (e) { if (e.target === box || e.target.classList.contains("lb-fig")) close(); });
     box.addEventListener("touchstart", function (e) { touchX = e.touches && e.touches.length === 1 ? e.touches[0].clientX : null; }, { passive: true });
-    box.addEventListener("touchend", function (e) { if (touchX == null || !e.changedTouches || !e.changedTouches.length) return; var dx = e.changedTouches[0].clientX - touchX; touchX = null; if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1); }, { passive: true });
+    box.addEventListener("touchend", function (e) { if (touchX == null || !e.changedTouches || !e.changedTouches.length) return; var dx = e.changedTouches[0].clientX - touchX; touchX = null; if (!video && Math.abs(dx) > 40) go(dx < 0 ? 1 : -1); }, { passive: true });
+  }
+  var video = false;
+  function photoMode() {
+    if (!video) return;
+    video = false;
+    var v = $(".lb-vid", box); try { v.pause(); } catch (e) {} v.removeAttribute("src"); v.load(); v.hidden = true;
+    $(".lb-img", box).hidden = false;
+    if (photos.length > 1) { $(".lb-prev", box).hidden = false; $(".lb-next", box).hidden = false; $(".lb-n", box).hidden = false; }
+  }
+  function showVideo(src, poster, title) {
+    video = true;
+    var v = $(".lb-vid", box), im = $(".lb-img", box);
+    im.hidden = true; $(".lb-prev", box).hidden = true; $(".lb-next", box).hidden = true; $(".lb-n", box).hidden = true;
+    if (poster) v.poster = poster; else v.removeAttribute("poster");
+    v.src = src; v.hidden = false; v.load();
+    var pl = v.play(); if (pl && pl.catch) pl.catch(function () {});
+    $(".lb-alt", box).textContent = title || "Room tour";
   }
   function show(i) {
+    if (!photos.length) return;
+    photoMode();
     cur = (i + photos.length) % photos.length;
     var p = photos[cur], im = $(".lb-img", box);
     if (p[2]) { im.srcset = p[0] + " 1600w, " + p[2] + " 2400w"; im.sizes = "100vw"; } else { im.removeAttribute("srcset"); im.removeAttribute("sizes"); }
@@ -61,7 +82,8 @@
   function go(d) { show(cur + d); }
   function onKey(e) {
     if (e.key === "Escape") { close(); return; }
-    if (e.key === "ArrowRight") { go(1); e.preventDefault(); }
+    if (video) { /* the clip has its own controls */ }
+    else if (e.key === "ArrowRight") { go(1); e.preventDefault(); }
     else if (e.key === "ArrowLeft") { go(-1); e.preventDefault(); }
     else if (e.key === "Tab") {
       var f = $$("button:not([hidden])", box); if (!f.length) return;
@@ -80,14 +102,27 @@
     setTimeout(function () { $(".lb-x", box).focus(); }, 0);
     track("hotel_photos", { hotel: H.slug, photo: cur + 1 });
   }
+  function openVideo(b) {
+    if (!box) build();
+    opener = b;
+    showVideo(b.getAttribute("data-video"), b.getAttribute("data-poster") || "", b.getAttribute("data-title") || "");
+    box.hidden = false;
+    document.documentElement.classList.add("lb-open-page");
+    document.addEventListener("keydown", onKey);
+    setTimeout(function () { $(".lb-x", box).focus(); }, 0);
+    track("hotel_video", { hotel: H.slug, room: b.getAttribute("data-title") || "" });
+  }
   function close() {
     if (!box || box.hidden) return;
+    var wasVideo = video;
+    photoMode();
     box.hidden = true;
     document.documentElement.classList.remove("lb-open-page");
     document.removeEventListener("keydown", onKey);
-    slideTo(cur, true);
+    if (!wasVideo) slideTo(cur, true);
     if (opener && opener.focus) { try { opener.focus(); } catch (e) {} }
   }
+  players.forEach(function (b) { b.addEventListener("click", function () { openVideo(b); }); });
   openers.forEach(function (b) {
     b.addEventListener("click", function () { open(+(b.getAttribute("data-i") || 0), b.tagName === "BUTTON" ? b : $(".photos-btn", root) || b); });
     if (b.tagName === "IMG") { b.setAttribute("role", "button"); b.setAttribute("tabindex", "0"); b.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(+(b.getAttribute("data-i") || 0), b); } }); }
