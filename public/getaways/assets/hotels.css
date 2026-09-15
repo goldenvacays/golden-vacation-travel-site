@@ -1,0 +1,39 @@
+/* Hotel pages under /getaways: everything else comes from getaways.css. Classes are prefixed hp-. */
+.hp-hero-empty { background: var(--ink); color: #fff; padding: 28px var(--pad) 24px; position: relative; overflow: hidden; }
+.hp-hero-empty::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .08; background: radial-gradient(circle at 20% 20%, #fff 0, transparent 40%), radial-gradient(circle at 80% 70%, #fff 0, transparent 35%); }
+.hp-hero-empty .wrap { display: flex; flex-direction: column; gap: 10px; position: relative; }
+.hero-tags-inline { display: flex; gap: 6px; flex-wrap: wrap; }
+.hp-crumb { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 800; color: var(--muted); margin-bottom: 10px; }
+.hp-crumb:hover { color: var(--gold-txt); }
+.hp-facts { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 var(--pad) 18px; }
+.hp-facts span { display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border-radius: 999px; background: var(--alt); font-size: 13px; font-weight: 800; color: var(--ink); white-space: nowrap; }
+.hp-lead .lead-row { align-items: flex-start; }
+.hp-lead .ask { display: block; font-size: 13px; font-weight: 700; color: var(--muted); }
+.hp-lead-note { font-size: 12px; line-height: 1.45; color: var(--muted); }
+.hp-sec { padding: 0 var(--pad) 28px; display: flex; flex-direction: column; gap: 12px; }
+.hp-sec .sec-sub { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
+.hp-p { margin: 0; font-size: 15px; line-height: 1.55; }
+.hp-rooms { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.hp-room { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border-radius: 16px; background: var(--alt); }
+.hp-room b { font-size: 16px; }
+.hp-room small { font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.hp-room p { margin: 2px 0 0; font-size: 14px; line-height: 1.5; color: var(--muted); }
+.hp-amen { display: flex; flex-wrap: wrap; gap: 6px; }
+.hp-amen span { display: inline-flex; align-items: center; min-height: 30px; padding: 4px 11px; border-radius: 999px; box-shadow: inset 0 0 0 2px var(--line); font-size: 13px; font-weight: 700; }
+.hp-kv { margin: 0; display: grid; grid-template-columns: 1fr; gap: 0; }
+.hp-kv div { display: grid; grid-template-columns: 120px 1fr; gap: 12px; padding: 10px 0; border-top: 2px solid var(--line); }
+.hp-kv div:first-child { border-top: 0; padding-top: 0; }
+.hp-kv dt { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+.hp-kv dd { margin: 0; font-size: 15px; line-height: 1.5; }
+.hp-extra { margin: 6px 0 0; font-size: 14px; line-height: 1.5; color: var(--muted); }
+.hp-map { position: relative; border-radius: 20px; overflow: hidden; background: var(--ph); aspect-ratio: 16 / 10; max-width: 100%; }
+.hp-map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+@media (min-width: 900px) {
+  .hp .dest-grid { grid-template-columns: .85fr 1.15fr; }
+  .hp-hero-empty { padding: 40px var(--pad) 36px; }
+  .hp-facts { padding-bottom: 28px; }
+  .dest-main .hp-sec { padding: 0 0 36px; }
+  .hp-rooms { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .hp-kv div { grid-template-columns: 160px 1fr; }
+  .hp-map { aspect-ratio: 16 / 9; }
+}
