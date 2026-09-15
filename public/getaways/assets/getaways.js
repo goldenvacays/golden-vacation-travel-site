@@ -74,16 +74,26 @@
           more.textContent = parts.join(" · ");
         }
         var link = $("a.go", h) || (h.tagName === "A" ? h : null);
-        if (link) link.href = quoteUrl(h.getAttribute("data-slug"));
+        if (link && !h.hasAttribute("data-page")) link.href = quoteUrl(h.getAttribute("data-slug")); // rows with their own hotel page keep that link
       });
       var leadSlug = page.getAttribute("data-lead");
       var leadRow = $('.hotel[data-slug="' + leadSlug + '"]', page);
       var leadPrice = $(".lead-price .price", page);
       if (leadRow && leadPrice) {
         var lp = priceFor(leadRow, state.nights);
-        var ll = $(".lead-price .lbl", page);
-        if (lp != null) { setPrice(leadPrice, lp); leadPrice.hidden = false; if (ll) ll.textContent = airportName(state.airport) + " · " + state.nights + " nights"; }
+        var ll = $(".lead-price .lbl", page), la = $(".lead-price .ask", page);
+        if (ll) ll.textContent = airportName(state.airport) + " · " + state.nights + " nights";
+        if (lp != null) { setPrice(leadPrice, lp); leadPrice.hidden = false; if (la) la.hidden = true; }
+        else { leadPrice.hidden = true; if (la) la.hidden = false; } // a stay length with no starting price yet (the beach resorts beyond 3 nights) is quoted with the dates
       }
+      /* hotel pages list every stay length in the price card: one row per length, repriced for the airport */
+      $$(".hp-nrow[data-n]", page).forEach(function (r) {
+        var n = r.getAttribute("data-n"), p = leadRow ? priceFor(leadRow, n) : null;
+        var pr = $(".price", r), ask = $(".ask", r);
+        if (p != null) { if (pr) { setPrice(pr, p); pr.hidden = false; } if (ask) ask.hidden = true; }
+        else { if (pr) pr.hidden = true; if (ask) ask.hidden = false; }
+        r.href = quoteUrl(leadSlug).replace(/([?&])n=[^&]*/, "$1n=" + encodeURIComponent(n));
+      });
       $$(".lead .btn", page).forEach(function (b) { b.href = quoteUrl(leadSlug); });
       $$(".bar .btn, .dest-cta", page).forEach(function (b) { b.href = quoteUrl(leadSlug); });
     }

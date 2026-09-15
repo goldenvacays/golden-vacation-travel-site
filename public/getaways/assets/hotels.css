@@ -1,0 +1,126 @@
+/* Hotel pages under /getaways: everything else comes from getaways.css. Classes are prefixed hp-. */
+.hp-hero-empty { background: var(--ink); color: #fff; padding: 28px var(--pad) 24px; position: relative; overflow: hidden; }
+.hp-hero-empty::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .08; background: radial-gradient(circle at 20% 20%, #fff 0, transparent 40%), radial-gradient(circle at 80% 70%, #fff 0, transparent 35%); }
+.hp-hero-empty .wrap { display: flex; flex-direction: column; gap: 10px; position: relative; }
+.hero-tags-inline { display: flex; gap: 6px; flex-wrap: wrap; }
+.hp-crumb { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 800; color: var(--muted); margin-bottom: 10px; }
+.hp-crumb:hover { color: var(--gold-txt); }
+.hp-facts { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 var(--pad) 18px; }
+.hp-facts span { display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border-radius: 999px; background: var(--alt); font-size: 13px; font-weight: 800; color: var(--ink); white-space: nowrap; }
+/* the price card: name, airport chips, one row per stay length (each a link to the quote with that length), the quote button */
+.lead.hp-lead { margin: 0 var(--pad) 8px; padding: 18px; border-radius: 20px; box-shadow: inset 0 0 0 2px var(--ink); gap: 14px; }
+.hp-lead-head { display: flex; flex-direction: column; gap: 3px; }
+.hp-lead-head .h { font-size: 22px; font-weight: 900; letter-spacing: -0.02em; line-height: 1.05; }
+.hp-lead-head .meta { font-size: 13px; color: var(--muted); }
+.hp-nights { display: flex; flex-direction: column; }
+.hp-nrow { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 2px solid var(--line); color: var(--ink); text-decoration: none; }
+.hp-nrow:first-child { border-top: 0; padding-top: 2px; }
+.hp-nrow-l { flex: 1; font-size: 15px; font-weight: 800; }
+.hp-nrow .price { font-size: 22px; }
+.hp-nrow .price[hidden] { display: none; }
+.hp-nrow .ask { font-size: 12px; font-weight: 700; color: var(--muted); text-align: right; }
+.hp-nrow svg { color: var(--muted); }
+.hp-nrow:hover, .hp-nrow:hover svg { color: var(--gold-txt); }
+.hp-nrow:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; border-radius: 8px; }
+.hp-nrow-ask .hp-nrow-l { color: var(--gold-txt); }
+.hp-lead-per, .hp-lead-note { font-size: 12px; line-height: 1.45; color: var(--muted); }
+.hp-lead-per { margin-top: -6px; }
+/* what the price includes, inside the card */
+.hp-card-inc { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-radius: 14px; background: var(--alt); }
+.hp-card-inc .lbl { margin-bottom: 2px; }
+.hp-inc { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 1.4; font-weight: 700; }
+.hp-inc svg { flex: none; margin-top: 1px; color: var(--gold-txt); }
+/* about the hotel: short written block, chips under it */
+.hp-about .hp-p + .hp-p { margin-top: 2px; }
+.hp-about .hp-amen { margin-top: 6px; }
+/* the room categories behind See more */
+.hp-more { margin-top: 4px; }
+.hp-more summary { list-style: none; cursor: pointer; display: inline-flex; }
+.hp-more summary::-webkit-details-marker { display: none; }
+.hp-more summary .chip { gap: 6px; }
+.hp-more summary .chip svg { transform: rotate(90deg); transition: transform .2s ease; }
+.hp-more[open] summary .chip svg { transform: rotate(-90deg); }
+.hp-more[open] summary { margin-bottom: 12px; }
+.hp-more summary:focus-visible .chip { outline: 3px solid var(--gold); outline-offset: 2px; }
+.hp-sec { padding: 0 var(--pad) 28px; display: flex; flex-direction: column; gap: 12px; }
+.hp-sec .sec-sub { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
+.hp-p { margin: 0; font-size: 15px; line-height: 1.55; }
+/* rooms: cards, with the room's photo on top when we have one */
+.hp-rooms { display: grid; grid-template-columns: 1fr; gap: 10px; align-items: start; }
+.hp-room { display: flex; flex-direction: column; border-radius: 16px; background: var(--alt); overflow: hidden; }
+.hp-room-img { display: block; width: 100%; padding: 0; border: 0; background: var(--ph); aspect-ratio: 16 / 10; overflow: hidden; font: inherit; }
+button.hp-room-img { cursor: zoom-in; }
+.hp-room-img img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+button.hp-room-img:hover img, button.hp-room-img:focus-visible img { transform: scale(1.04); }
+button.hp-room-img:focus-visible { outline: 3px solid var(--gold); outline-offset: -3px; }
+.hp-room-t { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; }
+.hp-room b { font-size: 16px; }
+.hp-room small { font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.hp-room p { margin: 2px 0 0; font-size: 14px; line-height: 1.5; color: var(--muted); }
+.hp-amen { display: flex; flex-wrap: wrap; gap: 6px; }
+.hp-amen span { display: inline-flex; align-items: center; min-height: 30px; padding: 4px 11px; border-radius: 999px; box-shadow: inset 0 0 0 2px var(--line); font-size: 13px; font-weight: 700; }
+.hp-kv { margin: 0; display: grid; grid-template-columns: 1fr; gap: 0; }
+.hp-kv div { display: grid; grid-template-columns: 120px 1fr; gap: 12px; padding: 10px 0; border-top: 2px solid var(--line); }
+.hp-kv div:first-child { border-top: 0; padding-top: 0; }
+.hp-kv dt { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+.hp-kv dd { margin: 0; font-size: 15px; line-height: 1.5; }
+.hp-extra { margin: 6px 0 0; font-size: 14px; line-height: 1.5; color: var(--muted); }
+.hp-map { position: relative; border-radius: 20px; overflow: hidden; background: var(--ph); aspect-ratio: 16 / 10; max-width: 100%; }
+.hp-map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+@media (min-width: 900px) {
+  /* booking-site layout: the content runs down the left, the price card sits on the right and sticks (the side comes first in the markup so phones show it first) */
+  .hp .dest-grid { grid-template-columns: minmax(0, 1fr) clamp(320px, 32%, 400px); gap: 56px; }
+  .hp .dest-side { grid-column: 2; grid-row: 1; }
+  .hp .dest-main { grid-column: 1; grid-row: 1; }
+  .dest-side .lead.hp-lead { padding: 22px; margin: 0; }
+  .hp-hero-empty { padding: 40px var(--pad) 36px; }
+  .hp-facts { padding-bottom: 28px; }
+  .dest-main .hp-sec { padding: 0 0 36px; }
+  .hp-rooms { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .hp-kv div { grid-template-columns: 160px 1fr; }
+  .hp-map { aspect-ratio: 16 / 9; }
+}
+
+/* the photo strip (from the tour pages): every photo side by side, snapping one at a time; tags, pill, dots and arrows float above */
+.hp-hero.has-slides img { cursor: zoom-in; }
+.hero-track { position: absolute; inset: 0; display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.hero-track::-webkit-scrollbar { display: none; }
+.hero-slide { position: relative; flex: 0 0 100%; height: 100%; scroll-snap-align: start; scroll-snap-stop: always; }
+.hero-dots { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); z-index: 1; display: flex; gap: 6px; padding: 6px 9px; border-radius: 999px; background: rgba(0,0,0,.3); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); pointer-events: none; max-width: calc(100% - 32px); flex-wrap: wrap; justify-content: center; }
+.hero-dots button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: rgba(255,255,255,.55); box-shadow: 0 1px 4px rgba(0,0,0,.45); cursor: pointer; pointer-events: auto; transition: transform .2s ease, background .2s ease; }
+.hero-dots button[aria-selected="true"] { background: #fff; transform: scale(1.3); }
+.hero-dots button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.hero-arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 1; width: 40px; height: 40px; border: 0; border-radius: 999px; background: rgba(255,255,255,.94); color: var(--ink); display: none; place-items: center; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,.28); }
+.hero-arrow:hover { background: var(--gold); }
+.hero-arrow:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.hero-prev { left: 14px; } .hero-prev svg { transform: scaleX(-1); }
+.hero-next { right: 14px; }
+.photos-btn { position: absolute; right: 12px; top: 12px; z-index: 1; display: inline-flex; align-items: center; gap: 6px; border: 0; cursor: pointer; text-transform: none; letter-spacing: 0; font-size: 13px; font-family: inherit; box-shadow: 0 2px 10px rgba(0,0,0,.25); }
+.photos-btn:hover { background: var(--gold); }
+.photos-btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+/* the full-screen viewer */
+.lb-open-page { overflow: hidden; }
+.lb { position: fixed; inset: 0; z-index: 1000; background: rgba(8,8,8,.97); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; }
+.lb[hidden] { display: none; }
+.lb-fig { margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; max-width: 100vw; max-height: 100vh; }
+.lb-img { display: block; max-width: 100vw; max-height: calc(100vh - 150px); width: auto; height: auto; object-fit: contain; cursor: pointer; user-select: none; -webkit-user-drag: none; }
+.lb-cap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 12px 70px; color: rgba(255,255,255,.85); font-size: 14px; line-height: 1.4; text-align: center; }
+.lb-n { color: rgba(255,255,255,.55); font-weight: 700; white-space: nowrap; }
+.lb button { position: absolute; width: 44px; height: 44px; border-radius: 999px; border: 0; background: #fff; color: var(--ink); display: grid; place-items: center; cursor: pointer; box-shadow: 0 2px 12px rgba(0,0,0,.35); }
+.lb button:hover { background: var(--gold); }
+.lb button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.lb-x { top: 14px; right: 14px; }
+.lb-prev, .lb-next { bottom: 18px; }
+.lb-prev { left: 14px; } .lb-prev svg { transform: scaleX(-1); }
+.lb-next { right: 14px; }
+@media (min-width: 900px) {
+  .hero-arrow { display: grid; opacity: 0; transition: opacity .2s ease; }
+  .hp-hero:hover .hero-arrow, .hero-arrow:focus-visible, .hp-hero:focus-within .hero-arrow { opacity: 1; }
+  .hero-dots { top: 16px; }
+  .lb-cap { flex-direction: row; align-items: baseline; gap: 14px; padding: 12px 20px; }
+  .lb-img { max-width: calc(100vw - 150px); max-height: calc(100vh - 96px); border-radius: 8px; }
+  .lb-x { top: 20px; right: 20px; }
+  .lb-prev, .lb-next { top: 50%; bottom: auto; transform: translateY(-50%); }
+  .lb-prev { left: 24px; } .lb-next { right: 24px; }
+}
+@media (prefers-reduced-motion: reduce) { .hero-track { scroll-behavior: auto; } .hero-dots button, .hero-arrow { transition: none; } }
