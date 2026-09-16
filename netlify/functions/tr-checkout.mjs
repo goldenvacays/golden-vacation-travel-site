@@ -101,6 +101,7 @@ export const handler = async (event) => {
     ship: "", port: "", port_name: "", aboard: "", first, last, email, phone, total_usd: String(total), rezdy_status: "", note: [note, timeIn ? `lands ${timeIn}` : "", timeOut ? `takes off ${timeOut}` : ""].filter(Boolean).join(" · "), airport: isHotelTrip ? "" : airport.code, zone: zone.key, zone2: zone2 ? zone2.key : "", to_label: place2, seats: String(seats),
   };
   const embedded = b.ui === "embedded" && !!process.env.STRIPE_PUBLISHABLE_KEY;
+  let fallback = b.ui === "embedded" && !embedded ? "no publishable key in the environment" : ""; /* why a hosted page came back instead of the form on the page: for the page's console, no secrets */
   const common = {
     mode: "payment",
     customer_email: email,
@@ -120,11 +121,12 @@ export const handler = async (event) => {
       return json(200, { clientSecret: session.client_secret, publishableKey: process.env.STRIPE_PUBLISHABLE_KEY, ref, ui: "embedded" });
     } catch (e) {
       console.error("stripe embedded session, falling back to the hosted page", e.message); /* the guest still pays, on Stripe's page */
+      fallback = `embedded session refused: ${e.message}`;
     }
   }
   try {
     const session = await stripe("/checkout/sessions", { ...common, success_url: `${SITE}/transfers/booked?session_id={CHECKOUT_SESSION_ID}`, cancel_url: `${SITE}/transfers?cancelled=1` });
-    return json(200, { url: session.url, ref, ui: "hosted" });
+    return json(200, { url: session.url, ref, ui: "hosted", ...(fallback ? { fallback } : {}) });
   } catch (e) {
     console.error("stripe session", e.message);
     return json(502, { error: "The card form didn't open." });
