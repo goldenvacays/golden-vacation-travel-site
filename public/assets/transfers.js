@@ -88,7 +88,7 @@
   function initTransfers(root) {
     var X = window.GV_TR || {}, RATES = window.GV_TR_RATES || { hotels: {}, rates: {}, zones: {} };
     if (!X.hotels) return;
-    var HOTELS = X.hotels.map(function (h) { return { name: h[0], slug: h[1], zone: h[2], rate: h[3] || "" }; });
+    var HOTELS = X.hotels.map(function (h) { return { name: h[0], slug: h[1], zone: h[2], rate: h[3] || "", alias: h[4] || "" }; });
     var ZONES = X.zones || [], ZONE = {}; ZONES.forEach(function (z) { ZONE[z.key] = z; });
     var AIR = {}; (X.airports || []).forEach(function (a) { AIR[a.code] = a; });
     var TRIP = {}; (X.trips || []).forEach(function (t) { TRIP[t.key] = t; });
@@ -308,7 +308,7 @@
     }
 
     /* ---- the hotel pickers: where they stay, and where a hotel-to-hotel ride goes ---- */
-    function searchText(h) { var s = " " + h.name.toLowerCase() + " "; Object.keys(TOWN_ALIASES).forEach(function (k) { if (s.indexOf(k) >= 0) s += TOWN_ALIASES[k]; }); return s; }
+    function searchText(h) { var s = " " + h.name.toLowerCase() + " " + (h.alias ? h.alias.toLowerCase() + " " : ""); Object.keys(TOWN_ALIASES).forEach(function (k) { if (s.indexOf(k) >= 0) s += TOWN_ALIASES[k]; }); return s; }
     function zoneRows(q) { var qq = (q || "").toLowerCase().trim(); return ZONES.filter(function (z) { if (!qq) return true; var t = " " + z.name.toLowerCase() + " " + z.airbnb.toLowerCase() + " " + (z.aliases || []).join(" ") + " airbnb villa apartment guesthouse area "; return t.indexOf(qq) >= 0; }); }
     var pickers = [];
     function closeLists() { pickers.forEach(function (pk) { pk.close(); }); }
@@ -318,7 +318,8 @@
       function close() { list.hidden = true; list.innerHTML = ""; cursor = -1; }
       function open(q) {
         var qq = (q || "").toLowerCase().trim();
-        var hits = HOTELS.filter(function (h) { return !qq || searchText(h).indexOf(qq) >= 0; });
+        if (qq.length < 2) { close(); return; } /* suggestions, not a drop-down: nothing shows until two letters are typed */
+        var hits = HOTELS.filter(function (h) { return searchText(h).indexOf(qq) >= 0; });
         var zones = zoneRows(q).slice(0, qq ? 4 : 12);
         list.innerHTML = ""; cursor = -1;
         if (!hits.length && !zones.length) { list.appendChild(el("li", "none", "Not on our list. Type the area (Negril, Ocho Rios, Kingston) for a villa or Airbnb, or ask us on WhatsApp.")); }

@@ -4,7 +4,25 @@
     "parent": "Golden Vacation & Travel",
     "updated": "2026-09-15",
     "source": "Prices: data/transfer-rates.json (from Hana's rate sheet via scripts/import-transfer-rates.py). Zones and drive times: the Areas and Routes tables in the Catalogue base appvoVONfeF3OLsLi. Customer prices only: no cost, no supplier, anywhere.",
-    "maxGuests": 16
+    "maxGuests": 16,
+    "hide": [
+      "Catalonia Montego Bay",
+      "Grand Muthu Runaway Bay Club Caribbean",
+      "Oasis at Sunset Beach / Sunset Beach Resort",
+      "Rooms Ocho Rios",
+      "Sunscape Splash Montego Bay",
+      "Runaway Bay Heart Hotel",
+      "Zoetry Montego Bay",
+      "Grand Decameron Montego Beach",
+      "Grand Decameron Cornwall Beach",
+      "Beaches Runaway Bay",
+      "Beaches Ocho Rios",
+      "Grand Pineapple Beach Negril"
+    ],
+    "hideNote": "Closed hotels Hana asked to keep off the transfers list (Sep 16 2026: the five she named plus the other six marked Closed on the status page); Runaway Bay Heart Hotel is the old name of Cardiff Hotel and Spa",
+    "hotelAliases": {
+      "Cardiff Hotel and Spa": "heart hotel runaway bay heart"
+    }
   },
   "page": {
     "kicker": "Airport transfers · Jamaica",
@@ -270,7 +288,6 @@
       "places": [
         "Round Hill Hotel and Villas",
         "Tryall Club",
-        "Sunscape Splash Montego Bay",
         "Toby's Resort",
         "Doctors Cave Beach Hotel",
         "El Greco Resort",
@@ -296,7 +313,6 @@
       "places": [
         "Half Moon",
         "Hilton Rose Hall Resort & Spa",
-        "Zoetry Montego Bay",
         "Excellence Oyster Bay"
       ]
     },
@@ -358,8 +374,7 @@
       "places": [
         "Bahia Principe Grand Jamaica",
         "Jewel Runaway Bay Beach Resort",
-        "Cardiff Hotel and Spa",
-        "Runaway Bay Heart Hotel"
+        "Cardiff Hotel and Spa"
       ]
     },
     {
@@ -384,7 +399,6 @@
         "Hermosa Cove",
         "Moon Palace Jamaica",
         "Hibiscus Lodge",
-        "Rooms Ocho Rios",
         "Jewel Paradise Cove",
         "Sandals Royal Plantation",
         "Goldeneye",

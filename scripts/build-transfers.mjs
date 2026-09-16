@@ -104,10 +104,11 @@ function zoneOf(r) {
   for (const z of T.zones) if (z.regions && z.regions.includes(r.region)) return z.key;
   return null;
 }
-const HOTELS = RESORTS.filter((r) => r.status !== "Permanently closed" && r.lat && r.lng)
+const HIDE = new Set(T.site.hide || []); // closed hotels kept off the transfers list, by name
+const HOTELS = RESORTS.filter((r) => r.status !== "Permanently closed" && r.lat && r.lng && !HIDE.has(r.name))
   .map((r) => ({ name: r.name, slug: slugify(r.name), zone: RATE_KEY_BY_NAME[r.name] ? R.hotels[RATE_KEY_BY_NAME[r.name]].zone : zoneOf(r), rate: RATE_KEY_BY_NAME[r.name] || null }))
   .filter((h) => h.zone)
-  .concat(T.zones.flatMap((z) => (z.places || []).filter((name) => !RESORTS.some((r) => r.name === name || slugify(r.name) === slugify(name))).map((name) => ({ name, slug: slugify(name), zone: z.key, rate: RATE_KEY_BY_NAME[name] || null }))))
+  .concat(T.zones.flatMap((z) => (z.places || []).filter((name) => !HIDE.has(name) && !RESORTS.some((r) => r.name === name || slugify(r.name) === slugify(name))).map((name) => ({ name, slug: slugify(name), zone: z.key, rate: RATE_KEY_BY_NAME[name] || null }))))
   .sort((a, b) => a.name.localeCompare(b.name));
 if (args.includes("--zones")) {
   for (const h of HOTELS) console.log(`${h.name.padEnd(46)} ${h.zone.padEnd(12)} ${h.rate ? "sheet: " + R.hotels[h.rate].name : "zone fallback"}`);
@@ -225,7 +226,7 @@ function transfersPage() {
   ];
   const cfg = {
     page: "transfers", whatsapp: S.whatsapp, origin: S.origin, jmdRate: S.jmdRate, today: TODAY, base: BASE, maxGuests: T.site.maxGuests, email: S.email,
-    hotels: HOTELS.map((h) => [h.name, h.slug, h.zone, h.rate || ""]),
+    hotels: HOTELS.map((h) => [h.name, h.slug, h.zone, h.rate || "", (T.site.hotelAliases || {})[h.name] || ""]), // [name, slug, zone, rate row, extra search words]
     zones: T.zones.map((z) => ({ key: z.key, name: z.name, airbnb: z.airbnbLabel, aliases: z.aliases || [] })),
     airports: T.airports, trips: T.trips, vehicles: T.vehicles, includes: T.includes, drive: T.drive, copy: { results: RS, checkout: CK, search: SR },
   };
