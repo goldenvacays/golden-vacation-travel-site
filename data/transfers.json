@@ -11,9 +11,15 @@
       "Oasis at Sunset Beach / Sunset Beach Resort",
       "Rooms Ocho Rios",
       "Sunscape Splash Montego Bay",
-      "Runaway Bay Heart Hotel"
+      "Runaway Bay Heart Hotel",
+      "Zoetry Montego Bay",
+      "Grand Decameron Montego Beach",
+      "Grand Decameron Cornwall Beach",
+      "Beaches Runaway Bay",
+      "Beaches Ocho Rios",
+      "Grand Pineapple Beach Negril"
     ],
-    "hideNote": "Closed hotels Hana asked to keep off the transfers list (Sep 16 2026); Runaway Bay Heart Hotel is the old name of Cardiff Hotel and Spa",
+    "hideNote": "Closed hotels Hana asked to keep off the transfers list (Sep 16 2026: the five she named plus the other six marked Closed on the status page); Runaway Bay Heart Hotel is the old name of Cardiff Hotel and Spa",
     "hotelAliases": {
       "Cardiff Hotel and Spa": "heart hotel runaway bay heart"
     }
@@ -307,7 +313,6 @@
       "places": [
         "Half Moon",
         "Hilton Rose Hall Resort & Spa",
-        "Zoetry Montego Bay",
         "Excellence Oyster Bay"
       ]
     },
