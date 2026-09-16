@@ -1,7 +1,10 @@
 /* Airport transfers. Runs after getaways.js (currency toggle), home.js (mobile menu) and transfers-rates.js (the prices). Dependency-free.
-   Search (hotel, airport, way, people, dates and flight times) -> a table of vehicles with a price each -> Choose -> name and card.
-   Prices come from window.GV_TR_RATES: a hotel's own row where it has one, otherwise its zone. tr-checkout recomputes the price
-   from the same data before the card page opens; anything the site can't price goes to WhatsApp instead. */
+   Search (hotel, airport, way, people, dates and flight times) -> a table of vehicles with a price each -> Choose -> the checkout page
+   (/transfers/checkout: who's travelling, then Stripe's card form embedded on the page) -> the booked page.
+   Prices come from window.GV_TR_RATES: one price per zone from each airport, hotel to hotel by zone pair. tr-checkout recomputes the
+   price from the same data before the card form opens; anything the site can't price goes to WhatsApp instead.
+   The ride travels from the search to the checkout page as a token in the URL (?b=...): the search fields, the vehicle and the
+   words the guest already saw. The checkout page never re-prices from it and the function never trusts it. */
 (function () {
   "use strict";
   var CFG = window.GV_CONFIG || {};
@@ -9,6 +12,7 @@
   var WA = CFG.whatsapp || "18763601567";
   var PREVIEW = !!CFG.preview;
   var FN = "/.netlify/functions/";
+  var BASE = CFG.base || "/transfers";
 
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
@@ -26,14 +30,39 @@
   function todayISO() { return (window.GV_TR && window.GV_TR.today) || new Date().toISOString().slice(0, 10); }
   function waUrl(text) { return "https://wa.me/" + WA + "?text=" + encodeURIComponent(text); }
   function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
+  function session(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) { return null; } }
   var FLIGHT = /^[A-Z0-9]{2,3}\s?\d{1,4}[A-Z]?$/;
   var TIME = /^(1[0-2]|0?[1-9])(:[0-5]\d)?\s*(am|pm)$/i;
+  var EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
   var TOWN_ALIASES = { "montego bay": " mobay ", "ocho rios": " ochi " };
   function focusEl(f) { if (!f) return; try { f.focus({ preventScroll: true }); } catch (e) { try { f.focus(); } catch (e2) {} } }
   function scrollTo(elm) { if (elm && elm.scrollIntoView) elm.scrollIntoView({ behavior: "smooth", block: "start" }); }
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
-  var SVG = { check: '<path d="M20 6L9 17l-5-5"></path>', users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path>', bag: '<path d="M6 7h12l1 14H5L6 7z"></path><path d="M9 7V5a3 3 0 0 1 6 0v2"></path>', arrow: '<path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path>', chat: '<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>' };
+  var SVG = { check: '<path d="M20 6L9 17l-5-5"></path>', users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path>', bag: '<path d="M6 7h12l1 14H5L6 7z"></path><path d="M9 7V5a3 3 0 0 1 6 0v2"></path>', arrow: '<path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path>', chat: '<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>', car: '<path d="M5 17h14M6 17l1.5-6h9L18 17M4 12h16M7 17v2M17 17v2"></path>', plane: '<path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 11l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 2.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"></path>', pin: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle>', person: '<circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"></path>' };
   function icon(name, size) { var s = size || 16; return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block">' + SVG[name] + "</svg>"; }
+  /* the time boxes are native pickers: the value comes back as 24-hour "14:35"; the driver, the checkout and the function get "2:35pm" */
+  function timeText(v) {
+    v = String(v == null ? "" : v).trim().toLowerCase().replace(/\s+/g, "");
+    var m = v.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+    if (!m) return v; /* already "2:35pm" (a browser without a time picker falls back to a text box) */
+    var h = Number(m[1]), ap = h >= 12 ? "pm" : "am";
+    return (h % 12 || 12) + ":" + m[2] + ap;
+  }
+  /* the booking token: plain JSON, base64url, in the URL between the search and the checkout page */
+  function encodeToken(o) { try { return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); } catch (e) { return ""; } }
+  function decodeToken(s) { if (!s) return null; try { var b = String(s).replace(/-/g, "+").replace(/_/g, "/"); while (b.length % 4) b += "="; var o = JSON.parse(decodeURIComponent(escape(atob(b)))); return o && typeof o === "object" ? o : null; } catch (e) { return null; } }
+  function checkoutUrl(tok) { return BASE + "/checkout?b=" + tok; }
+  function searchUrl(tok) { return BASE + "/?b=" + tok; }
+  /* a yellow line above the thing it is about (the search button, Continue, the card form) */
+  function alertBox(root, text, anchor, waFn) {
+    var box = $(".tr-alert", root);
+    if (box && box.nextSibling !== anchor) { box.remove(); box = null; }
+    if (!box) { box = el("div", "tr-alert"); box.setAttribute("role", "alert"); anchor.parentNode.insertBefore(box, anchor); }
+    box.innerHTML = ""; box.appendChild(document.createTextNode(text + " "));
+    if (waFn) { var a = el("a", "", "Send by WhatsApp"); a.href = "#"; a.style.cssText = "text-decoration:underline;color:inherit;font-weight:800"; a.addEventListener("click", function (ev) { ev.preventDefault(); waFn(); }); box.appendChild(a); }
+    return box;
+  }
+  function clearAlertIn(root) { var box = $(".tr-alert", root); if (box) box.remove(); }
 
   /* ---- the calendar on the date boxes (the same one the tour pages use): greys past days, keeps the departure after the arrival ---- */
   function makeCal(input, opts, cals) {
@@ -103,8 +132,6 @@
       outWrap: $("#s-out-wrap", root), date2: $("#s-date2", root), flightOut: $("#s-flight-out", root), time2: $("#s-time2", root),
       go: $("#s-go", root), hint: $("#s-hint", root),
       results: $("#results", root), rTitle: $("#r-title", root), rSub: $("#r-sub", root), rNote: $("#r-note", root), rTable: $("#r-table", root), rSharedWa: $("#r-shared-wa", root),
-      checkout: $("#checkout", root), ckSum: $("#ck-sum", root), book: $("#book", root), first: $("#pf-first", root), last: $("#pf-last", root), email: $("#pf-email", root), phone: $("#pf-phone", root), note: $("#pf-note", root),
-      preview: $("#pf-preview", root), msg: $("#msg-preview", root), cta: $("#cta", root), ctaLabel: $("#cta-label", root), ctaSub: $("#cta-sub", root), ctaAlt: $("#cta-alt", root), ctaWa: $("#cta-wa", root),
     };
     var st = { placeMode: "", place: null, zone: "", placeName: "", place2Mode: "", place2: null, zone2: "", place2Name: "", searched: null, pick: null, ref: newRef() };
 
@@ -116,24 +143,28 @@
     function placeTextOf(mode, place, zone, name) { return mode === "hotel" && place ? place.name : mode === "zone" && zone && ZONE[zone] ? (name ? name + " (" + ZONE[zone].name + ")" : ZONE[zone].airbnb) : ""; }
     function placeText() { return placeTextOf(st.placeMode, st.place, st.zone, st.placeName); }
     function place2Text() { return placeTextOf(st.place2Mode, st.place2, st.zone2, st.place2Name); }
-    /* the time boxes are native pickers: the value comes back as 24-hour "14:35", the driver and the checkout get "2:35pm" */
-    function timeText(input) {
-      if (!input) return "";
-      var v = input.value.trim().toLowerCase().replace(/\s+/g, "");
-      var m = v.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
-      if (!m) return v; /* already "2:35pm" (a browser without a time picker falls back to a text box) */
-      var h = Number(m[1]), ap = h >= 12 ? "pm" : "am";
-      return (h % 12 || 12) + ":" + m[2] + ap;
-    }
+    function tt(input) { return input ? timeText(input.value) : ""; }
 
     /* ---- prices for the search: the hotel's own row, or its zone ---- */
+    var LINKS = RATES.links || {}, EXC = RATES.exceptions || [];
+    var lastExcluded = 0;
+    function linkOffers(a, b) { if (!a || !b || a === b) return null; return LINKS[a + ">" + b] || LINKS[[a, b].sort().join("|")] || null; }
     function offersFor() {
-      if (!st.zone || isHotel()) return null;
-      var airport = e.airport.value, t = trip();
-      var byHotel = st.placeMode === "hotel" && st.place.rate && RATES.rates[st.place.rate] && RATES.rates[st.place.rate][airport] && RATES.rates[st.place.rate][airport][t];
-      var byZone = RATES.zones[st.zone] && RATES.zones[st.zone][airport] && RATES.zones[st.zone][airport][t];
-      var list = byHotel || byZone || null;
-      return list ? list.map(function (o) { return { v: o[0], seats: o[1], bags: o[2], price: o[3], exact: !!byHotel }; }) : null;
+      lastExcluded = 0;
+      if (!st.zone) return null;
+      var list = null;
+      if (isHotel()) {
+        list = linkOffers(st.zone, st.zone2);
+      } else {
+        var airport = e.airport.value, t = trip();
+        list = RATES.zones[st.zone] && RATES.zones[st.zone][airport] && RATES.zones[st.zone][airport][t] || null;
+        if (list && st.placeMode === "hotel" && st.place) {
+          var slug = st.place.slug, before = list.length;
+          list = list.filter(function (o) { return !EXC.some(function (x) { return x.airport === airport && x.zone === st.zone && x.seats === o[1] && x.hotels.indexOf(slug) >= 0; }); });
+          lastExcluded = before - list.length;
+        }
+      }
+      return list ? list.map(function (o) { return { v: o[0], seats: o[1], bags: o[2], price: o[3], multi: !!o[4] }; }) : null;
     }
     /* one row per vehicle kind: the cheapest offer that seats the party */
     function rowsFor(list, n) {
@@ -149,10 +180,10 @@
     }
     function driveText() { if (isHotel() || !st.zone) return ""; var d = DRIVE[e.airport.value]; return d && d[st.zone] ? d[st.zone] : ""; }
     function whenText() {
-      if (isHotel()) return (e.date.value ? longDate(e.date.value) : "") + (timeText(e.time) ? " at " + timeText(e.time) : "");
+      if (isHotel()) return (e.date.value ? longDate(e.date.value) : "") + (tt(e.time) ? " at " + tt(e.time) : "");
       var parts = [];
-      if (needIn()) parts.push("Arrives " + longDate(e.date.value) + (e.flightIn.value ? " on " + e.flightIn.value.trim().toUpperCase() : "") + (timeText(e.time) ? " at " + timeText(e.time) : ""));
-      if (needOut()) { var fo = needIn() ? e.flightOut : e.flightIn, to = needIn() ? e.time2 : e.time; parts.push("Departs " + longDate(needIn() ? e.date2.value : e.date.value) + (fo.value ? " on " + fo.value.trim().toUpperCase() : "") + (timeText(to) ? " at " + timeText(to) : "")); }
+      if (needIn()) parts.push("Arrives " + longDate(e.date.value) + (e.flightIn.value ? " on " + e.flightIn.value.trim().toUpperCase() : "") + (tt(e.time) ? " at " + tt(e.time) : ""));
+      if (needOut()) { var fo = needIn() ? e.flightOut : e.flightIn, to = needIn() ? e.time2 : e.time; parts.push("Departs " + longDate(needIn() ? e.date2.value : e.date.value) + (fo.value ? " on " + fo.value.trim().toUpperCase() : "") + (tt(to) ? " at " + tt(to) : "")); }
       return parts.join(". ");
     }
     function peopleText() { var n = people(); return n > MAXG ? "more than " + MAXG + " people" : n + (n === 1 ? " person" : " people"); }
@@ -167,37 +198,25 @@
       }
       if (!e.date.value) return { f: e.date, t: isHotel() ? "Pick the date." : needIn() ? "Pick your arrival date." : "Pick your departure date.", cal: 0 };
       if (e.date.value < today) return { f: e.date, t: "That date has passed.", cal: 0 };
-      if (isHotel()) { if (!TIME.test(timeText(e.time))) return { f: e.time, t: "What time should the driver come?" }; return null; }
+      if (isHotel()) { if (!TIME.test(tt(e.time))) return { f: e.time, t: "What time should the driver come?" }; return null; }
       if (needIn()) {
         if (!FLIGHT.test(e.flightIn.value.trim().toUpperCase())) return { f: e.flightIn, t: "We need the arriving flight number, e.g. AA1497." };
-        if (!TIME.test(timeText(e.time))) return { f: e.time, t: "What time does it land?" };
+        if (!TIME.test(tt(e.time))) return { f: e.time, t: "What time does it land?" };
       }
       if (trip() === "out") { /* one way out uses the first row's boxes, relabelled */
         if (!FLIGHT.test(e.flightIn.value.trim().toUpperCase())) return { f: e.flightIn, t: "We need the departing flight number, e.g. AA1496." };
-        if (!TIME.test(timeText(e.time))) return { f: e.time, t: "What time does it take off?" };
+        if (!TIME.test(tt(e.time))) return { f: e.time, t: "What time does it take off?" };
       }
       if (trip() === "both") {
         if (!e.date2.value) return { f: e.date2, t: "Pick your departure date.", cal: 1 };
         if (e.date2.value < e.date.value) return { f: e.date2, t: "The departure is before the arrival.", cal: 1 };
         if (!FLIGHT.test(e.flightOut.value.trim().toUpperCase())) return { f: e.flightOut, t: "We need the departing flight number, e.g. AA1496." };
-        if (!TIME.test(timeText(e.time2))) return { f: e.time2, t: "What time does it take off?" };
+        if (!TIME.test(tt(e.time2))) return { f: e.time2, t: "What time does it take off?" };
       }
       return null;
     }
-    function contactProblem() {
-      if (!(e.first.value || "").trim() || !(e.last.value || "").trim()) return { f: e.first, t: "We need a first and last name for the booking." };
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test((e.email.value || "").trim())) return { f: e.email, t: "That email doesn't look right." };
-      if (!(e.phone.value || "").trim()) return { f: e.phone, t: "We need a phone or WhatsApp number, for the driver." };
-      return null;
-    }
-    function alertBox(text, anchor, offerWa) {
-      var box = $("#tr-alert", root);
-      if (box && box.nextSibling !== anchor) { box.remove(); box = null; }
-      if (!box) { box = el("div", ""); box.id = "tr-alert"; box.setAttribute("role", "alert"); anchor.parentNode.insertBefore(box, anchor); }
-      box.innerHTML = ""; box.appendChild(document.createTextNode(text + " "));
-      if (offerWa) { var a = el("a", "", "Send by WhatsApp"); a.href = "#"; a.style.cssText = "text-decoration:underline;color:inherit;font-weight:800"; a.addEventListener("click", function (ev) { ev.preventDefault(); sendWhatsApp(); }); box.appendChild(a); }
-    }
-    function clearAlert() { var box = $("#tr-alert", root); if (box) box.remove(); }
+    function warn(text, anchor, offerWa) { alertBox(root, text, anchor, offerWa ? sendWhatsApp : null); }
+    function clearAlert() { clearAlertIn(root); }
 
     /* ---- the search form: what shows depends on the way ---- */
     function renderForm() {
@@ -223,9 +242,9 @@
       e.results.hidden = false;
       e.rTitle.textContent = (isHotel() ? placeText() + " to " + place2Text() : placeText()) + ".";
       e.rSub.textContent = rideLabel() + (driveText() ? ", " + driveText() : "") + ". " + whenText() + ". " + peopleText().charAt(0).toUpperCase() + peopleText().slice(1) + ".";
-      e.rNote.textContent = list ? (list[0] && list[0].exact ? "Prices for this hotel, per vehicle, taxes included" : "Prices for the " + ZONE[st.zone].name + " area, per vehicle, taxes included") : "";
+      e.rNote.textContent = list ? (isHotel() ? "Prices between the " + ZONE[st.zone].name + " and " + ZONE[st.zone2].name + " areas, per vehicle, taxes included" : "Prices for the " + ZONE[st.zone].name + " area, per vehicle, taxes included") : "";
       e.rTable.innerHTML = "";
-      var quoteWhy = isHotel() ? "quote" : !list ? "noroute" : n > MAXG ? "big" : !rows.length ? "none" : "";
+      var quoteWhy = !list ? (isHotel() ? "quote" : "noroute") : n > MAXG ? "big" : !rows.length ? (lastExcluded ? "quote" : "none") : "";
       if (quoteWhy) {
         var q = el("div", "rt-row quote");
         var qt = el("div", "rt-veh"); qt.appendChild(el("b", "", quoteWhy === "big" || quoteWhy === "none" ? "Two vehicles or a bus" : "Priced in the chat"));
@@ -235,10 +254,10 @@
       } else {
         rows.forEach(function (o) {
           var row = el("div", "rt-row" + (st.pick && st.pick.v === o.v && st.pick.seats === o.seats ? " pick" : ""));
-          var veh = el("div", "rt-veh"); veh.appendChild(el("b", "", VEH[o.v] ? VEH[o.v].label : o.v)); veh.appendChild(el("small", "", VEH[o.v] ? VEH[o.v].sub : "")); row.appendChild(veh);
+          var veh = el("div", "rt-veh"); veh.appendChild(el("b", "", (VEH[o.v] ? VEH[o.v].label : o.v) + (o.multi ? ", two or more" : ""))); veh.appendChild(el("small", "", o.multi ? "Two or more vehicles for your party" : VEH[o.v] ? VEH[o.v].sub : "")); row.appendChild(veh);
           var cap = el("div", "rt-cap"); var c1 = el("span"); c1.innerHTML = icon("users", 15) + "up to " + o.seats + " people"; var c2 = el("span"); c2.innerHTML = icon("bag", 15) + o.bags + " bags"; cap.appendChild(c1); cap.appendChild(c2); row.appendChild(cap);
           var inc = el("div", "rt-inc" + (trip() === "both" ? "" : " one"));
-          var cols = trip() === "both" ? [["Arrival", (INC.in || []).concat(INC.all || [])], ["Departure", INC.out || []]] : [[trip() === "out" ? "Departure" : "Arrival", (INC[trip()] || []).concat(INC.all || [])]];
+          var cols = trip() === "both" ? [["Arrival", (INC.in || []).concat(INC.all || [])], ["Departure", INC.out || []]] : [[isHotel() ? "Pickup" : trip() === "out" ? "Departure" : "Arrival", (INC[trip()] || []).concat(INC.all || [])]];
           cols.forEach(function (col) { var cc = el("div", "rt-inc-col"); cc.appendChild(el("b", "", col[0])); col[1].forEach(function (line) { var sp = el("span"); sp.innerHTML = icon("check", 13) + "<i></i>"; sp.lastChild.replaceWith(document.createTextNode(line)); cc.appendChild(sp); }); inc.appendChild(cc); });
           row.appendChild(inc);
           var pr = el("div", "rt-price"); var pb = el("b"); var pu = el("span", "usd-v", usd(o.price)); var pj = el("span", "jmd-v", jmdOf(o.price)); pb.appendChild(pu); pb.appendChild(pj); pr.appendChild(pb); pr.appendChild(el("small", "", trip() === "both" ? "round trip, per vehicle" : "one way, per vehicle")); row.appendChild(pr);
@@ -249,23 +268,26 @@
       if (e.rSharedWa) e.rSharedWa.href = waUrl("Hi Golden Vacation! Is there a shared shuttle for " + rideLabel() + " on " + longDate(e.date.value) + ", " + peopleText() + "? Ref " + st.ref);
     }
 
-    /* ---- Choose -> the checkout card ---- */
-    function choose(o) {
-      st.pick = o; renderResults(); renderCheckout(); clearAlert();
-      e.checkout.hidden = false; scrollTo(e.checkout); setTimeout(function () { focusEl(e.first); }, 500);
-      track("tr_choose", { ride: rideLabel(), vehicle: o.v, seats: o.seats, price: o.price, code: st.ref });
+    /* ---- Choose -> the checkout page, with the ride in the URL ---- */
+    function bookingToken(o) {
+      var t = trip();
+      return encodeToken({
+        v: 1, ref: st.ref,
+        hotel: st.placeMode === "hotel" && st.place ? st.place.slug : "", zone: st.zone, placeKind: st.placeMode, placeName: st.placeName, place: placeText(),
+        hotel2: isHotel() && st.place2Mode === "hotel" && st.place2 ? st.place2.slug : "", zone2: isHotel() ? st.zone2 : "", place2Kind: isHotel() ? st.place2Mode : "", place2Name: isHotel() ? st.place2Name : "", place2: isHotel() ? place2Text() : "",
+        airport: e.airport.value, trip: t, people: people(), vehicle: o.v, seats: o.seats, bags: o.bags, price: o.price, multi: o.multi ? 1 : 0,
+        date: e.date.value, date2: t === "both" ? e.date2.value : "",
+        flightIn: needIn() ? e.flightIn.value.trim().toUpperCase() : "", flightOut: t === "out" ? e.flightIn.value.trim().toUpperCase() : t === "both" ? e.flightOut.value.trim().toUpperCase() : "",
+        timeIn: needIn() ? e.time.value : "", timeOut: t === "out" ? e.time.value : t === "both" ? e.time2.value : "", time: isHotel() ? e.time.value : "",
+        veh: (VEH[o.v] ? VEH[o.v].label : o.v) + (o.multi ? ", two or more" : ""), ride: rideLabel(), drive: driveText(), when: whenText(), guests: peopleText(),
+      });
     }
-    function renderCheckout() {
-      var o = st.pick; if (!o) { e.checkout.hidden = true; return; }
-      e.ckSum.innerHTML = "";
-      e.ckSum.appendChild(el("b", "hh", (VEH[o.v] ? VEH[o.v].label : o.v) + ", up to " + o.seats));
-      e.ckSum.appendChild(el("div", "", rideLabel() + (driveText() ? ", " + driveText() : "")));
-      e.ckSum.appendChild(el("div", "", isHotel() ? placeText() + " to " + place2Text() : placeText()));
-      e.ckSum.appendChild(el("div", "", whenText()));
-      e.ckSum.appendChild(el("div", "", peopleText() + ", " + o.bags + " bags"));
-      var tot = el("div", "ck-total"); tot.appendChild(document.createTextNode("Total ")); var tb = el("b", "", usd(o.price)); tot.appendChild(tb); tot.appendChild(document.createTextNode(trip() === "both" ? ", round trip, taxes included" : ", taxes included")); e.ckSum.appendChild(tot);
-      var ch = el("button", "link-btn", "Change the ride"); ch.type = "button"; ch.addEventListener("click", function () { scrollTo(e.results); }); e.ckSum.appendChild(ch);
-      e.preview.hidden = true; e.ctaLabel.textContent = C.checkout.cta; e.ctaSub.textContent = C.checkout.ctaSub; e.ctaAlt.hidden = false;
+    function choose(o) {
+      st.pick = o; renderResults(); clearAlert();
+      var tok = bookingToken(o);
+      track("tr_choose", { ride: rideLabel(), vehicle: o.v, seats: o.seats, price: o.price, code: st.ref });
+      if (PREVIEW) { window.GV_TR_PREVIEW_TOKEN = tok; if (window.GV_TR_PREVIEW_GO) window.GV_TR_PREVIEW_GO("checkout"); return; }
+      window.location.href = checkoutUrl(tok);
     }
 
     /* ---- WhatsApp, for anything the site can't price or the guest prefers ---- */
@@ -276,8 +298,6 @@
       lines.push("When: " + whenText());
       lines.push("People: " + peopleText() + (o ? ", " + (VEH[o.v] ? VEH[o.v].label.toLowerCase() : o.v) + " (up to " + o.seats + ")" : ""));
       if (o) lines.push("Price on the site: " + usd(o.price) + (trip() === "both" ? " round trip" : " one way")); else lines.push("Please price it for us.");
-      if ((e.note.value || "").trim()) lines.push("Note: " + e.note.value.trim());
-      var who = [(e.first.value || "").trim(), (e.last.value || "").trim()].filter(Boolean).join(" "); if (who) lines.push("Name: " + who);
       lines.push("Ref " + st.ref);
       return lines.join("\n");
     }
@@ -290,26 +310,9 @@
     }
     function sendWhatsApp() { var text = message(); track("tr_request", { ride: rideLabel(), code: st.ref }); logEnquiry(text); window.open(waUrl(text), "_blank", "noopener"); }
 
-    /* ---- card checkout: the function recomputes the price from the same data ---- */
-    function checkout() {
-      var cp = contactProblem(); if (cp) { alertBox(cp.t, e.cta); focusEl(cp.f); return; }
-      if (!st.pick) { alertBox("Pick a vehicle first.", e.cta); scrollTo(e.results); return; }
-      if (PREVIEW) { alertBox("Preview only: on the live site this opens the card page.", e.cta); return; }
-      e.cta.disabled = true; e.ctaLabel.textContent = "Opening the payment page";
-      var body = { hotel: st.placeMode === "hotel" ? st.place.slug : "", zone: st.zone, place: placeText(), placeKind: st.placeMode, airport: e.airport.value, trip: trip(), people: people(), vehicle: st.pick.v, seats: st.pick.seats,
-        date: e.date.value, date2: trip() === "both" ? e.date2.value : "", flightIn: needIn() ? e.flightIn.value.trim().toUpperCase() : "", flightOut: trip() === "out" ? e.flightIn.value.trim().toUpperCase() : trip() === "both" ? e.flightOut.value.trim().toUpperCase() : "",
-        timeIn: needIn() ? timeText(e.time) : "", timeOut: trip() === "out" ? timeText(e.time) : trip() === "both" ? timeText(e.time2) : "", time: isHotel() ? timeText(e.time) : "",
-        note: (e.note.value || "").trim(), ref: st.ref, customer: { first: e.first.value.trim(), last: e.last.value.trim(), email: e.email.value.trim(), phone: e.phone.value.trim() } };
-      track("tr_checkout", { ride: rideLabel(), vehicle: body.vehicle, total: st.pick.price, code: st.ref });
-      fetch(FN + "tr-checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
-        .then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); })
-        .then(function (x) { if (x.j && x.j.url) { window.location.href = x.j.url; return; } throw new Error((x.j && x.j.error) || "The payment page didn't open."); })
-        .catch(function (err) { e.cta.disabled = false; e.ctaLabel.textContent = C.checkout.cta; alertBox((err && err.message ? err.message : "Something went wrong.") + " You can send the same booking by WhatsApp and we'll confirm it by hand.", e.cta, true); });
-    }
-
     /* ---- the hotel pickers: where they stay, and where a hotel-to-hotel ride goes ---- */
     function searchText(h) { var s = " " + h.name.toLowerCase() + " " + (h.alias ? h.alias.toLowerCase() + " " : ""); Object.keys(TOWN_ALIASES).forEach(function (k) { if (s.indexOf(k) >= 0) s += TOWN_ALIASES[k]; }); return s; }
-    function zoneRows(q) { var qq = (q || "").toLowerCase().trim(); return ZONES.filter(function (z) { if (!qq) return true; var t = " " + z.name.toLowerCase() + " " + z.airbnb.toLowerCase() + " " + (z.aliases || []).join(" ") + " airbnb villa apartment guesthouse area "; return t.indexOf(qq) >= 0; }); }
+    function zoneRows(q) { var qq = (q || "").toLowerCase().trim(); return ZONES.filter(function (z) { if (z.hidden) return false; if (!qq) return true; var t = " " + z.name.toLowerCase() + " " + z.airbnb.toLowerCase() + " " + (z.aliases || []).join(" ") + " airbnb villa apartment guesthouse area "; return t.indexOf(qq) >= 0; }); }
     var pickers = [];
     function closeLists() { pickers.forEach(function (pk) { pk.close(); }); }
     function makePicker(which, input, list, clearBtn) {
@@ -361,7 +364,7 @@
       renderForm(); afterChange();
     }
     /* any change to the search after a result is on screen hides the result: the guest searches again */
-    function afterChange() { if (st.searched) { st.searched = null; st.pick = null; e.results.hidden = true; e.checkout.hidden = true; } }
+    function afterChange() { if (st.searched) { st.searched = null; st.pick = null; e.results.hidden = true; } }
     makePicker("from", e.hotelIn, e.hotelList, e.hotelClear);
     makePicker("to", e.toIn, e.toList, e.toClear);
     e.name.addEventListener("input", function () { st.placeName = e.name.value.trim(); afterChange(); });
@@ -380,21 +383,41 @@
     e.form.addEventListener("submit", function (ev) {
       ev.preventDefault();
       var p = searchProblem();
-      if (p) { alertBox(p.t, e.go.parentNode); if (p.cal != null && cals[p.cal]) cals[p.cal].open(); else focusEl(p.f); return; }
-      clearAlert(); st.searched = { at: Date.now() }; st.pick = null; e.checkout.hidden = true;
+      if (p) { warn(p.t, e.go.parentNode); if (p.cal != null && cals[p.cal]) cals[p.cal].open(); else focusEl(p.f); return; }
+      clearAlert(); st.searched = { at: Date.now() }; st.pick = null;
       renderResults(); scrollTo(e.results);
       track("tr_search", { ride: rideLabel(), trip: trip(), people: people(), exact: !!(st.place && st.place.rate) });
     });
-    e.book.addEventListener("submit", function (ev) { ev.preventDefault(); checkout(); });
-    e.ctaWa.addEventListener("click", function (ev) { ev.preventDefault(); sendWhatsApp(); });
 
     /* ---- what the URL and the last visit already know ---- */
     var q = new URLSearchParams(location.search);
-    var want = q.get("hotel") || store("gv_hotel"), h0 = want ? HOTELS.filter(function (h) { return h.slug === want; })[0] : null;
+    /* back from the checkout page ("Change", "Back to the options"): the whole search comes back and the table is shown again */
+    var tok = decodeToken(q.get("b") || (PREVIEW ? window.GV_TR_PREVIEW_TOKEN : "")), restored = false;
+    if (tok && tok.v === 1 && tok.zone) {
+      var hb = tok.hotel ? HOTELS.filter(function (h) { return h.slug === tok.hotel; })[0] : null;
+      if (hb) { st.placeMode = "hotel"; st.place = hb; st.zone = hb.zone; }
+      else if (ZONE[tok.zone]) { st.placeMode = "zone"; st.place = null; st.zone = tok.zone; st.placeName = String(tok.placeName || ""); e.name.value = st.placeName; }
+      if (TRIP[tok.trip]) e.trip.value = tok.trip;
+      if (tok.trip === "hotel") {
+        var hb2 = tok.hotel2 ? HOTELS.filter(function (h) { return h.slug === tok.hotel2; })[0] : null;
+        if (hb2) { st.place2Mode = "hotel"; st.place2 = hb2; st.zone2 = hb2.zone; }
+        else if (ZONE[tok.zone2]) { st.place2Mode = "zone"; st.place2 = null; st.zone2 = tok.zone2; st.place2Name = String(tok.place2Name || ""); e.toName.value = st.place2Name; }
+      }
+      if (AIR[tok.airport]) e.airport.value = tok.airport;
+      var pt = parseInt(tok.people, 10); if (pt >= 1 && pt <= MAXG + 1) e.people.value = String(pt);
+      if (/^\d{4}-\d{2}-\d{2}$/.test(tok.date || "")) e.date.value = tok.date;
+      if (/^\d{4}-\d{2}-\d{2}$/.test(tok.date2 || "")) e.date2.value = tok.date2;
+      if (tok.trip === "hotel") e.time.value = String(tok.time || "");
+      else if (tok.trip === "out") { e.flightIn.value = String(tok.flightOut || ""); e.time.value = String(tok.timeOut || ""); }
+      else { e.flightIn.value = String(tok.flightIn || ""); e.time.value = String(tok.timeIn || ""); if (tok.trip === "both") { e.flightOut.value = String(tok.flightOut || ""); e.time2.value = String(tok.timeOut || ""); } }
+      st.ref = /^GV-TR-[A-Z0-9]{4}$/.test(tok.ref || "") ? tok.ref : st.ref;
+      restored = true;
+    }
+    var want = restored ? "" : q.get("hotel") || store("gv_hotel"), h0 = want ? HOTELS.filter(function (h) { return h.slug === want; })[0] : null;
     if (h0) { st.placeMode = "hotel"; st.place = h0; st.zone = h0.zone; }
-    if (q.get("airport") && AIR[q.get("airport")]) e.airport.value = q.get("airport");
+    if (!restored && q.get("airport") && AIR[q.get("airport")]) e.airport.value = q.get("airport");
     /* the home page search hands over here with the hotel typed as text, the people and the arrival date */
-    var qText = (q.get("q") || "").trim(), handed = false, pendingText = "";
+    var qText = restored ? "" : (q.get("q") || "").trim(), handed = false, pendingText = "";
     if (qText && !h0) {
       var lc = qText.toLowerCase();
       var exact = HOTELS.filter(function (h) { return h.name.toLowerCase() === lc; })[0];
@@ -405,19 +428,272 @@
       else pendingText = qText;
       handed = true;
     }
-    var pq = parseInt(q.get("people") || "", 10);
+    var pq = restored ? NaN : parseInt(q.get("people") || "", 10);
     if (pq >= 1 && pq <= MAXG + 1) { e.people.value = String(pq); handed = true; }
-    var dq = q.get("date") || "";
+    var dq = restored ? "" : q.get("date") || "";
     if (/^\d{4}-\d{2}-\d{2}$/.test(dq) && dq >= today) { e.date.value = dq; if (cals[0]) cals[0].refresh(); handed = true; }
     renderForm();
     if (pendingText) e.hotelIn.value = pendingText; /* after renderForm, which paints the box from the state; the list opens on focus, filtered to the text */
-    if (handed) setTimeout(function () {
+    if (restored) {
+      var rp = searchProblem();
+      if (!rp) { st.searched = { at: Date.now() }; st.pick = { v: tok.vehicle, seats: Number(tok.seats) }; renderResults(); setTimeout(function () { scrollTo(e.results); }, 80); }
+      else setTimeout(function () { scrollTo(e.form); warn(rp.t, e.go.parentNode); if (rp.cal != null && cals[rp.cal]) cals[rp.cal].open(); else focusEl(rp.f); }, 80);
+    } else if (handed) setTimeout(function () {
       scrollTo(e.form);
       if (!st.zone) focusEl(e.hotelIn);
       else if (st.placeMode === "zone" && !st.placeName && e.name) focusEl(e.name);
       else focusEl(e.flightIn);
     }, 80);
-    if (q.get("cancelled")) alertBox("The payment page was closed. Nothing was charged. Search again and the prices are still here.", e.go.parentNode);
+    if (q.get("cancelled")) warn("The payment page was closed. Nothing was charged. Search again and the prices are still here.", e.go.parentNode);
+  }
+
+  /* ================= the checkout page: who's travelling, then the card form =================
+     The ride arrives in the URL (?b=token). Two states: "details" (the ride card and the guest form open, the payment card waiting
+     on the right) and "pay" (ride and guest folded to one line each with Change / Edit, Stripe's form mounted in the payment card).
+     tr-checkout builds the Checkout Session from the raw fields (never the words or the price in the token) and returns the client
+     secret plus the publishable key; if Stripe's script is blocked the same call returns a hosted card page to redirect to. */
+  function initCheckout(root) {
+    var X = window.GV_TR || {}, C = (X.copy && X.copy.checkout) || {}, INC = X.includes || {}, today = X.today || todayISO();
+    var q = new URLSearchParams(location.search);
+    var tok = decodeToken(q.get("b") || "") || (PREVIEW ? (window.GV_TR_PREVIEW_TOKEN ? decodeToken(window.GV_TR_PREVIEW_TOKEN) : X.previewBooking) : null);
+    var AIRN = {}; (X.airports || []).forEach(function (a) { AIRN[a.code] = a.name; });
+    var ZN = X.zones || {};
+    var g = {
+      grid: $("#ck-grid", root), empty: $("#ck-empty", root), sub: $("#ck-sub", root), back: $("#ck-back", root), steps: $("#ck-steps", root), hero: $(".ck-hero", root),
+      ride: $("#ck-ride", root), rideChange: $("#ck-ride-change", root), rideTitle: $("#ck-ride-title", root), rideWhen: $("#ck-ride-when", root),
+      map: $("#ck-map", root), mapRoute: $("#ck-map-route", root), mapA: $("#ck-map-a", root), mapB: $("#ck-map-b", root), mapAl: $("#ck-map-al", root), mapBl: $("#ck-map-bl", root),
+      zoom: $("#ck-map-zoom", root), zoomIn: $("#ck-map-zoom-in", root), zRoute: $("#ck-map-zroute", root), zA: $("#ck-map-za", root), zB: $("#ck-map-zb", root), zAl: $("#ck-map-zal", root), zBl: $("#ck-map-zbl", root), lens: $("#ck-map-lens", root), lensBg: $("#ck-map-lens-bg", root), clipC: $("#ck-map-clipc", root), tie: $("#ck-map-tie", root), spot: $("#ck-map-spot", root), mapSvg: $(".ck-map-svg", root),
+      routeA: $("#ck-route-a", root), routeAs: $("#ck-route-as", root), routeB: $("#ck-route-b", root), routeBs: $("#ck-route-bs", root), routeMid: $("#ck-route-mid", root), routeIa: $("#ck-route-ia", root), routeIb: $("#ck-route-ib", root), route: $("#ck-route", root),
+      guest: $("#ck-guest", root), form: $("#ck-form", root), first: $("#ck-first", root), last: $("#ck-last", root), email: $("#ck-email", root), phone: $("#ck-phone", root), note: $("#ck-note", root), hint: $("#ck-hint", root), go: $("#ck-go", root),
+      rows: $("#ck-rows", root), rowRideT: $("#ck-row-ride-t", root), rowRideD: $("#ck-row-ride-d", root), rowRideChange: $("#ck-row-ride-change", root), rowGuestT: $("#ck-row-guest-t", root), rowGuestD: $("#ck-row-guest-d", root), rowEdit: $("#ck-row-edit", root), rowsNote: $("#ck-rows-note", root),
+      pay: $("#ck-pay", root), payHead: $("#ck-pay-head", root), payTitle: $("#ck-pay-title", root), total: $("#ck-total", root), totalJ: $("#ck-total-j", root), jmd: $("#ck-jmd", root), usdSmall: $("#ck-usd", root), totSub: $("#ck-tot-sub", root), inc: $("#ck-inc", root), stripe: $("#ck-stripe", root), ph: $("#ck-ph", root), wa: $("#ck-wa", root),
+    };
+    if (!g.grid) return;
+    var ok = tok && tok.v === 1 && tok.zone && tok.vehicle && tok.seats && tok.trip && tok.date;
+    if (!ok) { g.grid.hidden = true; if (g.empty) g.empty.hidden = false; if (g.steps) g.steps.hidden = true; if (g.map) g.map.hidden = true; if (g.sub) g.sub.textContent = C.emptyText || ""; return; }
+    var t = String(tok.trip), isHotel = t === "hotel", needIn = t === "in" || t === "both", needOut = t === "out" || t === "both";
+    var price = Number(tok.price) || 0, seats = Number(tok.seats) || 0, ref = /^GV-TR-[A-Z0-9]{4}$/.test(tok.ref || "") ? tok.ref : newRef();
+    var placeLine = isHotel ? String(tok.place || "") + " to " + String(tok.place2 || "") : String(tok.place || "");
+    var back = searchUrl(encodeToken(tok));
+    var stripeObj = null, mounted = null, opening = false;
+
+    /* ---- the ride, everywhere it shows ---- */
+    g.back.href = back; g.rideChange.href = back; g.rowRideChange.href = back;
+    /* the vehicle for the party that was searched for, never the seat count: nobody reads "up to 5" as room for one more */
+    var rideTitle = String(tok.veh || tok.vehicle) + " " + (C.rideFor || "for") + " " + String(tok.guests || "");
+    g.rideTitle.textContent = rideTitle;
+    /* the route ribbon: where the ride starts, where it ends, the drive time on the line between */
+    var airportName = (AIRN[tok.airport] || String(tok.airport || "")) + " airport", zoneName = ZN[tok.zone] || "", zone2Name = ZN[tok.zone2] || "";
+    var ends = isHotel ? [[String(tok.place || ""), zoneName, "pin"], [String(tok.place2 || ""), zone2Name, "pin"]]
+      : t === "out" ? [[String(tok.place || ""), zoneName, "pin"], [airportName, String(tok.airport || ""), "plane"]]
+      : [[airportName, String(tok.airport || ""), "plane"], [String(tok.place || ""), zoneName, "pin"]];
+    g.routeA.textContent = ends[0][0]; g.routeAs.textContent = ends[0][1]; g.routeB.textContent = ends[1][0]; g.routeBs.textContent = ends[1][1];
+    g.routeIa.innerHTML = icon(ends[0][2], 18); g.routeIb.innerHTML = icon(ends[1][2], 18);
+    g.routeMid.textContent = [tok.drive ? String(tok.drive) : "", t === "both" ? (C.roundTrip || "and back") : ""].filter(Boolean).join(" · ");
+    g.route.classList.toggle("both", t === "both");
+    g.rideWhen.textContent = String(tok.when || "");
+    g.rowRideT.textContent = rideTitle + " · " + String(tok.ride || "");
+    g.rowRideD.textContent = [placeLine, String(tok.when || "").replace(/^Arrives/, "arrives").replace(/\. Departs/, " · departs")].filter(Boolean).join(" · ");
+    /* the route on the island in the band: airport to area (or the hotel's own spot), a dashed line that moves */
+    if (g.map && X.map) {
+      var M = X.map, pt = function (slug, zone) { return (slug && M.hotels[slug]) || M.zones[zone] || null; };
+      var A = isHotel ? pt(tok.hotel, tok.zone) : t === "out" ? pt(tok.hotel, tok.zone) : M.airports[tok.airport];
+      var B = isHotel ? pt(tok.hotel2, tok.zone2) : t === "out" ? M.airports[tok.airport] : pt(tok.hotel, tok.zone);
+      var la = isHotel || t === "out" ? (ZN[tok.zone] || "") : String(tok.airport || ""), lb = isHotel ? (ZN[tok.zone2] || "") : t === "out" ? String(tok.airport || "") : (ZN[tok.zone] || "");
+      if (A && B) {
+        var mx = (A[0] + B[0]) / 2, my = (A[1] + B[1]) / 2, dx = B[0] - A[0], dy = B[1] - A[1], len = Math.sqrt(dx * dx + dy * dy) || 1;
+        /* the road: the shortest way through the town graph, coastal legs walking the coastline, then a straight last leg to the pin */
+        var RD = M.roads || null;
+        function walk(i, j) { /* the coastline between two points on it, the shorter way round */
+          var C = RD.coast, n = C.length, total = RD.cum[n], fwd = ((RD.cum[j] - RD.cum[i]) % total + total) % total, out = [], k;
+          if (fwd <= total - fwd) { for (k = i; k !== j; k = (k + 1) % n) out.push(C[k]); }
+          else { for (k = i; k !== j; k = (k - 1 + n) % n) out.push(C[k]); }
+          out.push(C[j]); return out;
+        }
+        function legLen(a, b, coastal) { if (!coastal) return Math.hypot(RD.nodes[b][0] - RD.nodes[a][0], RD.nodes[b][1] - RD.nodes[a][1]); var pts = walk(RD.idx[a], RD.idx[b]), l = 0; for (var k = 1; k < pts.length; k++) l += Math.hypot(pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]); return l * 0.9; /* the coast road is the highway */ }
+        function shortest(from, to) { /* Dijkstra over thirty towns */
+          var adj = {}; RD.edges.forEach(function (e) { (adj[e[0]] = adj[e[0]] || []).push([e[1], e[2]]); (adj[e[1]] = adj[e[1]] || []).push([e[0], e[2]]); });
+          var dist = {}, prev = {}, done = {}, q = Object.keys(RD.nodes); q.forEach(function (k) { dist[k] = Infinity; }); dist[from] = 0;
+          while (q.length) { q.sort(function (a, b) { return dist[a] - dist[b]; }); var u = q.shift(); if (u === to || dist[u] === Infinity) break; done[u] = 1;
+            (adj[u] || []).forEach(function (e) { if (done[e[0]]) return; var d = dist[u] + legLen(u, e[0], e[1]); if (d < dist[e[0]]) { dist[e[0]] = d; prev[e[0]] = [u, e[1]]; } }); }
+          if (dist[to] === Infinity) return null;
+          var hops = [], cur = to; while (prev[cur]) { hops.unshift([prev[cur][0], cur, prev[cur][1]]); cur = prev[cur][0]; }
+          return hops;
+        }
+        function nearestIdx(P) { var best = 0, bd = Infinity; RD.coast.forEach(function (c, i) { var d = Math.hypot(c[0] - P[0], c[1] - P[1]); if (d < bd) { bd = d; best = i; } }); return [best, bd]; }
+        function nearestAnchor(P, names) { var best = null, bd = Infinity; (names || []).forEach(function (n) { if (!RD.nodes[n]) return; var d = Math.hypot(RD.nodes[n][0] - P[0], RD.nodes[n][1] - P[1]); if (d < bd) { bd = d; best = n; } }); return best; }
+        function tidy(pts) { /* no doubling back, no spikes from the coastline nudge, then the small wiggles smoothed out */
+          var out = [pts[0]], k;
+          for (k = 1; k < pts.length; k++) { var last = out[out.length - 1]; if (Math.hypot(pts[k][0] - last[0], pts[k][1] - last[1]) > 2) out.push(pts[k]); }
+          for (var pass = 0; pass < 3; pass++) { var kept = [out[0]]; for (k = 1; k < out.length - 1; k++) { var a = kept[kept.length - 1], b = out[k], c = out[k + 1]; var v1x = b[0] - a[0], v1y = b[1] - a[1], v2x = c[0] - b[0], v2y = c[1] - b[1]; var cos = (v1x * v2x + v1y * v2y) / ((Math.hypot(v1x, v1y) * Math.hypot(v2x, v2y)) || 1); if (cos > -0.5) kept.push(b); } kept.push(out[out.length - 1]); out = kept; }
+          function dp(list, eps) { if (list.length < 3) return list; var a = list[0], b = list[list.length - 1], maxd = 0, idx = 0; for (var i = 1; i < list.length - 1; i++) { var p = list[i], dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1, d = Math.abs(dy * p[0] - dx * p[1] + b[0] * a[1] - b[1] * a[0]) / l; if (d > maxd) { maxd = d; idx = i; } } if (maxd <= eps) return [a, b]; var left = dp(list.slice(0, idx + 1), eps), right = dp(list.slice(idx), eps); return left.slice(0, -1).concat(right); }
+          return dp(out, 2.5);
+        }
+        function road(P, Q, anchorP, anchorQ, straight) {
+          var pts = [P];
+          if (RD && !straight) {
+            if (anchorP && anchorQ && anchorP !== anchorQ && RD.nodes[anchorP] && RD.nodes[anchorQ]) {
+              var hops = shortest(anchorP, anchorQ);
+              if (hops) hops.forEach(function (h, i) { if (h[2]) { walk(RD.idx[h[0]], RD.idx[h[1]]).forEach(function (c) { pts.push(c); }); } else { if (i === 0) pts.push(RD.nodes[h[0]]); pts.push(RD.nodes[h[1]]); } });
+            } else { /* same town at both ends, or no town: follow the coast when both ends sit on it */
+              var ni = nearestIdx(P), nj = nearestIdx(Q);
+              if (ni[1] < 14 && nj[1] < 14 && ni[0] !== nj[0]) walk(ni[0], nj[0]).forEach(function (c) { pts.push(c); });
+            }
+          }
+          pts.push(Q);
+          return "M" + tidy(pts).map(function (p) { return p[0].toFixed(1) + " " + p[1].toFixed(1); }).join("L");
+        }
+        /* which town the road starts and ends at: the airport's own, or the nearest of the area's towns to the pin, so the road heads the right way */
+        var NEAR = { negril: ["negril", "savanna-la-mar", "lucea"], lucea: ["lucea", "hopewell", "negril"], "hanover-villas": ["hopewell", "lucea", "montego-bay"], mobay: ["montego-bay", "MBJ", "rose-hall"], "mobay-nonai": ["montego-bay", "MBJ", "rose-hall"], "rose-hall": ["MBJ", "rose-hall", "falmouth"], falmouth: ["rose-hall", "falmouth", "runaway-bay"], "runaway-bay": ["falmouth", "runaway-bay", "ocho-rios"], "ocho-rios": ["runaway-bay", "ocho-rios", "OCJ"], kingston: ["kingston", "KIN"], "blue-mountains": ["strawberry-hill"], "port-antonio": ["port-antonio", "OCJ", "morant-bay"], "treasure-beach": ["treasure-beach", "black-river"], "south-coast": ["whitehouse", "bluefields", "black-river"] };
+        var anchorA = !RD ? null : isHotel || t === "out" ? nearestAnchor(A, NEAR[tok.zone] || [RD.anchors[tok.zone]]) : RD.anchors[tok.airport];
+        var anchorB = !RD ? null : isHotel ? nearestAnchor(B, NEAR[tok.zone2] || [RD.anchors[tok.zone2]]) : t === "out" ? RD.anchors[tok.airport] : nearestAnchor(B, NEAR[tok.zone] || [RD.anchors[tok.zone]]);
+        function draw(pathEl, d) { pathEl.setAttribute("d", d); try { var L = pathEl.getTotalLength(); pathEl.style.strokeDasharray = L + " " + L; pathEl.style.strokeDashoffset = L; pathEl.getBoundingClientRect(); pathEl.style.transition = "stroke-dashoffset 1.4s ease-out"; pathEl.style.strokeDashoffset = "0"; } catch (err) {} } /* the road draws itself once */
+        /* the label goes on the side away from the road: above when the road leaves downwards, below when it leaves upwards, and never off the edge */
+        function label(tx, P, txt, away) { tx.textContent = txt; var below = P[1] < 60 || (away && away[1] < P[1] - 4); if (away && away[1] > P[1] + 4 && P[1] >= 60) below = false; tx.setAttribute("y", below ? 52 : -30); tx.setAttribute("text-anchor", P[0] < 110 ? "start" : P[0] > 890 ? "end" : "middle"); tx.setAttribute("x", P[0] < 110 ? -12 : P[0] > 890 ? 12 : 0); }
+        function pathPoint(d, fromEnd) { var m = d.match(/-?\d+(?:\.\d+)?/g); if (!m || m.length < 4) return null; return fromEnd ? [Number(m[m.length - 4]), Number(m[m.length - 3])] : [Number(m[2]), Number(m[3])]; }
+        var H = Number(g.mapSvg.getAttribute("data-h")) || 430;
+        if (len >= 70) {
+          var dRoad = road(A, B, anchorA, anchorB);
+          draw(g.mapRoute, dRoad);
+          g.mapA.setAttribute("transform", "translate(" + A[0] + " " + A[1] + ")"); g.mapB.setAttribute("transform", "translate(" + B[0] + " " + B[1] + ")");
+          label(g.mapAl, A, la, pathPoint(dRoad, false)); label(g.mapBl, B, lb, pathPoint(dRoad, true));
+          g.zoom.setAttribute("hidden", ""); /* an SVG group: the attribute, not the HTML property */
+        } else {
+          /* a short hop: the two pins would sit on top of each other, so the island shows one spot and a lens shows the hop zoomed in */
+          g.mapRoute.setAttribute("d", ""); g.mapA.setAttribute("transform", "translate(-999 -999)"); g.mapB.setAttribute("transform", "translate(-999 -999)"); g.mapAl.textContent = ""; g.mapBl.textContent = "";
+          /* the lens sits right on the hop, like a magnifying glass laid on the map, nudged inwards only where it would fall off the edge */
+          var R = 140, z = Math.max(3, Math.min(9, 130 / len));
+          var L = [Math.min(1010 - R, Math.max(-10 + R, mx)), Math.min(H + 84 - R, Math.max(-54 + R, my))];
+          g.zoom.removeAttribute("hidden");
+          var tdx = L[0] - mx, tdy = L[1] - my, tl = Math.sqrt(tdx * tdx + tdy * tdy) || 1, covered = tl < R * 0.6;
+          /* when the nudge leaves the hop outside the glass, a spot marks it and a dotted tie runs to the glass */
+          g.spot.setAttribute("display", covered ? "none" : ""); g.tie.setAttribute("display", covered ? "none" : "");
+          g.spot.setAttribute("cx", mx.toFixed(1)); g.spot.setAttribute("cy", my.toFixed(1));
+          g.tie.setAttribute("x1", mx.toFixed(1)); g.tie.setAttribute("y1", my.toFixed(1)); g.tie.setAttribute("x2", (L[0] - (tdx / tl) * R).toFixed(1)); g.tie.setAttribute("y2", (L[1] - (tdy / tl) * R).toFixed(1));
+          [g.lens, g.lensBg, g.clipC].forEach(function (c) { c.setAttribute("cx", L[0]); c.setAttribute("cy", L[1]); c.setAttribute("r", R); });
+          g.zoomIn.setAttribute("transform", "translate(" + L[0] + " " + L[1] + ") scale(" + z.toFixed(2) + ") translate(" + (-mx).toFixed(1) + " " + (-my).toFixed(1) + ")");
+          g.zRoute.setAttribute("d", road(A, B, anchorA, anchorB, true)); /* a few minutes' drive: one clean line */
+          var zA = [L[0] + (A[0] - mx) * z, L[1] + (A[1] - my) * z], zB = [L[0] + (B[0] - mx) * z, L[1] + (B[1] - my) * z];
+          g.zA.setAttribute("transform", "translate(" + zA[0].toFixed(1) + " " + zA[1].toFixed(1) + ")"); g.zB.setAttribute("transform", "translate(" + zB[0].toFixed(1) + " " + zB[1].toFixed(1) + ")");
+          /* labels: the higher pin gets its label above, the lower one below, so the two never collide */
+          var aUp = zA[1] <= zB[1];
+          /* inside the lens there is room for the hotel's own name when it is short */
+          var hn = String(tok.place || ""), hn2 = String(tok.place2 || "");
+          var zla = isHotel ? (hn.length <= 18 ? hn : la) : t === "out" ? (hn.length <= 18 ? hn : la) : la, zlb = isHotel ? (hn2.length <= 18 ? hn2 : lb) : t === "out" ? lb : (hn.length <= 18 ? hn : lb);
+          g.zAl.textContent = zla; g.zBl.textContent = zlb; g.zAl.setAttribute("y", aUp ? -30 : 52); g.zBl.setAttribute("y", aUp ? 52 : -30);
+          g.zAl.setAttribute("text-anchor", "middle"); g.zBl.setAttribute("text-anchor", "middle"); g.zAl.setAttribute("x", 0); g.zBl.setAttribute("x", 0);
+        }
+      } else g.map.hidden = true;
+    }
+    /* the total follows the US$/J$ switch in the header: the chosen one big, the other small; the card is charged in US$ */
+    var jm = "J$" + fmt(Math.round((price * RATE) / 100) * 100);
+    g.total.textContent = usd(price); g.totalJ.textContent = "≈ " + jm; g.jmd.textContent = "about " + jm; g.usdSmall.textContent = usd(price) + " on the card";
+    g.totSub.textContent = (t === "both" ? "Round trip" : "One way") + ", per vehicle, taxes included";
+    g.hint.textContent = needIn ? C.nameHintArrival : C.nameHintPickup;
+    g.rowsNote.textContent = needIn ? C.foldedNoteArrival : C.foldedNotePickup;
+    g.inc.innerHTML = "";
+    var groups = t === "both" ? [["Arrival", INC.in || []], ["Departure", INC.out || []], ["", INC.all || []]] : [["", (INC[t] || []).concat(INC.all || [])]];
+    groups.forEach(function (grp) {
+      var box = el("div", "ck-inc-g"); if (grp[0]) box.appendChild(el("b", "", grp[0]));
+      grp[1].forEach(function (line) { var sp = el("span"); sp.innerHTML = icon("check", 18); sp.appendChild(document.createTextNode(line)); box.appendChild(sp); });
+      g.inc.appendChild(box);
+    });
+    if (tok.date < today) alertBox(root, "That date has passed. Search again with a new date.", g.go, null);
+
+    /* ---- the guest: kept for the session so Change and back don't lose the typing ---- */
+    var fields = [g.first, g.last, g.email, g.phone, g.note];
+    try { var saved = JSON.parse(session("gv_tr_guest") || "null"); if (saved) fields.forEach(function (f) { if (saved[f.id] != null && !f.value) f.value = saved[f.id]; }); } catch (err) {}
+    fields.forEach(function (f) { f.addEventListener("input", function () { clearAlertIn(g.guest); var o = {}; fields.forEach(function (x) { o[x.id] = x.value; }); session("gv_tr_guest", JSON.stringify(o)); }); });
+    function val(f) { return (f.value || "").trim(); }
+    function contactProblem() {
+      if (!val(g.first) || !val(g.last)) return { f: val(g.first) ? g.last : g.first, t: "We need a first and last name for the booking." };
+      if (!EMAIL.test(val(g.email))) return { f: g.email, t: "That email doesn't look right." };
+      if (!val(g.phone)) return { f: g.phone, t: "We need a phone or WhatsApp number, for the driver." };
+      return null;
+    }
+    function message() {
+      var lines = ["Hi Golden Vacation! Airport transfer request."];
+      lines.push("Ride: " + String(tok.ride || "") + (tok.drive ? ", " + tok.drive : ""));
+      lines.push(isHotel ? "From: " + String(tok.place || "") + "\nTo: " + String(tok.place2 || "") : "Staying at: " + String(tok.place || ""));
+      lines.push("When: " + String(tok.when || ""));
+      lines.push("People: " + String(tok.guests || "") + ", " + String(tok.veh || tok.vehicle).toLowerCase() + " (up to " + seats + ")");
+      lines.push("Price on the site: " + usd(price) + (t === "both" ? " round trip" : " one way"));
+      if (val(g.note)) lines.push("Note: " + val(g.note));
+      var who = [val(g.first), val(g.last)].filter(Boolean).join(" "); if (who) lines.push("Name: " + who);
+      lines.push("Ref " + ref);
+      return lines.join("\n");
+    }
+    function logEnquiry(text) {
+      if (PREVIEW) return;
+      try {
+        var body = new URLSearchParams({ "form-name": "tr-enquiries", ref: ref, route: String(tok.ride || ""), vehicle: String(tok.veh || tok.vehicle) + " up to " + seats, when: String(tok.when || ""), guests: String(tok.guests || ""), place: placeLine, total: usd(price), page: location.pathname, message: text });
+        fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body.toString(), keepalive: true }).catch(function () {});
+      } catch (err) {}
+    }
+    function sendWhatsApp() { var text = message(); track("tr_request", { ride: String(tok.ride || ""), code: ref }); logEnquiry(text); window.open(waUrl(text), "_blank", "noopener"); }
+    g.wa.addEventListener("click", function (ev) { ev.preventDefault(); sendWhatsApp(); });
+
+    /* ---- the two states ---- */
+    function setState(s) {
+      g.grid.setAttribute("data-state", s);
+      var pay = s === "pay";
+      if (g.steps) { g.steps.setAttribute("data-step", pay ? "3" : "2"); $$("li", g.steps).forEach(function (li) { var i = Number(li.getAttribute("data-i")), now = pay ? 3 : 2, sm = $("small", li), n = $(".n", li); li.className = i < now ? "done" : i === now ? "now" : ""; if (sm) sm.textContent = i < now ? (C.stepDone || "Done") : sm.getAttribute("data-sub"); if (n) n.innerHTML = i < now ? icon("check", 24) : "0" + i; }); }
+      g.ride.hidden = pay; g.guest.hidden = pay; g.rows.hidden = !pay; g.payHead.hidden = !pay;
+      if (g.sub) g.sub.textContent = pay ? C.pageSubFolded : C.pageSub;
+      if (pay) {
+        g.rowGuestT.textContent = [val(g.first), val(g.last)].filter(Boolean).join(" ");
+        g.rowGuestD.textContent = [val(g.email), val(g.phone), val(g.note) ? "note: " + val(g.note) : "no note for the driver"].join(" · ");
+      }
+    }
+    function inView(n) { var r = n.getBoundingClientRect(); return r.top >= 0 && r.top < window.innerHeight * 0.5; }
+    function placeholder(text) { g.stripe.innerHTML = ""; g.ph = el("p", "ck-ph", text); g.ph.id = "ck-ph"; g.stripe.appendChild(g.ph); }
+    function unmountStripe() { if (mounted) { try { mounted.destroy(); } catch (err) {} mounted = null; } }
+    function body(ui) {
+      return { ui: ui, hotel: String(tok.hotel || ""), zone: String(tok.zone), place: String(tok.place || ""), placeKind: tok.placeKind === "zone" ? "zone" : "hotel", airport: String(tok.airport || ""), trip: t, people: Number(tok.people) || 1, vehicle: String(tok.vehicle), seats: seats,
+        hotel2: String(tok.hotel2 || ""), zone2: String(tok.zone2 || ""), place2: String(tok.place2 || ""), place2Kind: tok.place2Kind === "zone" ? "zone" : "hotel",
+        date: String(tok.date || ""), date2: String(tok.date2 || ""), flightIn: String(tok.flightIn || ""), flightOut: String(tok.flightOut || ""),
+        timeIn: needIn ? timeText(tok.timeIn) : "", timeOut: needOut ? timeText(tok.timeOut) : "", time: isHotel ? timeText(tok.time) : "",
+        note: val(g.note), ref: ref, customer: { first: val(g.first), last: val(g.last), email: val(g.email), phone: val(g.phone) } };
+    }
+    function fail(msg) {
+      opening = false; unmountStripe(); g.stripe.innerHTML = "";
+      var retry = el("button", "btn btn-outline btn-sm", "Try again"); retry.type = "button"; retry.addEventListener("click", openPayment); g.stripe.appendChild(retry);
+      alertBox(root, msg + " Try again, or send the same booking by WhatsApp and we'll confirm it by hand.", retry, sendWhatsApp);
+    }
+    function openPayment() {
+      if (opening) return; opening = true;
+      unmountStripe(); clearAlertIn(g.pay);
+      placeholder(C.payOpening || "Opening the card form");
+      if (PREVIEW) { opening = false; placeholder("Preview only: on the live site Stripe's card form (Apple Pay, Google Pay, card) opens here."); return; }
+      var canEmbed = typeof window.Stripe === "function";
+      var b = body(canEmbed ? "embedded" : "hosted");
+      track("tr_checkout", { ride: String(tok.ride || ""), vehicle: b.vehicle, total: price, code: ref });
+      fetch(FN + "tr-checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b) })
+        .then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j || {} }; }); })
+        .then(function (x) {
+          if (x.j.clientSecret && x.j.publishableKey && canEmbed) {
+            stripeObj = stripeObj || window.Stripe(x.j.publishableKey);
+            var create = stripeObj.createEmbeddedCheckoutPage || stripeObj.initEmbeddedCheckout;
+            if (!create) throw new Error("The card form didn't open.");
+            return create.call(stripeObj, { fetchClientSecret: function () { return Promise.resolve(x.j.clientSecret); } }).then(function (co) {
+              mounted = co; g.stripe.innerHTML = ""; co.mount("#ck-stripe"); opening = false;
+            });
+          }
+          if (x.j.url) { window.location.href = x.j.url; return; }
+          throw new Error(x.j.error || "The card form didn't open.");
+        })
+        .catch(function (err) { fail(err && err.message ? err.message : "Something went wrong."); });
+    }
+    g.form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var cp = contactProblem(); if (cp) { alertBox(root, cp.t, g.go, null); focusEl(cp.f); return; }
+      if (tok.date < today) { alertBox(root, "That date has passed. Search again with a new date.", g.go, null); return; }
+      clearAlertIn(g.guest); setState("pay");
+      setTimeout(function () { if (!inView(g.pay)) scrollTo(g.pay); focusEl(g.payTitle); }, 60);
+      openPayment();
+    });
+    g.rowEdit.addEventListener("click", function (ev) { ev.preventDefault(); unmountStripe(); opening = false; placeholder(C.payPlaceholder || ""); setState("details"); setTimeout(function () { if (!inView(g.guest)) scrollTo(g.guest); focusEl(g.first); }, 60); });
+    setState("details");
   }
 
   /* ================= booked page ================= */
@@ -454,6 +730,7 @@
     if (root !== document) { if (root.getAttribute("data-inited")) return; root.setAttribute("data-inited", "1"); }
     var X = window.GV_TR || {};
     if (X.page === "transfers") initTransfers(root);
+    else if (X.page === "checkout") initCheckout(root);
     else if (X.page === "booked") initBooked(root);
   }
   window.GV_TR_INIT = init;

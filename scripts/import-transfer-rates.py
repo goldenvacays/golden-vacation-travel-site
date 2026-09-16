@@ -1,24 +1,30 @@
 #!/usr/bin/env python3
 """
-Turns Hana's transfer rate sheet (Jamaica_Hotel_Rates_with_Markup.xlsx, "Every Rate" tab) into data/transfer-rates.json.
+Turns Hana's transfer workbook (Jamaica_Transfer_Rates_MBJ_KIN_OCJ.xlsx) into data/transfer-rates.json.
 
-Only SELL prices leave this script. Cost and the supplier never reach the JSON, the page or the functions.
+Only SELL prices leave this script. Cost, markup and the supplier never reach the JSON, the page or the functions,
+and the workbook itself is never committed (it holds cost prices).
 
-  python3 scripts/import-transfer-rates.py path/to/Jamaica_Hotel_Rates_with_Markup.xlsx
+  python3 scripts/import-transfer-rates.py path/to/Jamaica_Transfer_Rates_MBJ_KIN_OCJ.xlsx
+
+The model (Sep 16 2026, Hana's "Website Pricing" tab): one price per ZONE, not per hotel. Every hotel in a zone shares the
+zone's prices ("deliberate, it keeps the website simple"). A hotel's zone comes from data/transfers.json (hotelZones and
+the zones' places lists, plus the region rule for the rest).
 
 Shape of the output:
-  hotels[key]   the 40 hotels and complexes in the sheet: name, sheet area, price zone, the resort-list names that map to it
-  rates[key][airport][trip]   the offers for that hotel, one way in / out, or both ways: [{v, seats, bags, price}] cheapest first
-  zones[zone][airport][trip]  a fallback for villas, Airbnbs and hotels not in the sheet: per vehicle and seat count, the highest
-                              price among the zone's hotels (protects the margin; Hana can lower any of them)
-Vehicle rungs (v): car (Economy / Comfort / Micro, 3 seats), business (Business, 3), minivan (Minivan / MPV, 4 to 7),
-bizvan (Business MPV / Business Minivan, 5 to 6), minibus (Minibus, 6 to 16), coach (Bus, 16 and up).
-Within a rung, an offer that seats fewer people for more money than another offer of the same rung is dropped, so each
-rung is a clean ladder (more seats, higher price); an offer that another offer beats on seats at half the price or less
-is dropped as a wild one; seats above 25 are left out (the site takes up to 16 people).
-Offers are stored compact: [rung, seats, bags, price].
+  zones[zone][airport][trip]   offers for a zone from an airport: "in" (airport to hotel), "out" (hotel to airport, the
+                               same one-way price) and "both" (round trip, the sheet's own column). An offer is compact:
+                               [rung, seats, bags, price, multi] with multi = 1 when the sheet shows the price in italics,
+                               meaning two or more vehicles.
+  links["a|b"] / links["a>b"]  hotel-to-hotel prices between two zones ("|" either direction, ">" one direction only),
+                               from the Hotel to Hotel tab's SELL block. Round trip is two one-ways (no discount, per the sheet).
+  exceptions                   hotel + airport + seat-count combinations the sheet says to quote by hand; the page and the
+                               checkout show "priced in the chat" for exactly those.
+Passenger tiers become vehicle rungs: 3 car, 5 and 7 minivan, 9, 14 and 16 minibus. The 25 tier is left out (the site
+takes parties up to 16; bigger ones go by email). Hotel-to-hotel tiers: 3 car, 4 and 6 minivan, 8, 10, 12 and 16 minibus.
+Bags: one per seat is the guide.
 """
-import json, math, re, sys, collections
+import json, re, sys
 from pathlib import Path
 import openpyxl
 
@@ -27,109 +33,187 @@ SRC = Path(sys.argv[1]) if len(sys.argv) > 1 else None
 if not SRC or not SRC.exists():
     sys.exit("usage: import-transfer-rates.py <xlsx>")
 
-RUNG = {"Economy": "car", "Comfort": "car", "Micro": "car", "Business": "business", "Minivan": "minivan", "MPV": "minivan",
-        "Business MPV": "bizvan", "Business Minivan": "bizvan", "Minibus": "minibus", "Bus": "coach"}
-TRIP = {"One-way arrival (airport to hotel)": "in", "One-way departure (hotel to airport)": "out", "Round trip (both ways)": "both"}
-AREA_ZONE = {"Montego Bay": "mobay", "Falmouth": "falmouth", "Trelawny": "falmouth", "Hanover (Lucea)": "lucea", "Hanover (Green Island)": "lucea",
-             "Negril": "negril", "Runaway Bay": "runaway-bay", "Ocho Rios": "ocho-rios", "South Coast": "south-coast"}
-# sheet hotel -> the names on the resort list (public/map/resorts.js) that price like it; and the zone where the sheet's area is too coarse
-MATCH = {
-    "Azul Beach Resort Negril": ["Azul Beach Resort Negril"],
-    "Bahia Principe Runaway Bay complex": ["Bahia Principe Escape Runaway Bay", "Bahia Principe Explore Jamaica"],
-    "Beaches Negril": ["Beaches Negril"],
-    "Breathless Montego Bay": ["Breathless Montego Bay"],
-    "Couples Negril": ["Couples Negril"], "Couples Sans Souci": ["Couples Sans Souci"], "Couples Swept Away": ["Couples Swept Away"], "Couples Tower Isle": ["Couples Tower Isle"],
-    "Decameron Club Caribbean": ["Grand Muthu Runaway Bay Club Caribbean"],
-    "Deja Resort": ["Deja Resort"],
-    "Dreams Rose Hall": ["Dreams Rose Hall"],
-    "Excellence Oyster Bay": ["Excellence Oyster Bay"],
-    "FDR Franklyn D. Resort": ["FDR — Franklyn D. Resort"],
-    "Grand Decameron Montego Beach": ["Grand Decameron Montego Beach", "Grand Decameron Cornwall Beach"],
-    "Grand Lido Negril": ["Grand Lido Negril"],
-    "Grand Palladium Jamaica & Lady Hamilton complex": ["Grand Palladium Jamaica Resort & Spa", "Grand Palladium Lady Hamilton Resort & Spa"],
-    "Hedonism II": ["Hedonism II"],
-    "Hyatt Ziva & Zilara Rose Hall": ["Hyatt Zilara Rose Hall", "Hyatt Ziva Rose Hall"],
-    "Iberostar Rose Hall complex (Waves / Selection Suites / Joia)": ["Iberostar Waves Rose Hall", "Iberostar Selection Rose Hall", "JOIA Rose Hall by Iberostar"],
-    "Jewel Grande Montego Bay": ["Jewel Grande Montego Bay"],
-    "Moon Palace Jamaica": ["Moon Palace Jamaica"],
-    "Ocean Coral Spring & Ocean Eden Bay complex": ["Ocean Coral Spring", "Ocean Eden Bay"],
-    "Princess Grand Jamaica & Princess Senses complex": ["Princess Grand Jamaica", "Princess Senses The Mangrove"],
-    "RIU Montego Bay complex (Riu Reggae / Riu Montego Bay / Riu Palace Jamaica)": ["RIU Reggae", "RIU Montego Bay", "RIU Palace Jamaica"],
-    "Riu Negril & Riu Palace Tropical Bay complex": ["RIU Negril", "RIU Palace Tropical Bay"],
-    "Riu Ocho Rios": ["RIU Ocho Rios"],
-    "Riu Palace Aquarelle": ["RIU Palace Aquarelle"],
-    "Royalton Blue Waters / White Sands / Hideaway complex": ["Royalton Blue Waters", "Royalton Hideaway Blue Waters"],
-    "Royalton Chic": ["Royalton CHIC Jamaica Paradise Cove"],
-    "Royalton Negril & Hideaway at Royalton Negril complex": ["Royalton Negril", "Royalton Hideaway Negril"],
-    "Sandals Caribbean Cay": ["Sandals Caribbean Cay"], "Sandals Dunn's River": ["Sandals Dunn's River"], "Sandals Montego Bay": ["Sandals Montego Bay"],
-    "Sandals Negril": ["Sandals Negril"], "Sandals Ochi": ["Sandals Ochi"], "Sandals Royal Plantation": ["Sandals Royal Plantation"], "Sandals South Coast": ["Sandals South Coast"],
-    "SeaGarden Beach Resort": ["Sea Garden Hotel"],
-    "Secrets St. James & Wild Orchid": ["Secrets St. James Montego Bay", "Secrets Wild Orchid Montego Bay"],
-    "Sunset at the Palms": ["Sunset at the Palms"],
-}
-ROSE_HALL = {"Dreams Rose Hall", "Hyatt Ziva & Zilara Rose Hall", "Iberostar Rose Hall complex (Waves / Selection Suites / Joia)", "Jewel Grande Montego Bay"}
+AIRPORT_HEAD = {"Montego Bay (MBJ)": "MBJ", "Ocho Rios (OCJ)": "OCJ", "Kingston (KIN)": "KIN", "Negril Aerodrome (NEG)": None}  # NEG stays off the site
+MAX_SEATS = 16
 
-def slug(s):
-    return re.sub(r"-+", "-", re.sub(r"[^a-z0-9]+", "-", s.lower().replace("&", " and "))).strip("-")
+def rung(seats):
+    return "car" if seats <= 3 else "minivan" if seats <= 7 else "minibus" if seats <= 16 else "coach"
+
+# sheet zone label (start of the cell) -> site zone keys it prices
+ZONE_ROWS = [
+    ("Montego Bay - town, Ironshore & Rose Hall", ["mobay", "rose-hall"]),
+    ("Montego Bay - not all-inclusive", ["mobay-nonai"]),
+    ("Montego Bay – town / Ironshore", ["mobay"]),
+    ("Montego Bay – Rose Hall", ["rose-hall"]),
+    ("Falmouth / Trelawny", ["falmouth"]),
+    ("Runaway Bay", ["runaway-bay"]),
+    ("Ocho Rios", ["ocho-rios"]),
+    ("Hanover (Lucea / Green Island)", ["lucea"]),
+    ("Hanover - villa estates", ["hanover-villas"]),
+    ("Negril", ["negril"]),
+    ("South Coast", ["south-coast"]),
+    ("Treasure Beach / Black River", ["treasure-beach"]),
+    ("Port Antonio", ["port-antonio"]),
+    ("Kingston - New Kingston / city hotels", ["kingston"]),
+    ("Kingston - Blue Mountains", ["blue-mountains"]),
+]
+def zone_keys(label):
+    label = str(label).strip()
+    for start, keys in ZONE_ROWS:
+        if label.startswith(start):
+            return keys
+    return None
+
+# hotel-to-hotel route ends -> zone keys (Montego Bay covers the whole Montego Bay side)
+LINK_END = {
+    "Montego Bay": ["mobay", "rose-hall", "mobay-nonai"], "Ocho Rios": ["ocho-rios"], "Negril": ["negril"], "Runaway Bay": ["runaway-bay"],
+    "Falmouth": ["falmouth"], "South Coast (Whitehouse)": ["south-coast"], "Kingston": ["kingston"], "Port Antonio": ["port-antonio"],
+    "Treasure Beach (St. E)": ["treasure-beach"],
+}
+
+# the "quote these individually" lines: sheet hotel name -> resort-list names
+EXC_MATCH = {
+    "Excellence Oyster Bay": ["Excellence Oyster Bay"],
+    "Ocean Coral Spring & Ocean Eden Bay complex": ["Ocean Coral Spring", "Ocean Eden Bay"],
+    "Royalton Negril & Hideaway at Royalton Negril complex": ["Royalton Negril", "Royalton Hideaway Negril"],
+    "Sandals Negril": ["Sandals Negril"],
+    "Couples Tower Isle": ["Couples Tower Isle"],
+    "Riu Ocho Rios": ["RIU Ocho Rios"],
+    "Sandals Dunn's River": ["Sandals Dunn's River"],
+}
 
 wb = openpyxl.load_workbook(SRC, data_only=True)
-ws = wb["Every Rate"]
-rows = [r for r in ws.iter_rows(min_row=7, values_only=True) if r and r[0]]
-hotels, offers = {}, collections.defaultdict(list)  # offers[(key, airport, trip)] -> [(v, seats, bags, sell)]
-for area, hotel, airport, trip, klass, seats, bags, cost, sell in rows:
-    key = slug(hotel)
-    zone = "rose-hall" if hotel in ROSE_HALL else AREA_ZONE[area]
-    hotels[key] = {"name": hotel, "area": area, "zone": zone, "matches": MATCH.get(hotel, [])}
-    if trip not in TRIP or klass not in RUNG or not sell:
+
+# ---------- Website Pricing: zone prices per airport ----------
+ws = wb["Website Pricing"]
+zones = {}
+airport = None
+tiers = None  # list of (col index, seats, "one" | "rt")
+exceptions_raw = []
+in_exceptions = False
+for row in ws.iter_rows(min_row=1, max_row=ws.max_row):
+    a = row[0].value
+    if a is None:
         continue
-    offers[(key, airport, TRIP[trip])].append((RUNG[klass], int(seats), int(bags or seats), int(sell)))
-unknown = [h for h in hotels.values() if not h["matches"]]
-if unknown:
-    print("no resort-list match for:", ", ".join(h["name"] for h in unknown))
-
-def tidy(items):
-    """cheapest per (rung, seats); then within a rung drop any offer that seats fewer for more money; cheapest first"""
-    best = {}
-    for v, seats, bags, price in items:
-        if seats > 25:
+    a_str = str(a).strip()
+    if a_str.startswith("From "):
+        airport = None
+        for head, code in AIRPORT_HEAD.items():
+            if head in a_str:
+                airport = code
+        tiers = None
+        in_exceptions = False
+        continue
+    if a_str.startswith("Quote these individually"):
+        in_exceptions = True
+        continue
+    if in_exceptions:
+        exceptions_raw.append(a_str.rstrip("*").strip())
+        continue
+    if a_str == "Resort zone":
+        tiers = []
+        for c in row[1:]:
+            if not c.value:
+                continue
+            m = re.match(r"Up to (\d+) passengers\s*(one-way|round trip)", str(c.value).replace("\n", " "))
+            if m:
+                tiers.append((c.column - 1, int(m.group(1)), "one" if m.group(2) == "one-way" else "rt"))
+        continue
+    if airport is None or tiers is None:
+        continue
+    keys = zone_keys(a_str)
+    if not keys:
+        continue
+    one, rt = [], []
+    for col, seats, kind in tiers:
+        cell = row[col]
+        if cell.value is None or seats > MAX_SEATS:
             continue
-        k = (v, seats)
-        if k not in best or price < best[k][3]:
-            best[k] = (v, seats, bags, price)
-    kept = []
-    for v, seats, bags, price in best.values():
-        ladder = any(v2 == v and s2 >= seats and p2 <= price and (s2, p2) != (seats, price) for (v2, s2, _, p2) in best.values())
-        absurd = any(s2 >= seats and p2 <= price * 0.5 for (_, s2, _, p2) in best.values())  # the sheet carries a few wild offers
-        if not ladder and not absurd:
-            kept.append((v, seats, bags, price))
-    return sorted(kept, key=lambda o: (o[3], o[1]))
+        price = int(round(float(cell.value)))
+        multi = 1 if (cell.font and cell.font.i) else 0
+        offer = [rung(seats), seats, seats, price] + ([1] if multi else [])
+        (one if kind == "one" else rt).append(offer)
+    if not one:
+        continue
+    for k in keys:
+        zones.setdefault(k, {})[airport] = {"in": one, "out": [list(o) for o in one], "both": rt}
 
-rates = collections.defaultdict(lambda: collections.defaultdict(dict))
-for (key, airport, trip), items in offers.items():
-    rates[key][airport][trip] = [list(o) for o in tidy(items)]
+# ---------- Hotel to Hotel: the SELL block ----------
+ws = wb["Hotel to Hotel"]
+links = {}
+sell = False
+link_tiers = None
+for row in ws.iter_rows(min_row=1, max_row=ws.max_row):
+    a = row[0].value
+    if a is None:
+        continue
+    a_str = str(a).strip()
+    if a_str.startswith("SELL PRICE"):
+        sell = True
+        continue
+    if not sell:
+        continue
+    if a_str == "Route":
+        link_tiers = []
+        for c in row[1:]:
+            m = c.value and re.match(r"Up to (\d+) passengers", str(c.value))
+            if m:
+                link_tiers.append((c.column - 1, int(m.group(1))))
+        continue
+    if a_str.startswith("Notes") or a_str.startswith("Markup"):
+        break
+    if link_tiers is None:
+        continue
+    m = re.match(r"(.+?)\s*(↔|->)\s*(.+)$", a_str)
+    if not m:
+        continue
+    left, arrow, right = m.group(1).strip(), m.group(2), m.group(3).strip()
+    if left not in LINK_END or right not in LINK_END:
+        print(f"hotel-to-hotel route skipped, unknown end: {a_str}", file=sys.stderr)
+        continue
+    offers = []
+    for col, seats in link_tiers:
+        cell = row[col]
+        if cell.value is None or seats > MAX_SEATS:
+            continue
+        price = int(round(float(cell.value)))
+        multi = 1 if (cell.font and cell.font.i) else 0
+        offers.append([rung(seats), seats, seats, price] + ([1] if multi else []))
+    for za in LINK_END[left]:
+        for zb in LINK_END[right]:
+            if za == zb:
+                continue
+            key = f"{za}>{zb}" if arrow == "->" else "|".join(sorted([za, zb]))
+            links[key] = offers
 
-# zone fallback: per (rung, seats) the highest of the hotels' own tidied prices in that zone, then the same ladder rule
-zone_pool = collections.defaultdict(list)
-for (key, airport, trip), items in offers.items():
-    for o in tidy(items):
-        zone_pool[(hotels[key]["zone"], airport, trip)].append(o)
-zones = collections.defaultdict(lambda: collections.defaultdict(dict))
-for (zone, airport, trip), items in zone_pool.items():
-    worst = {}
-    for v, seats, bags, price in items:
-        k = (v, seats)
-        if k not in worst or price > worst[k][3]:
-            worst[k] = (v, seats, bags, price)
-    zones[zone][airport][trip] = [list(o) for o in tidy(list(worst.values()))]
+# ---------- exceptions ----------
+exceptions = []
+for line in exceptions_raw:
+    m = re.match(r"(MBJ|KIN|OCJ)\s*·\s*(.+?)\s*·\s*(?:Minibus|Coach|Minivan|Car)\s+up to\s+(\d+):\s*(.+)$", line)
+    if not m:
+        print(f"exception line skipped: {line}", file=sys.stderr)
+        continue
+    ap, zone_label, seats, names = m.group(1), m.group(2), int(m.group(3)), m.group(4)
+    keys = zone_keys(zone_label)
+    if not keys or seats > MAX_SEATS:
+        continue
+    hotels = []
+    for n in [x.strip() for x in names.split(",")]:
+        hotels += EXC_MATCH.get(n, [n])
+    for k in keys:
+        exceptions.append({"airport": ap, "zone": k, "seats": seats, "hotels": hotels})
 
 out = {
-    "source": "Hana's transfer rate sheet, rates pulled 11 to 12 September 2026. Sell prices only, USD per vehicle, tax included. Regenerate with scripts/import-transfer-rates.py.",
+    "source": "Hana's transfer workbook, Website Pricing and Hotel to Hotel tabs, Sep 16 2026. Sell prices only, USD per vehicle, tax included. Regenerate with scripts/import-transfer-rates.py.",
     "airports": ["MBJ", "KIN", "OCJ"],
-    "hotels": dict(sorted(hotels.items())),
-    "rates": {k: dict(v) for k, v in sorted(rates.items())},
-    "zones": {k: dict(v) for k, v in sorted(zones.items())},
+    "model": "zone",
+    "hotels": {},
+    "rates": {},
+    "zones": zones,
+    "links": links,
+    "exceptions": exceptions,
 }
-dest = ROOT / "data" / "transfer-rates.json"
-dest.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
-n = sum(len(t) for h in out["rates"].values() for a in h.values() for t in a.values())
-print(f"wrote {dest.relative_to(ROOT)}: {len(hotels)} hotels, {n} offers, zones: {', '.join(sorted(zones))}, {dest.stat().st_size // 1024}K")
+(ROOT / "data/transfer-rates.json").write_text(json.dumps(out, separators=(",", ":"), ensure_ascii=False) + "\n", encoding="utf-8")
+print(f"zones: {len(zones)} priced ({', '.join(sorted(zones))}); hotel-to-hotel pairs: {len(links)}; exceptions: {len(exceptions)}")
+for k in sorted(zones):
+    print(f"  {k:16} " + "  ".join(f"{ap}: {len(zones[k][ap]['in'])} sizes, car {zones[k][ap]['in'][0][3]}" for ap in ("MBJ", "KIN", "OCJ") if ap in zones[k]))

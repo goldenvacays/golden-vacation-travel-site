@@ -5,11 +5,12 @@
 
   Reads data/transfers.json (copy, zones, drive times) and data/transfer-rates.json (prices, from Hana's rate sheet) and writes:
     public/transfers/index.html               the page, served at /transfers
+    public/transfers/checkout.html            the checkout page (who's travelling, then Stripe's card form on the page), /transfers/checkout
     public/transfers/booked.html              the page a guest lands on after paying, served at /transfers/booked
     public/assets/transfers-rates.js          the prices as a script the page loads (window.GV_TR_RATES)
     netlify/functions/_tr-data.mjs            the same prices as a module for the checkout function (recomputed server-side)
   Same shape as the Experiences section: flat files, Bold design, getaways.css (tokens) + home.css + experiences.css (components)
-  + /assets/transfers.css and transfers.js for the search bar, the results table and the checkout.
+  + /assets/transfers.css and transfers.js for the search bar, the results table and the checkout page.
   Hotels come from the resort list the status page uses (public/map/resorts.js); a hotel prices at its own row in the rate sheet
   when it has one, otherwise at its zone's fallback; a villa or Airbnb prices at its zone.
 
@@ -77,6 +78,9 @@ const ICONS = {
   tag: '<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"></path><circle cx="7" cy="7" r="1.5"></circle>',
   search: '<circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path>',
   bag: '<path d="M6 7h12l1 14H5L6 7z"></path><path d="M9 7V5a3 3 0 0 1 6 0v2"></path>',
+  back: '<path d="M19 12H5"></path><path d="M11 18l-6-6 6-6"></path>',
+  lock: '<rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path>',
+  hotel: '<path d="M3 21V7l9-4 9 4v14"></path><path d="M9 21v-6h6v6M9 11h.01M15 11h.01"></path>',
 };
 const icon = (name, size = 20, sw = 2.2) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block">${ICONS[name]}</svg>`;
 const kicker = (text, light = false) => `<span class="kicker${light ? " kicker-light" : ""}">${esc(text)}</span>`;
@@ -91,6 +95,7 @@ const ZONE = Object.fromEntries(T.zones.map((z) => [z.key, z]));
 const resortsJs = fs.readFileSync(path.join(ROOT, "public/map/resorts.js"), "utf8");
 const RESORTS = JSON.parse(resortsJs.slice(resortsJs.indexOf("["), resortsJs.lastIndexOf("]") + 1));
 const slugify = (s) => String(s).toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+const ZONE_OVERRIDE = T.site.hotelZones || {}; // a hotel that prices in a different zone from its region (the sheet's own rows)
 const RATE_KEY_BY_NAME = {};
 for (const [key, h] of Object.entries(R.hotels)) for (const n of h.matches || []) RATE_KEY_BY_NAME[n] = key;
 function zoneOf(r) {
@@ -106,9 +111,9 @@ function zoneOf(r) {
 }
 const HIDE = new Set(T.site.hide || []); // closed hotels kept off the transfers list, by name
 const HOTELS = RESORTS.filter((r) => r.status !== "Permanently closed" && r.lat && r.lng && !HIDE.has(r.name))
-  .map((r) => ({ name: r.name, slug: slugify(r.name), zone: RATE_KEY_BY_NAME[r.name] ? R.hotels[RATE_KEY_BY_NAME[r.name]].zone : zoneOf(r), rate: RATE_KEY_BY_NAME[r.name] || null }))
+  .map((r) => ({ name: r.name, slug: slugify(r.name), zone: ZONE_OVERRIDE[r.name] || (RATE_KEY_BY_NAME[r.name] ? R.hotels[RATE_KEY_BY_NAME[r.name]].zone : zoneOf(r)), rate: RATE_KEY_BY_NAME[r.name] || null }))
   .filter((h) => h.zone)
-  .concat(T.zones.flatMap((z) => (z.places || []).filter((name) => !HIDE.has(name) && !RESORTS.some((r) => r.name === name || slugify(r.name) === slugify(name))).map((name) => ({ name, slug: slugify(name), zone: z.key, rate: RATE_KEY_BY_NAME[name] || null }))))
+  .concat(T.zones.flatMap((z) => (z.places || []).filter((name) => !HIDE.has(name) && !RESORTS.some((r) => r.name === name || slugify(r.name) === slugify(name))).map((name) => ({ name, slug: slugify(name), zone: ZONE_OVERRIDE[name] || z.key, rate: RATE_KEY_BY_NAME[name] || null }))))
   .sort((a, b) => a.name.localeCompare(b.name));
 if (args.includes("--zones")) {
   for (const h of HOTELS) console.log(`${h.name.padEnd(46)} ${h.zone.padEnd(12)} ${h.rate ? "sheet: " + R.hotels[h.rate].name : "zone fallback"}`);
@@ -116,8 +121,51 @@ if (args.includes("--zones")) {
   if (unmatched.length) console.log("\nsheet names that match no resort:", unmatched.join(", "));
   process.exit(0);
 }
+/* ---------- the route map on the checkout page: the coastline outline, every pin projected into the same 1000-wide space ---------- */
+const MAP = (() => {
+  const ring = JM.ring, lons = ring.map((p) => p[0]), lats = ring.map((p) => p[1]);
+  const minLon = Math.min(...lons), maxLon = Math.max(...lons), minLat = Math.min(...lats), maxLat = Math.max(...lats);
+  const kx = Math.cos((((minLat + maxLat) / 2) * Math.PI) / 180);
+  const W = 1000, scale = W / ((maxLon - minLon) * kx), Hh = (maxLat - minLat) * scale;
+  const proj = (lng, lat) => [+((lng - minLon) * kx * scale).toFixed(1), +((maxLat - lat) * scale).toFixed(1)];
+  const d = "M" + ring.map(([lo, la]) => proj(lo, la).join(" ")).join("L") + "Z";
+  const byName = Object.fromEntries(RESORTS.map((r) => [r.name, r]));
+  /* where each area sits: the middle of its hotels, or a hand-placed point for areas whose places carry no coordinates */
+  const FALLBACK = { mobay: [18.49, -77.92], "mobay-nonai": [18.49, -77.9], "rose-hall": [18.51, -77.83], lucea: [18.45, -78.17], "hanover-villas": [18.45, -78.0], falmouth: [18.49, -77.65], "runaway-bay": [18.45, -77.33], "ocho-rios": [18.41, -77.11], negril: [18.27, -78.34], "south-coast": [18.07, -77.95], "treasure-beach": [17.88, -77.76], kingston: [18.01, -76.79], "blue-mountains": [18.08, -76.65], "port-antonio": [18.18, -76.45] };
+  const zones = {}, hotels = {};
+  for (const z of T.zones) {
+    const pts = HOTELS.filter((h) => h.zone === z.key && byName[h.name] && byName[h.name].lat).map((h) => [byName[h.name].lat, byName[h.name].lng]);
+    const [la, lo] = pts.length ? [pts.reduce((a, p) => a + p[0], 0) / pts.length, pts.reduce((a, p) => a + p[1], 0) / pts.length] : (FALLBACK[z.key] || [18.2, -77.5]);
+    zones[z.key] = proj(lo, la);
+  }
+  for (const h of HOTELS) { const r = byName[h.name]; if (r && r.lat && r.lng) hotels[h.slug] = proj(r.lng, r.lat); }
+  const airports = Object.fromEntries(T.airports.map((a) => [a.code, proj(a.lng, a.lat)]));
+  /* the roads: a small graph of towns. Coastal legs follow the coastline (nudged a little inland, like the road does); inland legs are
+     the highways and the hill roads. The page picks the shortest way through the graph, so Kingston to Negril goes the south road
+     through Mandeville and Kingston to Montego Bay goes Ocho Rios and the north coast, the way the drivers actually go. */
+  const NODES = { negril: [18.27, -78.34], lucea: [18.45, -78.17], hopewell: [18.46, -78.02], "montego-bay": [18.47, -77.92], MBJ: [T.airports[0].lat, T.airports[0].lng], "rose-hall": [18.51, -77.83], falmouth: [18.49, -77.65], "runaway-bay": [18.45, -77.33], "ocho-rios": [18.41, -77.11], OCJ: null, "port-antonio": [18.18, -76.45], "morant-bay": [17.88, -76.41], kingston: [18.0, -76.79], KIN: null,
+    "spanish-town": [17.99, -76.95], "bog-walk": [18.1, -77.0], linstead: [18.14, -77.03], moneague: [18.28, -77.1], papine: [18.03, -76.74], "strawberry-hill": [18.08, -76.65], "old-harbour": [17.94, -77.11], "may-pen": [17.96, -77.24], mandeville: [18.04, -77.5], "santa-cruz": [18.06, -77.7], "treasure-beach": [17.89, -77.76], "black-river": [18.03, -77.85], whitehouse: [18.07, -77.95], bluefields: [18.17, -78.03], "savanna-la-mar": [18.22, -78.13], montpelier: [18.35, -77.98] };
+  for (const a of T.airports) NODES[a.code] = [a.lat, a.lng];
+  const nodes = Object.fromEntries(Object.entries(NODES).map(([k, [la, lo]]) => [k, proj(lo, la)]));
+  /* [from, to, coast?] : a coastal leg walks the coastline between the two; an inland leg is a straight run */
+  const EDGES = [["negril", "lucea", 1], ["lucea", "hopewell", 1], ["hopewell", "montego-bay", 1], ["montego-bay", "MBJ", 1], ["MBJ", "rose-hall", 1], ["rose-hall", "falmouth", 1], ["falmouth", "runaway-bay", 1], ["runaway-bay", "ocho-rios", 1], ["ocho-rios", "OCJ", 1], ["OCJ", "port-antonio", 1], ["port-antonio", "morant-bay", 1], ["morant-bay", "KIN", 1], ["KIN", "kingston", 0],
+    ["treasure-beach", "black-river", 1], ["black-river", "whitehouse", 1], ["whitehouse", "bluefields", 1], ["bluefields", "savanna-la-mar", 1], ["savanna-la-mar", "negril", 1],
+    ["kingston", "spanish-town", 0], ["spanish-town", "bog-walk", 0], ["bog-walk", "linstead", 0], ["linstead", "moneague", 0], ["moneague", "ocho-rios", 0], ["kingston", "papine", 0], ["papine", "strawberry-hill", 0],
+    ["spanish-town", "old-harbour", 0], ["old-harbour", "may-pen", 0], ["may-pen", "mandeville", 0], ["mandeville", "santa-cruz", 0], ["santa-cruz", "treasure-beach", 0], ["santa-cruz", "black-river", 0], ["montego-bay", "montpelier", 0], ["montpelier", "savanna-la-mar", 0]];
+  /* the coastline nudged inland, so a coastal leg reads as the road and not the surf; orientation decides which side is inland */
+  const pts = ring.map(([lo, la]) => proj(lo, la));
+  let area = 0; for (let i = 0; i < pts.length; i++) { const [x1, y1] = pts[i], [x2, y2] = pts[(i + 1) % pts.length]; area += x1 * y2 - x2 * y1; }
+  const sgn = area > 0 ? 1 : -1; /* in screen space (y down), a positive area means the ring runs clockwise on screen */
+  const coast = pts.map((p, i) => { const a = pts[(i - 1 + pts.length) % pts.length], b = pts[(i + 1) % pts.length]; const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1; const nx = (-dy / l) * sgn, ny = (dx / l) * sgn; return [+(p[0] + nx * 7).toFixed(1), +(p[1] + ny * 7).toFixed(1)]; });
+  const cum = [0]; for (let i = 1; i <= coast.length; i++) cum.push(cum[i - 1] + Math.hypot(coast[i % coast.length][0] - coast[i - 1][0], coast[i % coast.length][1] - coast[i - 1][1]));
+  const nearest = ([x, y]) => { let best = 0, bd = Infinity; coast.forEach((c, i) => { const d = Math.hypot(c[0] - x, c[1] - y); if (d < bd) { bd = d; best = i; } }); return best; };
+  const nodeIdx = Object.fromEntries(Object.entries(nodes).map(([k, p]) => [k, nearest(p)]));
+  const anchors = { MBJ: "MBJ", KIN: "KIN", OCJ: "OCJ", negril: "negril", lucea: "lucea", "hanover-villas": "hopewell", mobay: "montego-bay", "mobay-nonai": "montego-bay", "rose-hall": "rose-hall", falmouth: "falmouth", "runaway-bay": "runaway-bay", "ocho-rios": "ocho-rios", kingston: "kingston", "blue-mountains": "strawberry-hill", "port-antonio": "port-antonio", "treasure-beach": "treasure-beach", "south-coast": "whitehouse" };
+  return { W, H: +Hh.toFixed(1), d, zones, hotels, airports, roads: { nodes, edges: EDGES, coast, cum: cum.map((n) => +n.toFixed(1)), idx: nodeIdx, anchors } };
+})();
+
 /* the cheapest one-way car price on the page, for the meta description */
-const fromPrice = () => { const ps = Object.values(R.rates).flatMap((a) => Object.values(a)).flatMap((t) => t.in || []).filter((o) => o[0] === "car").map((o) => o[3]); return ps.length ? Math.min(...ps) : null; };
+const fromPrice = () => { const ps = Object.values(R.rates).concat(Object.values(R.zones || {})).flatMap((a) => Object.values(a)).flatMap((t) => t.in || []).filter((o) => o[0] === "car").map((o) => o[3]); return ps.length ? Math.min(...ps) : null; };
 /* Club MoBay and Club Kingston prices from the tours data, so the cards never drift */
 const loungePrice = (slug) => { const v = X.venues.find((v) => v.slug === slug); if (!v) return ""; const ps = v.products.filter((p) => p.visitor).map((p) => p.visitor.usd); return ps.length ? `from ${usd(Math.min(...ps))}` : ""; };
 
@@ -203,10 +251,12 @@ function footer() {
 </div></footer>`;
 }
 
-const scripts = (cfg, withRates) => `<script>window.GV_TR=${JSON.stringify(cfg)};</script>
+/* Stripe.js is loaded from Stripe's own host, on the checkout page only (the card form is Stripe's iframe; no card detail touches the site) */
+const STRIPE_JS = "https://js.stripe.com/dahlia/stripe.js";
+const scripts = (cfg, withRates, withStripe = false) => `<script>window.GV_TR=${JSON.stringify(cfg)};</script>
 <script src="/getaways/assets/getaways.js" defer></script>
 <script src="/assets/home.js" defer></script>
-${withRates ? `<script src="${ASSETS}/transfers-rates.js?v=${RATES_STAMP}" defer></script>\n` : ""}<script src="${ASSETS}/transfers.js?v=${STAMP}" defer></script>`;
+${withRates ? `<script src="${ASSETS}/transfers-rates.js?v=${RATES_STAMP}" defer></script>\n` : ""}${withStripe ? `<script src="${STRIPE_JS}" defer></script>\n` : ""}<script src="${ASSETS}/transfers.js?v=${STAMP}" defer></script>`;
 
 /* ---------- the page ---------- */
 function transfersPage() {
@@ -227,8 +277,8 @@ function transfersPage() {
   const cfg = {
     page: "transfers", whatsapp: S.whatsapp, origin: S.origin, jmdRate: S.jmdRate, today: TODAY, base: BASE, maxGuests: T.site.maxGuests, email: S.email,
     hotels: HOTELS.map((h) => [h.name, h.slug, h.zone, h.rate || "", (T.site.hotelAliases || {})[h.name] || ""]), // [name, slug, zone, rate row, extra search words]
-    zones: T.zones.map((z) => ({ key: z.key, name: z.name, airbnb: z.airbnbLabel, aliases: z.aliases || [] })),
-    airports: T.airports, trips: T.trips, vehicles: T.vehicles, includes: T.includes, drive: T.drive, copy: { results: RS, checkout: CK, search: SR },
+    zones: T.zones.map((z) => ({ key: z.key, name: z.name, airbnb: z.airbnbLabel, aliases: z.aliases || [], hidden: !!z.hidden })),
+    airports: T.airports, trips: T.trips, vehicles: T.vehicles, includes: T.includes, drive: T.drive, copy: { results: RS, search: SR },
   };
   const title = `Jamaica airport transfers | Montego Bay, Kingston and Ocho Rios airport to your hotel${from != null ? `, from ${usd(from)}` : ""}`;
   const description = `Private airport transfers in Jamaica: search your hotel, pick the airport and the date, choose the vehicle, pay by card. Resorts across the island, one price per vehicle with taxes included${from != null ? `, from ${usd(from)}` : ""}. Booked by Golden Vacation & Travel, St Ann, Jamaica.`;
@@ -287,23 +337,6 @@ ${nav()}
   <p class="pf-hint rt-fine">${esc(RS.fine)} ${esc(T.driveNote)}</p>
 </section>
 
-<section class="tr-checkout wrap" id="checkout" hidden>
-  <div class="ck-card">
-    <div class="ck-sum" id="ck-sum"></div>
-    <form id="book" novalidate>
-      <div class="ck-head">${kicker(CK.kicker)}<h2 class="hh">${esc(CK.title)}</h2></div>
-      <div class="pf two"><label class="pf-f"><span class="pf-in"><input type="text" id="pf-first" placeholder="First name" autocomplete="given-name"></span></label><label class="pf-f"><span class="pf-in"><input type="text" id="pf-last" placeholder="Last name" autocomplete="family-name"></span></label></div>
-      <div class="pf two"><label class="pf-f"><span class="pf-in"><input type="email" id="pf-email" placeholder="Email for the confirmation" autocomplete="email"></span></label><label class="pf-f"><span class="pf-in"><input type="tel" id="pf-phone" placeholder="WhatsApp or phone" autocomplete="tel"></span></label></div>
-      <label class="pf-f"><span class="pf-in"><input type="text" id="pf-note" placeholder="Anything for the driver? Child seat, a stop, a lot of bags" autocomplete="off" maxlength="200"></span></label>
-      <div class="pf pf-preview" id="pf-preview" hidden><span class="pf-l">This is what we'll get</span><pre id="msg-preview"></pre></div>
-      <button class="btn btn-black btn-lg btn-full" type="submit" id="cta">${icon("card", 18)}<span id="cta-label">${esc(CK.cta)}</span></button>
-      <p class="pf-sub" id="cta-sub">${esc(CK.ctaSub)}</p>
-      <p class="pf-alt" id="cta-alt">${esc(CK.alt)} <a href="#" id="cta-wa">${esc(CK.altLink)}</a>.</p>
-      <p class="pf-fine">${esc(CK.fine)}</p>
-    </form>
-  </div>
-</section>
-
 <section class="tr-why wrap" id="why">
   <div class="how-sec"><div class="sec-head why-head"><div>${kicker(P.why.kicker)}<h2 class="hh">${esc(P.why.title)}</h2></div></div><div class="hsteps five">${why}</div></div>
 </section>
@@ -326,6 +359,100 @@ ${nav()}
 </main>
 ${footer()}
 ${scripts(cfg, true)}
+</body></html>`;
+}
+
+/* ---------- checkout page: the ride, who's travelling, and Stripe's card form on the page ---------- */
+const field = (id, label, type, placeholder, autocomplete, extra = "") => `<label class="pf-f" for="${id}"><span class="pf-l">${esc(label)}</span><span class="pf-in"><input type="${type}" id="${id}" placeholder="${esc(placeholder)}" autocomplete="${autocomplete}"${extra}></span></label>`;
+/* the sample ride the single-file preview shows when nothing was chosen (the live page reads the ride from the URL) */
+function previewBooking() {
+  const zone = "negril", offers = (R.zones[zone] && R.zones[zone].MBJ && R.zones[zone].MBJ.both) || [];
+  const o = offers.find((x) => x[1] === 5) || offers[0] || ["minivan", 5, 5, 190];
+  return { v: 1, ref: "GV-TR-K7Q2", hotel: "royalton-negril", zone, placeKind: "hotel", placeName: "", place: "Royalton Negril", hotel2: "", zone2: "", place2Kind: "", place2Name: "", place2: "", airport: "MBJ", trip: "both", people: 4, vehicle: o[0], seats: o[1], bags: o[2], price: o[3], multi: o[4] ? 1 : 0, date: "2026-12-19", date2: "2026-12-26", flightIn: "AA1497", flightOut: "AA1496", timeIn: "14:35", timeOut: "11:10", time: "", veh: T.vehicles[o[0]].label + (o[4] ? ", two or more" : ""), ride: "Montego Bay airport to Negril, round trip", drive: (T.drive.MBJ || {})[zone] || "", when: "Arrives Sat 19 Dec 2026 on AA1497 at 2:35pm. Departs Sat 26 Dec 2026 on AA1496 at 11:10am", guests: "4 people" };
+}
+function checkoutPage() {
+  const CK = T.page.checkout;
+  const cfg = { page: "checkout", whatsapp: S.whatsapp, origin: S.origin, jmdRate: S.jmdRate, today: TODAY, base: BASE, maxGuests: T.site.maxGuests, email: S.email, includes: T.includes, copy: { checkout: CK },
+    airports: T.airports.map((a) => ({ code: a.code, name: a.name })), zones: Object.fromEntries(T.zones.map((z) => [z.key, z.name])), map: { zones: MAP.zones, hotels: MAP.hotels, airports: MAP.airports, roads: MAP.roads }, previewBooking: previewBooking() };
+  const row = (id, ic, action, actionId, isLink) => `<div class="ck-row" id="${id}"><span class="ck-row-ic">${icon(ic, 20)}</span><div class="ck-row-t"><b id="${id}-t"></b><span id="${id}-d"></span></div>${isLink ? `<a class="ck-act" id="${actionId}" href="${BASE}/">${esc(action)}</a>` : `<button class="ck-act" type="button" id="${actionId}">${esc(action)}</button>`}</div>`;
+  const steps = CK.steps.map(([t, sub], i) => `<li data-i="${i + 1}"><span class="n">0${i + 1}</span><span class="ck-step-t"><b>${esc(t)}</b><small data-sub="${esc(sub)}">${esc(sub)}</small></span></li>`).join("");
+  return `${head({ title: "Book your ride | Airport transfers", description: "Your details and the payment for your Jamaica airport transfer with Golden Vacation & Travel.", pathname: `${BASE}/checkout`, noindex: true, bodyClass: "exp tr tr-ck" })}
+${nav()}
+<main id="ckpage">
+<section class="ck-hero poster" aria-label="Checkout">
+  <div class="wrap ck-hero-in">
+    <a class="ck-back" id="ck-back" href="${BASE}/">${icon("back", 16, 2.4)}${esc(CK.back)}</a>
+    <div class="ck-hero-t">
+      ${kicker(CK.pageKicker, true)}
+      <h1 class="hh">${esc(CK.pageTitleA)} <span class="gold">${esc(CK.pageTitleB)}</span></h1>
+      ${CK.pageSub ? `<p class="ck-sub" id="ck-sub">${esc(CK.pageSub)}</p>` : ""}
+    </div>
+    <div class="ck-map" id="ck-map" aria-hidden="true">
+      <svg class="ck-map-svg" viewBox="-20 -60 ${MAP.W + 40} ${(MAP.H + 150).toFixed(0)}" data-h="${MAP.H}">
+        <defs><clipPath id="ck-map-clip"><circle id="ck-map-clipc" r="0"/></clipPath></defs>
+        <path class="ck-map-land" d="${MAP.d}"/>
+        <path class="ck-map-route" id="ck-map-route" d=""/>
+        <g class="ck-map-pin a" id="ck-map-a"><circle r="16"/><circle r="6"/><text id="ck-map-al" y="-30" text-anchor="middle"></text></g>
+        <g class="ck-map-pin b" id="ck-map-b"><circle r="16"/><circle r="6"/><text id="ck-map-bl" y="-30" text-anchor="middle"></text></g>
+        <!-- short hops (airport and hotel a few minutes apart) get a magnifier: the same coastline zoomed in a circle, the route drawn inside it -->
+        <g class="ck-map-zoom" id="ck-map-zoom" hidden>
+          <line class="ck-map-tie" id="ck-map-tie"/>
+          <circle class="ck-map-spot" id="ck-map-spot" r="10"/>
+          <circle class="ck-map-lens-bg" id="ck-map-lens-bg" r="0"/>
+          <g clip-path="url(#ck-map-clip)"><g id="ck-map-zoom-in"><path class="ck-map-land zoomed" d="${MAP.d}"/><path class="ck-map-route zoomed" id="ck-map-zroute" d=""/></g></g>
+          <circle class="ck-map-lens" id="ck-map-lens" r="0"/>
+          <g class="ck-map-pin a" id="ck-map-za"><circle r="16"/><circle r="6"/><text id="ck-map-zal" y="-30" text-anchor="middle"></text></g>
+          <g class="ck-map-pin b" id="ck-map-zb"><circle r="16"/><circle r="6"/><text id="ck-map-zbl" y="-30" text-anchor="middle"></text></g>
+        </g>
+      </svg>
+    </div>
+    <ol class="ck-steps" id="ck-steps" data-step="2" aria-label="Steps">${steps}</ol>
+  </div>
+</section>
+<div class="ck-main wrap">
+  <div class="ck-grid" id="ck-grid" data-state="details">
+    <div class="ck-left">
+      <section class="ck-ride" id="ck-ride" aria-label="Your ride">
+        <div class="ck-ride-top"><span class="ck-lbl">${esc(CK.yourRide)}</span><a class="ck-act" id="ck-ride-change" href="${BASE}/">${esc(CK.change)}</a></div>
+        <b class="hh" id="ck-ride-title"></b>
+        <div class="ck-route" id="ck-route">
+          <span class="ck-node"><i id="ck-route-ia">${icon("plane", 18, 2.4)}</i><b id="ck-route-a"></b><small id="ck-route-as"></small></span>
+          <span class="ck-line"><small id="ck-route-mid"></small></span>
+          <span class="ck-node"><i id="ck-route-ib">${icon("pin", 18, 2.4)}</i><b id="ck-route-b"></b><small id="ck-route-bs"></small></span>
+        </div>
+        <span id="ck-ride-when"></span>
+      </section>
+      <section class="ck-card ck-guest" id="ck-guest" aria-label="Who's travelling">
+        <form id="ck-form" novalidate>
+          <div class="ck-card-h">${kicker(CK.kicker)}<h2 class="hh">${esc(CK.title)}</h2></div>
+          <div class="ck-two">${field("ck-first", "First name", "text", "First name", "given-name")}${field("ck-last", "Last name", "text", "Last name", "family-name")}</div>
+          <div class="ck-two">${field("ck-email", "Email for the confirmation", "email", "you@example.com", "email", ' inputmode="email"')}${field("ck-phone", "WhatsApp or phone", "tel", "+1 305 555 0100", "tel", ' inputmode="tel"')}</div>
+          ${field("ck-note", "Anything for the driver?", "text", "Child seat, a stop, a lot of bags", "off", ' maxlength="200"')}
+          <p class="ck-hint" id="ck-hint"></p>
+          <button class="btn btn-gold btn-lg btn-full" type="submit" id="ck-go">${esc(CK.continueCta)}${icon("arrow", 18, 2.4)}</button>
+        </form>
+      </section>
+      <div class="ck-card ck-rows" id="ck-rows" hidden>
+        ${row("ck-row-ride", "car", CK.change, "ck-row-ride-change", true)}
+        ${row("ck-row-guest", "users", CK.edit, "ck-row-edit", false)}
+        <p class="ck-rows-note" id="ck-rows-note"></p>
+      </div>
+    </div>
+    <aside class="ck-card ck-pay" id="ck-pay" aria-label="Payment">
+      <div class="ck-card-h" id="ck-pay-head" hidden>${kicker(CK.lastKicker)}<h2 class="hh" id="ck-pay-title" tabindex="-1">${esc(CK.lastTitle)}</h2></div>
+      <div class="ck-tot"><div class="ck-tot-h"><span class="ck-lbl">${esc(CK.total)}</span><span class="ck-secure">${icon("lock", 14, 2.6)}${esc(CK.secureTag)}</span></div><div class="ck-tot-v"><b><span class="usd-v" id="ck-total"></span><span class="jmd-v" id="ck-total-j"></span></b><span><span class="usd-v" id="ck-jmd"></span><span class="jmd-v" id="ck-usd"></span></span></div><small id="ck-tot-sub"></small></div>
+      <div class="ck-inc" id="ck-inc"></div>
+      <div class="ck-div"></div>
+      <div class="ck-stripe" id="ck-stripe"><p class="ck-ph" id="ck-ph">${esc(CK.payPlaceholder)}</p></div>
+      <p class="pf-fine">${esc(CK.secure)}</p>
+      <p class="pf-alt">${esc(CK.alt)} <a href="#" id="ck-wa">${esc(CK.altLink)}</a>.</p>
+    </aside>
+  </div>
+  <div class="ck-empty" id="ck-empty" hidden>${kicker("Airport transfers")}<h2 class="hh">${esc(CK.emptyTitle)}</h2><p>${esc(CK.emptyText)}</p>${btn(CK.emptyCta, `${BASE}/`, "black")}</div>
+</div>
+</main>
+${footer()}
+${scripts(cfg, false, true)}
 </body></html>`;
 }
 
@@ -352,9 +479,11 @@ ${scripts({ page: "booked", whatsapp: S.whatsapp, base: BASE, ...(previewState ?
 /* ---------- write ---------- */
 const pages = [
   ["public/transfers/index.html", transfersPage(), "transfers"],
+  ["public/transfers/checkout.html", checkoutPage(), "checkout"],
   ["public/transfers/booked.html", bookedPage(), "booked"],
 ];
-const ratesPublic = { hotels: Object.fromEntries(Object.entries(R.hotels).map(([k, h]) => [k, { name: h.name, zone: h.zone }])), rates: R.rates, zones: R.zones };
+const EXCEPTIONS = (R.exceptions || []).map((x) => ({ airport: x.airport, zone: x.zone, seats: x.seats, hotels: x.hotels.map((n) => { const h = HOTELS.find((h) => h.name.toLowerCase() === n.toLowerCase() || h.slug === slugify(n) || h.slug === slugify("Hotel " + n) || slugify(h.name) === slugify(n.replace(/^Hotel /i, ""))); if (!h) console.warn(`exception hotel not on the list: ${n}`); return h ? h.slug : null; }).filter(Boolean) }));
+const ratesPublic = { hotels: Object.fromEntries(Object.entries(R.hotels).map(([k, h]) => [k, { name: h.name, zone: h.zone }])), rates: R.rates, zones: R.zones, links: R.links || {}, exceptions: EXCEPTIONS };
 const ratesJs = `/* Generated by scripts/build-transfers.mjs from data/transfer-rates.json. Do not edit by hand. Prices in US$ per vehicle, taxes included. */\nwindow.GV_TR_RATES=${JSON.stringify(ratesPublic)};\n`;
 
 if (!BUNDLE) {
@@ -367,7 +496,7 @@ if (!BUNDLE) {
   fs.writeFileSync(path.join(ROOT, "public/assets/transfers-rates.js"), ratesJs);
   console.log("wrote public/assets/transfers-rates.js", `${(ratesJs.length / 1024).toFixed(0)}K`);
   const dataModule = `/* Generated by scripts/build-transfers.mjs from data/transfers.json and data/transfer-rates.json. Do not edit by hand. Customer prices only. */
-export const TR = ${JSON.stringify({ airports: T.airports, trips: T.trips, vehicles: T.vehicles, maxGuests: T.site.maxGuests, zones: T.zones.map((z) => ({ key: z.key, name: z.name })), hotels: ratesPublic.hotels, rates: R.rates, zoneRates: R.zones, hotelKeys: Object.fromEntries(HOTELS.map((h) => [h.slug, { name: h.name, zone: h.zone, rate: h.rate || "" }])) })};
+export const TR = ${JSON.stringify({ airports: T.airports, trips: T.trips, vehicles: T.vehicles, maxGuests: T.site.maxGuests, zones: T.zones.map((z) => ({ key: z.key, name: z.name })), hotels: ratesPublic.hotels, rates: R.rates, zoneRates: R.zones, links: R.links || {}, exceptions: EXCEPTIONS, hotelKeys: Object.fromEntries(HOTELS.map((h) => [h.slug, { name: h.name, zone: h.zone, rate: h.rate || "" }])) })};
 `;
   fs.writeFileSync(path.join(ROOT, "netlify/functions/_tr-data.mjs"), dataModule);
   console.log("wrote netlify/functions/_tr-data.mjs", `${(dataModule.length / 1024).toFixed(0)}K`);
@@ -408,7 +537,7 @@ export const TR = ${JSON.stringify({ airports: T.airports, trips: T.trips, vehic
 <script>window.GV_CONFIG=${JSON.stringify({ base: BASE, whatsapp: S.whatsapp, jmdRate: S.jmdRate, preview: true })};</script>
 </head>
 <body class="exp tr">
-<div class="pv-bar"><b>PREVIEW</b><select id="pv-pick" aria-label="Page"><option value="transfers">Airport transfers</option><option value="booked-team">After paying</option></select><span>${esc(NOTE || "Nothing here is live. Site links open goldenvacays.com in a new tab.")}</span></div>
+<div class="pv-bar"><b>PREVIEW</b><select id="pv-pick" aria-label="Page"><option value="transfers">Airport transfers</option><option value="checkout">Checkout</option><option value="booked-team">After paying</option></select><span>${esc(NOTE || "Nothing here is live. Site links open goldenvacays.com in a new tab.")}</span></div>
 <div id="pv-root">${sections}</div>
 <script>${js}</script>
 <script>
@@ -424,6 +553,7 @@ export const TR = ${JSON.stringify({ airports: T.airports, trips: T.trips, vehic
     if(window.GV_TR_INIT) window.GV_TR_INIT(el);
   }
   pick.addEventListener('change',function(){location.hash='#'+pick.value;});
+  window.GV_TR_PREVIEW_GO=function(key){var c=document.getElementById('pv-'+key);if(c)c.removeAttribute('data-inited');if(location.hash==='#'+key){show(key);}else{location.hash='#'+key;}};
   window.addEventListener('hashchange',function(){show((location.hash||'#transfers').slice(1));});
   document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a)return;var h=a.getAttribute('href')||'';
     if(h.indexOf('#')===0){return;}

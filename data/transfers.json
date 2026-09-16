@@ -2,8 +2,8 @@
   "site": {
     "brand": "Airport transfers",
     "parent": "Golden Vacation & Travel",
-    "updated": "2026-09-15",
-    "source": "Prices: data/transfer-rates.json (from Hana's rate sheet via scripts/import-transfer-rates.py). Zones and drive times: the Areas and Routes tables in the Catalogue base appvoVONfeF3OLsLi. Customer prices only: no cost, no supplier, anywhere.",
+    "updated": "2026-09-16",
+    "source": "Prices: data/transfer-rates.json (from Hana's transfer workbook, Website Pricing and Hotel to Hotel tabs, via scripts/import-transfer-rates.py; one price per zone, every hotel in a zone shares it). Zones and drive times: the Areas and Routes tables in the Catalogue base appvoVONfeF3OLsLi plus the workbook's Transfer Times tab. Customer prices only: no cost, no supplier, anywhere.",
     "maxGuests": 16,
     "hide": [
       "Catalonia Montego Bay",
@@ -22,7 +22,23 @@
     "hideNote": "Closed hotels Hana asked to keep off the transfers list (Sep 16 2026: the five she named plus the other six marked Closed on the status page); Runaway Bay Heart Hotel is the old name of Cardiff Hotel and Spa",
     "hotelAliases": {
       "Cardiff Hotel and Spa": "heart hotel runaway bay heart"
-    }
+    },
+    "hotelZones": {
+      "Doctors Cave Beach Hotel": "mobay-nonai",
+      "Half Moon": "mobay-nonai",
+      "S Hotel Montego Bay": "mobay-nonai",
+      "Toby's Resort": "mobay-nonai",
+      "El Greco Resort": "mobay-nonai",
+      "Altamont West Hotel": "mobay-nonai",
+      "Gloriana Hotel": "mobay-nonai",
+      "Round Hill Hotel and Villas": "hanover-villas",
+      "Tryall Club": "hanover-villas",
+      "Strawberry Hill": "blue-mountains",
+      "Jakes Hotel": "treasure-beach",
+      "Treasure Beach Hotel": "treasure-beach",
+      "Kanopi House": "port-antonio"
+    },
+    "hotelZonesNote": "Overrides for the zone a hotel prices at, by the name on the resort list or in a zone's places list. Everything else falls into a zone by region and the longitude rule. From Hana's Hotel Price List, Sep 16 2026."
   },
   "page": {
     "kicker": "Airport transfers · Jamaica",
@@ -166,11 +182,53 @@
     "checkout": {
       "kicker": "Almost there",
       "title": "Who's travelling?",
-      "cta": "Book and pay",
-      "ctaSub": "Paid by card on a secure page and confirmed straight away. Your driver's details follow by email and WhatsApp.",
+      "pageKicker": "Airport transfers · Checkout",
+      "pageSub": "",
+      "pageSubFolded": "",
+      "back": "Back to the options",
+      "yourRide": "Your ride",
+      "change": "Change",
+      "edit": "Edit",
+      "continueCta": "Continue to payment",
+      "nameHintArrival": "The first and last name is what goes on the driver's board at the arrivals exit.",
+      "nameHintPickup": "The first and last name is what the driver asks for at pickup.",
+      "foldedNoteArrival": "Your name is what goes on the driver's board. The confirmation and the driver's details go to the email and the WhatsApp number above.",
+      "foldedNotePickup": "Your name is what the driver has for the pickup. The confirmation and the driver's details go to the email and the WhatsApp number above.",
+      "lastKicker": "Last step",
+      "lastTitle": "Pay and it's booked.",
+      "total": "Total",
+      "payPlaceholder": "Fill in who's travelling and press Continue. The card form opens here.",
+      "payOpening": "Opening the card form",
+      "secure": "Paid on this page through Stripe; your card details never reach our site. Nothing is charged until you press Pay, and a person reads every booking.",
       "alt": "Rather talk to a person first?",
       "altLink": "Send this as a WhatsApp request instead",
-      "fine": "Nothing is charged until you see the total on the card page. A person reads every booking."
+      "emptyTitle": "Nothing to book yet.",
+      "emptyText": "Pick a ride first and the details come here.",
+      "emptyCta": "Find your ride",
+      "cta": "Book and pay",
+      "ctaSub": "Paid by card on a secure page and confirmed straight away. Your driver's details follow by email and WhatsApp.",
+      "fine": "Nothing is charged until you see the total on the card page. A person reads every booking.",
+      "pageTitleA": "Lock in your",
+      "pageTitleB": "ride.",
+      "steps": [
+        [
+          "Your ride",
+          "Chosen"
+        ],
+        [
+          "Who's travelling",
+          "Name, email, WhatsApp"
+        ],
+        [
+          "Pay",
+          "Card, Apple Pay, Google Pay"
+        ]
+      ],
+      "stepDone": "Done",
+      "secureTag": "Secure checkout",
+      "roundTrip": "and back",
+      "rideFor": "for",
+      "mapNote": "Your route"
     }
   },
   "airports": [
@@ -254,11 +312,10 @@
       "60 min waiting time included"
     ],
     "out": [
-      "Pickup time confirmed the day before",
       "15 min waiting time included"
     ],
     "hotel": [
-      "Pickup at your door at the time you give",
+      "Driver at your hotel lobby at the time you give",
       "15 min waiting time included"
     ],
     "all": [
@@ -298,6 +355,21 @@
       ]
     },
     {
+      "key": "mobay-nonai",
+      "name": "Montego Bay",
+      "airbnbLabel": "Montego Bay, villa or Airbnb (not a resort)",
+      "aliases": [
+        "montego bay",
+        "mobay",
+        "ironshore",
+        "hip strip",
+        "doctors cave"
+      ],
+      "places": [],
+      "hidden": true,
+      "note": "Montego Bay hotels that are not all-inclusive: same drive, the sheet prices them on their own row. Not offered as a villa or Airbnb area (the mobay zone covers that)."
+    },
+    {
       "key": "rose-hall",
       "name": "Rose Hall",
       "airbnbLabel": "Rose Hall, villa or Airbnb",
@@ -334,6 +406,19 @@
         "Grand Palladium Jamaica Resort & Spa",
         "Grand Palladium Lady Hamilton Resort & Spa"
       ]
+    },
+    {
+      "key": "hanover-villas",
+      "name": "Hanover villa estates",
+      "airbnbLabel": "Round Hill or Tryall, villa",
+      "aliases": [
+        "round hill",
+        "tryall",
+        "hanover villa",
+        "villa estate"
+      ],
+      "places": [],
+      "hidden": true
     },
     {
       "key": "falmouth",
@@ -462,6 +547,25 @@
       ]
     },
     {
+      "key": "treasure-beach",
+      "name": "Treasure Beach",
+      "airbnbLabel": "Treasure Beach or Black River, villa or Airbnb",
+      "aliases": [
+        "treasure beach",
+        "black river",
+        "st elizabeth",
+        "st. elizabeth",
+        "calabash",
+        "billys bay",
+        "frenchman's bay"
+      ],
+      "places": [
+        "Calabash Bay",
+        "Marblue Villa Suites",
+        "Sunset Resort Treasure Beach"
+      ]
+    },
+    {
       "key": "kingston",
       "name": "Kingston",
       "airbnbLabel": "Kingston, villa or Airbnb",
@@ -480,7 +584,22 @@
         "ROK Hotel Kingston",
         "S Hotel Kingston",
         "Knutsford Court Hotel",
-        "The Liguanea Club"
+        "The Liguanea Club",
+        "Altamont Court Hotel"
+      ]
+    },
+    {
+      "key": "blue-mountains",
+      "name": "Blue Mountains",
+      "airbnbLabel": "Blue Mountains or Irish Town, villa or Airbnb",
+      "aliases": [
+        "blue mountains",
+        "irish town",
+        "newcastle",
+        "strawberry hill"
+      ],
+      "places": [
+        "Strawberry Hill"
       ]
     },
     {
@@ -499,7 +618,8 @@
         "Trident Hotel",
         "Goblin Hill Villas",
         "Jamaica Palace Hotel",
-        "Hotel Mockingbird Hill"
+        "Hotel Mockingbird Hill",
+        "Frenchman's Cove"
       ]
     }
   ],
@@ -512,7 +632,12 @@
       "runaway-bay": "about 1 h 15",
       "ocho-rios": "about 1 h 45",
       "negril": "about 1 h 30",
-      "south-coast": "about 2 h"
+      "south-coast": "about 2 h",
+      "mobay-nonai": "15 to 30 min",
+      "hanover-villas": "about 40 min",
+      "treasure-beach": "about 2 h",
+      "port-antonio": "about 4 h",
+      "kingston": "about 3 h 30"
     },
     "KIN": {
       "kingston": "about 30 min",
@@ -524,7 +649,8 @@
       "falmouth": "about 3 h",
       "negril": "about 4 h",
       "lucea": "about 4 h",
-      "south-coast": "about 2 h 30"
+      "south-coast": "about 2 h 30",
+      "blue-mountains": "about 1 h"
     },
     "OCJ": {
       "ocho-rios": "about 20 min",
