@@ -80,7 +80,7 @@ const ticker = (items) => { const one = items.map((it) => `<span class="t hh">${
 const longShort = (long, short) => `<span class="long">${esc(long)}</span><span class="short">${esc(short || long)}</span>`;
 const dual = (n) => `<span class="usd-v">${usd(n)}</span><span class="jmd-v">${jmdOf(n)}</span>`;
 
-const NAV = [["Getaways", "/getaways/"], ["Staycations", "/#staycations"], ["Jamaica", "/#coming"], ["Experiences", `${BASE}/`], ["Groups", "/group-inquiry"], ["Resort status", "/hotel-status"]];
+const NAV = [["Getaways", "/getaways/"], ["Staycations", "/#staycations"], ["Jamaica", "/#coming"], ["Experiences", `${BASE}/`], ["Transfers", "/transfers/"], ["Groups", "/group-inquiry"], ["Resort status", "/hotel-status"]];
 const CATS = Object.fromEntries(X.hub.categories);
 const AREAS = Object.fromEntries(X.hub.areas);
 const venueBySlug = Object.fromEntries(X.venues.map((v) => [v.slug, v]));

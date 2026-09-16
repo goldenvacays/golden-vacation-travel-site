@@ -14,10 +14,14 @@ import fs from "node:fs";
 import path from "node:path";
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { islandSvg, jpegSize } from "./lib-island.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const H = JSON.parse(fs.readFileSync(path.join(ROOT, "data/home.json"), "utf8"));
 const G = JSON.parse(fs.readFileSync(path.join(ROOT, "data/getaways.json"), "utf8"));
+const TR = fs.existsSync(path.join(ROOT, "data/transfers.json")) ? JSON.parse(fs.readFileSync(path.join(ROOT, "data/transfers.json"), "utf8")) : null;
+const TRR = fs.existsSync(path.join(ROOT, "data/transfer-rates.json")) ? JSON.parse(fs.readFileSync(path.join(ROOT, "data/transfer-rates.json"), "utf8")) : null;
+const JM = fs.existsSync(path.join(ROOT, "data/jamaica.json")) ? JSON.parse(fs.readFileSync(path.join(ROOT, "data/jamaica.json"), "utf8")) : null;
 const S = G.site;
 const ASSETS = "/assets";
 const IMG_OUT = path.join(ROOT, "public/assets/img");
@@ -61,6 +65,7 @@ const ICONS = {
   menu: '<path d="M3 12h18M3 6h18M3 18h18"></path>',
   calendar: '<rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path>',
   users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path>',
+  plane: '<path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 11l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 2.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"></path>',
   map: '<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><path d="M8 2v16M16 6v16"></path>',
 };
 const icon = (name, size = 20, sw = 2.2) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block">${ICONS[name]}</svg>`;
@@ -155,6 +160,34 @@ const scripts = () => `<script>window.GV_HOME=${JSON.stringify({ whatsapp: S.wha
 <script src="${ASSETS}/home.js" defer></script>`;
 
 /* ---------- front page ---------- */
+/* airport transfers: the island with the arrivals photo, and a search that hands over to /transfers with the choices filled in */
+function transfersBlock(today) {
+  const B = H.transfers;
+  if (!B || !TR || !JM) return "";
+  let from = null;
+  /* the same "from" as the transfers page: the cheapest private car from an airport to a hotel */
+  if (TRR) { for (const hk of Object.keys(TRR.rates || {})) for (const ap of Object.keys(TRR.rates[hk])) for (const o of TRR.rates[hk][ap].in || []) if (o[0] === "car" && (from == null || o[3] < from)) from = o[3]; }
+  const fromLine = from != null ? B.fromLine.replace("{from}", `US$${Math.round(from)}`) : "";
+  const island = islandSvg({ ring: JM.ring, airports: TR.airports, photoUrl: img(B.photo.file), size: jpegSize(path.join(ROOT, "public/assets/img", B.photo.file)), focus: B.photo.focus, alt: B.photo.alt, esc, id: "home-island" });
+  const people = Array.from({ length: TR.site && TR.site.maxGuests ? TR.site.maxGuests : 16 }, (_, i) => `<option value="${i + 1}"${i + 1 === 2 ? " selected" : ""}>${i + 1}</option>`).join("");
+  return `<div class="trh" id="transfers">
+    <div class="trh-t">
+      ${kicker(B.kicker, true)}
+      <h3 class="hh">${esc(B.titleA)} <span class="gold">${esc(B.titleB)}</span></h3>
+      <p class="sec-sub">${esc(B.sub)}${fromLine ? ` ${esc(fromLine)}` : ""}</p>
+      <form class="trh-q" action="/transfers/" method="get" data-where="home-transfers">
+        <div class="qf qf-wide">${icon("pin", 20)}<label><span>${esc(B.search.hotel)}</span><input type="search" name="q" placeholder="${esc(B.search.hotelPlaceholder)}" autocomplete="off" autocapitalize="words"></label></div>
+        <div class="qf">${icon("plane", 20)}<label><span>${esc(B.search.airport)}</span><select name="airport">${TR.airports.map((a) => `<option value="${a.code}">${esc(a.short || a.name)}</option>`).join("")}</select></label></div>
+        <div class="qf">${icon("users", 20)}<label><span>${esc(B.search.people)}</span><select name="people">${people}</select></label></div>
+        <div class="qf qf-wide">${icon("calendar", 20)}<label><span>${esc(B.search.date)}</span><input type="date" name="date" min="${today}"></label></div>
+        <div class="qsubmit"><button class="btn btn-gold btn-lg btn-full" type="submit">${esc(B.search.go)}${icon("arrow", 18)}</button></div>
+      </form>
+      <small class="trh-note">${esc(B.note)}</small>
+    </div>
+    <div class="trh-island">${island}</div>
+  </div>`;
+}
+
 function homePage() {
   const today = new Date().toISOString().slice(0, 10);
 
@@ -230,6 +263,7 @@ ${modeChips("qmodes mob")}
   const coming = `<section class="coming-sec" id="coming" aria-labelledby="coming-h"><div class="wrap" style="display:flex;flex-direction:column;gap:inherit">
   <div class="sec-head"><div>${kicker(H.coming.kicker, true)}<h2 id="coming-h" class="hh">${esc(H.coming.title)}</h2><p class="sec-sub desk">${esc(H.coming.sub)}</p></div>${biglink(H.coming.planMobile, waHome).replace('class="biglink', 'class="mob biglink')}</div>
   <div class="pdoors">${pdoors}</div>
+  ${transfersBlock(today)}
 </div></section>`;
 
   // experiences
