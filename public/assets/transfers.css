@@ -7,7 +7,10 @@
 .tr-hero-t { display: flex; flex-direction: column; gap: 12px; }
 .tr-hero.poster h1 .gold { color: var(--gold); }
 .tr-island { position: relative; display: flex; flex-direction: column; gap: 4px; }
-.tr-island-svg { display: block; width: 100%; height: auto; overflow: visible; font-family: inherit; filter: drop-shadow(0 22px 34px rgba(0,0,0,.5)); }
+.tr-island-svg { display: block; width: 100%; height: auto; overflow: visible; font-family: inherit; }
+/* the soft shadow and the blended grain are heavy on phone GPUs (the page felt slow on mobile): phones get the flat look, laptops the full one */
+.tr-hero.poster::before { mix-blend-mode: normal; opacity: .07; }
+@media (min-width: 900px) { .tr-island-svg { filter: drop-shadow(0 22px 34px rgba(0,0,0,.5)); } .tr-hero.poster::before { mix-blend-mode: overlay; opacity: .16; } }
 .tr-island-glow { fill: none; stroke: rgba(242,185,59,.3); stroke-width: 24; stroke-linejoin: round; }
 .tr-island-edge { fill: none; stroke: var(--gold); stroke-width: 6; stroke-linejoin: round; }
 .tr-pin circle { fill: var(--gold); stroke: var(--ink); stroke-width: 4; }
