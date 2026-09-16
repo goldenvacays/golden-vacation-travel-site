@@ -264,12 +264,12 @@ ${nav()}
     <div class="tr-row tr-row-when" id="s-in-wrap">
       <div class="tr-f"><label class="pf-l" id="s-date-l" for="s-date">${esc(SR.dateIn)}</label><span class="pf-in">${icon("calendar", 18)}<input type="date" id="s-date"></span></div>
       <div class="tr-f" id="s-flight-in-wrap"><label class="pf-l" for="s-flight-in">${esc(SR.flightIn)}</label><span class="pf-in">${icon("plane", 18)}<input type="text" id="s-flight-in" placeholder="e.g. AA1497" autocapitalize="characters" autocomplete="off"></span></div>
-      <div class="tr-f" id="s-time-in-wrap"><label class="pf-l" id="s-time-l" for="s-time">${esc(SR.timeIn)}</label><span class="pf-in">${icon("clock", 18)}<input type="text" id="s-time" placeholder="e.g. 2:35pm" autocomplete="off" maxlength="10"></span></div>
+      <div class="tr-f" id="s-time-in-wrap"><label class="pf-l" id="s-time-l" for="s-time">${esc(SR.timeIn)}</label><span class="pf-in pf-in-time">${icon("clock", 18)}<input type="time" id="s-time" autocomplete="off"></span></div>
     </div>
     <div class="tr-row tr-row-when" id="s-out-wrap" hidden>
       <div class="tr-f"><label class="pf-l" for="s-date2">${esc(SR.dateOut)}</label><span class="pf-in">${icon("calendar", 18)}<input type="date" id="s-date2"></span></div>
       <div class="tr-f"><label class="pf-l" for="s-flight-out">${esc(SR.flightOut)}</label><span class="pf-in">${icon("plane", 18)}<input type="text" id="s-flight-out" placeholder="e.g. AA1496" autocapitalize="characters" autocomplete="off"></span></div>
-      <div class="tr-f"><label class="pf-l" for="s-time2">${esc(SR.timeOut)}</label><span class="pf-in">${icon("clock", 18)}<input type="text" id="s-time2" placeholder="e.g. 11:10am" autocomplete="off" maxlength="10"></span></div>
+      <div class="tr-f"><label class="pf-l" for="s-time2">${esc(SR.timeOut)}</label><span class="pf-in pf-in-time">${icon("clock", 18)}<input type="time" id="s-time2" autocomplete="off"></span></div>
     </div>
     <div class="tr-row tr-row-go">
       <p class="tr-hint" id="s-hint">${esc(SR.hint)}</p>
