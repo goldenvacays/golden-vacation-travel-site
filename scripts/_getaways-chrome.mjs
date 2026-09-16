@@ -113,8 +113,8 @@ export function nav({ back = null, title = null } = {}) {
   return `<header class="nav wrap" role="banner">
   <div class="nav-l">
     ${back ? `<a class="icon-btn mob" href="${back}" aria-label="Back">${icon("back", 24, 2.4)}</a>` : ""}
-    <a class="wordmark hh" href="${BASE}/" aria-label="Golden Vacation, Getaways home">GOLDEN VACATION</a>
-    ${tag("Getaways", "gold")}
+    <a class="wordmark hh" href="/" aria-label="Golden Vacation, home">GOLDEN VACATION</a>
+    <a class="tag tag-gold" href="${BASE}/" aria-label="Getaways home" style="color:var(--ink)">Getaways</a>
   </div>
   <nav class="nav-links" aria-label="Getaways">${links.map(([l, h]) => `<a href="${h}">${esc(l)}</a>`).join("")}</nav>
   <div class="nav-r">
