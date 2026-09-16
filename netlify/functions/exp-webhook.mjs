@@ -73,6 +73,11 @@ export const handler = async (event) => {
   }
   try { await stripe(`/payment_intents/${piId}`, { metadata: outcome }); } catch (e) { console.error("pi metadata", e.message); }
 
+  if (m.kind === "transfer") {
+    /* an airport transfer (tr-checkout): paid means confirmed; the team books the driver and sends the guest the pickup details */
+    await netlifyForm("tr-bookings", { ref: m.ref, route: m.product_name, vehicle: m.product, when: summary.when, guests: summary.guests, place: m.pickup_label, customer: `${m.first} ${m.last}`, email: m.email, phone: m.phone, total: usd(Number(m.total_usd)), status: "PAID · confirmed to the guest · book the driver and send the pickup details", note: [m.note, `Stripe ${piId}`].filter(Boolean).join(" · ") });
+    return json(200, { received: true, ref: m.ref, status: outcome.rezdy_status, kind: "transfer" });
+  }
   const statusLine = team ? "PAID · confirmed to the guest · book it with the operator and send their details" : outcome.rezdy_status;
   await netlifyForm("exp-bookings", { ref: m.ref, venue: m.venue_name, product: m.product_name, when: summary.when, guests: summary.guests, pickup: summary.pickup, customer: `${m.first} ${m.last}`, email: m.email, phone: m.phone, total: usd(Number(m.total_usd)), status: statusLine, order: outcome.rezdy_order, note: [m.choices, summary.cruise ? `Cruise: ${summary.cruise}` : "", `Stripe ${piId}`].filter(Boolean).join(" · ") });
   if (outcome.rezdy_status === "NEEDS_ATTENTION") {
