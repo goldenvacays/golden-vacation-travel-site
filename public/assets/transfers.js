@@ -116,7 +116,15 @@
     function placeTextOf(mode, place, zone, name) { return mode === "hotel" && place ? place.name : mode === "zone" && zone && ZONE[zone] ? (name ? name + " (" + ZONE[zone].name + ")" : ZONE[zone].airbnb) : ""; }
     function placeText() { return placeTextOf(st.placeMode, st.place, st.zone, st.placeName); }
     function place2Text() { return placeTextOf(st.place2Mode, st.place2, st.zone2, st.place2Name); }
-    function timeText(input) { return input ? input.value.trim().toLowerCase().replace(/\s+/g, "") : ""; }
+    /* the time boxes are native pickers: the value comes back as 24-hour "14:35", the driver and the checkout get "2:35pm" */
+    function timeText(input) {
+      if (!input) return "";
+      var v = input.value.trim().toLowerCase().replace(/\s+/g, "");
+      var m = v.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+      if (!m) return v; /* already "2:35pm" (a browser without a time picker falls back to a text box) */
+      var h = Number(m[1]), ap = h >= 12 ? "pm" : "am";
+      return (h % 12 || 12) + ":" + m[2] + ap;
+    }
 
     /* ---- prices for the search: the hotel's own row, or its zone ---- */
     function offersFor() {
@@ -159,20 +167,20 @@
       }
       if (!e.date.value) return { f: e.date, t: isHotel() ? "Pick the date." : needIn() ? "Pick your arrival date." : "Pick your departure date.", cal: 0 };
       if (e.date.value < today) return { f: e.date, t: "That date has passed.", cal: 0 };
-      if (isHotel()) { if (!TIME.test(e.time.value.trim())) return { f: e.time, t: "What time should the driver come? e.g. 10:00am" }; return null; }
+      if (isHotel()) { if (!TIME.test(timeText(e.time))) return { f: e.time, t: "What time should the driver come?" }; return null; }
       if (needIn()) {
         if (!FLIGHT.test(e.flightIn.value.trim().toUpperCase())) return { f: e.flightIn, t: "We need the arriving flight number, e.g. AA1497." };
-        if (!TIME.test(e.time.value.trim())) return { f: e.time, t: "What time does it land? e.g. 2:35pm" };
+        if (!TIME.test(timeText(e.time))) return { f: e.time, t: "What time does it land?" };
       }
       if (trip() === "out") { /* one way out uses the first row's boxes, relabelled */
         if (!FLIGHT.test(e.flightIn.value.trim().toUpperCase())) return { f: e.flightIn, t: "We need the departing flight number, e.g. AA1496." };
-        if (!TIME.test(e.time.value.trim())) return { f: e.time, t: "What time does it take off? e.g. 11:10am" };
+        if (!TIME.test(timeText(e.time))) return { f: e.time, t: "What time does it take off?" };
       }
       if (trip() === "both") {
         if (!e.date2.value) return { f: e.date2, t: "Pick your departure date.", cal: 1 };
         if (e.date2.value < e.date.value) return { f: e.date2, t: "The departure is before the arrival.", cal: 1 };
         if (!FLIGHT.test(e.flightOut.value.trim().toUpperCase())) return { f: e.flightOut, t: "We need the departing flight number, e.g. AA1496." };
-        if (!TIME.test(e.time2.value.trim())) return { f: e.time2, t: "What time does it take off? e.g. 11:10am" };
+        if (!TIME.test(timeText(e.time2))) return { f: e.time2, t: "What time does it take off?" };
       }
       return null;
     }
@@ -204,7 +212,6 @@
       $("label", e.flightInWrap).textContent = t === "out" ? C.search.flightOut : C.search.flightIn;
       e.flightIn.placeholder = t === "out" ? "e.g. AA1496" : "e.g. AA1497";
       e.timeL.textContent = t === "hotel" ? C.search.time : t === "out" ? C.search.timeOut : C.search.timeIn;
-      e.time.placeholder = t === "hotel" ? "e.g. 10:00am" : t === "out" ? "e.g. 11:10am" : "e.g. 2:35pm";
       e.outWrap.hidden = t !== "both";
       cals.forEach(function (c) { c.refresh(); });
     }
@@ -360,6 +367,8 @@
     e.toName.addEventListener("input", function () { st.place2Name = e.toName.value.trim(); afterChange(); });
     [e.airport, e.trip, e.people].forEach(function (s) { s.addEventListener("change", function () { clearAlert(); renderForm(); afterChange(); if (s === e.trip && isHotel() && !st.zone2) setTimeout(function () { focusEl(e.toIn); }, 60); }); });
     [e.flightIn, e.flightOut, e.time, e.time2].forEach(function (i) { i.addEventListener("input", function () { clearAlert(); afterChange(); }); });
+    /* the clock icon opens the time picker where the browser allows it (phones open it on any tap in the box anyway) */
+    [e.time, e.time2].forEach(function (i) { var box = i.parentNode; box.addEventListener("click", function (ev) { if (ev.target === i) return; i.focus(); try { if (i.showPicker) i.showPicker(); } catch (err) {} }); });
     var cals = [];
     e.date.addEventListener("change", function () { clearAlert(); afterChange(); });
     e.date2.addEventListener("change", function () { clearAlert(); afterChange(); });
