@@ -145,10 +145,10 @@ export function formEncode(obj, prefix = "", out = []) {
   }
   return out.join("&");
 }
-export async function stripe(path, params, method = "POST") {
+export async function stripe(path, params, method = "POST", headers = {}) {
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) throw new Error("STRIPE_SECRET_KEY is not set");
-  const res = await fetch(`${STRIPE_BASE}${path}`, { method, headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/x-www-form-urlencoded" }, body: method === "GET" ? undefined : formEncode(params || {}) });
+  const res = await fetch(`${STRIPE_BASE}${path}`, { method, headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/x-www-form-urlencoded", ...headers }, body: method === "GET" ? undefined : formEncode(params || {}) });
   const body = await res.json();
   if (!res.ok) { const e = new Error(body.error && body.error.message ? body.error.message : `Stripe ${res.status}`); e.status = res.status; throw e; }
   return body;

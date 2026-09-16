@@ -1,12 +1,18 @@
 /* POST /.netlify/functions/tr-checkout
-   Body: {hotel (resort slug or ""), zone, place, placeKind, airport, trip, people, vehicle, seats, date, date2, flightIn, flightOut, timeIn, timeOut, time, note, ref, customer:{first,last,email,phone}}
-   The price is looked up again here from the rates module the build writes (netlify/functions/_tr-data.mjs): the hotel's own row
-   where it has one, otherwise its zone. The browser's numbers are never trusted. Hotel-to-hotel rides have no rates and are refused
-   (they go by WhatsApp). Opens a Stripe Checkout Session and returns {url}. The session's metadata is shaped like the Experiences
-   bookings, so the same exp-webhook confirms it on payment and the same exp-status feeds the confirmation page. */
+   Body: {ui ("embedded" | "hosted"), hotel (resort slug or ""), zone, place, placeKind, airport, trip, people, vehicle, seats, hotel2, zone2, place2,
+          place2Kind, date, date2, flightIn, flightOut, timeIn, timeOut, time, note, ref, customer:{first,last,email,phone}}
+   The price is looked up again here from the rates module the build writes (netlify/functions/_tr-data.mjs): one price per zone from
+   each airport, hotel to hotel by zone pair, minus the sizes the sheet says to quote by hand. The browser's numbers are never trusted.
+   Opens a Stripe Checkout Session. ui "embedded" (the checkout page, Stripe's card form on the page) returns {clientSecret, publishableKey}
+   for Stripe.js to mount; anything else, or a site without STRIPE_PUBLISHABLE_KEY, returns {url} for Stripe's hosted card page.
+   The session's metadata is shaped like the Experiences bookings, so the same exp-webhook confirms it on payment and the same
+   exp-status feeds the booked page. Keys come from Netlify environment variables only (STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY). */
 import { json, SITE, stripe, longDate, todayJamaica } from "./_exp-shared.mjs";
 import { TR } from "./_tr-data.mjs";
 
+/* the embedded session is created against a pinned API version: ui_mode "embedded_page" exists from 2026-03-25.dahlia on, and the
+   account's own default version may be older or newer. Only this call is pinned; everything else runs at the account default. */
+const STRIPE_VERSION = "2026-08-26.dahlia";
 const clean = (s, n = 120) => String(s || "").replace(/[\u0000-\u001F\u007F]/g, " ").trim().slice(0, n);
 const FLIGHT = /^[A-Z0-9]{2,3}\s?\d{1,4}[A-Z]?$/;
 const TIME = /^(1[0-2]|0?[1-9])(:[0-5]\d)?(am|pm)$/;
@@ -94,24 +100,33 @@ export const handler = async (event) => {
     adults: String(people), children: "0", pickup: placeKind, pickup_label: place, pickup_hotel: "", choices: "",
     ship: "", port: "", port_name: "", aboard: "", first, last, email, phone, total_usd: String(total), rezdy_status: "", note: [note, timeIn ? `lands ${timeIn}` : "", timeOut ? `takes off ${timeOut}` : ""].filter(Boolean).join(" · "), airport: isHotelTrip ? "" : airport.code, zone: zone.key, zone2: zone2 ? zone2.key : "", to_label: place2, seats: String(seats),
   };
+  const embedded = b.ui === "embedded" && !!process.env.STRIPE_PUBLISHABLE_KEY;
+  const common = {
+    mode: "payment",
+    customer_email: email,
+    client_reference_id: ref,
+    line_items: [{ quantity: 1, price_data: { currency: "usd", unit_amount: Math.round(total * 100), product_data: { name: `${isHotelTrip ? "Hotel to hotel transfer" : "Airport transfer"}: ${productName}`, description: desc.slice(0, 500) } } }],
+    metadata,
+    payment_intent_data: { metadata, description: `${ref} ${isHotelTrip ? "Hotel to hotel transfer" : "Airport transfer"}: ${desc}`.slice(0, 1000) },
+    expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
+    allow_promotion_codes: false,
+    billing_address_collection: "auto",
+    phone_number_collection: { enabled: false },
+  };
+  if (embedded) {
+    try {
+      const session = await stripe("/checkout/sessions", { ...common, ui_mode: "embedded_page", return_url: `${SITE}/transfers/booked?session_id={CHECKOUT_SESSION_ID}` }, "POST", { "Stripe-Version": STRIPE_VERSION });
+      if (!session.client_secret) throw new Error("no client secret on the session");
+      return json(200, { clientSecret: session.client_secret, publishableKey: process.env.STRIPE_PUBLISHABLE_KEY, ref, ui: "embedded" });
+    } catch (e) {
+      console.error("stripe embedded session, falling back to the hosted page", e.message); /* the guest still pays, on Stripe's page */
+    }
+  }
   try {
-    const session = await stripe("/checkout/sessions", {
-      mode: "payment",
-      customer_email: email,
-      client_reference_id: ref,
-      line_items: [{ quantity: 1, price_data: { currency: "usd", unit_amount: Math.round(total * 100), product_data: { name: `${isHotelTrip ? "Hotel to hotel transfer" : "Airport transfer"}: ${productName}`, description: desc.slice(0, 500) } } }],
-      metadata,
-      payment_intent_data: { metadata, description: `${ref} ${isHotelTrip ? "Hotel to hotel transfer" : "Airport transfer"}: ${desc}`.slice(0, 1000) },
-      success_url: `${SITE}/transfers/booked?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${SITE}/transfers?cancelled=1`,
-      expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
-      allow_promotion_codes: false,
-      billing_address_collection: "auto",
-      phone_number_collection: { enabled: false },
-    });
-    return json(200, { url: session.url, ref });
+    const session = await stripe("/checkout/sessions", { ...common, success_url: `${SITE}/transfers/booked?session_id={CHECKOUT_SESSION_ID}`, cancel_url: `${SITE}/transfers?cancelled=1` });
+    return json(200, { url: session.url, ref, ui: "hosted" });
   } catch (e) {
     console.error("stripe session", e.message);
-    return json(502, { error: "The payment page didn't open." });
+    return json(502, { error: "The card form didn't open." });
   }
 };
