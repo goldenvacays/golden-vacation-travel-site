@@ -1631,9 +1631,9 @@
     {
      "name": "Triple Room",
      "size": "38 sq m, 409 sq ft",
-     "sleeps": null,
-     "beds": null,
-     "notes": "Sofa bed. Code TBSB."
+     "sleeps": "3",
+     "beds": "One king bed and one small double bed",
+     "notes": "Code TBSB."
     },
     {
      "name": "Accessible Double Room Tropical View",
