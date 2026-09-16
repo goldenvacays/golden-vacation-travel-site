@@ -95,6 +95,24 @@
 .pdoor-in .long { display: none; }
 .pdoor-in .biglink { display: none; }
 
+/* ---- airport transfers, the last part of the coming-to-Jamaica band: the island and a search that hands over to /transfers ---- */
+.trh { display: flex; flex-direction: column; gap: 18px; margin-top: 8px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,.14); }
+.trh-t { display: flex; flex-direction: column; gap: 12px; }
+.trh h3 { font-size: 32px; line-height: 1; color: #fff; }
+.trh h3 .gold { color: var(--gold); }
+.trh .sec-sub { font-size: 15px; }
+.trh-q { display: flex; flex-direction: column; border-radius: 22px; overflow: hidden; background: #fff; color: var(--ink); border: 2px solid var(--ink); box-shadow: 0 18px 50px rgba(0,0,0,.35); }
+.trh-q .qf { min-height: 58px; }
+.trh-q .qsubmit { padding: 12px; }
+.trh-note { font-size: 12px; line-height: 1.4; color: rgba(255,255,255,.6); }
+.trh-island { padding: 6px 0 0; }
+.tr-island-svg { display: block; width: 100%; height: auto; overflow: visible; font-family: inherit; filter: drop-shadow(0 18px 30px rgba(0,0,0,.5)); }
+.tr-island-glow { fill: none; stroke: rgba(242,185,59,.3); stroke-width: 24; stroke-linejoin: round; }
+.tr-island-edge { fill: none; stroke: var(--gold); stroke-width: 6; stroke-linejoin: round; }
+.tr-pin circle { fill: var(--gold); stroke: var(--ink); stroke-width: 4; }
+.tr-pin text { font-size: 26px; font-weight: 800; letter-spacing: .08em; fill: #fff; paint-order: stroke; stroke: var(--ink); stroke-width: 10px; stroke-linejoin: round; }
+@media (max-width: 599px) { .tr-pin text { display: none; } .tr-pin circle { r: 14; } }
+
 /* experiences */
 .ecard { display: flex; flex-direction: column; gap: 10px; color: var(--ink); }
 .ecard:hover { color: var(--ink); }
@@ -167,7 +185,7 @@
   .home .qnote { margin-bottom: 0; }
 
   .doors-sec { background: var(--alt); padding: 64px var(--pad) 72px; gap: 22px; }
-  .doors { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+  .doors { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
   .door { flex-direction: column; align-items: stretch; gap: 0; padding: 0; border-radius: 22px; background: #fff; overflow: hidden; }
   .door-img { width: 100%; height: 150px; border-radius: 0; }
   .door-t { padding: 18px 20px 22px; gap: 8px; }
@@ -176,6 +194,7 @@
   .door-t .long { display: inline; }
   .door-t .short { display: none; }
   .door-go { position: absolute; right: 18px; bottom: 18px; }
+  .door-t small { padding-right: 36px; }
   .door { position: relative; }
   .door-t { padding-right: 72px; }
 
@@ -193,6 +212,17 @@
 
   .stay-sec { padding: 96px var(--pad) 96px; gap: 40px; }
   .stay-sec h2, .coming-sec h2 { font-size: 52px; }
+  .trh { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 56px; align-items: center; margin-top: 24px; padding-top: 48px; }
+  .trh h3 { font-size: 48px; }
+  .trh .sec-sub { font-size: 17px; }
+  .trh-q { display: grid; grid-template-columns: 1fr 1fr; border: 0; border-radius: 24px; }
+  .trh-q .qf { flex: none; min-height: 64px; padding: 0 20px; border-right: 0; border-bottom: 2px solid var(--line); }
+  .trh-q .qf svg { display: block; }
+  .trh-q .qf-wide { grid-column: 1 / -1; }
+  .trh-q .qf:nth-child(3) { border-left: 2px solid var(--line); }
+  .trh-q .qf select, .trh-q .qf input { font-size: 16px; }
+  .trh-q .qsubmit { grid-column: 1 / -1; padding: 12px; }
+  .trh-island { padding: 0; }
   .stay-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; align-items: stretch; }
   .feature { flex-direction: column; align-items: flex-start; justify-content: space-between; padding: 28px; border-radius: 22px; min-height: 340px; }
   .feature > div { gap: 12px; }
@@ -309,4 +339,4 @@
 .coming-sec::before { content: ""; position: absolute; inset: 0; background-image: var(--grain); opacity: .16; mix-blend-mode: overlay; pointer-events: none; }
 .coming-sec > * { position: relative; }
 .feature { background: radial-gradient(120% 100% at 0% 0%, #2A2C25 0%, var(--ink) 60%); box-shadow: 0 14px 34px rgba(14,15,14,.18); }
-
+@media (min-width: 1200px) { .doors { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; } .door-t { padding: 16px 18px 20px; } .door-t b { font-size: 20px; } .door-t small { padding-right: 44px; } }
