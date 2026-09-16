@@ -91,6 +91,7 @@ const ZONE = Object.fromEntries(T.zones.map((z) => [z.key, z]));
 const resortsJs = fs.readFileSync(path.join(ROOT, "public/map/resorts.js"), "utf8");
 const RESORTS = JSON.parse(resortsJs.slice(resortsJs.indexOf("["), resortsJs.lastIndexOf("]") + 1));
 const slugify = (s) => String(s).toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+const ZONE_OVERRIDE = T.site.hotelZones || {}; // a hotel that prices in a different zone from its region (the sheet's own rows)
 const RATE_KEY_BY_NAME = {};
 for (const [key, h] of Object.entries(R.hotels)) for (const n of h.matches || []) RATE_KEY_BY_NAME[n] = key;
 function zoneOf(r) {
@@ -106,9 +107,9 @@ function zoneOf(r) {
 }
 const HIDE = new Set(T.site.hide || []); // closed hotels kept off the transfers list, by name
 const HOTELS = RESORTS.filter((r) => r.status !== "Permanently closed" && r.lat && r.lng && !HIDE.has(r.name))
-  .map((r) => ({ name: r.name, slug: slugify(r.name), zone: RATE_KEY_BY_NAME[r.name] ? R.hotels[RATE_KEY_BY_NAME[r.name]].zone : zoneOf(r), rate: RATE_KEY_BY_NAME[r.name] || null }))
+  .map((r) => ({ name: r.name, slug: slugify(r.name), zone: ZONE_OVERRIDE[r.name] || (RATE_KEY_BY_NAME[r.name] ? R.hotels[RATE_KEY_BY_NAME[r.name]].zone : zoneOf(r)), rate: RATE_KEY_BY_NAME[r.name] || null }))
   .filter((h) => h.zone)
-  .concat(T.zones.flatMap((z) => (z.places || []).filter((name) => !HIDE.has(name) && !RESORTS.some((r) => r.name === name || slugify(r.name) === slugify(name))).map((name) => ({ name, slug: slugify(name), zone: z.key, rate: RATE_KEY_BY_NAME[name] || null }))))
+  .concat(T.zones.flatMap((z) => (z.places || []).filter((name) => !HIDE.has(name) && !RESORTS.some((r) => r.name === name || slugify(r.name) === slugify(name))).map((name) => ({ name, slug: slugify(name), zone: ZONE_OVERRIDE[name] || z.key, rate: RATE_KEY_BY_NAME[name] || null }))))
   .sort((a, b) => a.name.localeCompare(b.name));
 if (args.includes("--zones")) {
   for (const h of HOTELS) console.log(`${h.name.padEnd(46)} ${h.zone.padEnd(12)} ${h.rate ? "sheet: " + R.hotels[h.rate].name : "zone fallback"}`);
@@ -117,7 +118,7 @@ if (args.includes("--zones")) {
   process.exit(0);
 }
 /* the cheapest one-way car price on the page, for the meta description */
-const fromPrice = () => { const ps = Object.values(R.rates).flatMap((a) => Object.values(a)).flatMap((t) => t.in || []).filter((o) => o[0] === "car").map((o) => o[3]); return ps.length ? Math.min(...ps) : null; };
+const fromPrice = () => { const ps = Object.values(R.rates).concat(Object.values(R.zones || {})).flatMap((a) => Object.values(a)).flatMap((t) => t.in || []).filter((o) => o[0] === "car").map((o) => o[3]); return ps.length ? Math.min(...ps) : null; };
 /* Club MoBay and Club Kingston prices from the tours data, so the cards never drift */
 const loungePrice = (slug) => { const v = X.venues.find((v) => v.slug === slug); if (!v) return ""; const ps = v.products.filter((p) => p.visitor).map((p) => p.visitor.usd); return ps.length ? `from ${usd(Math.min(...ps))}` : ""; };
 
@@ -227,7 +228,7 @@ function transfersPage() {
   const cfg = {
     page: "transfers", whatsapp: S.whatsapp, origin: S.origin, jmdRate: S.jmdRate, today: TODAY, base: BASE, maxGuests: T.site.maxGuests, email: S.email,
     hotels: HOTELS.map((h) => [h.name, h.slug, h.zone, h.rate || "", (T.site.hotelAliases || {})[h.name] || ""]), // [name, slug, zone, rate row, extra search words]
-    zones: T.zones.map((z) => ({ key: z.key, name: z.name, airbnb: z.airbnbLabel, aliases: z.aliases || [] })),
+    zones: T.zones.map((z) => ({ key: z.key, name: z.name, airbnb: z.airbnbLabel, aliases: z.aliases || [], hidden: !!z.hidden })),
     airports: T.airports, trips: T.trips, vehicles: T.vehicles, includes: T.includes, drive: T.drive, copy: { results: RS, checkout: CK, search: SR },
   };
   const title = `Jamaica airport transfers | Montego Bay, Kingston and Ocho Rios airport to your hotel${from != null ? `, from ${usd(from)}` : ""}`;
@@ -354,7 +355,8 @@ const pages = [
   ["public/transfers/index.html", transfersPage(), "transfers"],
   ["public/transfers/booked.html", bookedPage(), "booked"],
 ];
-const ratesPublic = { hotels: Object.fromEntries(Object.entries(R.hotels).map(([k, h]) => [k, { name: h.name, zone: h.zone }])), rates: R.rates, zones: R.zones };
+const EXCEPTIONS = (R.exceptions || []).map((x) => ({ airport: x.airport, zone: x.zone, seats: x.seats, hotels: x.hotels.map((n) => { const h = HOTELS.find((h) => h.name.toLowerCase() === n.toLowerCase() || h.slug === slugify(n) || h.slug === slugify("Hotel " + n) || slugify(h.name) === slugify(n.replace(/^Hotel /i, ""))); if (!h) console.warn(`exception hotel not on the list: ${n}`); return h ? h.slug : null; }).filter(Boolean) }));
+const ratesPublic = { hotels: Object.fromEntries(Object.entries(R.hotels).map(([k, h]) => [k, { name: h.name, zone: h.zone }])), rates: R.rates, zones: R.zones, links: R.links || {}, exceptions: EXCEPTIONS };
 const ratesJs = `/* Generated by scripts/build-transfers.mjs from data/transfer-rates.json. Do not edit by hand. Prices in US$ per vehicle, taxes included. */\nwindow.GV_TR_RATES=${JSON.stringify(ratesPublic)};\n`;
 
 if (!BUNDLE) {
@@ -367,7 +369,7 @@ if (!BUNDLE) {
   fs.writeFileSync(path.join(ROOT, "public/assets/transfers-rates.js"), ratesJs);
   console.log("wrote public/assets/transfers-rates.js", `${(ratesJs.length / 1024).toFixed(0)}K`);
   const dataModule = `/* Generated by scripts/build-transfers.mjs from data/transfers.json and data/transfer-rates.json. Do not edit by hand. Customer prices only. */
-export const TR = ${JSON.stringify({ airports: T.airports, trips: T.trips, vehicles: T.vehicles, maxGuests: T.site.maxGuests, zones: T.zones.map((z) => ({ key: z.key, name: z.name })), hotels: ratesPublic.hotels, rates: R.rates, zoneRates: R.zones, hotelKeys: Object.fromEntries(HOTELS.map((h) => [h.slug, { name: h.name, zone: h.zone, rate: h.rate || "" }])) })};
+export const TR = ${JSON.stringify({ airports: T.airports, trips: T.trips, vehicles: T.vehicles, maxGuests: T.site.maxGuests, zones: T.zones.map((z) => ({ key: z.key, name: z.name })), hotels: ratesPublic.hotels, rates: R.rates, zoneRates: R.zones, links: R.links || {}, exceptions: EXCEPTIONS, hotelKeys: Object.fromEntries(HOTELS.map((h) => [h.slug, { name: h.name, zone: h.zone, rate: h.rate || "" }])) })};
 `;
   fs.writeFileSync(path.join(ROOT, "netlify/functions/_tr-data.mjs"), dataModule);
   console.log("wrote netlify/functions/_tr-data.mjs", `${(dataModule.length / 1024).toFixed(0)}K`);
