@@ -193,7 +193,7 @@
         "title": "Airport transfers",
         "text": "Your driver is waiting at MBJ, KIN or OCJ. One price, taxes included, paid by card.",
         "textMobile": "MBJ · KIN · OCJ · one price, paid by card",
-        "href": "#transfers",
+        "href": "/transfers/",
         "img": "door-transfers.jpg",
         "alt": "The welcome sign in the arrivals hall at Montego Bay airport"
       },
