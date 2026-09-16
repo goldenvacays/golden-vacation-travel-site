@@ -127,13 +127,25 @@
     }
 
     /* ---- prices for the search: the hotel's own row, or its zone ---- */
+    var LINKS = RATES.links || {}, EXC = RATES.exceptions || [];
+    var lastExcluded = 0;
+    function linkOffers(a, b) { if (!a || !b || a === b) return null; return LINKS[a + ">" + b] || LINKS[[a, b].sort().join("|")] || null; }
     function offersFor() {
-      if (!st.zone || isHotel()) return null;
-      var airport = e.airport.value, t = trip();
-      var byHotel = st.placeMode === "hotel" && st.place.rate && RATES.rates[st.place.rate] && RATES.rates[st.place.rate][airport] && RATES.rates[st.place.rate][airport][t];
-      var byZone = RATES.zones[st.zone] && RATES.zones[st.zone][airport] && RATES.zones[st.zone][airport][t];
-      var list = byHotel || byZone || null;
-      return list ? list.map(function (o) { return { v: o[0], seats: o[1], bags: o[2], price: o[3], exact: !!byHotel }; }) : null;
+      lastExcluded = 0;
+      if (!st.zone) return null;
+      var list = null;
+      if (isHotel()) {
+        list = linkOffers(st.zone, st.zone2);
+      } else {
+        var airport = e.airport.value, t = trip();
+        list = RATES.zones[st.zone] && RATES.zones[st.zone][airport] && RATES.zones[st.zone][airport][t] || null;
+        if (list && st.placeMode === "hotel" && st.place) {
+          var slug = st.place.slug, before = list.length;
+          list = list.filter(function (o) { return !EXC.some(function (x) { return x.airport === airport && x.zone === st.zone && x.seats === o[1] && x.hotels.indexOf(slug) >= 0; }); });
+          lastExcluded = before - list.length;
+        }
+      }
+      return list ? list.map(function (o) { return { v: o[0], seats: o[1], bags: o[2], price: o[3], multi: !!o[4] }; }) : null;
     }
     /* one row per vehicle kind: the cheapest offer that seats the party */
     function rowsFor(list, n) {
@@ -223,9 +235,9 @@
       e.results.hidden = false;
       e.rTitle.textContent = (isHotel() ? placeText() + " to " + place2Text() : placeText()) + ".";
       e.rSub.textContent = rideLabel() + (driveText() ? ", " + driveText() : "") + ". " + whenText() + ". " + peopleText().charAt(0).toUpperCase() + peopleText().slice(1) + ".";
-      e.rNote.textContent = list ? (list[0] && list[0].exact ? "Prices for this hotel, per vehicle, taxes included" : "Prices for the " + ZONE[st.zone].name + " area, per vehicle, taxes included") : "";
+      e.rNote.textContent = list ? (isHotel() ? "Prices between the " + ZONE[st.zone].name + " and " + ZONE[st.zone2].name + " areas, per vehicle, taxes included" : "Prices for the " + ZONE[st.zone].name + " area, per vehicle, taxes included") : "";
       e.rTable.innerHTML = "";
-      var quoteWhy = isHotel() ? "quote" : !list ? "noroute" : n > MAXG ? "big" : !rows.length ? "none" : "";
+      var quoteWhy = !list ? (isHotel() ? "quote" : "noroute") : n > MAXG ? "big" : !rows.length ? (lastExcluded ? "quote" : "none") : "";
       if (quoteWhy) {
         var q = el("div", "rt-row quote");
         var qt = el("div", "rt-veh"); qt.appendChild(el("b", "", quoteWhy === "big" || quoteWhy === "none" ? "Two vehicles or a bus" : "Priced in the chat"));
@@ -235,10 +247,10 @@
       } else {
         rows.forEach(function (o) {
           var row = el("div", "rt-row" + (st.pick && st.pick.v === o.v && st.pick.seats === o.seats ? " pick" : ""));
-          var veh = el("div", "rt-veh"); veh.appendChild(el("b", "", VEH[o.v] ? VEH[o.v].label : o.v)); veh.appendChild(el("small", "", VEH[o.v] ? VEH[o.v].sub : "")); row.appendChild(veh);
+          var veh = el("div", "rt-veh"); veh.appendChild(el("b", "", (VEH[o.v] ? VEH[o.v].label : o.v) + (o.multi ? ", two or more" : ""))); veh.appendChild(el("small", "", o.multi ? "Two or more vehicles for your party" : VEH[o.v] ? VEH[o.v].sub : "")); row.appendChild(veh);
           var cap = el("div", "rt-cap"); var c1 = el("span"); c1.innerHTML = icon("users", 15) + "up to " + o.seats + " people"; var c2 = el("span"); c2.innerHTML = icon("bag", 15) + o.bags + " bags"; cap.appendChild(c1); cap.appendChild(c2); row.appendChild(cap);
           var inc = el("div", "rt-inc" + (trip() === "both" ? "" : " one"));
-          var cols = trip() === "both" ? [["Arrival", (INC.in || []).concat(INC.all || [])], ["Departure", INC.out || []]] : [[trip() === "out" ? "Departure" : "Arrival", (INC[trip()] || []).concat(INC.all || [])]];
+          var cols = trip() === "both" ? [["Arrival", (INC.in || []).concat(INC.all || [])], ["Departure", INC.out || []]] : [[isHotel() ? "Pickup" : trip() === "out" ? "Departure" : "Arrival", (INC[trip()] || []).concat(INC.all || [])]];
           cols.forEach(function (col) { var cc = el("div", "rt-inc-col"); cc.appendChild(el("b", "", col[0])); col[1].forEach(function (line) { var sp = el("span"); sp.innerHTML = icon("check", 13) + "<i></i>"; sp.lastChild.replaceWith(document.createTextNode(line)); cc.appendChild(sp); }); inc.appendChild(cc); });
           row.appendChild(inc);
           var pr = el("div", "rt-price"); var pb = el("b"); var pu = el("span", "usd-v", usd(o.price)); var pj = el("span", "jmd-v", jmdOf(o.price)); pb.appendChild(pu); pb.appendChild(pj); pr.appendChild(pb); pr.appendChild(el("small", "", trip() === "both" ? "round trip, per vehicle" : "one way, per vehicle")); row.appendChild(pr);
@@ -258,7 +270,7 @@
     function renderCheckout() {
       var o = st.pick; if (!o) { e.checkout.hidden = true; return; }
       e.ckSum.innerHTML = "";
-      e.ckSum.appendChild(el("b", "hh", (VEH[o.v] ? VEH[o.v].label : o.v) + ", up to " + o.seats));
+      e.ckSum.appendChild(el("b", "hh", (VEH[o.v] ? VEH[o.v].label : o.v) + (o.multi ? ", two or more" : "") + ", up to " + o.seats));
       e.ckSum.appendChild(el("div", "", rideLabel() + (driveText() ? ", " + driveText() : "")));
       e.ckSum.appendChild(el("div", "", isHotel() ? placeText() + " to " + place2Text() : placeText()));
       e.ckSum.appendChild(el("div", "", whenText()));
@@ -297,6 +309,7 @@
       if (PREVIEW) { alertBox("Preview only: on the live site this opens the card page.", e.cta); return; }
       e.cta.disabled = true; e.ctaLabel.textContent = "Opening the payment page";
       var body = { hotel: st.placeMode === "hotel" ? st.place.slug : "", zone: st.zone, place: placeText(), placeKind: st.placeMode, airport: e.airport.value, trip: trip(), people: people(), vehicle: st.pick.v, seats: st.pick.seats,
+        hotel2: isHotel() && st.place2Mode === "hotel" && st.place2 ? st.place2.slug : "", zone2: isHotel() ? st.zone2 : "", place2: isHotel() ? place2Text() : "", place2Kind: isHotel() ? st.place2Mode : "",
         date: e.date.value, date2: trip() === "both" ? e.date2.value : "", flightIn: needIn() ? e.flightIn.value.trim().toUpperCase() : "", flightOut: trip() === "out" ? e.flightIn.value.trim().toUpperCase() : trip() === "both" ? e.flightOut.value.trim().toUpperCase() : "",
         timeIn: needIn() ? timeText(e.time) : "", timeOut: trip() === "out" ? timeText(e.time) : trip() === "both" ? timeText(e.time2) : "", time: isHotel() ? timeText(e.time) : "",
         note: (e.note.value || "").trim(), ref: st.ref, customer: { first: e.first.value.trim(), last: e.last.value.trim(), email: e.email.value.trim(), phone: e.phone.value.trim() } };
@@ -309,7 +322,7 @@
 
     /* ---- the hotel pickers: where they stay, and where a hotel-to-hotel ride goes ---- */
     function searchText(h) { var s = " " + h.name.toLowerCase() + " " + (h.alias ? h.alias.toLowerCase() + " " : ""); Object.keys(TOWN_ALIASES).forEach(function (k) { if (s.indexOf(k) >= 0) s += TOWN_ALIASES[k]; }); return s; }
-    function zoneRows(q) { var qq = (q || "").toLowerCase().trim(); return ZONES.filter(function (z) { if (!qq) return true; var t = " " + z.name.toLowerCase() + " " + z.airbnb.toLowerCase() + " " + (z.aliases || []).join(" ") + " airbnb villa apartment guesthouse area "; return t.indexOf(qq) >= 0; }); }
+    function zoneRows(q) { var qq = (q || "").toLowerCase().trim(); return ZONES.filter(function (z) { if (z.hidden) return false; if (!qq) return true; var t = " " + z.name.toLowerCase() + " " + z.airbnb.toLowerCase() + " " + (z.aliases || []).join(" ") + " airbnb villa apartment guesthouse area "; return t.indexOf(qq) >= 0; }); }
     var pickers = [];
     function closeLists() { pickers.forEach(function (pk) { pk.close(); }); }
     function makePicker(which, input, list, clearBtn) {
