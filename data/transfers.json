@@ -182,11 +182,53 @@
     "checkout": {
       "kicker": "Almost there",
       "title": "Who's travelling?",
-      "cta": "Book and pay",
-      "ctaSub": "Paid by card on a secure page and confirmed straight away. Your driver's details follow by email and WhatsApp.",
+      "pageKicker": "Airport transfers · Checkout",
+      "pageSub": "",
+      "pageSubFolded": "",
+      "back": "Back to the options",
+      "yourRide": "Your ride",
+      "change": "Change",
+      "edit": "Edit",
+      "continueCta": "Continue to payment",
+      "nameHintArrival": "The first and last name is what goes on the driver's board at the arrivals exit.",
+      "nameHintPickup": "The first and last name is what the driver asks for at pickup.",
+      "foldedNoteArrival": "Your name is what goes on the driver's board. The confirmation and the driver's details go to the email and the WhatsApp number above.",
+      "foldedNotePickup": "Your name is what the driver has for the pickup. The confirmation and the driver's details go to the email and the WhatsApp number above.",
+      "lastKicker": "Last step",
+      "lastTitle": "Pay and it's booked.",
+      "total": "Total",
+      "payPlaceholder": "Fill in who's travelling and press Continue. The card form opens here.",
+      "payOpening": "Opening the card form",
+      "secure": "Paid on this page through Stripe; your card details never reach our site. Nothing is charged until you press Pay, and a person reads every booking.",
       "alt": "Rather talk to a person first?",
       "altLink": "Send this as a WhatsApp request instead",
-      "fine": "Nothing is charged until you see the total on the card page. A person reads every booking."
+      "emptyTitle": "Nothing to book yet.",
+      "emptyText": "Pick a ride first and the details come here.",
+      "emptyCta": "Find your ride",
+      "cta": "Book and pay",
+      "ctaSub": "Paid by card on a secure page and confirmed straight away. Your driver's details follow by email and WhatsApp.",
+      "fine": "Nothing is charged until you see the total on the card page. A person reads every booking.",
+      "pageTitleA": "Lock in your",
+      "pageTitleB": "ride.",
+      "steps": [
+        [
+          "Your ride",
+          "Chosen"
+        ],
+        [
+          "Who's travelling",
+          "Name, email, WhatsApp"
+        ],
+        [
+          "Pay",
+          "Card, Apple Pay, Google Pay"
+        ]
+      ],
+      "stepDone": "Done",
+      "secureTag": "Secure checkout",
+      "roundTrip": "and back",
+      "rideFor": "for",
+      "mapNote": "Your route"
     }
   },
   "airports": [
@@ -270,7 +312,6 @@
       "60 min waiting time included"
     ],
     "out": [
-      "Pickup time confirmed the day before",
       "15 min waiting time included"
     ],
     "hotel": [
