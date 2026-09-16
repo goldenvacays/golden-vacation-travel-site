@@ -22,6 +22,10 @@
       "/experiences/"
     ],
     [
+      "Transfers",
+      "/transfers/"
+    ],
+    [
       "Groups",
       "/group-inquiry"
     ],
@@ -183,6 +187,14 @@
         "textMobile": "USA · coming home · español · UK & Canada",
         "href": "#coming",
         "img": "door-coming.jpg",
+        "alt": "The welcome sign in the arrivals hall at Montego Bay airport"
+      },
+      {
+        "title": "Airport transfers",
+        "text": "Your driver is waiting at MBJ, KIN or OCJ. One price, taxes included, paid by card.",
+        "textMobile": "MBJ · KIN · OCJ · one price, paid by card",
+        "href": "#transfers",
+        "img": "door-transfers.jpg",
         "alt": "The welcome sign in the arrivals hall at Montego Bay airport"
       },
       {
@@ -440,6 +452,10 @@
         "/experiences/"
       ],
       [
+        "Airport transfers",
+        "/transfers/"
+      ],
+      [
         "Group travel",
         "/group-inquiry"
       ]
@@ -488,5 +504,29 @@
   },
   "legal": {
     "effective": "7 September 2026"
+  },
+  "transfers": {
+    "kicker": "Airport transfers",
+    "titleA": "Your driver",
+    "titleB": "is waiting.",
+    "sub": "Private transfers from Montego Bay, Kingston or Ocho Rios airport to your stay. One price per vehicle, taxes included, paid by card.",
+    "fromLine": "From {from}, resorts across the island.",
+    "photo": {
+      "file": "island-home.jpg",
+      "alt": "The welcome sign in the arrivals hall at Montego Bay airport",
+      "focus": [
+        0.5,
+        0.62
+      ]
+    },
+    "search": {
+      "hotel": "Where are you staying?",
+      "hotelPlaceholder": "Hotel, villa or Airbnb area",
+      "airport": "Airport",
+      "people": "People",
+      "date": "Arrival date",
+      "go": "Search transfers"
+    },
+    "note": "Resorts across the island are on the list. Don't see your villa or Airbnb? Type in the area."
   }
 }
