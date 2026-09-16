@@ -19,7 +19,11 @@
     ],
     [
       "Experiences",
-      "#experiences"
+      "/experiences/"
+    ],
+    [
+      "Transfers",
+      "/transfers/"
     ],
     [
       "Groups",
@@ -186,6 +190,14 @@
         "alt": "The welcome sign in the arrivals hall at Montego Bay airport"
       },
       {
+        "title": "Airport transfers",
+        "text": "Your driver is waiting at MBJ, KIN or OCJ. One price, taxes included, paid by card.",
+        "textMobile": "MBJ · KIN · OCJ · one price, paid by card",
+        "href": "/transfers/",
+        "img": "door-transfers.jpg",
+        "alt": "The welcome sign in the arrivals hall at Montego Bay airport"
+      },
+      {
         "title": "Staying on the island",
         "text": "All-inclusive weekends, priced and paid in J$.",
         "textMobile": "Priced and paid in J$",
@@ -333,7 +345,7 @@
   "experiences": {
     "kicker": "Golden Experiences",
     "title": "See the island, not just the resort.",
-    "sub": "40+ tours and day passes at 12 venues. Add them to any stay, book a cruise-day tour with a ship-safe return, or plan a locals' day out.",
+    "sub": "40+ tours and day passes across 12 places. Add them to any stay, book a cruise-day tour with a ship-safe return, or plan a locals' day out.",
     "all": "Browse them all",
     "allMobile": "All tours",
     "message": "Hi Golden Vacation! I'd like to see your tours and day passes in Jamaica. Ref GV-TOURS",
@@ -345,7 +357,8 @@
         "from": "US$31",
         "img": "exp-zipline.jpg",
         "alt": "Riding the zipline at JamWest",
-        "message": "Hi Golden Vacation! I'd like to add tours to a hotel stay in Jamaica. Ref GV-TOURS-STAY"
+        "message": "Hi Golden Vacation! I'd like to add tours to a hotel stay in Jamaica. Ref GV-TOURS-STAY",
+        "href": "/experiences/#stay"
       },
       {
         "title": "In port for the day",
@@ -355,7 +368,8 @@
         "tag": "Ship-safe",
         "img": "exp-port.jpg",
         "alt": "A cruise ship docked at Ocho Rios",
-        "message": "Hi Golden Vacation! We're in port for the day on a cruise ship and we'd like a tour with a ship-safe return. Ref GV-TOURS-CRUISE"
+        "message": "Hi Golden Vacation! We're in port for the day on a cruise ship and we'd like a tour with a ship-safe return. Ref GV-TOURS-CRUISE",
+        "href": "/experiences/#port"
       },
       {
         "title": "Locals' day out",
@@ -364,9 +378,11 @@
         "from": "J$5,000",
         "img": "exp-bluehole.jpg",
         "alt": "Jumping at Blue Hole, Ocho Rios",
-        "message": "Hi Golden Vacation! I'm in Jamaica and I'd like to plan a day out, priced in J$. Ref GV-TOURS-LOCAL"
+        "message": "Hi Golden Vacation! I'm in Jamaica and I'd like to plan a day out, priced in J$. Ref GV-TOURS-LOCAL",
+        "href": "/experiences/#locals"
       }
-    ]
+    ],
+    "allHref": "/experiences/"
   },
   "status": {
     "kicker": "Resort status",
@@ -433,7 +449,11 @@
       ],
       [
         "Golden Experiences",
-        "#experiences"
+        "/experiences/"
+      ],
+      [
+        "Airport transfers",
+        "/transfers/"
       ],
       [
         "Group travel",
@@ -484,5 +504,29 @@
   },
   "legal": {
     "effective": "7 September 2026"
+  },
+  "transfers": {
+    "kicker": "Airport transfers",
+    "titleA": "Your driver",
+    "titleB": "is waiting.",
+    "sub": "Private transfers from Montego Bay, Kingston or Ocho Rios airport to your stay. One price per vehicle, taxes included, paid by card.",
+    "fromLine": "From {from}, resorts across the island.",
+    "photo": {
+      "file": "island-home.jpg",
+      "alt": "The welcome sign in the arrivals hall at Montego Bay airport",
+      "focus": [
+        0.5,
+        0.62
+      ]
+    },
+    "search": {
+      "hotel": "Where are you staying?",
+      "hotelPlaceholder": "Hotel, villa or Airbnb area",
+      "airport": "Airport",
+      "people": "People",
+      "date": "Arrival date",
+      "go": "Search transfers"
+    },
+    "note": "Resorts across the island are on the list. Don't see your villa or Airbnb? Type in the area."
   }
 }

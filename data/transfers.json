@@ -1,0 +1,529 @@
+{
+  "site": {
+    "brand": "Airport transfers",
+    "parent": "Golden Vacation & Travel",
+    "updated": "2026-09-15",
+    "source": "Prices: data/transfer-rates.json (from Hana's rate sheet via scripts/import-transfer-rates.py). Zones and drive times: the Areas and Routes tables in the Catalogue base appvoVONfeF3OLsLi. Customer prices only: no cost, no supplier, anywhere.",
+    "maxGuests": 16
+  },
+  "page": {
+    "kicker": "Airport transfers · Jamaica",
+    "titleA": "Your driver",
+    "titleB": "is waiting.",
+    "sub": "Private transfers from Montego Bay, Kingston or Ocho Rios airport to your stay. One price, taxes included, confirmed same day.",
+    "subMobile": "Airport to your stay. One price, taxes included, confirmed same day.",
+    "heroPhoto": {
+      "file": "hero-arrivals.jpg",
+      "alt": "The welcome sign in the arrivals hall at Montego Bay airport",
+      "tag": "Just landed?",
+      "title": "Come through, the car's outside.",
+      "focus": [
+        0.5,
+        0.62
+      ]
+    },
+    "trust": [
+      "One price for everyone",
+      "We track your flight",
+      "Instant confirmation",
+      "Book ahead, pay less",
+      "Real people, in Jamaica"
+    ],
+    "why": {
+      "kicker": "Why book it here",
+      "title": "Why not just grab a taxi at the airport?",
+      "points": [
+        [
+          "One price for everyone",
+          "Your preferred vehicle, taxes included. Not per person, not per bag."
+        ],
+        [
+          "We track your flight",
+          "Give us the flight number and we adjust to it, so your driver is there when you land, early or late."
+        ],
+        [
+          "Instant confirmation",
+          "No back and forth. Book, pay by card, and it's confirmed on the spot."
+        ],
+        [
+          "Book ahead, pay less",
+          "The best price comes from booking before you arrive, and so does the smooth pickup."
+        ],
+        [
+          "Real people, in Jamaica",
+          "Something changes? Message us on WhatsApp or call us. Same time zone, no call centre, help straight away."
+        ]
+      ]
+    },
+    "questions": {
+      "kicker": "Before you book",
+      "title": "Quick answers.",
+      "sub": "If your question isn't here, ask on WhatsApp.",
+      "items": [
+        [
+          "Where do I find the driver?",
+          "Come through customs and look for your name at the arrivals exit. Can't see it? Call us and we'll get the driver to you right away."
+        ],
+        [
+          "My flight is delayed. Now what?",
+          "We track the flight, but keep us in the loop. Your driver will be waiting."
+        ],
+        [
+          "Can we stop along the way?",
+          "Usually yes. Let us know ahead of time so we can clear it with the driver."
+        ],
+        [
+          "Do you do shared shuttles?",
+          "Yes. Ask us on WhatsApp for a seat price on your route."
+        ],
+        [
+          "Can I pay in my own currency?",
+          "We can charge in your preferred currency depending on where you are. The conversion rate may differ from your bank's and cost more, so check first."
+        ],
+        [
+          "What if I need to cancel?",
+          "Message us on WhatsApp as soon as you know. Changes to your dates or flight are free. Cancel at least 48 hours before pickup and we refund the payment."
+        ]
+      ]
+    },
+    "also": {
+      "kicker": "Also from here",
+      "title": "Skip the queue, or add the room.",
+      "items": [
+        {
+          "href": "/experiences/club-mobay",
+          "venue": "club-mobay",
+          "title": "Club MoBay fast track",
+          "sub": "Through immigration and customs ahead of the queue, then a cold drink while your bags come. Timed to your flight.",
+          "img": "coming-home.jpg",
+          "alt": "The Club MoBay arrivals lounge at Montego Bay airport"
+        },
+        {
+          "href": "/experiences/club-kingston",
+          "venue": "club-kingston",
+          "title": "Club Kingston",
+          "sub": "The same at Norman Manley, Kingston: fast track and lounge for arrivals and departures."
+        },
+        {
+          "wa": "Hi Golden Vacation! I'd like a quote for a Jamaica hotel with the airport transfer included. Ref GV-TR-STAY",
+          "title": "Bed and transfer, one quote",
+          "sub": "Staying with us? We price the room and the transfer together and you pay once."
+        }
+      ]
+    },
+    "cta": {
+      "kicker": "Not sure which one",
+      "title": "Tell us the flight and the hotel.",
+      "sub": "We'll say which vehicle fits and price the ride."
+    },
+    "search": {
+      "hotel": "Where are you staying?",
+      "hotelPlaceholder": "Hotel, villa or Airbnb area",
+      "to": "Going to",
+      "toPlaceholder": "The other hotel, or its area",
+      "airport": "Airport",
+      "trip": "Which way?",
+      "people": "People",
+      "dateIn": "Arrival date",
+      "flightIn": "Flight in",
+      "timeIn": "Lands at",
+      "dateOut": "Departure date",
+      "flightOut": "Flight out",
+      "timeOut": "Takes off at",
+      "date": "Date",
+      "time": "Pickup time",
+      "go": "Search",
+      "hint": "Resorts across the island are on the list. Don't see your villa or Airbnb? Type in the area."
+    },
+    "results": {
+      "kicker": "Your options",
+      "private": "Private, your party only",
+      "shared": "",
+      "sharedNote": "",
+      "choose": "Choose",
+      "none": "Nothing on the list seats that many. Ask us on WhatsApp and we send two vehicles or a bus.",
+      "quote": "This one is priced in the chat. Send the request and we reply within working hours.",
+      "fine": "Per vehicle, taxes included. Tips at your discretion. Bags: one per seat is the guide; tell us if you have more."
+    },
+    "checkout": {
+      "kicker": "Almost there",
+      "title": "Who's travelling?",
+      "cta": "Book and pay",
+      "ctaSub": "Paid by card on a secure page and confirmed straight away. Your driver's details follow by email and WhatsApp.",
+      "alt": "Rather talk to a person first?",
+      "altLink": "Send this as a WhatsApp request instead",
+      "fine": "Nothing is charged until you see the total on the card page. A person reads every booking."
+    }
+  },
+  "airports": [
+    {
+      "code": "MBJ",
+      "name": "Montego Bay",
+      "long": "Sangster International, Montego Bay",
+      "short": "Montego Bay (MBJ)",
+      "lat": 18.5037,
+      "lng": -77.9134
+    },
+    {
+      "code": "KIN",
+      "name": "Kingston",
+      "long": "Norman Manley International, Kingston",
+      "short": "Kingston (KIN)",
+      "lat": 17.9357,
+      "lng": -76.7875
+    },
+    {
+      "code": "OCJ",
+      "name": "Ocho Rios",
+      "long": "Ian Fleming International, Boscobel",
+      "short": "Ocho Rios (OCJ)",
+      "lat": 18.4042,
+      "lng": -76.9689
+    }
+  ],
+  "trips": [
+    {
+      "key": "in",
+      "label": "Airport to hotel",
+      "short": "One way, arrival"
+    },
+    {
+      "key": "out",
+      "label": "Hotel to airport",
+      "short": "One way, departure"
+    },
+    {
+      "key": "both",
+      "label": "Round trip",
+      "short": "Round trip"
+    },
+    {
+      "key": "hotel",
+      "label": "Hotel to hotel",
+      "short": "Hotel to hotel"
+    }
+  ],
+  "vehicles": {
+    "car": {
+      "label": "Private car",
+      "sub": "Sedan, air-conditioned"
+    },
+    "business": {
+      "label": "Business car",
+      "sub": "Executive sedan or SUV"
+    },
+    "minivan": {
+      "label": "Minivan",
+      "sub": "Room for the family and the bags"
+    },
+    "bizvan": {
+      "label": "Business minivan",
+      "sub": "Executive van, extra comfort"
+    },
+    "minibus": {
+      "label": "Minibus",
+      "sub": "The whole group in one vehicle"
+    },
+    "coach": {
+      "label": "Coach",
+      "sub": "Big groups, big luggage"
+    }
+  },
+  "includes": {
+    "in": [
+      "Meet and greet with a name plate",
+      "Flight tracking",
+      "60 min waiting time included"
+    ],
+    "out": [
+      "Pickup time confirmed the day before",
+      "15 min waiting time included"
+    ],
+    "hotel": [
+      "Pickup at your door at the time you give",
+      "15 min waiting time included"
+    ],
+    "all": [
+      "Free changes to dates or flights",
+      "Free cancellation 48 h before pickup"
+    ]
+  },
+  "zones": [
+    {
+      "key": "mobay",
+      "name": "Montego Bay",
+      "airbnbLabel": "Montego Bay, villa or Airbnb",
+      "regions": [
+        "mobay"
+      ],
+      "rule": {
+        "region": "mobay",
+        "lngMax": -77.85
+      },
+      "aliases": [
+        "mobay",
+        "hip strip",
+        "freeport",
+        "ironshore",
+        "mahoe bay"
+      ],
+      "places": [
+        "Round Hill Hotel and Villas",
+        "Tryall Club",
+        "Sunscape Splash Montego Bay",
+        "Toby's Resort",
+        "Doctors Cave Beach Hotel",
+        "El Greco Resort",
+        "Altamont West Hotel",
+        "Holiday Inn Resort Montego Bay",
+        "Gloriana Hotel",
+        "Sandals Royal Caribbean"
+      ]
+    },
+    {
+      "key": "rose-hall",
+      "name": "Rose Hall",
+      "airbnbLabel": "Rose Hall, villa or Airbnb",
+      "rule": {
+        "region": "mobay",
+        "lngMin": -77.85
+      },
+      "aliases": [
+        "rose hall",
+        "lilliput",
+        "half moon"
+      ],
+      "places": [
+        "Half Moon",
+        "Hilton Rose Hall Resort & Spa",
+        "Zoetry Montego Bay",
+        "Excellence Oyster Bay"
+      ]
+    },
+    {
+      "key": "lucea",
+      "name": "Lucea and Hanover",
+      "airbnbLabel": "Lucea or Hanover, villa or Airbnb",
+      "regions": [
+        "lucea"
+      ],
+      "aliases": [
+        "lucea",
+        "hanover",
+        "green island",
+        "hopewell",
+        "sandy bay"
+      ],
+      "places": [
+        "Grand Palladium Jamaica Resort & Spa",
+        "Grand Palladium Lady Hamilton Resort & Spa"
+      ]
+    },
+    {
+      "key": "falmouth",
+      "name": "Falmouth and Trelawny",
+      "airbnbLabel": "Falmouth or Trelawny, villa or Airbnb",
+      "regions": [
+        "falmouth"
+      ],
+      "aliases": [
+        "falmouth",
+        "trelawny",
+        "duncans",
+        "rio bueno",
+        "silver sands",
+        "braco"
+      ],
+      "places": [
+        "Royalton Blue Waters",
+        "Excellence Oyster Bay",
+        "Silver Sands Villas",
+        "Braco Village"
+      ]
+    },
+    {
+      "key": "runaway-bay",
+      "name": "Runaway Bay",
+      "airbnbLabel": "Runaway Bay, villa or Airbnb",
+      "rule": {
+        "region": "ocho",
+        "lngMax": -77.25
+      },
+      "aliases": [
+        "runaway bay",
+        "discovery bay",
+        "brown's town",
+        "browns town"
+      ],
+      "places": [
+        "Bahia Principe Grand Jamaica",
+        "Jewel Runaway Bay Beach Resort",
+        "Cardiff Hotel and Spa",
+        "Runaway Bay Heart Hotel"
+      ]
+    },
+    {
+      "key": "ocho-rios",
+      "name": "Ocho Rios",
+      "airbnbLabel": "Ocho Rios, villa or Airbnb",
+      "rule": {
+        "region": "ocho",
+        "lngMin": -77.25
+      },
+      "aliases": [
+        "ocho rios",
+        "ochi",
+        "st ann's bay",
+        "mammee bay",
+        "tower isle",
+        "oracabessa",
+        "boscobel"
+      ],
+      "places": [
+        "Jamaica Inn",
+        "Hermosa Cove",
+        "Moon Palace Jamaica",
+        "Hibiscus Lodge",
+        "Rooms Ocho Rios",
+        "Jewel Paradise Cove",
+        "Sandals Royal Plantation",
+        "Goldeneye",
+        "Couples Tower Isle",
+        "Silver Seas Hotel",
+        "Shaw Park Beach Hotel",
+        "Hotel Riu Ocho Rios"
+      ]
+    },
+    {
+      "key": "negril",
+      "name": "Negril",
+      "airbnbLabel": "Negril, villa or Airbnb",
+      "regions": [
+        "negril"
+      ],
+      "aliases": [
+        "negril",
+        "seven mile",
+        "west end",
+        "bloody bay"
+      ],
+      "places": [
+        "Rockhouse Hotel",
+        "The Caves",
+        "Tensing Pen",
+        "Charela Inn",
+        "Negril Tree House Resort",
+        "Idle Awhile Resort",
+        "Rondel Village",
+        "Coco La Palm Seaside Resort",
+        "Travellers Beach Resort",
+        "Country Country Beach Cottages",
+        "Rooms on the Beach Negril",
+        "Skylark Negril Beach Resort",
+        "The Cliff Hotel",
+        "Catcha Falling Star",
+        "Samsara Cliff Resort",
+        "Royalton Negril"
+      ]
+    },
+    {
+      "key": "south-coast",
+      "name": "South Coast",
+      "airbnbLabel": "South Coast, villa or Airbnb",
+      "regions": [
+        "south"
+      ],
+      "aliases": [
+        "south coast",
+        "whitehouse",
+        "treasure beach",
+        "black river",
+        "bluefields"
+      ],
+      "places": [
+        "Jakes Hotel",
+        "Treasure Beach Hotel",
+        "Kanopi House",
+        "Bluefields Bay Villas"
+      ]
+    },
+    {
+      "key": "kingston",
+      "name": "Kingston",
+      "airbnbLabel": "Kingston, villa or Airbnb",
+      "aliases": [
+        "kingston",
+        "new kingston",
+        "half way tree",
+        "liguanea"
+      ],
+      "places": [
+        "The Jamaica Pegasus",
+        "AC Hotel Kingston",
+        "Spanish Court Hotel",
+        "The Courtleigh Hotel",
+        "Terra Nova All-Suite Hotel",
+        "ROK Hotel Kingston",
+        "S Hotel Kingston",
+        "Knutsford Court Hotel",
+        "The Liguanea Club"
+      ]
+    },
+    {
+      "key": "port-antonio",
+      "name": "Port Antonio",
+      "airbnbLabel": "Port Antonio, villa or Airbnb",
+      "aliases": [
+        "port antonio",
+        "portland",
+        "san san",
+        "frenchman's cove",
+        "blue lagoon"
+      ],
+      "places": [
+        "Geejam Hotel",
+        "Trident Hotel",
+        "Goblin Hill Villas",
+        "Jamaica Palace Hotel",
+        "Hotel Mockingbird Hill"
+      ]
+    }
+  ],
+  "drive": {
+    "MBJ": {
+      "mobay": "15 to 30 min",
+      "rose-hall": "about 30 min",
+      "lucea": "about 50 min",
+      "falmouth": "about 45 min",
+      "runaway-bay": "about 1 h 15",
+      "ocho-rios": "about 1 h 45",
+      "negril": "about 1 h 30",
+      "south-coast": "about 2 h"
+    },
+    "KIN": {
+      "kingston": "about 30 min",
+      "ocho-rios": "about 2 h",
+      "runaway-bay": "about 2 h 20",
+      "port-antonio": "about 2 h 30",
+      "mobay": "about 3 h 30",
+      "rose-hall": "about 3 h 15",
+      "falmouth": "about 3 h",
+      "negril": "about 4 h",
+      "lucea": "about 4 h",
+      "south-coast": "about 2 h 30"
+    },
+    "OCJ": {
+      "ocho-rios": "about 20 min",
+      "runaway-bay": "about 45 min",
+      "falmouth": "about 1 h 15",
+      "rose-hall": "about 1 h 30",
+      "mobay": "about 1 h 45",
+      "lucea": "about 2 h 30",
+      "negril": "about 3 h",
+      "south-coast": "about 3 h",
+      "kingston": "about 2 h",
+      "port-antonio": "about 1 h 45"
+    }
+  },
+  "driveNote": "Drive times say about and are from the airport door in normal traffic."
+}
