@@ -126,7 +126,7 @@
       ],
       [
         "trelawny",
-        "Falmouth & Trelawny"
+        "Trelawny (Falmouth)"
       ],
       [
         "ocho",
@@ -176,7 +176,7 @@
       "fromMBJ": "15 to 40 min"
     },
     "trelawny": {
-      "label": "Falmouth & Trelawny",
+      "label": "Trelawny (Falmouth)",
       "parish": "Trelawny",
       "port": "Falmouth cruise port",
       "fromMBJ": "about 45 min"
@@ -880,7 +880,7 @@
         },
         {
           "key": "lucea",
-          "label": "Lucea and Hanover coast",
+          "label": "Hanover coast (Lucea)",
           "add": 5,
           "addChild": 10
         },
@@ -2052,7 +2052,7 @@
       "lng": -77.9
     },
     "falmouth": {
-      "label": "Falmouth and Trelawny",
+      "label": "Trelawny (Falmouth)",
       "lat": 18.49,
       "lng": -77.65
     },
@@ -2067,7 +2067,7 @@
       "lng": -78.34
     },
     "lucea": {
-      "label": "Lucea and Hanover",
+      "label": "Hanover (Lucea)",
       "lat": 18.45,
       "lng": -78.17
     },

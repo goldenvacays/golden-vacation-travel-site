@@ -394,8 +394,8 @@
     },
     {
       "key": "lucea",
-      "name": "Lucea and Hanover",
-      "airbnbLabel": "Lucea or Hanover, villa or Airbnb",
+      "name": "Hanover (Lucea)",
+      "airbnbLabel": "Hanover (Lucea), villa or Airbnb",
       "regions": [
         "lucea"
       ],
@@ -426,8 +426,8 @@
     },
     {
       "key": "falmouth",
-      "name": "Falmouth and Trelawny",
-      "airbnbLabel": "Falmouth or Trelawny, villa or Airbnb",
+      "name": "Trelawny (Falmouth)",
+      "airbnbLabel": "Trelawny (Falmouth), villa or Airbnb",
       "regions": [
         "falmouth"
       ],
