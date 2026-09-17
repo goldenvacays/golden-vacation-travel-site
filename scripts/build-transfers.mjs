@@ -24,7 +24,7 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
-import { islandSvg, jpegSize } from "./lib-island.mjs";
+import { islandSvg, jpegSize, roundRing, ringPath } from "./lib-island.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const args = process.argv.slice(2);
@@ -46,6 +46,7 @@ const TODAY = new Date().toISOString().slice(0, 10);
 const STAMP = crypto.createHash("md5").update(["public/assets/transfers.css", "public/assets/transfers.js"].map((f) => fs.readFileSync(path.join(ROOT, f), "utf8")).join("\n")).digest("hex").slice(0, 8);
 const RATES_STAMP = crypto.createHash("md5").update(JSON.stringify(R)).digest("hex").slice(0, 8);
 const EXP_STAMP = crypto.createHash("md5").update(["public/assets/experiences.css", "public/assets/experiences.js"].map((f) => fs.readFileSync(path.join(ROOT, f), "utf8")).join("\n")).digest("hex").slice(0, 8);
+const CHROME_STAMP = crypto.createHash("md5").update(fs.readFileSync(path.join(ROOT, "public/assets/chrome.js"), "utf8")).digest("hex").slice(0, 8);
 
 /* ---------- helpers ---------- */
 const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -128,9 +129,10 @@ const MAP = (() => {
   const kx = Math.cos((((minLat + maxLat) / 2) * Math.PI) / 180);
   const W = 1000, scale = W / ((maxLon - minLon) * kx), Hh = (maxLat - minLat) * scale;
   const proj = (lng, lat) => [+((lng - minLon) * kx * scale).toFixed(1), +((maxLat - lat) * scale).toFixed(1)];
-  /* the coastline is 250-odd points (Natural Earth): drawn as a smooth curve through them, so it holds up when zoomed in, not as a polygon */
-  const smooth = (pts) => { const n = pts.length, at = (i) => pts[((i % n) + n) % n]; let out = `M${pts[0][0]} ${pts[0][1]}`; for (let i = 0; i < n; i++) { const p0 = at(i - 1), p1 = at(i), p2 = at(i + 1), p3 = at(i + 2); const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6], c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6]; out += `C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p2[0]} ${p2[1]}`; } return out + "Z"; };
-  const d = smooth(ring.map(([lo, la]) => proj(lo, la)));
+  /* the coastline is 510 points (OpenStreetMap, one roughly every 2 km) with the corners rounded off, so the shape
+     is the real one and it still looks smooth at the lens's 9x. A spline THROUGH the points bulged past the coast
+     and tied the Palisadoes spit at Kingston into a loop, which is why the island used to look wrong. */
+  const d = ringPath(roundRing(ring.map(([lo, la]) => proj(lo, la))));
   const byName = Object.fromEntries(RESORTS.map((r) => [r.name, r]));
   /* where each area sits: the middle of its hotels, or a hand-placed point for areas whose places carry no coordinates */
   const FALLBACK = { mobay: [18.49, -77.92], "mobay-nonai": [18.49, -77.9], "rose-hall": [18.51, -77.83], lucea: [18.45, -78.17], "hanover-villas": [18.45, -78.0], falmouth: [18.49, -77.65], "runaway-bay": [18.45, -77.33], "ocho-rios": [18.41, -77.11], negril: [18.27, -78.34], "south-coast": [18.07, -77.95], "treasure-beach": [17.88, -77.76], kingston: [18.01, -76.79], "blue-mountains": [18.08, -76.65], "port-antonio": [18.18, -76.45] };
@@ -154,8 +156,10 @@ const MAP = (() => {
     ["treasure-beach", "black-river", 1], ["black-river", "whitehouse", 1], ["whitehouse", "bluefields", 1], ["bluefields", "savanna-la-mar", 1], ["savanna-la-mar", "negril", 1],
     ["kingston", "spanish-town", 0], ["spanish-town", "bog-walk", 0], ["bog-walk", "linstead", 0], ["linstead", "moneague", 0], ["moneague", "ocho-rios", 0], ["kingston", "papine", 0], ["papine", "strawberry-hill", 0],
     ["spanish-town", "old-harbour", 0], ["old-harbour", "may-pen", 0], ["may-pen", "mandeville", 0], ["mandeville", "santa-cruz", 0], ["santa-cruz", "treasure-beach", 0], ["santa-cruz", "black-river", 0], ["montego-bay", "montpelier", 0], ["montpelier", "savanna-la-mar", 0]];
-  /* the coastline nudged inland, so a coastal leg reads as the road and not the surf; orientation decides which side is inland */
-  const pts = ring.map(([lo, la]) => proj(lo, la));
+  /* the coastline nudged inland, so a coastal leg reads as the road and not the surf; orientation decides which side is inland.
+     The road walks every fourth coastline point: at the full 2 km spacing a 7-unit inland nudge folds back on itself
+     around every cove, and the road is a road, not a survey. */
+  const pts = ring.filter((_, i) => i % 4 === 0).map(([lo, la]) => proj(lo, la));
   let area = 0; for (let i = 0; i < pts.length; i++) { const [x1, y1] = pts[i], [x2, y2] = pts[(i + 1) % pts.length]; area += x1 * y2 - x2 * y1; }
   const sgn = area > 0 ? 1 : -1; /* in screen space (y down), a positive area means the ring runs clockwise on screen */
   const coast = pts.map((p, i) => { const a = pts[(i - 1 + pts.length) % pts.length], b = pts[(i + 1) % pts.length]; const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1; const nx = (-dy / l) * sgn, ny = (dx / l) * sgn; return [+(p[0] + nx * 7).toFixed(1), +(p[1] + ny * 7).toFixed(1)]; });
@@ -176,8 +180,10 @@ function head({ title, description, pathname, image, jsonld = [], noindex = fals
   const url = `${S.origin}${pathname}`;
   const og = `${S.origin}${image ? img(image) : `${IMG}/${H.meta.ogImage}`}`;
   const ld = jsonld.map((o) => `<script type="application/ld+json">${JSON.stringify(o)}</script>`).join("\n");
-  const ga = S.ga4 ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${S.ga4}"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${S.ga4}');</script>` : "";
+  /* Analytics loads after the page has painted. As a plain async tag it was taking 3.5s of the browser's attention
+     while the guest waited on a blank checkout; queueing the events first means nothing is lost by waiting. */
+  const ga = S.ga4 ? `<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${S.ga4}');
+addEventListener('load',function(){setTimeout(function(){var s=document.createElement('script');s.async=1;s.src='https://www.googletagmanager.com/gtag/js?id=${S.ga4}';document.head.appendChild(s);},1200);});</script>` : "";
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -203,9 +209,8 @@ function head({ title, description, pathname, image, jsonld = [], noindex = fals
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100,400;100,500;100,600;100,700;110,800;110,900&display=swap">
+<link rel="preload" href="${ASSETS}/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<style>@font-face{font-family:'Archivo';font-style:normal;font-display:swap;font-weight:100 900;font-stretch:62% 125%;src:url(${ASSETS}/fonts/archivo.woff2) format('woff2-variations')}</style>
 <link rel="stylesheet" href="/getaways/assets/getaways.css">
 <link rel="stylesheet" href="/assets/home.css">
 <link rel="stylesheet" href="${ASSETS}/experiences.css?v=${EXP_STAMP}">
@@ -255,9 +260,11 @@ function footer() {
 
 /* Stripe.js is loaded from Stripe's own host, on the checkout page only (the card form is Stripe's iframe; no card detail touches the site) */
 const STRIPE_JS = "https://js.stripe.com/dahlia/stripe.js";
+/* chrome.js carries the US$/J$ switch, the mobile menu and the WhatsApp tracking: the only parts of getaways.js and
+   home.js a transfers page uses. Stripe's script loads on the pay page alone, so the rest of the section never
+   pays for 243K it has nothing to do with. */
 const scripts = (cfg, withRates, withStripe = false) => `<script>window.GV_TR=${JSON.stringify(cfg)};</script>
-<script src="/getaways/assets/getaways.js" defer></script>
-<script src="/assets/home.js" defer></script>
+<script src="${ASSETS}/chrome.js?v=${CHROME_STAMP}" defer></script>
 ${withRates ? `<script src="${ASSETS}/transfers-rates.js?v=${RATES_STAMP}" defer></script>\n` : ""}${withStripe ? `<script src="${STRIPE_JS}" defer></script>\n` : ""}<script src="${ASSETS}/transfers.js?v=${STAMP}" defer></script>`;
 
 /* ---------- the page ---------- */
@@ -372,22 +379,23 @@ function previewBooking() {
   const o = offers.find((x) => x[1] === 5) || offers[0] || ["minivan", 5, 5, 190];
   return { v: 1, ref: "GV-TR-K7Q2", hotel: "royalton-negril", zone, placeKind: "hotel", placeName: "", place: "Royalton Negril", hotel2: "", zone2: "", place2Kind: "", place2Name: "", place2: "", airport: "MBJ", trip: "both", people: 4, vehicle: o[0], seats: o[1], bags: o[2], price: o[3], multi: o[4] ? 1 : 0, date: "2026-12-19", date2: "2026-12-26", flightIn: "AA1497", flightOut: "AA1496", timeIn: "14:35", timeOut: "11:10", time: "", veh: T.vehicles[o[0]].label + (o[4] ? ", two or more" : ""), ride: "Montego Bay airport to Negril, round trip", drive: (T.drive.MBJ || {})[zone] || "", when: "Arrives Sat 19 Dec 2026 on AA1497 at 2:35pm. Departs Sat 26 Dec 2026 on AA1496 at 11:10am", guests: "4 people" };
 }
-function checkoutPage() {
+/* the config both checkout pages need: the copy, the map and the words the search already showed the guest */
+function ckConfig(page) {
   const CK = T.page.checkout;
-  const cfg = { page: "checkout", whatsapp: S.whatsapp, origin: S.origin, jmdRate: S.jmdRate, today: TODAY, base: BASE, maxGuests: T.site.maxGuests, email: S.email, includes: T.includes, copy: { checkout: CK },
+  return { page, whatsapp: S.whatsapp, origin: S.origin, jmdRate: S.jmdRate, today: TODAY, base: BASE, maxGuests: T.site.maxGuests, email: S.email, includes: T.includes, copy: { checkout: CK },
     airports: T.airports.map((a) => ({ code: a.code, name: a.name })), zones: Object.fromEntries(T.zones.map((z) => [z.key, z.name])), map: { zones: MAP.zones, hotels: MAP.hotels, airports: MAP.airports, roads: MAP.roads, names: Object.fromEntries(T.zones.map((z) => [z.key, z.mapName || z.name.split(/ and | villa/)[0]])) }, previewBooking: previewBooking() };
-  const row = (id, ic, action, actionId, isLink) => `<div class="ck-row" id="${id}"><span class="ck-row-ic">${icon(ic, 20)}</span><div class="ck-row-t"><b id="${id}-t"></b><span id="${id}-d"></span></div>${isLink ? `<a class="ck-act" id="${actionId}" href="${BASE}/">${esc(action)}</a>` : `<button class="ck-act" type="button" id="${actionId}">${esc(action)}</button>`}</div>`;
+}
+
+/* the dark band at the top of both pages: the back link, the title, the route map and the three steps.
+   step is which one is current, so page one lights 02 and the pay page lights 03. */
+function ckHero(CK, step, titleA, titleB, back, backHref) {
   const steps = CK.steps.map(([t, sub], i) => `<li data-i="${i + 1}"><span class="n">0${i + 1}</span><span class="ck-step-t"><b>${esc(t)}</b><small data-sub="${esc(sub)}">${esc(sub)}</small></span></li>`).join("");
-  return `${head({ title: "Book your ride | Airport transfers", description: "Your details and the payment for your Jamaica airport transfer with Golden Vacation & Travel.", pathname: `${BASE}/checkout`, noindex: true, bodyClass: "exp tr tr-ck" })}
-${nav()}
-<main id="ckpage">
-<section class="ck-hero poster" aria-label="Checkout">
+  return `<section class="ck-hero poster" aria-label="Checkout">
   <div class="wrap ck-hero-in">
-    <a class="ck-back" id="ck-back" href="${BASE}/">${icon("back", 16, 2.4)}${esc(CK.back)}</a>
+    <a class="ck-back" id="ck-back" href="${backHref}">${icon("back", 16, 2.4)}${esc(back)}</a>
     <div class="ck-hero-t">
       ${kicker(CK.pageKicker, true)}
-      <h1 class="hh">${esc(CK.pageTitleA)} <span class="gold">${esc(CK.pageTitleB)}</span></h1>
-      ${CK.pageSub ? `<p class="ck-sub" id="ck-sub">${esc(CK.pageSub)}</p>` : ""}
+      <h1 class="hh">${esc(titleA)} <span class="gold">${esc(titleB)}</span></h1>
     </div>
     <div class="ck-map" id="ck-map" aria-hidden="true">
       <svg class="ck-map-svg" viewBox="-20 -60 ${MAP.W + 40} ${(MAP.H + 150).toFixed(0)}" data-h="${MAP.H}">
@@ -408,11 +416,24 @@ ${nav()}
         </g>
       </svg>
     </div>
-    <ol class="ck-steps" id="ck-steps" data-step="2" aria-label="Steps">${steps}</ol>
+    <ol class="ck-steps" id="ck-steps" data-step="${step}" aria-label="Steps">${steps}</ol>
   </div>
-</section>
+</section>`;
+}
+
+/* the total, shown on both pages so the number is never off the screen while the guest is deciding */
+const ckTotal = (CK) => `<div class="ck-tot"><div class="ck-tot-h"><span class="ck-lbl">${esc(CK.total)}</span><span class="ck-secure">${icon("lock", 14, 2.6)}${esc(CK.secureTag)}</span></div><div class="ck-tot-v"><b><span class="usd-v" id="ck-total"></span><span class="jmd-v" id="ck-total-j"></span></b><span><span class="usd-v" id="ck-jmd"></span><span class="jmd-v" id="ck-usd"></span></span></div><small id="ck-tot-sub"></small></div>`;
+const ckEmpty = (CK) => `<div class="ck-empty" id="ck-empty" hidden>${kicker("Airport transfers")}<h2 class="hh">${esc(CK.emptyTitle)}</h2><p>${esc(CK.emptyText)}</p>${btn(CK.emptyCta, `${BASE}/`, "black")}</div>`;
+
+/* ---------- page one: the ride and who's travelling ---------- */
+function checkoutPage() {
+  const CK = T.page.checkout;
+  return `${head({ title: "Book your ride | Airport transfers", description: "Your details for your Jamaica airport transfer with Golden Vacation & Travel.", pathname: `${BASE}/checkout`, noindex: true, bodyClass: "exp tr tr-ck" })}
+${nav()}
+<main id="ckpage">
+${ckHero(CK, 2, CK.pageTitleA, CK.pageTitleB, CK.back, `${BASE}/`)}
 <div class="ck-main wrap">
-  <div class="ck-grid" id="ck-grid" data-state="details">
+  <div class="ck-grid" id="ck-grid">
     <div class="ck-left">
       <section class="ck-ride" id="ck-ride" aria-label="Your ride">
         <div class="ck-ride-top"><span class="ck-lbl">${esc(CK.yourRide)}</span><a class="ck-act" id="ck-ride-change" href="${BASE}/">${esc(CK.change)}</a></div>
@@ -427,34 +448,59 @@ ${nav()}
       <section class="ck-card ck-guest" id="ck-guest" aria-label="Who's travelling">
         <form id="ck-form" novalidate>
           <div class="ck-card-h">${kicker(CK.kicker)}<h2 class="hh">${esc(CK.title)}</h2></div>
-          <div class="ck-two">${field("ck-first", "First name", "text", "First name", "given-name")}${field("ck-last", "Last name", "text", "Last name", "family-name")}</div>
+          ${field("ck-name", "Name on the booking", "text", "First and last name", "name")}
           <div class="ck-two">${field("ck-email", "Email for the confirmation", "email", "you@example.com", "email", ' inputmode="email"')}${field("ck-phone", "WhatsApp or phone", "tel", "+1 305 555 0100", "tel", ' inputmode="tel"')}</div>
           ${field("ck-note", "Anything for the driver?", "text", "Child seat, a stop, a lot of bags", "off", ' maxlength="200"')}
           <p class="ck-hint" id="ck-hint"></p>
           <button class="btn btn-gold btn-lg btn-full" type="submit" id="ck-go">${esc(CK.continueCta)}${icon("arrow", 18, 2.4)}</button>
         </form>
       </section>
-      <div class="ck-card ck-rows" id="ck-rows" hidden>
-        ${row("ck-row-ride", "car", CK.change, "ck-row-ride-change", true)}
-        ${row("ck-row-guest", "users", CK.edit, "ck-row-edit", false)}
-        <p class="ck-rows-note" id="ck-rows-note"></p>
-      </div>
     </div>
-    <aside class="ck-card ck-pay" id="ck-pay" aria-label="Payment">
-      <div class="ck-card-h" id="ck-pay-head" hidden>${kicker(CK.lastKicker)}<h2 class="hh" id="ck-pay-title" tabindex="-1">${esc(CK.lastTitle)}</h2></div>
-      <div class="ck-tot"><div class="ck-tot-h"><span class="ck-lbl">${esc(CK.total)}</span><span class="ck-secure">${icon("lock", 14, 2.6)}${esc(CK.secureTag)}</span></div><div class="ck-tot-v"><b><span class="usd-v" id="ck-total"></span><span class="jmd-v" id="ck-total-j"></span></b><span><span class="usd-v" id="ck-jmd"></span><span class="jmd-v" id="ck-usd"></span></span></div><small id="ck-tot-sub"></small></div>
+    <aside class="ck-card ck-sum" id="ck-sum" aria-label="Your total">
+      ${ckTotal(CK)}
       <div class="ck-inc" id="ck-inc"></div>
-      <div class="ck-div"></div>
-      <div class="ck-stripe" id="ck-stripe">${CK.payPlaceholder ? `<p class="ck-ph" id="ck-ph">${esc(CK.payPlaceholder)}</p>` : ""}</div>
-      <p class="pf-fine">${esc(CK.secure)}</p>
       <p class="pf-alt">${esc(CK.alt)} <a href="#" id="ck-wa">${esc(CK.altLink)}</a>.</p>
     </aside>
   </div>
-  <div class="ck-empty" id="ck-empty" hidden>${kicker("Airport transfers")}<h2 class="hh">${esc(CK.emptyTitle)}</h2><p>${esc(CK.emptyText)}</p>${btn(CK.emptyCta, `${BASE}/`, "black")}</div>
+  ${ckEmpty(CK)}
 </div>
 </main>
 ${footer()}
-${scripts(cfg, false, true)}
+${scripts(ckConfig("checkout"), false)}
+</body></html>`;
+}
+
+/* ---------- page two: the card form. Stripe's script loads only here. ---------- */
+function payPage() {
+  const CK = T.page.checkout;
+  const row = (id, ic, action, actionId, isLink) => `<div class="ck-row" id="${id}"><span class="ck-row-ic">${icon(ic, 20)}</span><div class="ck-row-t"><b id="${id}-t"></b><span id="${id}-d"></span></div>${isLink ? `<a class="ck-act" id="${actionId}" href="${BASE}/">${esc(action)}</a>` : `<a class="ck-act" id="${actionId}" href="${BASE}/checkout">${esc(action)}</a>`}</div>`;
+  return `${head({ title: "Pay for your ride | Airport transfers", description: "Payment for your Jamaica airport transfer with Golden Vacation & Travel.", pathname: `${BASE}/pay`, noindex: true, bodyClass: "exp tr tr-ck tr-pay" })}
+${nav()}
+<main id="ckpage">
+${ckHero(CK, 3, CK.payTitleA, CK.payTitleB, CK.payBack, `${BASE}/checkout`)}
+<div class="ck-main wrap">
+  <!-- three cards, laid out by grid-area: the ride and the guest folded top left, what's included under them,
+       the card form down the right. On a phone they stack in the order that matters: ride, card form, included. -->
+  <div class="ck-grid pay" id="ck-grid">
+    <div class="ck-card ck-rows" id="ck-rows">
+      ${row("ck-row-ride", "car", CK.change, "ck-row-ride-change", true)}
+      ${row("ck-row-guest", "users", CK.edit, "ck-row-edit", false)}
+      <p class="ck-rows-note" id="ck-rows-note"></p>
+    </div>
+    <aside class="ck-card ck-pay" id="ck-pay" aria-label="Payment">
+      <div class="ck-card-h" id="ck-pay-head">${kicker(CK.lastKicker)}<h2 class="hh" id="ck-pay-title" tabindex="-1">${esc(CK.lastTitle)}</h2></div>
+      ${ckTotal(CK)}
+      <div class="ck-div"></div>
+      <div class="ck-stripe" id="ck-stripe"></div>
+      <p class="pf-alt">${esc(CK.alt)} <a href="#" id="ck-wa">${esc(CK.altLink)}</a>.</p>
+    </aside>
+    <div class="ck-card ck-incs"><span class="ck-lbl">${esc(CK.included || "Included")}</span><div class="ck-inc" id="ck-inc"></div></div>
+  </div>
+  ${ckEmpty(CK)}
+</div>
+</main>
+${footer()}
+${scripts(ckConfig("pay"), false, true)}
 </body></html>`;
 }
 
@@ -482,6 +528,7 @@ ${scripts({ page: "booked", whatsapp: S.whatsapp, base: BASE, ...(previewState ?
 const pages = [
   ["public/transfers/index.html", transfersPage(), "transfers"],
   ["public/transfers/checkout.html", checkoutPage(), "checkout"],
+  ["public/transfers/pay.html", payPage(), "pay"],
   ["public/transfers/booked.html", bookedPage(), "booked"],
 ];
 const EXCEPTIONS = (R.exceptions || []).map((x) => ({ airport: x.airport, zone: x.zone, seats: x.seats, hotels: x.hotels.map((n) => { const h = HOTELS.find((h) => h.name.toLowerCase() === n.toLowerCase() || h.slug === slugify(n) || h.slug === slugify("Hotel " + n) || slugify(h.name) === slugify(n.replace(/^Hotel /i, ""))); if (!h) console.warn(`exception hotel not on the list: ${n}`); return h ? h.slug : null; }).filter(Boolean) }));

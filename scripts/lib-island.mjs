@@ -19,6 +19,30 @@ export function jpegSize(file) {
   return [3, 2];
 }
 
+/* Rounds the corners off a closed ring of points (Chaikin: each segment gives up its two quarter points).
+   Every new point sits between two old ones, so unlike a spline through the points this can never bulge past
+   the real coastline or tie the thin Palisadoes spit into a loop. Two rounds is smooth at the lens's 9x. */
+export function roundRing(pts, rounds = 2) {
+  let p = pts;
+  for (let r = 0; r < rounds; r++) {
+    const out = [];
+    for (let i = 0; i < p.length; i++) {
+      const a = p[i], b = p[(i + 1) % p.length];
+      out.push([a[0] * 0.75 + b[0] * 0.25, a[1] * 0.75 + b[1] * 0.25]);
+      out.push([a[0] * 0.25 + b[0] * 0.75, a[1] * 0.25 + b[1] * 0.75]);
+    }
+    p = out;
+  }
+  return p;
+}
+
+/* a closed path through the points, whole numbers in the 1000-wide space (a tenth of a unit is a tenth of a
+   pixel on the widest phone, so it only pads the HTML) and with repeated points dropped */
+export function ringPath(pts) {
+  const q = pts.map(([x, y]) => [Math.round(x), Math.round(y)]).filter((p, i, a) => i === 0 || p[0] !== a[i - 1][0] || p[1] !== a[i - 1][1]);
+  return `M${q.map((p) => p.join(" ")).join("L")}Z`;
+}
+
 /* ring: [[lng, lat], ...] coastline; airports: [{code, lat, lng}]; photoUrl: the src; size: [w, h] of the photo;
    focus: [x, y] in 0..1, which part of the photo stays in view when the shape crops it; alt: for screen readers */
 export function islandSvg({ ring, airports, photoUrl, size, focus, alt, esc, id = "tr-island" }) {
@@ -27,7 +51,7 @@ export function islandSvg({ ring, airports, photoUrl, size, focus, alt, esc, id 
   const kx = Math.cos((((minLat + maxLat) / 2) * Math.PI) / 180);
   const W = 1000, scale = W / ((maxLon - minLon) * kx), Hh = (maxLat - minLat) * scale;
   const proj = (lng, lat) => [(lng - minLon) * kx * scale, (maxLat - lat) * scale];
-  const d = "M" + ring.map(([lo, la]) => proj(lo, la).map((n) => n.toFixed(1)).join(" ")).join("L") + "Z";
+  const d = ringPath(roundRing(ring.map(([lo, la]) => proj(lo, la))));
   const [iw, ih] = size;
   const s = Math.max(W / iw, Hh / ih), dw = iw * s, dh = ih * s;
   const [fx, fy] = focus || [0.5, 0.5];
