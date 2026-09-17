@@ -223,7 +223,7 @@ ${ga}
 }
 
 function nav() {
-  const links = NAV.map(([l, h]) => `<a href="${h}">${esc(l)}</a>`).join("");
+  const links = NAV.map(([l, h]) => `<a href="${h}"${h === "/transfers/" ? ' aria-current="page"' : ""}>${esc(l)}</a>`).join("");
   return `<header class="nav wrap" role="banner">
   <div class="nav-l"><a class="wordmark hh" href="/" aria-label="Golden Vacation, home">GOLDEN VACATION</a></div>
   <nav class="nav-links" aria-label="Main">${links}</nav>
