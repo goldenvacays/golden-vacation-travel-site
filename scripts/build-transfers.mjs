@@ -518,6 +518,7 @@ ${nav()}
   </div>
   <form name="tr-bookings" data-netlify="true" netlify-honeypot="bot-field" hidden><input type="text" name="bot-field"><input type="text" name="ref"><input type="text" name="route"><input type="text" name="vehicle"><input type="text" name="when"><input type="text" name="guests"><input type="text" name="place"><input type="text" name="customer"><input type="email" name="email"><input type="text" name="phone"><input type="text" name="total"><input type="text" name="status"><textarea name="note"></textarea></form>
   <form name="tr-enquiries" data-netlify="true" netlify-honeypot="bot-field" hidden><input type="text" name="bot-field"><input type="text" name="ref"><input type="text" name="route"><input type="text" name="vehicle"><input type="text" name="when"><input type="text" name="guests"><input type="text" name="place"><input type="text" name="total"><input type="text" name="page"><textarea name="message"></textarea></form>
+  <form name="wa-exits" data-netlify="true" hidden><input type="text" name="visit"><input type="text" name="ref"><input type="text" name="page"><input type="text" name="where"><input type="text" name="total"><textarea name="context"></textarea></form>
 </main>
 ${footer()}
 ${scripts({ page: "booked", whatsapp: S.whatsapp, base: BASE, ...(previewState ? { previewState } : {}) }, false)}
