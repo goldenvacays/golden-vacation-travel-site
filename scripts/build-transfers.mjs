@@ -128,7 +128,9 @@ const MAP = (() => {
   const kx = Math.cos((((minLat + maxLat) / 2) * Math.PI) / 180);
   const W = 1000, scale = W / ((maxLon - minLon) * kx), Hh = (maxLat - minLat) * scale;
   const proj = (lng, lat) => [+((lng - minLon) * kx * scale).toFixed(1), +((maxLat - lat) * scale).toFixed(1)];
-  const d = "M" + ring.map(([lo, la]) => proj(lo, la).join(" ")).join("L") + "Z";
+  /* the coastline is 250-odd points (Natural Earth): drawn as a smooth curve through them, so it holds up when zoomed in, not as a polygon */
+  const smooth = (pts) => { const n = pts.length, at = (i) => pts[((i % n) + n) % n]; let out = `M${pts[0][0]} ${pts[0][1]}`; for (let i = 0; i < n; i++) { const p0 = at(i - 1), p1 = at(i), p2 = at(i + 1), p3 = at(i + 2); const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6], c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6]; out += `C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p2[0]} ${p2[1]}`; } return out + "Z"; };
+  const d = smooth(ring.map(([lo, la]) => proj(lo, la)));
   const byName = Object.fromEntries(RESORTS.map((r) => [r.name, r]));
   /* where each area sits: the middle of its hotels, or a hand-placed point for areas whose places carry no coordinates */
   const FALLBACK = { mobay: [18.49, -77.92], "mobay-nonai": [18.49, -77.9], "rose-hall": [18.51, -77.83], lucea: [18.45, -78.17], "hanover-villas": [18.45, -78.0], falmouth: [18.49, -77.65], "runaway-bay": [18.45, -77.33], "ocho-rios": [18.41, -77.11], negril: [18.27, -78.34], "south-coast": [18.07, -77.95], "treasure-beach": [17.88, -77.76], kingston: [18.01, -76.79], "blue-mountains": [18.08, -76.65], "port-antonio": [18.18, -76.45] };
@@ -373,7 +375,7 @@ function previewBooking() {
 function checkoutPage() {
   const CK = T.page.checkout;
   const cfg = { page: "checkout", whatsapp: S.whatsapp, origin: S.origin, jmdRate: S.jmdRate, today: TODAY, base: BASE, maxGuests: T.site.maxGuests, email: S.email, includes: T.includes, copy: { checkout: CK },
-    airports: T.airports.map((a) => ({ code: a.code, name: a.name })), zones: Object.fromEntries(T.zones.map((z) => [z.key, z.name])), map: { zones: MAP.zones, hotels: MAP.hotels, airports: MAP.airports, roads: MAP.roads }, previewBooking: previewBooking() };
+    airports: T.airports.map((a) => ({ code: a.code, name: a.name })), zones: Object.fromEntries(T.zones.map((z) => [z.key, z.name])), map: { zones: MAP.zones, hotels: MAP.hotels, airports: MAP.airports, roads: MAP.roads, names: Object.fromEntries(T.zones.map((z) => [z.key, z.mapName || z.name.split(/ and | villa/)[0]])) }, previewBooking: previewBooking() };
   const row = (id, ic, action, actionId, isLink) => `<div class="ck-row" id="${id}"><span class="ck-row-ic">${icon(ic, 20)}</span><div class="ck-row-t"><b id="${id}-t"></b><span id="${id}-d"></span></div>${isLink ? `<a class="ck-act" id="${actionId}" href="${BASE}/">${esc(action)}</a>` : `<button class="ck-act" type="button" id="${actionId}">${esc(action)}</button>`}</div>`;
   const steps = CK.steps.map(([t, sub], i) => `<li data-i="${i + 1}"><span class="n">0${i + 1}</span><span class="ck-step-t"><b>${esc(t)}</b><small data-sub="${esc(sub)}">${esc(sub)}</small></span></li>`).join("");
   return `${head({ title: "Book your ride | Airport transfers", description: "Your details and the payment for your Jamaica airport transfer with Golden Vacation & Travel.", pathname: `${BASE}/checkout`, noindex: true, bodyClass: "exp tr tr-ck" })}
@@ -443,7 +445,7 @@ ${nav()}
       <div class="ck-tot"><div class="ck-tot-h"><span class="ck-lbl">${esc(CK.total)}</span><span class="ck-secure">${icon("lock", 14, 2.6)}${esc(CK.secureTag)}</span></div><div class="ck-tot-v"><b><span class="usd-v" id="ck-total"></span><span class="jmd-v" id="ck-total-j"></span></b><span><span class="usd-v" id="ck-jmd"></span><span class="jmd-v" id="ck-usd"></span></span></div><small id="ck-tot-sub"></small></div>
       <div class="ck-inc" id="ck-inc"></div>
       <div class="ck-div"></div>
-      <div class="ck-stripe" id="ck-stripe"><p class="ck-ph" id="ck-ph">${esc(CK.payPlaceholder)}</p></div>
+      <div class="ck-stripe" id="ck-stripe">${CK.payPlaceholder ? `<p class="ck-ph" id="ck-ph">${esc(CK.payPlaceholder)}</p>` : ""}</div>
       <p class="pf-fine">${esc(CK.secure)}</p>
       <p class="pf-alt">${esc(CK.alt)} <a href="#" id="ck-wa">${esc(CK.altLink)}</a>.</p>
     </aside>
