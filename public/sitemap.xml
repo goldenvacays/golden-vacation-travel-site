@@ -66,14 +66,6 @@
   <lastmod>2026-09-07T00:00:00+00:00</lastmod>
   <priority>0.8</priority>
 </url>
-<!-- transfers -->
-<url>
-  <loc>https://goldenvacays.com/transfers</loc>
-  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
-  <priority>0.8</priority>
-</url>
-<!-- /transfers -->
-
 <!-- experiences -->
 <url>
   <loc>https://goldenvacays.com/experiences/</loc>
@@ -549,5 +541,13 @@
   <priority>0.6</priority>
 </url>
 <!-- /experiences -->
+
+<!-- transfers -->
+<url>
+  <loc>https://goldenvacays.com/transfers</loc>
+  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
+  <priority>0.8</priority>
+</url>
+<!-- /transfers -->
 
 </urlset>
