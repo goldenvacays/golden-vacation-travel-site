@@ -35,7 +35,9 @@
       kindCell: $('[data-f="kind"]'), din: $("#hq-in"), dout: $("#hq-out"), dinLbl: $("#hq-in-label"),
       doutLbl: $("#hq-out-label"), who: $("#hq-who"), pop: $("#hq-pop"), a: $("#hq-a"), k: $("#hq-k"),
       ages: $("#hq-ages"), hint: $("#hq-hint"), done: $("#hq-done"), adults: $("#hq-adults"),
-      kids: $("#hq-kids"), agesV: $("#hq-ages-v"), go: $("#hq-go"), needs: $("#hq-needs")
+      kids: $("#hq-kids"), agesV: $("#hq-ages-v"), go: $("#hq-go"), needs: $("#hq-needs"),
+      flight: $("#hq-flight"), time: $("#hq-time"), flt: $("#hq-flt"), fltNote: $("#hq-flt-note"),
+      time2: $("#hq-time2"), flt2: $("#hq-flt2"), outWrap: $("#hq-out-wrap"), flt2Wrap: $("#hq-flt2-wrap")
     };
     /* what they picked, not what they typed: pick is set only by choosing a suggestion */
     var st = { adults: 2, kids: 0, ages: [], pick: null, need: [] };
@@ -199,10 +201,34 @@
       });
     });
 
+    /* ---- the flight number: the two letters and the digits off their ticket ---- */
+    var FLIGHT = /^[A-Z0-9]{2}[A-Z]?\s?\d{1,4}[A-Z]?$/;
+    function fltVal(el) { el = el || e.flt; return el ? el.value.trim().toUpperCase().replace(/\s+/g, "") : ""; }
+    [e.flt, e.flt2].forEach(function (i) {
+      if (!i) return;
+      i.addEventListener("blur", function () {
+        var v = fltVal(i);
+        if (v !== i.value) i.value = v;
+        var bad = v && !FLIGHT.test(v);
+        e.fltNote.textContent = bad
+          ? "\u201c" + v + "\u201d doesn't look like a flight number. It's the two letters and the digits on your ticket, like AA1497."
+          : "With these we go straight to prices and the driver knows when to be there.";
+        e.fltNote.classList.toggle("bad", !!bad);
+      });
+    });
+
     /* ---- the dates: check out never before check in ---- */
     e.din.addEventListener("change", function () {
       if (e.din.value) { e.dout.min = e.din.value; if (e.dout.value && e.dout.value < e.din.value) e.dout.value = ""; }
+      returnLeg();
     });
+    /* the return leg's own time and flight, asked for only when there is a date back to ask about */
+    function returnLeg() {
+      var want = !!(mode.airports && e.dout.value);
+      if (e.outWrap) e.outWrap.hidden = !want;
+      if (e.flt2Wrap) e.flt2Wrap.hidden = !want;
+    }
+    e.dout.addEventListener("change", returnLeg);
 
     /* ---- switching tabs ---- */
     function setMode(key, quiet) {
@@ -212,6 +238,8 @@
       e.kindCell.hidden = !mode.kinds;
       e.placeCell.hidden = !!mode.kinds;
       e.needs.hidden = !mode.needs;
+      e.flight.hidden = !mode.airports;
+      returnLeg();
       e.placeLbl.textContent = mode.placeLabel || "Where to";
       e.place.placeholder = mode.placeHint || "";
       e.dinLbl.textContent = mode.dateIn || "Check in";
@@ -251,9 +279,13 @@
         return go("/experiences/?" + params({ cat: e.kind.value !== "all" ? e.kind.value : "" }), "hub");
       }
       if (mode.key === "transfers") {
-        /* the picker reads these already: an exact hotel by slug, or the words to search with */
-        var p = { airport: e.air.value, people: st.adults + st.kids, date: e.din.value || "" };
+        /* Everything the picker needs to price the ride, so it lands on options rather than a form.
+           The trip type is worked out rather than asked: a date back means a round trip. */
+        var p = { airport: e.air.value, people: st.adults + st.kids, date: e.din.value || "",
+          trip: e.dout.value ? "both" : "in", time: e.time.value || "", flight: fltVal(), date2: e.dout.value || "",
+          time2: e.dout.value && e.time2 ? e.time2.value || "" : "", flight2: e.dout.value ? fltVal(e.flt2) : "" };
         if (st.pick && st.pick.kind === "hotel") p.hotel = st.pick.slug; else if (typed) p.q = typed;
+        Object.keys(p).forEach(function (k) { if (!p[k]) delete p[k]; });
         return go("/transfers/?" + new URLSearchParams(p).toString(), "picker");
       }
       /* staycation and coming to Jamaica: the Jamaica quote page.

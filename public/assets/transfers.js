@@ -448,6 +448,21 @@
     if (pq >= 1 && pq <= MAXG + 1) { e.people.value = String(pq); handed = true; }
     var dq = restored ? "" : q.get("date") || "";
     if (/^\d{4}-\d{2}-\d{2}$/.test(dq) && dq >= today) { e.date.value = dq; if (cals[0]) cals[0].refresh(); handed = true; }
+    /* the rest of what the front page search knows, so this page can price the ride straight away */
+    if (!restored) {
+      var tq = q.get("trip") || "";
+      if (TRIP[tq] && tq !== "hotel") { e.trip.value = tq; handed = true; }
+      var d2q = q.get("date2") || "";
+      if (/^\d{4}-\d{2}-\d{2}$/.test(d2q) && d2q >= dq) { e.date2.value = d2q; if (cals[1]) cals[1].refresh(); handed = true; }
+      var hq = q.get("time") || "";
+      if (/^\d{2}:\d{2}$/.test(hq) && e.time) { e.time.value = hq; handed = true; }
+      var fq = (q.get("flight") || "").trim().toUpperCase().replace(/\s+/g, "");
+      if (/^[A-Z0-9]{2}[A-Z]?\d{1,4}[A-Z]?$/.test(fq) && e.flightIn) { e.flightIn.value = fq; handed = true; }
+      var h2q = q.get("time2") || "";
+      if (/^\d{2}:\d{2}$/.test(h2q) && e.time2) { e.time2.value = h2q; handed = true; }
+      var f2q = (q.get("flight2") || "").trim().toUpperCase().replace(/\s+/g, "");
+      if (/^[A-Z0-9]{2}[A-Z]?\d{1,4}[A-Z]?$/.test(f2q) && e.flightOut) { e.flightOut.value = f2q; handed = true; }
+    }
     renderForm();
     if (pendingText) e.hotelIn.value = pendingText; /* after renderForm, which paints the box from the state; the list opens on focus, filtered to the text */
     if (restored) {
@@ -455,10 +470,20 @@
       if (!rp) { st.searched = { at: Date.now() }; st.pick = { v: tok.vehicle, seats: Number(tok.seats) }; renderResults(); setTimeout(function () { scrollTo(e.results); }, 80); }
       else setTimeout(function () { scrollTo(e.form); warn(rp.t, e.go.parentNode); if (rp.cal != null && cals[rp.cal]) cals[rp.cal].open(); else focusEl(rp.f); }, 80);
     } else if (handed) setTimeout(function () {
+      /* Handed a whole search from the front page: show the prices rather than making them press
+         the button again. If something is still missing, land on that field instead. */
+      var hp = searchProblem();
+      if (!hp) {
+        st.searched = { at: Date.now() }; st.pick = null;
+        renderResults(); scrollTo(e.results);
+        track("tr_search", { ride: rideLabel(), trip: trip(), people: people(), exact: !!(st.place && st.place.rate), from: "home" });
+        return;
+      }
       scrollTo(e.form);
       if (!st.zone) focusEl(e.hotelIn);
       else if (st.placeMode === "zone" && !st.placeName && e.name) focusEl(e.name);
-      else focusEl(e.flightIn);
+      else if (hp.cal != null && cals[hp.cal]) cals[hp.cal].open();
+      else focusEl(hp.f || e.flightIn);
     }, 80);
     if (q.get("cancelled")) warn("The payment page was closed. Nothing was charged. Search again and the prices are still here.", e.go.parentNode);
   }

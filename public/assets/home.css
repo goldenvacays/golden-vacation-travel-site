@@ -349,43 +349,6 @@
 .home .qcard { overflow: visible; }                      /* the suggestions and the who panel hang out of it */
 .qf-place { position: relative; }
 
-/* what they type, and what we suggest */
-.hq-clear { flex: none; display: grid; place-items: center; width: 28px; height: 28px; margin-left: 6px; border: 0; border-radius: 999px; background: var(--line); color: var(--ink); cursor: pointer; }
-.hq-clear:hover { background: var(--ink); color: #fff; }
-.hq-list { position: absolute; z-index: 20; top: calc(100% + 6px); left: 0; right: 0; margin: 0; padding: 6px; list-style: none; max-height: 320px; overflow: auto; background: #fff; border: 2px solid var(--ink); border-radius: 18px; box-shadow: 0 20px 50px rgba(14,15,14,.22); }
-.hq-list li { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 12px; cursor: pointer; }
-.hq-list li span { font-weight: 800; }
-.hq-list li small { flex: none; color: var(--muted); font-size: 12px; font-weight: 700; }
-.hq-list li.on, .hq-list li:hover { background: var(--alt); }
-.hq-list li.none { display: block; color: var(--muted); font-size: 13px; font-weight: 600; cursor: default; }
-.hq-list li.none:hover { background: none; }
-
-/* check in and check out, two dates in the one cell */
-.hq-dates { display: flex; gap: 16px; flex: 1; min-width: 0; }
-.hq-dates label { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
-.hq-dates span { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.hq-dates input { width: 100%; border: 0; background: transparent; padding: 0; font-size: 16px; font-weight: 700; color: var(--ink); }
-
-/* who's travelling */
-.qf-who { position: relative; }
-.hq-who { width: 100%; text-align: left; border: 0; background: transparent; padding: 0; font-family: inherit; font-size: 16px; font-weight: 700; color: var(--ink); cursor: pointer; }
-.hq-pop { position: absolute; z-index: 20; top: calc(100% + 6px); right: 0; width: min(320px, calc(100vw - 32px)); display: flex; flex-direction: column; gap: 12px; padding: 16px; background: #fff; border: 2px solid var(--ink); border-radius: 18px; box-shadow: 0 20px 50px rgba(14,15,14,.22); }
-.hq-line { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.hq-line b { font-size: 15px; }
-.hq-step { display: flex; align-items: center; gap: 4px; }
-.hq-step button { width: 34px; height: 34px; display: grid; place-items: center; border: 2px solid var(--ink); border-radius: 999px; background: #fff; font-size: 18px; font-weight: 800; line-height: 1; color: var(--ink); cursor: pointer; }
-.hq-step button:hover:not(:disabled) { background: var(--ink); color: #fff; }
-.hq-step button:disabled { opacity: .3; cursor: not-allowed; }
-.hq-step output { min-width: 28px; text-align: center; font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; }
-.hq-ages { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px; border-top: 2px solid var(--line); }
-.hq-ages[hidden] { display: none; }
-.hq-ages label { display: flex; flex-direction: column; gap: 2px; }
-.hq-ages span { font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
-.hq-ages input { width: 62px; padding: 7px 9px; border: 2px solid var(--line); border-radius: 10px; font-size: 15px; font-weight: 700; font-family: inherit; color: var(--ink); }
-.hq-ages input:focus { outline: 0; border-color: var(--ink); }
-.hq-hint { margin: 0; font-size: 12px; font-weight: 600; color: var(--muted); }
-.hq-hint.on { color: var(--gold-txt); font-weight: 800; }
-
 /* what do you need, on the Coming to Jamaica tab */
 .qneeds { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 12px var(--pad) 0; }
 .qneeds-l { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
@@ -394,14 +357,9 @@
 
 @media (min-width: 900px) {
   .home .qcard { height: auto; min-height: 92px; }
-  .hq-dates input { font-size: 18px; }
-  .hq-who { font-size: 18px; }
-  .hq-list { left: -10px; right: auto; min-width: 420px; max-width: 520px; }   /* hotel names get a line each, not two */
   .qneeds { justify-content: center; margin-top: 16px; }
 }
 @media (max-width: 899px) {
-  .hq-dates { gap: 12px; }
-  .hq-pop { right: auto; left: 0; }
   .qneeds { flex-direction: column; align-items: flex-start; }
 }
 
@@ -436,7 +394,19 @@
 
 /* The focused field gets a ring drawn inside its own cell, so it reads as active without a browser
    outline box floating in the middle of the pill, and without poking out past the rounded corners. */
-.qcard .qf input:focus, .qcard .hq-dates input:focus, .hq-who:focus, .hq-clear:focus { outline: 0; }
-.qcard .qf:focus-within { box-shadow: inset 0 0 0 2px var(--ink); border-radius: 18px; }
-.qcard .qf:focus-within label span { color: var(--ink); }
 .qneeds .chip:focus-visible, .qmodes .chip:focus-visible, .chip-row .chip:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+/* Landing time and flight number, under the pill on the Transfers tab. Visible rather than tucked
+   behind a control, because the point of asking here is to save the person a step later. */
+.qextra { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 18px; margin: 12px var(--pad) 0; }
+.qextra[hidden] { display: none; }
+.qx { display: flex; flex-direction: column; gap: 4px; }
+.qx span { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.qx input { width: 150px; padding: 9px 12px; border: 2px solid var(--line); border-radius: 12px; background: #fff; font-family: inherit; font-size: 16px; font-weight: 700; color: var(--ink); }
+.qx input:focus { outline: 0; border-color: var(--ink); }
+.qx-note { flex: 1 1 260px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.qx-note.bad { color: var(--gold-txt); font-weight: 800; }
+@media (min-width: 900px) {
+  .qextra { justify-content: center; margin-top: 16px; }
+  .qx-note { flex: 0 1 auto; max-width: 420px; }
+}
