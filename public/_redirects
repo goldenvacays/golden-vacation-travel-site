@@ -1,9 +1,3 @@
 # Pretty URL for the interactive resort map (files live in /map, base href handles asset paths)
 /hotel-status-map     /map/index.html   200
 /hotel-status-map/    /map/index.html   200
-
-# Serve these two straight off the slashless path instead of 301ing to the slashed one. Every link on the
-# site points at the slashless form (and /hotel-status/ says so in its own canonical tag), so without this
-# rule every click on Groups or Resort status pays a redirect before the page starts loading.
-/group-inquiry        /group-inquiry/index.html   200
-/hotel-status         /hotel-status/index.html    200
