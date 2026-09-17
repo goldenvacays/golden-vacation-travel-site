@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
-  Golden Experiences: the Jamaica tours, day passes, boat trips and airport lounges section of goldenvacays.com.
+  Golden Experiences: the Jamaica tours, day passes and airport lounges section of goldenvacays.com.
   Reads data/experiences.json and writes:
     public/experiences/index.html                 the hub
     public/experiences/<venue>.html               one page per venue, served at /experiences/<venue> (Netlify serves .html files at the bare path)
@@ -360,7 +360,7 @@ function hubPage() {
     { "@context": "https://schema.org", "@type": "ItemList", name: "Golden Experiences in Jamaica", itemListElement: gridOrder().map((v, i) => ({ "@type": "ListItem", position: i + 1, name: v.name, url: `${S.origin}${BASE}/${v.slug}` })) },
     { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: hb.questions.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) },
   ];
-  return `${head({ title: "Golden Experiences | Jamaica tours, day passes, boat trips and airport lounges", description: "Day passes at Ocean and the Rose Hall resorts, JamWest and Mystic Mountain tours, the JamWest catamaran, Poko Loko floating bar and Club MoBay and Club Kingston lounges. Published prices in US$ and J$, resident rates where they exist, booked by people in Jamaica.", pathname: `${BASE}/`, image: heroImg, jsonld, bodyClass: "exp exp-hub" })}
+  return `${head({ title: "Golden Experiences | Jamaica tours, day passes and airport lounges", description: "Day passes at Ocean and the Rose Hall resorts, JamWest and Mystic Mountain tours, the JamWest catamaran, Poko Loko floating bar and Club MoBay and Club Kingston lounges. Published prices in US$ and J$, resident rates where they exist, booked by people in Jamaica.", pathname: `${BASE}/`, image: heroImg, jsonld, bodyClass: "exp exp-hub" })}
 ${nav()}
 <main>
 <section class="hub-hero poster" aria-label="Golden Experiences">
@@ -661,7 +661,7 @@ function nearPage(h) {
     { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Golden Vacation & Travel", item: S.origin }, { "@type": "ListItem", position: 2, name: "Golden Experiences", item: `${S.origin}${BASE}/` }, { "@type": "ListItem", position: 3, name: `Near ${h.name}`, item: `${S.origin}${BASE}/near/${h.slug}` }] },
     { "@context": "https://schema.org", "@type": "ItemList", name: `Things to do ${h.port ? "from" : "near"} ${h.name}`, itemListElement: (h.port ? fits.concat(longDay) : rows).map(({ v }, i) => ({ "@type": "ListItem", position: i + 1, name: v.name, url: `${S.origin}${BASE}/${v.slug}` })) },
   ];
-  const title = h.port ? `Things to do from ${h.name} | tours, day passes and boat trips for your ship day, with drive times` : `Things to do near ${h.name} | day passes, tours and boat trips with drive times`;
+  const title = h.port ? `Things to do from ${h.name} | tours and day passes for your ship day, with drive times` : `Things to do near ${h.name} | day passes and tours with drive times`;
   const desc = h.port ? `${fits.length} days out that fit a ship day from ${h.name}: ${fits.slice(0, 3).map((r) => r.v.short).join(", ")} and more, timed to your all-aboard. Published prices in US$, port pickup where it runs, booked by Golden Vacation & Travel in Jamaica.` : `${under(60)} days out under an hour from ${h.name}, ${region.label}: ${rows.slice(0, 3).map((r) => r.v.short).join(", ")} and more. Published prices in US$ and J$, hotel pickup where it runs, booked by Golden Vacation & Travel in Jamaica.`;
   return `${head({ title, description: desc, pathname: `${BASE}/near/${h.slug}`, image: hero.file, jsonld, bodyClass: "exp exp-near" })}
 ${nav()}
