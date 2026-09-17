@@ -35,6 +35,11 @@ const G = JSON.parse(fs.readFileSync(path.join(ROOT, "data/getaways.json"), "utf
 const X = fs.existsSync(path.join(ROOT, "data/experiences.json")) ? JSON.parse(fs.readFileSync(path.join(ROOT, "data/experiences.json"), "utf8")) : { site: {}, venues: [] };
 const S = { ...G.site, email: X.site.email || H.footer.email, hours: X.site.hours || "Replies come within working hours." };
 const BASE = "/transfers";
+/* The hub is a folder on disk, so its real URL carries the trailing slash: the slashless form
+   answers with a redirect, and the canonical, the breadcrumb and the sitemap must never name a
+   URL that redirects. Checkout, pay and booked are plain files, so those stay slashless.
+   BASE keeps no slash because it is also the prefix for links like `${BASE}/checkout`. */
+const HUB = `${BASE}/`;
 const ASSETS = "/assets";
 const IMG = `${ASSETS}/img`;
 const IMG_DIR = path.join(ROOT, "public/assets/img");
@@ -279,7 +284,7 @@ function transfersPage() {
   const faqs = P.questions.items.map(([q, a]) => `<div class="faq-i"><b>${esc(q)}</b><p>${esc(noDash(a))}</p></div>`).join("");
   const also = P.also.items.map((it) => { const price = it.venue ? loungePrice(it.venue) : ""; return `<a class="pair" href="${it.wa ? wa(it.wa) : it.href}">${it.img ? `<span class="pair-img">${pic(it.img, it.alt)}</span>` : ""}<span class="pair-t"><b>${esc(it.title)}</b><small>${esc(noDash(it.sub))}</small></span>${price ? `<span class="pair-p">${esc(price)}</span>` : ""}${icon(it.wa ? "chat" : "arrow", 18, 2.4)}</a>`; }).join("");
   const jsonld = [
-    { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Golden Vacation & Travel", item: S.origin }, { "@type": "ListItem", position: 2, name: "Airport transfers", item: `${S.origin}${BASE}` }] },
+    { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Golden Vacation & Travel", item: S.origin }, { "@type": "ListItem", position: 2, name: "Airport transfers", item: `${S.origin}${HUB}` }] },
     { "@context": "https://schema.org", "@type": "Service", name: "Jamaica airport transfers", serviceType: "Airport transfer", provider: { "@type": "TravelAgency", name: "Golden Vacation & Travel" }, areaServed: "Jamaica", description: P.sub, ...(from != null ? { offers: { "@type": "Offer", price: from, priceCurrency: "USD", description: "Private car, one way, from Montego Bay airport" } } : {}) },
     { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: P.questions.items.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: noDash(a) } })) },
   ];
@@ -291,7 +296,7 @@ function transfersPage() {
   };
   const title = `Jamaica airport transfers | Montego Bay, Kingston and Ocho Rios airport to your hotel${from != null ? `, from ${usd(from)}` : ""}`;
   const description = `Private airport transfers in Jamaica: search your hotel, pick the airport and the date, choose the vehicle, pay by card. Resorts across the island, one price per vehicle with taxes included${from != null ? `, from ${usd(from)}` : ""}. Booked by Golden Vacation & Travel, St Ann, Jamaica.`;
-  return `${head({ title, description, pathname: BASE, image: P.heroPhoto.file, jsonld, bodyClass: "exp tr tr-page" })}
+  return `${head({ title, description, pathname: HUB, image: P.heroPhoto.file, jsonld, bodyClass: "exp tr tr-page" })}
 ${nav()}
 <main class="tr-main" id="top">
 <section class="hub-hero poster tr-hero" aria-label="Airport transfers">
@@ -557,7 +562,7 @@ export const TR = ${JSON.stringify({ airports: T.airports, trips: T.trips, vehic
   console.log("wrote netlify/functions/_tr-data.mjs", `${(dataModule.length / 1024).toFixed(0)}K`);
   const smPath = path.join(ROOT, "public/sitemap.xml");
   if (fs.existsSync(smPath)) {
-    const entries = `<url>\n  <loc>${S.origin}${BASE}</loc>\n  <lastmod>${TODAY}T00:00:00+00:00</lastmod>\n  <priority>0.8</priority>\n</url>`;
+    const entries = `<url>\n  <loc>${S.origin}${HUB}</loc>\n  <lastmod>${TODAY}T00:00:00+00:00</lastmod>\n  <priority>0.8</priority>\n</url>`;
     let sm = fs.readFileSync(smPath, "utf8").replace(/\n*<!-- transfers -->[\s\S]*?<!-- \/transfers -->\n*/, "\n");
     sm = sm.replace(/\s*<\/urlset>\s*$/, `\n\n<!-- transfers -->\n${entries}\n<!-- /transfers -->\n\n</urlset>\n`);
     fs.writeFileSync(smPath, sm);
