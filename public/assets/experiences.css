@@ -18,6 +18,14 @@
 .hub-hero.poster h1 { font-size: 44px; color: #fff; }
 .hub-hero.poster p { font-size: 15px; line-height: 1.5; color: rgba(255,255,255,.72); max-width: 560px; }
 .hub-hero p .long { display: none; }
+/* the island sits in the band's empty right half on a laptop; a phone has no room for it and its hero is
+   already tight, so it is left out there rather than shrunk into a smudge */
+.hub-map { display: none; }
+.hub-map-land { fill: rgba(255,255,255,.035); stroke: rgba(242,185,59,.5); stroke-width: 2.4; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.hub-map-dot .halo { fill: rgba(242,185,59,.16); }
+.hub-map-dot .pip { fill: var(--gold); }
+.hub-map-dot.on .halo { fill: rgba(242,185,59,.3); }
+.hub-map-dot.on .pip { fill: #fff; stroke: var(--gold); stroke-width: 4; }
 .tickets { display: grid; grid-template-columns: 1fr; gap: 12px; }
 .ticket { position: relative; display: block; width: 100%; height: 200px; padding: 0; border: 0; border-radius: 18px; overflow: hidden; text-align: left; font: inherit; color: #fff; cursor: pointer; background: #1A1B19; box-shadow: 0 12px 32px rgba(0,0,0,.35); }
 .ticket-img { position: absolute; inset: 0; }
@@ -322,11 +330,16 @@
 
 /* ---------- desktop ---------- */
 @media (min-width: 900px) {
-  .hub-hero.poster { padding: 60px var(--pad) 32px; }
-  .hub-hero-in { gap: 44px; }
-  .hub-hero-t { gap: 20px; max-width: 900px; width: 100%; margin: 0 auto; }
-  .hub-hero.poster h1 { font-size: 72px; }
-  .hub-hero.poster p { font-size: 18px; max-width: 560px; }
+  .hub-hero.poster { padding: 34px var(--pad) 28px; }
+  /* two columns, not an absolutely placed map: the words and the island each own their half, so the coastline
+     can never run under the headline whatever the viewport does */
+  .hub-hero-in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 40%); grid-template-areas: "text map" "tickets tickets"; align-items: center; gap: 24px 28px; }
+  .hub-hero-t { grid-area: text; gap: 14px; max-width: 620px; width: 100%; margin: 0; }
+  .hub-hero.poster h1 { font-size: 46px; }
+  .hub-hero.poster p { font-size: 16px; max-width: 520px; }
+  .hub-map { grid-area: map; display: block; align-self: center; pointer-events: none; }
+  .hub-map-svg { display: block; width: 100%; height: auto; }
+  .tickets { grid-area: tickets; }
   .hub-hero p .long { display: inline; }
   .hub-hero p .short { display: none; }
   .tickets { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
@@ -393,7 +406,7 @@
   .exp .foot-grid .foot-col { display: none; }
 }
 @media (min-width: 1200px) {
-  .hub-hero.poster h1 { font-size: 84px; }
+  .hub-hero.poster h1 { font-size: 54px; }
   .ticket { height: 320px; }
   .vgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
