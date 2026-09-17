@@ -22,8 +22,8 @@
   "hub": {
     "kicker": "Golden Experiences · Jamaica",
     "title": "See the island, not just the resort.",
-    "sub": "Day passes, adventure parks, boat trips and airport lounges. Published prices, both currencies, booked by people in Jamaica who have been to every one of these.",
-    "subMobile": "Day passes, adventure parks, boat trips and airport lounges, at published prices.",
+    "sub": "Day passes, adventure parks, tours and airport lounges. Published prices, both currencies, booked by people in Jamaica who have been to every one of these.",
+    "subMobile": "Day passes, adventure parks, tours and airport lounges, at published prices.",
     "trust": [
       "IATA-accredited · 85500310",
       "Real people, in Jamaica",
@@ -148,7 +148,7 @@
       ],
       [
         "Which ones are confirmed on the spot?",
-        "Tours, boat trips and airport lounges: pay by card on the page and you're confirmed straight away, with your details sent by our team shortly after. Resort day passes are limited by how full the hotel is that day, so a person confirms those first and sends a secure card link."
+        "Tours and airport lounges: pay by card on the page and you're confirmed straight away, with your details sent by our team shortly after. Resort day passes are limited by how full the hotel is that day, so a person confirms those first and sends a secure card link."
       ],
       [
         "What does the resident rate need?",
@@ -164,7 +164,7 @@
       ],
       [
         "Can I cancel?",
-        "Each tour has its own terms and we pass them on before you pay. As a rule, weather cancellations on boat trips are rebooked or refunded, and resort passes cancelled inside 48 hours are not refundable."
+        "Each tour has its own terms and we pass them on before you pay. As a rule, weather cancellations on the catamaran are rebooked or refunded, and resort passes cancelled inside 48 hours are not refundable."
       ]
     ]
   },
