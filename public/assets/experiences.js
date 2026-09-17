@@ -161,9 +161,17 @@
     if (hClear) hClear.addEventListener("click", function () { maxMin = 0; $$("#dist-chips .chip", root).forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-max") === "0" ? "true" : "false"); }); setHotel(null, true); });
     $$("#port-chips .chip", root).forEach(function (b) { b.addEventListener("click", function () { var slug = b.getAttribute("data-port"), p = HOTELS.filter(function (hh) { return hh.slug === slug; })[0]; if (!p) return; setHotel(hotel && hotel.slug === slug ? null : p, true); }); });
     $$("#dist-chips .chip", root).forEach(function (b) { b.addEventListener("click", function () { maxMin = +b.getAttribute("data-max"); $$("#dist-chips .chip", root).forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); }); applyHotel(); track("exp_distance", { max: maxMin }); }); });
-    var qs = new URLSearchParams(location.search).get("hotel");
+    /* What the front page search hands over: the kind of day, the area, and the hotel if they named one.
+       Anything the page does not know about is ignored, rather than showing an empty grid. */
+    var qp = new URLSearchParams(location.search);
+    var qCat = qp.get("cat"), qArea = qp.get("area");
+    if (qCat && $('.cat-chips .chip[data-cat="' + qCat + '"]', root)) state.cat = qCat;
+    var areaSel = $("#area-pick", root);
+    if (qArea && areaSel && $('option[value="' + qArea + '"]', areaSel)) state.area = qArea;
+    var qs = qp.get("hotel");
     var pre = qs ? HOTELS.filter(function (hh) { return hh.slug === qs; })[0] : savedHotel(X);
     if (pre) setHotel(pre, !!qs); else apply();
+    if (qCat || qArea) track("exp_filter", { cat: state.cat, area: state.area, from: "search" });
   }
 
   /* ================= venue: the photo viewer ================= */
