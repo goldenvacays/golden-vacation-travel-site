@@ -142,14 +142,14 @@
 .ck-card { display: flex; flex-direction: column; gap: 16px; padding: 18px; border-radius: 22px; background: #fff; border: 2px solid var(--ink); box-shadow: 0 18px 50px rgba(14,15,14,.12); }
 .ck-tot-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .ck-secure { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border-radius: 999px; background: var(--gold); color: var(--ink); font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; flex: none; margin-left: auto; }
-.ck-grid[data-state="pay"] .ck-pay { border-top: 8px solid var(--gold); box-shadow: 0 18px 50px rgba(14,15,14,.12), 0 0 0 6px rgba(242,185,59,.18); }
+.tr-pay .ck-pay { border-top: 8px solid var(--gold); box-shadow: 0 18px 50px rgba(14,15,14,.12), 0 0 0 6px rgba(242,185,59,.18); }
 .ck-steps li.done .n svg { animation: ck-pop .4s cubic-bezier(.2,.9,.3,1.4) both; }
 @keyframes ck-pop { from { transform: scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
 .ck-guest .btn svg { transition: transform .2s ease; }
 .ck-guest .btn:hover svg { transform: translateX(4px); }
-.ck-grid[data-state="pay"] .ck-rows, .ck-grid[data-state="pay"] .ck-pay-head, .ck-grid[data-state="details"] .ck-guest { animation: ck-in .35s ease-out both; }
+.tr-pay .ck-rows, .tr-pay .ck-pay-head, .tr-ck .ck-guest { animation: ck-in .35s ease-out both; }
 @keyframes ck-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce) { .ck-grid[data-state="pay"] .ck-rows, .ck-grid[data-state="pay"] .ck-pay-head, .ck-grid[data-state="details"] .ck-guest { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .tr-pay .ck-rows, .tr-pay .ck-pay-head, .tr-ck .ck-guest { animation: none; } }
 .ck-card-h { display: flex; flex-direction: column; gap: 6px; }
 .ck-card h2 { font-size: 26px; }
 .ck-card h2:focus { outline: none; }
@@ -178,13 +178,17 @@ body.jmd .ck-tot-v b .jmd-v, body.jmd .ck-tot-v > span .jmd-v { display: inline;
 .ck-inc span svg { color: var(--gold-txt); margin-top: 1px; }
 .ck-div { height: 2px; background: var(--line); }
 .ck-stripe { display: flex; flex-direction: column; gap: 10px; min-height: 120px; }
-.ck-grid[data-state="details"] .ck-stripe { min-height: 0; }
 .ck-stripe:empty { display: none; }
 .ck-stripe .btn { align-self: flex-start; }
 .ck-ph { display: flex; align-items: center; justify-content: center; text-align: center; min-height: 120px; margin: 0; padding: 18px; border-radius: 14px; border: 2px dashed var(--line); font-size: 13px; line-height: 1.5; color: var(--muted); }
 .ck-ph:empty { display: none; }
 .ck-pay .pf-fine { font-size: 12px; }
 .ck-pay .pf-alt { color: var(--ink); }
+/* page one's slim total card: the number stays beside the form the whole way down */
+.ck-sum { gap: 18px; }
+/* the pay page: the ride and guest folded, the card form, and what's included, in that order on a phone */
+.ck-grid.pay .ck-pay { order: 2; }
+.ck-grid.pay .ck-incs { order: 3; gap: 12px; }
 .ck-empty { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; padding: 24px; border-radius: 22px; background: var(--alt); }
 .ck-empty h2 { font-size: 30px; }
 .ck-empty p { margin: 0; color: var(--muted); }
@@ -258,8 +262,11 @@ body.jmd .ck-tot-v b .jmd-v, body.jmd .ck-tot-v > span .jmd-v { display: inline;
   .ck-route { padding: 14px 18px; }
   .ck-card { gap: 18px; padding: 26px; }
   #ck-form { gap: 16px; }
-  .ck-pay { position: sticky; top: 20px; }
-  .ck-grid[data-state="pay"] .ck-pay { position: static; }
+  .ck-sum { position: sticky; top: 20px; }
+  .ck-grid.pay { grid-template-areas: "rows pay" "inc pay"; align-content: start; row-gap: 20px; }
+  .ck-grid.pay .ck-rows { grid-area: rows; }
+  .ck-grid.pay .ck-pay { grid-area: pay; }
+  .ck-grid.pay .ck-incs { grid-area: inc; }
   .ck-row { gap: 14px; padding: 14px 18px; }
   .ck-tot-v b { font-size: 34px; }
   .ck-empty { padding: 40px; }

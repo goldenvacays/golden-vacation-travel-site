@@ -447,12 +447,13 @@
     if (q.get("cancelled")) warn("The payment page was closed. Nothing was charged. Search again and the prices are still here.", e.go.parentNode);
   }
 
-  /* ================= the checkout page: who's travelling, then the card form =================
-     The ride arrives in the URL (?b=token). Two states: "details" (the ride card and the guest form open, the payment card waiting
-     on the right) and "pay" (ride and guest folded to one line each with Change / Edit, Stripe's form mounted in the payment card).
+  /* ================= checkout, over two pages =================
+     /transfers/checkout is the ride and who's travelling; /transfers/pay is the card form. Both read the same ride from the URL
+     (?b=token) and draw the same route map, so this one function runs both and branches only where they differ. The guest's
+     details travel between them in sessionStorage, never in the URL. Stripe's script is on the pay page alone.
      tr-checkout builds the Checkout Session from the raw fields (never the words or the price in the token) and returns the client
      secret plus the publishable key; if Stripe's script is blocked the same call returns a hosted card page to redirect to. */
-  function initCheckout(root) {
+  function initCheckout(root, isPay) {
     var X = window.GV_TR || {}, C = (X.copy && X.copy.checkout) || {}, INC = X.includes || {}, today = X.today || todayISO();
     var q = new URLSearchParams(location.search);
     var tok = decodeToken(q.get("b") || "") || (PREVIEW ? (window.GV_TR_PREVIEW_TOKEN ? decodeToken(window.GV_TR_PREVIEW_TOKEN) : X.previewBooking) : null);
@@ -464,13 +465,35 @@
       map: $("#ck-map", root), mapRoute: $("#ck-map-route", root), mapA: $("#ck-map-a", root), mapB: $("#ck-map-b", root), mapAl: $("#ck-map-al", root), mapBl: $("#ck-map-bl", root),
       zoom: $("#ck-map-zoom", root), zoomIn: $("#ck-map-zoom-in", root), zRoute: $("#ck-map-zroute", root), zA: $("#ck-map-za", root), zB: $("#ck-map-zb", root), zAl: $("#ck-map-zal", root), zBl: $("#ck-map-zbl", root), lens: $("#ck-map-lens", root), lensBg: $("#ck-map-lens-bg", root), clipC: $("#ck-map-clipc", root), tie: $("#ck-map-tie", root), spot: $("#ck-map-spot", root), mapSvg: $(".ck-map-svg", root),
       routeA: $("#ck-route-a", root), routeAs: $("#ck-route-as", root), routeB: $("#ck-route-b", root), routeBs: $("#ck-route-bs", root), routeMid: $("#ck-route-mid", root), routeIa: $("#ck-route-ia", root), routeIb: $("#ck-route-ib", root), route: $("#ck-route", root),
-      guest: $("#ck-guest", root), form: $("#ck-form", root), first: $("#ck-first", root), last: $("#ck-last", root), email: $("#ck-email", root), phone: $("#ck-phone", root), note: $("#ck-note", root), hint: $("#ck-hint", root), go: $("#ck-go", root),
+      guest: $("#ck-guest", root), form: $("#ck-form", root), name: $("#ck-name", root), email: $("#ck-email", root), phone: $("#ck-phone", root), note: $("#ck-note", root), hint: $("#ck-hint", root), go: $("#ck-go", root),
       rows: $("#ck-rows", root), rowRideT: $("#ck-row-ride-t", root), rowRideD: $("#ck-row-ride-d", root), rowRideChange: $("#ck-row-ride-change", root), rowGuestT: $("#ck-row-guest-t", root), rowGuestD: $("#ck-row-guest-d", root), rowEdit: $("#ck-row-edit", root), rowsNote: $("#ck-rows-note", root),
       pay: $("#ck-pay", root), payHead: $("#ck-pay-head", root), payTitle: $("#ck-pay-title", root), total: $("#ck-total", root), totalJ: $("#ck-total-j", root), jmd: $("#ck-jmd", root), usdSmall: $("#ck-usd", root), totSub: $("#ck-tot-sub", root), inc: $("#ck-inc", root), stripe: $("#ck-stripe", root), ph: $("#ck-ph", root), wa: $("#ck-wa", root),
     };
     if (!g.grid) return;
+    /* the three steps: the ones behind the guest get a tick, the current one is lit, the rest wait */
+    function markSteps(now) {
+      if (!g.steps) return;
+      g.steps.setAttribute("data-step", String(now));
+      $$("li", g.steps).forEach(function (li) {
+        var i = Number(li.getAttribute("data-i")), sm = $("small", li), n = $(".n", li);
+        li.className = i < now ? "done" : i === now ? "now" : "";
+        if (sm) sm.textContent = i < now ? (C.stepDone || "Done") : sm.getAttribute("data-sub");
+        if (n) n.innerHTML = i < now ? icon("check", 24) : "0" + i;
+      });
+    }
+    function bail(title, text, cta, href) {
+      g.grid.hidden = true;
+      if (g.empty) {
+        g.empty.hidden = false;
+        var h = $("h2", g.empty), p = $("p", g.empty), a = $("a", g.empty);
+        if (h) h.textContent = title; if (p) p.textContent = text;
+        if (a) { a.textContent = cta; a.href = href; }
+      }
+      if (g.steps) g.steps.hidden = true;
+      if (g.map) g.map.hidden = true;
+    }
     var ok = tok && tok.v === 1 && tok.zone && tok.vehicle && tok.seats && tok.trip && tok.date;
-    if (!ok) { g.grid.hidden = true; if (g.empty) g.empty.hidden = false; if (g.steps) g.steps.hidden = true; if (g.map) g.map.hidden = true; if (g.sub) g.sub.textContent = C.emptyText || ""; return; }
+    if (!ok) { bail(C.emptyTitle || "", C.emptyText || "", C.emptyCta || "", BASE + "/"); return; }
     var t = String(tok.trip), isHotel = t === "hotel", needIn = t === "in" || t === "both", needOut = t === "out" || t === "both";
     var price = Number(tok.price) || 0, seats = Number(tok.seats) || 0, ref = /^GV-TR-[A-Z0-9]{4}$/.test(tok.ref || "") ? tok.ref : newRef();
     var placeLine = isHotel ? String(tok.place || "") + " to " + String(tok.place2 || "") : String(tok.place || "");
@@ -478,22 +501,29 @@
     var stripeObj = null, mounted = null, opening = false;
 
     /* ---- the ride, everywhere it shows ---- */
-    g.back.href = back; g.rideChange.href = back; g.rowRideChange.href = back;
+    var detailsUrl = BASE + "/checkout?b=" + encodeToken(tok);
+    if (g.back) g.back.href = isPay ? detailsUrl : back;
+    if (g.rideChange) g.rideChange.href = back;
+    if (g.rowRideChange) g.rowRideChange.href = back;
+    if (g.rowEdit) g.rowEdit.href = detailsUrl;
     /* the vehicle for the party that was searched for, never the seat count: nobody reads "up to 5" as room for one more */
     var rideTitle = String(tok.veh || tok.vehicle) + " " + (C.rideFor || "for") + " " + String(tok.guests || "");
-    g.rideTitle.textContent = rideTitle;
-    /* the route ribbon: where the ride starts, where it ends, the drive time on the line between */
     var airportName = (AIRN[tok.airport] || String(tok.airport || "")) + " airport", zoneName = ZN[tok.zone] || "", zone2Name = ZN[tok.zone2] || "";
-    var ends = isHotel ? [[String(tok.place || ""), zoneName, "pin"], [String(tok.place2 || ""), zone2Name, "pin"]]
-      : t === "out" ? [[String(tok.place || ""), zoneName, "pin"], [airportName, String(tok.airport || ""), "plane"]]
-      : [[airportName, String(tok.airport || ""), "plane"], [String(tok.place || ""), zoneName, "pin"]];
-    g.routeA.textContent = ends[0][0]; g.routeAs.textContent = ends[0][1]; g.routeB.textContent = ends[1][0]; g.routeBs.textContent = ends[1][1];
-    g.routeIa.innerHTML = icon(ends[0][2], 18); g.routeIb.innerHTML = icon(ends[1][2], 18);
-    g.routeMid.textContent = [tok.drive ? String(tok.drive) : "", t === "both" ? (C.roundTrip || "and back") : ""].filter(Boolean).join(" · ");
-    g.route.classList.toggle("both", t === "both");
-    g.rideWhen.textContent = String(tok.when || "");
-    g.rowRideT.textContent = rideTitle + " · " + String(tok.ride || "");
-    g.rowRideD.textContent = [placeLine, String(tok.when || "").replace(/^Arrives/, "arrives").replace(/\. Departs/, " · departs")].filter(Boolean).join(" · ");
+    if (g.ride) { /* page one: the full ride card with the route ribbon, the drive time on the line between */
+      g.rideTitle.textContent = rideTitle;
+      var ends = isHotel ? [[String(tok.place || ""), zoneName, "pin"], [String(tok.place2 || ""), zone2Name, "pin"]]
+        : t === "out" ? [[String(tok.place || ""), zoneName, "pin"], [airportName, String(tok.airport || ""), "plane"]]
+        : [[airportName, String(tok.airport || ""), "plane"], [String(tok.place || ""), zoneName, "pin"]];
+      g.routeA.textContent = ends[0][0]; g.routeAs.textContent = ends[0][1]; g.routeB.textContent = ends[1][0]; g.routeBs.textContent = ends[1][1];
+      g.routeIa.innerHTML = icon(ends[0][2], 18); g.routeIb.innerHTML = icon(ends[1][2], 18);
+      g.routeMid.textContent = [tok.drive ? String(tok.drive) : "", t === "both" ? (C.roundTrip || "and back") : ""].filter(Boolean).join(" · ");
+      g.route.classList.toggle("both", t === "both");
+      g.rideWhen.textContent = String(tok.when || "");
+    }
+    if (g.rowRideT) { /* the pay page: the same ride folded to one line */
+      g.rowRideT.textContent = rideTitle + " · " + String(tok.ride || "");
+      g.rowRideD.textContent = [placeLine, String(tok.when || "").replace(/^Arrives/, "arrives").replace(/\. Departs/, " · departs")].filter(Boolean).join(" · ");
+    }
     /* the route on the island in the band: airport to area (or the hotel's own spot), a dashed line that moves */
     if (g.map && X.map) {
       var M = X.map, pt = function (slug, zone) { return (slug && M.hotels[slug]) || M.zones[zone] || null; };
@@ -602,8 +632,8 @@
     var jm = "J$" + fmt(Math.round((price * RATE) / 100) * 100);
     g.total.textContent = usd(price); g.totalJ.textContent = "≈ " + jm; g.jmd.textContent = "about " + jm; g.usdSmall.textContent = usd(price) + " on the card";
     g.totSub.textContent = (t === "both" ? "Round trip" : "One way") + ", per vehicle, taxes included";
-    g.hint.textContent = needIn ? C.nameHintArrival : C.nameHintPickup;
-    g.rowsNote.textContent = needIn ? C.foldedNoteArrival : C.foldedNotePickup;
+    if (g.hint) g.hint.textContent = needIn ? C.nameHintArrival : C.nameHintPickup;
+    if (g.rowsNote) g.rowsNote.textContent = needIn ? C.foldedNoteArrival : C.foldedNotePickup;
     g.inc.innerHTML = "";
     var groups = t === "both" ? [["Arrival", INC.in || []], ["Departure", INC.out || []], ["", INC.all || []]] : [["", (INC[t] || []).concat(INC.all || [])]];
     groups.forEach(function (grp) {
@@ -611,15 +641,35 @@
       grp[1].forEach(function (line) { var sp = el("span"); sp.innerHTML = icon("check", 18); sp.appendChild(document.createTextNode(line)); box.appendChild(sp); });
       g.inc.appendChild(box);
     });
-    if (tok.date < today) alertBox(root, "That date has passed. Search again with a new date.", g.go, null);
+    if (tok.date < today) alertBox(root, "That date has passed. Search again with a new date.", g.go || g.pay, null);
 
-    /* ---- the guest: kept for the session so Change and back don't lose the typing ---- */
-    var fields = [g.first, g.last, g.email, g.phone, g.note];
-    try { var saved = JSON.parse(session("gv_tr_guest") || "null"); if (saved) fields.forEach(function (f) { if (saved[f.id] != null && !f.value) f.value = saved[f.id]; }); } catch (err) {}
-    fields.forEach(function (f) { f.addEventListener("input", function () { clearAlertIn(g.guest); var o = {}; fields.forEach(function (x) { o[x.id] = x.value; }); session("gv_tr_guest", JSON.stringify(o)); }); });
-    function val(f) { return (f.value || "").trim(); }
+    /* ---- the guest ----
+       One name field, not two: the last word is the surname, everything before it the first name, which is what a
+       middle name or a double-barrelled first name needs. Kept for the session so Edit and the back button don't
+       lose the typing, and it is how the details reach the pay page. */
+    var fields = [g.name, g.email, g.phone, g.note].filter(Boolean);
+    function readSaved() { try { return JSON.parse(session("gv_tr_guest") || "null") || null; } catch (err) { return null; } }
+    function splitName(s) {
+      var parts = String(s || "").trim().split(/\s+/).filter(Boolean);
+      if (!parts.length) return { first: "", last: "" };
+      if (parts.length === 1) return { first: parts[0], last: "" };
+      return { first: parts.slice(0, -1).join(" "), last: parts[parts.length - 1] };
+    }
+    function val(f) { return f ? (f.value || "").trim() : ""; }
+    /* what the booking is made under, from the form on page one and from the session on the pay page */
+    var held = readSaved() || {};
+    function guest() {
+      if (fields.length) return { name: val(g.name), email: val(g.email), phone: val(g.phone), note: val(g.note) };
+      return { name: String(held["ck-name"] || "").trim(), email: String(held["ck-email"] || "").trim(), phone: String(held["ck-phone"] || "").trim(), note: String(held["ck-note"] || "").trim() };
+    }
+    if (fields.length) {
+      fields.forEach(function (f) { if (held[f.id] != null && !f.value) f.value = held[f.id]; });
+      fields.forEach(function (f) { f.addEventListener("input", function () { clearAlertIn(g.guest); var o = {}; fields.forEach(function (x) { o[x.id] = x.value; }); session("gv_tr_guest", JSON.stringify(o)); }); });
+    }
     function contactProblem() {
-      if (!val(g.first) || !val(g.last)) return { f: val(g.first) ? g.last : g.first, t: "We need a first and last name for the booking." };
+      var who = splitName(val(g.name));
+      if (!who.first) return { f: g.name, t: "We need the name the booking is in." };
+      if (!who.last) return { f: g.name, t: C.oneName || "We need a first and last name." };
       if (!EMAIL.test(val(g.email))) return { f: g.email, t: "That email doesn't look right." };
       if (!val(g.phone)) return { f: g.phone, t: "We need a phone or WhatsApp number, for the driver." };
       return null;
@@ -631,8 +681,9 @@
       lines.push("When: " + String(tok.when || ""));
       lines.push("People: " + String(tok.guests || "") + ", " + String(tok.veh || tok.vehicle).toLowerCase() + " (up to " + seats + ")");
       lines.push("Price on the site: " + usd(price) + (t === "both" ? " round trip" : " one way"));
-      if (val(g.note)) lines.push("Note: " + val(g.note));
-      var who = [val(g.first), val(g.last)].filter(Boolean).join(" "); if (who) lines.push("Name: " + who);
+      var gu = guest();
+      if (gu.note) lines.push("Note: " + gu.note);
+      if (gu.name) lines.push("Name: " + gu.name);
       lines.push("Ref " + ref);
       return lines.join("\n");
     }
@@ -644,29 +695,17 @@
       } catch (err) {}
     }
     function sendWhatsApp() { var text = message(); track("tr_request", { ride: String(tok.ride || ""), code: ref }); logEnquiry(text); window.open(waUrl(text), "_blank", "noopener"); }
-    g.wa.addEventListener("click", function (ev) { ev.preventDefault(); sendWhatsApp(); });
+    if (g.wa) g.wa.addEventListener("click", function (ev) { ev.preventDefault(); sendWhatsApp(); });
 
-    /* ---- the two states ---- */
-    function setState(s) {
-      g.grid.setAttribute("data-state", s);
-      var pay = s === "pay";
-      if (g.steps) { g.steps.setAttribute("data-step", pay ? "3" : "2"); $$("li", g.steps).forEach(function (li) { var i = Number(li.getAttribute("data-i")), now = pay ? 3 : 2, sm = $("small", li), n = $(".n", li); li.className = i < now ? "done" : i === now ? "now" : ""; if (sm) sm.textContent = i < now ? (C.stepDone || "Done") : sm.getAttribute("data-sub"); if (n) n.innerHTML = i < now ? icon("check", 24) : "0" + i; }); }
-      g.ride.hidden = pay; g.guest.hidden = pay; g.rows.hidden = !pay; g.payHead.hidden = !pay;
-      if (g.sub) g.sub.textContent = pay ? C.pageSubFolded : C.pageSub;
-      if (pay) {
-        g.rowGuestT.textContent = [val(g.first), val(g.last)].filter(Boolean).join(" ");
-        g.rowGuestD.textContent = [val(g.email), val(g.phone), val(g.note) ? "note: " + val(g.note) : "no note for the driver"].join(" · ");
-      }
-    }
-    function inView(n) { var r = n.getBoundingClientRect(); return r.top >= 0 && r.top < window.innerHeight * 0.5; }
-    function placeholder(text) { g.stripe.innerHTML = ""; g.ph = null; if (text) { g.ph = el("p", "ck-ph", text); g.ph.id = "ck-ph"; g.stripe.appendChild(g.ph); } }
+    function placeholder(text) { if (!g.stripe) return; g.stripe.innerHTML = ""; g.ph = null; if (text) { g.ph = el("p", "ck-ph", text); g.ph.id = "ck-ph"; g.stripe.appendChild(g.ph); } }
     function unmountStripe() { if (mounted) { try { mounted.destroy(); } catch (err) {} mounted = null; } }
     function body(ui) {
+      var gu = guest(), who = splitName(gu.name);
       return { ui: ui, hotel: String(tok.hotel || ""), zone: String(tok.zone), place: String(tok.place || ""), placeKind: tok.placeKind === "zone" ? "zone" : "hotel", airport: String(tok.airport || ""), trip: t, people: Number(tok.people) || 1, vehicle: String(tok.vehicle), seats: seats,
         hotel2: String(tok.hotel2 || ""), zone2: String(tok.zone2 || ""), place2: String(tok.place2 || ""), place2Kind: tok.place2Kind === "zone" ? "zone" : "hotel",
         date: String(tok.date || ""), date2: String(tok.date2 || ""), flightIn: String(tok.flightIn || ""), flightOut: String(tok.flightOut || ""),
         timeIn: needIn ? timeText(tok.timeIn) : "", timeOut: needOut ? timeText(tok.timeOut) : "", time: isHotel ? timeText(tok.time) : "",
-        note: val(g.note), ref: ref, customer: { first: val(g.first), last: val(g.last), email: val(g.email), phone: val(g.phone) } };
+        note: gu.note, ref: ref, customer: { first: who.first, last: who.last, email: gu.email, phone: gu.phone } };
     }
     function fail(msg) {
       opening = false; unmountStripe(); g.stripe.innerHTML = "";
@@ -697,16 +736,31 @@
         })
         .catch(function (err) { fail(err && err.message ? err.message : "Something went wrong."); });
     }
-    g.form.addEventListener("submit", function (ev) {
-      ev.preventDefault();
-      var cp = contactProblem(); if (cp) { alertBox(root, cp.t, g.go, null); focusEl(cp.f); return; }
-      if (tok.date < today) { alertBox(root, "That date has passed. Search again with a new date.", g.go, null); return; }
-      clearAlertIn(g.guest); setState("pay");
-      setTimeout(function () { if (!inView(g.pay)) scrollTo(g.pay); focusEl(g.payTitle); }, 60);
-      openPayment();
-    });
-    g.rowEdit.addEventListener("click", function (ev) { ev.preventDefault(); unmountStripe(); opening = false; placeholder(C.payPlaceholder || ""); setState("details"); setTimeout(function () { if (!inView(g.guest)) scrollTo(g.guest); focusEl(g.first); }, 60); });
-    setState("details");
+    if (!isPay) {
+      /* page one: check the details, keep them for the session, then walk to the pay page with the same ride in the URL */
+      markSteps(2);
+      g.form.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        var cp = contactProblem(); if (cp) { alertBox(root, cp.t, g.go, null); focusEl(cp.f); return; }
+        if (tok.date < today) { alertBox(root, "That date has passed. Search again with a new date.", g.go, null); return; }
+        clearAlertIn(g.guest);
+        var o = {}; fields.forEach(function (x) { o[x.id] = x.value; }); session("gv_tr_guest", JSON.stringify(o));
+        track("tr_details", { ride: String(tok.ride || ""), code: ref });
+        if (PREVIEW) { if (window.GV_TR_PREVIEW_GO) window.GV_TR_PREVIEW_GO("pay"); return; }
+        window.location.href = BASE + "/pay?b=" + encodeToken(tok);
+      });
+      return;
+    }
+    /* the pay page: the guest's details came from page one. Without them there is nothing to put on the booking,
+       so send them back rather than opening a card form the function would refuse. */
+    markSteps(3);
+    var gu0 = guest();
+    if (!gu0.name || !EMAIL.test(gu0.email) || !gu0.phone) { bail(C.noGuest || "", C.noGuestText || "", C.noGuestCta || "", detailsUrl); return; }
+    g.rowGuestT.textContent = gu0.name;
+    g.rowGuestD.textContent = [gu0.email, gu0.phone, gu0.note ? "note: " + gu0.note : "no note for the driver"].join(" · ");
+    /* no scrolling on arrival: the guest needs to see the step indicator and the title first, and on desktop the
+       card form is already beside them */
+    openPayment();
   }
 
   /* ================= booked page ================= */
@@ -743,7 +797,8 @@
     if (root !== document) { if (root.getAttribute("data-inited")) return; root.setAttribute("data-inited", "1"); }
     var X = window.GV_TR || {};
     if (X.page === "transfers") initTransfers(root);
-    else if (X.page === "checkout") initCheckout(root);
+    else if (X.page === "checkout") initCheckout(root, false);
+    else if (X.page === "pay") initCheckout(root, true);
     else if (X.page === "booked") initBooked(root);
   }
   window.GV_TR_INIT = init;
