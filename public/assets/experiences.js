@@ -770,6 +770,7 @@
       var text = message();
       track("exp_request", { venue: V.slug, product: state.product, rate: rateOf(product()), instant: false, code: state.ref });
       logEnquiry(text);
+      if (!PREVIEW && window.GV_WA_EXIT) window.GV_WA_EXIT({ ref: state.ref || "", where: "exp-panel", total: (price() || {}).lead || "", context: text });
       window.open(waUrl(text), "_blank", "noopener");
     }
     function need(field, msg) { if (!field || !field.value.trim()) { field && field.focus(); throw new Error(msg); } }

@@ -63,6 +63,7 @@
       lines.push("Travellers: " + who);
       lines.push("Ref " + ref);
       track("quote_send", { where: "home", mode: mode.key, pick: where, code: ref });
+      if (window.GV_WA_EXIT) window.GV_WA_EXIT({ ref: ref, where: "home-quote", context: lines.join("\n") });
       window.open("https://wa.me/" + WA + "?text=" + encodeURIComponent(lines.join("\n")), "_blank", "noopener");
     });
     var today = new Date().toISOString().slice(0, 10);

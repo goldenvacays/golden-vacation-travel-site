@@ -314,7 +314,7 @@
         fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body.toString(), keepalive: true }).catch(function () {});
       } catch (err) {}
     }
-    function sendWhatsApp() { var text = message(); track("tr_request", { ride: rideLabel(), code: st.ref }); logEnquiry(text); window.open(waUrl(text), "_blank", "noopener"); }
+    function sendWhatsApp() { var text = message(); track("tr_request", { ride: rideLabel(), code: st.ref }); logEnquiry(text); if (!PREVIEW && window.GV_WA_EXIT) window.GV_WA_EXIT({ ref: st.ref, where: "tr-picker", total: st.pick ? usd(st.pick.price) : "", context: text }); window.open(waUrl(text), "_blank", "noopener"); }
 
     /* ---- the hotel pickers: where they stay, and where a hotel-to-hotel ride goes ---- */
     function searchText(h) { var s = " " + h.name.toLowerCase() + " " + (h.alias ? h.alias.toLowerCase() + " " : ""); Object.keys(TOWN_ALIASES).forEach(function (k) { if (s.indexOf(k) >= 0) s += TOWN_ALIASES[k]; }); return s; }
@@ -710,7 +710,7 @@
         fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body.toString(), keepalive: true }).catch(function () {});
       } catch (err) {}
     }
-    function sendWhatsApp() { var text = message(); track("tr_request", { ride: String(tok.ride || ""), code: ref }); logEnquiry(text); window.open(waUrl(text), "_blank", "noopener"); }
+    function sendWhatsApp() { var text = message(); track("tr_request", { ride: String(tok.ride || ""), code: ref }); logEnquiry(text); if (!PREVIEW && window.GV_WA_EXIT) window.GV_WA_EXIT({ ref: ref, where: "tr-checkout", total: usd(price), context: text }); window.open(waUrl(text), "_blank", "noopener"); }
     if (g.wa) g.wa.addEventListener("click", function (ev) { ev.preventDefault(); sendWhatsApp(); });
 
     function placeholder(text) { if (!g.stripe) return; g.stripe.innerHTML = ""; g.ph = null; if (text) { g.ph = el("p", "ck-ph", text); g.ph.id = "ck-ph"; g.stripe.appendChild(g.ph); } }
@@ -792,7 +792,7 @@
         if (dl) { dl.innerHTML = ""; [["Ride", data.product], ["When", data.when], ["People", data.guests], ["Where", data.pickup], ["Paid", data.total]].forEach(function (kv) { if (!kv[1]) return; var dt = document.createElement("dt"); dt.textContent = kv[0]; var dd = document.createElement("dd"); dd.textContent = kv[1]; dl.appendChild(dt); dl.appendChild(dd); }); }
         var r = $("#bk-ref" + sfx, main); if (r) r.textContent = data.ref || "";
         var emt = $("#bk-email-t", main); if (emt) emt.textContent = data.email || "your email";
-        var w = $("#bk-wa", main); if (w && data.ref) w.href = waUrl("Hi Golden Vacation! I've just booked an airport transfer on your website and I have a question. Ref " + data.ref);
+        var w = $("#bk-wa", main); if (w && data.ref) { w.href = waUrl("Hi Golden Vacation! I've just booked an airport transfer on your website and I have a question. Ref " + data.ref); w.addEventListener("click", function () { if (window.GV_WA_EXIT) window.GV_WA_EXIT({ ref: data.ref, where: "booked", total: data.total || "" }); }); }
       }
     }
     if (PREVIEW) { show("team", { product: "Montego Bay airport to Negril, private car up to 3, airport to hotel", when: "Arrives Sat 19 Dec 2026 on AA1497 at 2:35pm", guests: "2 people", pickup: "Royalton Negril", total: "US$95", ref: "GV-TR-K7Q2", email: "guest@example.com" }); return; }
