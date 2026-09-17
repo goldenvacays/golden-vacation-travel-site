@@ -267,6 +267,38 @@
     });
 
     setMode(modes[0].key, true);
+    /* ---- the nav and the search agree with each other ----------------------------------------
+       "Staycations" and "Jamaica" in the nav point at sections of this page. They used to scroll
+       there and leave the search on Getaways, which is the wrong question sitting above the right
+       section. Now the section and the search tab move together, whether the link was clicked here
+       or followed in from another page. */
+    var BY_HASH = { staycations: "staycation", coming: "coming", transfers: "transfers", experiences: "tours" };
+    function fromHash(h, scroll) {
+      var key = BY_HASH[String(h || "").replace(/^#/, "")];
+      if (!key || !modes.filter(function (m) { return m.key === key; }).length) return false;
+      setMode(key);
+      if (scroll) {
+        var sec = document.getElementById(String(h).replace(/^#/, ""));
+        if (sec) sec.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      return true;
+    }
+    /* a link to a section of this page: switch the tab and scroll, rather than reloading the page */
+    $$('a[href^="/#"], a[href^="#"]').forEach(function (a) {
+      var h = a.getAttribute("href").replace(/^\//, "");
+      if (!BY_HASH[h.replace(/^#/, "")]) return;
+      a.addEventListener("click", function (ev) {
+        if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button) return;   /* let them open it in a tab */
+        ev.preventDefault();
+        if (menu) { menu.classList.remove("open"); if (menuBtn) menuBtn.setAttribute("aria-expanded", "false"); }
+        if (history.replaceState) history.replaceState(null, "", h);
+        fromHash(h, true);
+        track("nav_section", { section: h.replace(/^#/, "") });
+      });
+    });
+    /* arrived here with the hash already set, from another page or a bookmark */
+    if (location.hash) fromHash(location.hash, false);
+    addEventListener("hashchange", function () { fromHash(location.hash, false); });
     drawAges();
     sync();
   }
