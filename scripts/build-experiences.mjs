@@ -18,9 +18,11 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
+import { roundRing, ringPath } from "./lib-island.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const X = JSON.parse(fs.readFileSync(path.join(ROOT, "data/experiences.json"), "utf8"));
+const JM = JSON.parse(fs.readFileSync(path.join(ROOT, "data/jamaica.json"), "utf8"));
 const H = JSON.parse(fs.readFileSync(path.join(ROOT, "data/home.json"), "utf8"));
 const G = JSON.parse(fs.readFileSync(path.join(ROOT, "data/getaways.json"), "utf8"));
 const S = { ...G.site, ...X.site };
@@ -277,6 +279,36 @@ function priceLine(p) {
 }
 
 const featured = (v) => (X.hub.featured || []).includes(v.slug);
+/* The island in the hub band: the coastline from data/jamaica.json, projected the same way the transfers map
+   projects it, with a dot where each tour is. It fills the right of the band, which was empty black, and it
+   makes the claim the hub is actually making: these are spread across the whole island, not one resort strip. */
+const ISLAND = (() => {
+  const ring = JM.ring, lons = ring.map((p) => p[0]), lats = ring.map((p) => p[1]);
+  const minLon = Math.min(...lons), maxLon = Math.max(...lons), minLat = Math.min(...lats), maxLat = Math.max(...lats);
+  const kx = Math.cos((((minLat + maxLat) / 2) * Math.PI) / 180);
+  const W = 1000, scale = W / ((maxLon - minLon) * kx), H = (maxLat - minLat) * scale;
+  const proj = (lng, lat) => [+((lng - minLon) * kx * scale).toFixed(1), +((maxLat - lat) * scale).toFixed(1)];
+  const d = ringPath(roundRing(ring.map(([lo, la]) => proj(lo, la))));
+  /* several tours share a site (the three Rose Hall resorts, the two JamWest parks): one dot per place, sized
+     by how many tours sit there, so twelve tours do not draw twelve dots on top of each other */
+  const at = new Map();
+  for (const v of X.venues) {
+    if (v.lat == null || v.lng == null) continue;
+    const k = `${v.lat},${v.lng}`;
+    const e = at.get(k) || { p: proj(v.lng, v.lat), n: 0, feat: false };
+    e.n += 1; e.feat = e.feat || featured(v);
+    at.set(k, e);
+  }
+  return { W, H: +H.toFixed(1), d, dots: [...at.values()] };
+})();
+
+const islandSvgHub = () => `<div class="hub-map" aria-hidden="true">
+  <svg class="hub-map-svg" viewBox="-14 -34 ${ISLAND.W + 28} ${(ISLAND.H + 68).toFixed(0)}">
+    <path class="hub-map-land" d="${ISLAND.d}"/>
+    ${ISLAND.dots.map((o) => `<g class="hub-map-dot${o.feat ? " on" : ""}" transform="translate(${o.p[0]} ${o.p[1]})"><circle class="halo" r="${o.n > 1 ? 30 : 22}"/><circle class="pip" r="${o.n > 1 ? 11 : 8}"/></g>`).join("\n    ")}
+  </svg>
+</div>`;
+
 /* the grid leads with the featured tours (hub.featured, in that order), then the rest in catalogue order */
 const gridOrder = () => [...X.venues.filter(featured).sort((a, b) => X.hub.featured.indexOf(a.slug) - X.hub.featured.indexOf(b.slug)), ...X.venues.filter((v) => !featured(v))];
 /* A card a guest can compare at a glance: the name, one line of what it is, then a foot carrying the price
@@ -338,6 +370,7 @@ ${nav()}
       <h1 class="hh">${esc(hb.title)}</h1>
       <p>${longShort(hb.sub, hb.subMobile)}</p>
     </div>
+    ${islandSvgHub()}
     <div class="tickets" role="group" aria-label="Start here">${tickets}</div>
   </div>
 </section>
