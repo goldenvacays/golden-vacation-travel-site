@@ -197,7 +197,7 @@
       "lastKicker": "Last step",
       "lastTitle": "Pay and it's booked.",
       "total": "Total",
-      "payPlaceholder": "Fill in who's travelling and press Continue. The card form opens here.",
+      "payPlaceholder": "",
       "payOpening": "Opening the card form",
       "secure": "Paid on this page through Stripe; your card details never reach our site. Nothing is charged until you press Pay, and a person reads every booking.",
       "alt": "Rather talk to a person first?",
