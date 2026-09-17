@@ -90,8 +90,15 @@ export const handler = async (event) => {
   const ref = /^GV-TR-[A-Z0-9]{4}$/.test(b.ref || "") ? b.ref : `GV-TR-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
   const vehLabel = TR.vehicles[vehicle].label + (offer[4] ? ", two or more" : "");
   const routeName = isHotelTrip ? `${zone.name} to ${zone2.name}` : trip.key === "out" ? `${zone.name} to ${airport.name} airport` : trip.key === "both" ? `${airport.name} airport to ${zone.name}, round trip` : `${airport.name} airport to ${zone.name}`;
-  const productName = `${routeName}, ${vehLabel.toLowerCase()} up to ${seats}, ${trip.label.toLowerCase()}`;
+  /* a round trip's route already ends in "round trip", so the way is not repeated after the vehicle */
+  const productName = `${routeName}, ${vehLabel.toLowerCase()} up to ${seats}${trip.key === "both" ? "" : `, ${trip.label.toLowerCase()}`}`;
   const whenDesc = isHotelTrip ? `${longDate(date)} at ${pickupTime}` : [flightIn ? `arrives ${longDate(date)} on ${flightIn} at ${timeIn}` : "", flightOut ? `departs ${longDate(trip.key === "both" ? date2 : date)} on ${flightOut} at ${timeOut}` : ""].filter(Boolean).join(", ");
+  /* the card form and the receipt show the line item's name above its description, so the description never repeats the ride:
+     name  "Airport transfer: Montego Bay airport to Negril, private car up to 3, airport to hotel"
+     below "Arrives Sat 19 Dec 2026 on AA1497 at 2:35pm. 2 people, Royalton Negril."
+     whereDesc alone (no ride name) is what a guest still needs to read back; the PaymentIntent keeps the long one for the records. */
+  const whenLine = whenDesc ? whenDesc.charAt(0).toUpperCase() + whenDesc.slice(1) : "";
+  const whereDesc = `${whenLine ? `${whenLine}. ` : ""}${people} ${people === 1 ? "person" : "people"}, ${place}${isHotelTrip ? ` to ${place2}` : ""}.`;
   const desc = `${productName}. ${whenDesc}. ${people} ${people === 1 ? "person" : "people"}, ${place}${isHotelTrip ? ` to ${place2}` : ""}.`;
   /* the metadata keys match the Experiences bookings so exp-webhook, exp-status and the team's forms read it the same way */
   const metadata = {
@@ -106,7 +113,7 @@ export const handler = async (event) => {
     mode: "payment",
     customer_email: email,
     client_reference_id: ref,
-    line_items: [{ quantity: 1, price_data: { currency: "usd", unit_amount: Math.round(total * 100), product_data: { name: `${isHotelTrip ? "Hotel to hotel transfer" : "Airport transfer"}: ${productName}`, description: desc.slice(0, 500) } } }],
+    line_items: [{ quantity: 1, price_data: { currency: "usd", unit_amount: Math.round(total * 100), product_data: { name: `${isHotelTrip ? "Hotel to hotel transfer" : "Airport transfer"}: ${productName}`, description: whereDesc.slice(0, 500) } } }],
     metadata,
     payment_intent_data: { metadata, description: `${ref} ${isHotelTrip ? "Hotel to hotel transfer" : "Airport transfer"}: ${desc}`.slice(0, 1000) },
     expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
