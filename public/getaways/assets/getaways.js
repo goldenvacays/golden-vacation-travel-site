@@ -139,10 +139,18 @@
       adults: 2, kids: 0, budget: "Not sure", name: "", leaving: params.get("from") || "", returning: params.get("to") || "", currency: "US$"
     };
     var ref = "GV-" + Math.random().toString(36).slice(2, 6).toUpperCase();
-    var who = params.get("who") || "";
-    if (/^1 adult/.test(who)) st.adults = 1;
-    if (/^3/.test(who)) st.adults = 3;
-    if (/kids/.test(who)) st.kids = 1;
+    /* The search now hands over real numbers. The old "2 adults, kids" phrase is still read, for any
+       link or bookmark made before the change. */
+    var qa = parseInt(params.get("adults") || "", 10), qk = parseInt(params.get("kids") || "", 10);
+    if (qa >= 1 && qa <= 12) st.adults = qa;
+    if (qk >= 0 && qk <= 12) st.kids = qk;
+    st.ages = (params.get("ages") || "").split(",").map(function (x) { return x.trim(); }).filter(function (x) { return /^\d{1,2}$/.test(x); }).slice(0, 12);
+    if (isNaN(qa) && isNaN(qk)) {
+      var who = params.get("who") || "";
+      if (/^1 adult/.test(who)) st.adults = 1;
+      if (/^3/.test(who)) st.adults = 3;
+      if (/kids/.test(who)) st.kids = 1;
+    }
     st.other = params.get("other") || "";
 
     function findDest() {
@@ -222,7 +230,8 @@
       if (d && d.combo) what += " · " + d.hotelLabel;
       var lines = ["Hi Golden Vacation! I'd like a quote for " + what + "."];
       lines.push("Dates: " + (st.leaving ? fmtDate(st.leaving) : "flexible") + (st.returning ? " to " + fmtDate(st.returning) : ""));
-      lines.push("Travellers: " + st.adults + " adult" + (st.adults === 1 ? "" : "s") + ", " + st.kids + " kid" + (st.kids === 1 ? "" : "s"));
+      var kidAges = (st.ages || []).slice(0, st.kids).filter(function (x) { return x !== "" && x != null; });
+      lines.push("Travellers: " + st.adults + " adult" + (st.adults === 1 ? "" : "s") + ", " + st.kids + " kid" + (st.kids === 1 ? "" : "s") + (kidAges.length ? " (aged " + kidAges.join(", ") + ")" : ""));
       var apName = "";
       if (d && d.airports) d.airports.forEach(function (x) { if (x.code === st.a) apName = x.name + " (" + x.code + ")"; });
       if (d && d.combo) apName = d.airportName + " (" + d.airport + ")";
@@ -256,14 +265,41 @@
     }
     if (selHotel) selHotel.addEventListener("change", function () { st.h = selHotel.value; render(); });
     if (otherIn) { otherIn.value = st.other; otherIn.addEventListener("input", function () { st.other = otherIn.value.trim(); render(); }); }
+    /* one age box per child. Child pricing and room occupancy both turn on the ages, so asking here
+       saves a round trip on WhatsApp later. */
+    var ageBox = $("#q-ages", q);
+    function drawAges() {
+      if (!ageBox) return;
+      ageBox.hidden = !st.kids;
+      if ($$("input", ageBox).length === st.kids) return;
+      ageBox.innerHTML = "";
+      for (var i = 0; i < st.kids; i++) {
+        var lab = document.createElement("label"), sp = document.createElement("span"), inp = document.createElement("input");
+        sp.textContent = "Age " + (i + 1);
+        inp.type = "number"; inp.min = "0"; inp.max = "17"; inp.inputMode = "numeric"; inp.placeholder = "0-17";
+        inp.value = st.ages && st.ages[i] != null ? st.ages[i] : "";
+        inp.setAttribute("data-age", String(i));
+        inp.addEventListener("input", function () {
+          var n = parseInt(this.value, 10);
+          st.ages = st.ages || [];
+          st.ages[+this.getAttribute("data-age")] = isNaN(n) ? "" : Math.max(0, Math.min(17, n));
+          if (this.value !== "" && String(st.ages[+this.getAttribute("data-age")]) !== this.value) this.value = st.ages[+this.getAttribute("data-age")];
+          render();
+        });
+        lab.appendChild(sp); lab.appendChild(inp);
+        ageBox.appendChild(lab);
+      }
+    }
     $$("[data-step]", q).forEach(function (b) {
       b.addEventListener("click", function () {
         var k = b.getAttribute("data-step"), dir = Number(b.getAttribute("data-dir"));
         st[k] = Math.max(k === "adults" ? 1 : 0, Math.min(12, st[k] + dir));
         $("#out-" + k).textContent = st[k];
+        if (k === "kids") { if (st.ages) st.ages.length = st.kids; drawAges(); }
         render();
       });
     });
+    drawAges();
     $$("[data-budget]", q).forEach(function (b) {
       b.addEventListener("click", function () {
         st.budget = b.getAttribute("data-budget");
@@ -293,6 +329,82 @@
     });
     $("#out-adults").textContent = st.adults; $("#out-kids").textContent = st.kids;
     fillHotels(); fillChips(); syncOther(); render();
+  }
+
+
+  /* ---- the /getaways/ pill: the same party picker as the front page ---------------------------
+     Kept as its own small block rather than shared with home.js, because the two files load on
+     different pages and only the front page has home.js. If you change one, change both. */
+  var hubForm = $("#hub-quote");
+  if (hubForm) {
+    var hb = {
+      who: $("#hub-who"), pop: $("#hub-pop"), a: $("#hub-a"), k: $("#hub-k"), ages: $("#hub-ages"),
+      done: $("#hub-done"), adults: $("#hub-adults"), kids: $("#hub-kids"), agesV: $("#hub-ages-v"),
+      din: $("#hub-in"), dout: $("#hub-out")
+    };
+    var hs = { adults: 2, kids: 0, ages: [] };
+    var todayISO = new Date().toISOString().slice(0, 10);
+    if (hb.din) hb.din.min = todayISO;
+    if (hb.dout) hb.dout.min = todayISO;
+    if (hb.din) hb.din.addEventListener("change", function () {
+      if (!hb.din.value) return;
+      hb.dout.min = hb.din.value;
+      if (hb.dout.value && hb.dout.value < hb.din.value) hb.dout.value = "";
+    });
+    function hubWho() {
+      var s = hs.adults + (hs.adults === 1 ? " adult" : " adults");
+      if (hs.kids) s += ", " + hs.kids + (hs.kids === 1 ? " child" : " children");
+      return s;
+    }
+    function hubAges() {
+      hb.ages.hidden = !hs.kids;
+      if ($$("input", hb.ages).length === hs.kids) return;
+      hb.ages.innerHTML = "";
+      for (var i = 0; i < hs.kids; i++) {
+        var lab = document.createElement("label"), sp = document.createElement("span"), inp = document.createElement("input");
+        sp.textContent = "Age " + (i + 1);
+        inp.type = "number"; inp.min = "0"; inp.max = "17"; inp.inputMode = "numeric"; inp.placeholder = "0-17";
+        inp.value = hs.ages[i] == null ? "" : hs.ages[i];
+        inp.setAttribute("data-age", String(i));
+        inp.addEventListener("input", function () {
+          var n = parseInt(this.value, 10), at = +this.getAttribute("data-age");
+          hs.ages[at] = isNaN(n) ? "" : Math.max(0, Math.min(17, n));
+          if (this.value !== "" && String(hs.ages[at]) !== this.value) this.value = hs.ages[at];
+          hubSync();
+        });
+        lab.appendChild(sp); lab.appendChild(inp);
+        hb.ages.appendChild(lab);
+      }
+    }
+    function hubSync() {
+      hb.a.textContent = hs.adults;
+      hb.k.textContent = hs.kids;
+      hb.who.textContent = hubWho();
+      hb.adults.value = hs.adults;
+      hb.kids.value = hs.kids;
+      hb.agesV.value = hs.ages.slice(0, hs.kids).filter(function (x) { return x !== "" && x != null; }).join(",");
+      $$("[data-hub]", hb.pop).forEach(function (b) {
+        var w = b.getAttribute("data-hub"), d = +b.getAttribute("data-d"), at = w === "a" ? hs.adults : hs.kids;
+        b.disabled = d > 0 ? hs.adults + hs.kids >= 12 : at <= (w === "a" ? 1 : 0);
+      });
+    }
+    $$("[data-hub]", hb.pop).forEach(function (b) {
+      b.addEventListener("click", function () {
+        var w = b.getAttribute("data-hub"), d = +b.getAttribute("data-d");
+        if (d > 0 && hs.adults + hs.kids >= 12) return;
+        if (w === "a") hs.adults = Math.max(1, hs.adults + d);
+        else { hs.kids = Math.max(0, hs.kids + d); if (d < 0) hs.ages.length = hs.kids; }
+        hubAges();
+        hubSync();
+      });
+    });
+    function hubOpen(on) { hb.pop.hidden = !on; hb.who.setAttribute("aria-expanded", on ? "true" : "false"); }
+    hb.who.addEventListener("click", function (ev) { ev.stopPropagation(); hubOpen(hb.pop.hidden); });
+    hb.done.addEventListener("click", function () { hubOpen(false); });
+    document.addEventListener("click", function (ev) { if (!hb.pop.hidden && !hb.pop.contains(ev.target) && ev.target !== hb.who) hubOpen(false); });
+    document.addEventListener("keydown", function (ev) { if (ev.key === "Escape") hubOpen(false); });
+    hubAges();
+    hubSync();
   }
 
   /* ---- WhatsApp exits: one code per visit, one row per exit --------------------------------

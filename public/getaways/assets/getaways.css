@@ -508,3 +508,57 @@ body.jmd .jmd-v { display: inline; }
   .hero h1 { font-size: 96px; }
 }
 @media (min-width: 1340px) { .nav-links { gap: 30px; } }
+
+/* ---- the search card internals: the suggestion list, the date pair and the party panel ----
+   Lives here rather than in home.css because /getaways/ has the same pill and does not load home.css. */
+/* what they type, and what we suggest */
+.hq-clear { flex: none; display: grid; place-items: center; width: 28px; height: 28px; margin-left: 6px; border: 0; border-radius: 999px; background: var(--line); color: var(--ink); cursor: pointer; }
+.hq-clear:hover { background: var(--ink); color: #fff; }
+.hq-list { position: absolute; z-index: 20; top: calc(100% + 6px); left: 0; right: 0; margin: 0; padding: 6px; list-style: none; max-height: 320px; overflow: auto; background: #fff; border: 2px solid var(--ink); border-radius: 18px; box-shadow: 0 20px 50px rgba(14,15,14,.22); }
+.hq-list li { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 12px; cursor: pointer; }
+.hq-list li span { font-weight: 800; }
+.hq-list li small { flex: none; color: var(--muted); font-size: 12px; font-weight: 700; }
+.hq-list li.on, .hq-list li:hover { background: var(--alt); }
+.hq-list li.none { display: block; color: var(--muted); font-size: 13px; font-weight: 600; cursor: default; }
+.hq-list li.none:hover { background: none; }
+
+/* check in and check out, two dates in the one cell */
+.hq-dates { display: flex; gap: 16px; flex: 1; min-width: 0; }
+.hq-dates label { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.hq-dates span { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.hq-dates input { width: 100%; border: 0; background: transparent; padding: 0; font-size: 16px; font-weight: 700; color: var(--ink); }
+
+/* who's travelling */
+.qf-who { position: relative; }
+.hq-who { width: 100%; text-align: left; border: 0; background: transparent; padding: 0; font-family: inherit; font-size: 16px; font-weight: 700; color: var(--ink); cursor: pointer; }
+.hq-pop { position: absolute; z-index: 20; top: calc(100% + 6px); right: 0; width: min(320px, calc(100vw - 32px)); display: flex; flex-direction: column; gap: 12px; padding: 16px; background: #fff; border: 2px solid var(--ink); border-radius: 18px; box-shadow: 0 20px 50px rgba(14,15,14,.22); }
+.hq-line { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.hq-line b { font-size: 15px; }
+.hq-step { display: flex; align-items: center; gap: 4px; }
+.hq-step button { width: 34px; height: 34px; display: grid; place-items: center; border: 2px solid var(--ink); border-radius: 999px; background: #fff; font-size: 18px; font-weight: 800; line-height: 1; color: var(--ink); cursor: pointer; }
+.hq-step button:hover:not(:disabled) { background: var(--ink); color: #fff; }
+.hq-step button:disabled { opacity: .3; cursor: not-allowed; }
+.hq-step output { min-width: 28px; text-align: center; font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.hq-ages { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px; border-top: 2px solid var(--line); }
+.hq-ages[hidden] { display: none; }
+.hq-ages label { display: flex; flex-direction: column; gap: 2px; }
+.hq-ages span { font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.hq-ages input { width: 62px; padding: 7px 9px; border: 2px solid var(--line); border-radius: 10px; font-size: 15px; font-weight: 700; font-family: inherit; color: var(--ink); }
+.hq-ages input:focus { outline: 0; border-color: var(--ink); }
+.hq-hint { margin: 0; font-size: 12px; font-weight: 600; color: var(--muted); }
+.hq-hint.on { color: var(--gold-txt); font-weight: 800; }
+
+
+/* the same search card on /getaways/, which has no home.css */
+.qcard .qf input:focus, .qcard .hq-dates input:focus, .hq-who:focus, .hq-clear:focus { outline: 0; }
+.qcard .qf:focus-within { box-shadow: inset 0 0 0 2px var(--ink); border-radius: 18px; }
+.qcard .qf:focus-within label span { color: var(--ink); }
+@media (min-width: 900px) {
+  .hq-dates input { font-size: 18px; }
+  .hq-who { font-size: 18px; }
+  .hq-list { left: -10px; right: auto; min-width: 420px; max-width: 520px; }   /* hotel names get a line each, not two */
+}
+@media (max-width: 899px) {
+  .hq-dates { gap: 12px; }
+  .hq-pop { right: auto; left: 0; }
+}
