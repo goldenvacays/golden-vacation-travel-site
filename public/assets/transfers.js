@@ -499,7 +499,8 @@
       var M = X.map, pt = function (slug, zone) { return (slug && M.hotels[slug]) || M.zones[zone] || null; };
       var A = isHotel ? pt(tok.hotel, tok.zone) : t === "out" ? pt(tok.hotel, tok.zone) : M.airports[tok.airport];
       var B = isHotel ? pt(tok.hotel2, tok.zone2) : t === "out" ? M.airports[tok.airport] : pt(tok.hotel, tok.zone);
-      var la = isHotel || t === "out" ? (ZN[tok.zone] || "") : String(tok.airport || ""), lb = isHotel ? (ZN[tok.zone2] || "") : t === "out" ? String(tok.airport || "") : (ZN[tok.zone] || "");
+      var MN = M.names || ZN;
+      var la = isHotel || t === "out" ? (MN[tok.zone] || ZN[tok.zone] || "") : String(tok.airport || ""), lb = isHotel ? (MN[tok.zone2] || ZN[tok.zone2] || "") : t === "out" ? String(tok.airport || "") : (MN[tok.zone] || ZN[tok.zone] || "");
       if (A && B) {
         var mx = (A[0] + B[0]) / 2, my = (A[1] + B[1]) / 2, dx = B[0] - A[0], dy = B[1] - A[1], len = Math.sqrt(dx * dx + dy * dy) || 1;
         /* the road: the shortest way through the town graph, coastal legs walking the coastline, then a straight last leg to the pin */
@@ -541,7 +542,12 @@
             }
           }
           pts.push(Q);
-          return "M" + tidy(pts).map(function (p) { return p[0].toFixed(1) + " " + p[1].toFixed(1); }).join("L");
+          var list = tidy(pts);
+          if (list.length < 3) return "M" + list.map(function (p) { return p[0].toFixed(1) + " " + p[1].toFixed(1); }).join("L");
+          /* a smooth curve through the points, the same drawing as the coastline, so the road and the coast bend together */
+          var out = "M" + list[0][0].toFixed(1) + " " + list[0][1].toFixed(1);
+          for (var i = 0; i < list.length - 1; i++) { var p0 = list[Math.max(0, i - 1)], p1 = list[i], p2 = list[i + 1], p3 = list[Math.min(list.length - 1, i + 2)]; var c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6], c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6]; out += "C" + c1[0].toFixed(1) + " " + c1[1].toFixed(1) + " " + c2[0].toFixed(1) + " " + c2[1].toFixed(1) + " " + p2[0].toFixed(1) + " " + p2[1].toFixed(1); }
+          return out;
         }
         /* which town the road starts and ends at: the airport's own, or the nearest of the area's towns to the pin, so the road heads the right way */
         var NEAR = { negril: ["negril", "savanna-la-mar", "lucea"], lucea: ["lucea", "hopewell", "negril"], "hanover-villas": ["hopewell", "lucea", "montego-bay"], mobay: ["montego-bay", "MBJ", "rose-hall"], "mobay-nonai": ["montego-bay", "MBJ", "rose-hall"], "rose-hall": ["MBJ", "rose-hall", "falmouth"], falmouth: ["rose-hall", "falmouth", "runaway-bay"], "runaway-bay": ["falmouth", "runaway-bay", "ocho-rios"], "ocho-rios": ["runaway-bay", "ocho-rios", "OCJ"], kingston: ["kingston", "KIN"], "blue-mountains": ["strawberry-hill"], "port-antonio": ["port-antonio", "OCJ", "morant-bay"], "treasure-beach": ["treasure-beach", "black-river"], "south-coast": ["whitehouse", "bluefields", "black-river"] };
@@ -557,6 +563,13 @@
           draw(g.mapRoute, dRoad);
           g.mapA.setAttribute("transform", "translate(" + A[0] + " " + A[1] + ")"); g.mapB.setAttribute("transform", "translate(" + B[0] + " " + B[1] + ")");
           label(g.mapAl, A, la, pathPoint(dRoad, false)); label(g.mapBl, B, lb, pathPoint(dRoad, true));
+          /* two labels on the same side of two nearby pins would sit on top of each other: hang them outwards instead, beside the pins */
+          var wA = la.length * 16, wB = lb.length * 16, sameSide = g.mapAl.getAttribute("y") === g.mapBl.getAttribute("y");
+          if (sameSide && Math.abs(A[0] - B[0]) < (wA + wB) / 2 + 24 && Math.abs(A[1] - B[1]) < 44) {
+            var left = A[0] <= B[0] ? [g.mapAl, A, wA] : [g.mapBl, B, wB], right = A[0] <= B[0] ? [g.mapBl, B, wB] : [g.mapAl, A, wA];
+            if (left[1][0] - left[2] > -20) { left[0].setAttribute("text-anchor", "end"); left[0].setAttribute("x", -18); left[0].setAttribute("y", 10); right[0].setAttribute("text-anchor", "start"); right[0].setAttribute("x", 18); right[0].setAttribute("y", 10); }
+            else { left[0].setAttribute("y", left[1][1] < 60 ? 52 : -30); right[0].setAttribute("y", left[1][1] < 60 ? 86 : -64); } /* no room to the left: stack them */
+          }
           g.zoom.setAttribute("hidden", ""); /* an SVG group: the attribute, not the HTML property */
         } else {
           /* a short hop: the two pins would sit on top of each other, so the island shows one spot and a lens shows the hop zoomed in */
@@ -646,7 +659,7 @@
       }
     }
     function inView(n) { var r = n.getBoundingClientRect(); return r.top >= 0 && r.top < window.innerHeight * 0.5; }
-    function placeholder(text) { g.stripe.innerHTML = ""; g.ph = el("p", "ck-ph", text); g.ph.id = "ck-ph"; g.stripe.appendChild(g.ph); }
+    function placeholder(text) { g.stripe.innerHTML = ""; g.ph = null; if (text) { g.ph = el("p", "ck-ph", text); g.ph.id = "ck-ph"; g.stripe.appendChild(g.ph); } }
     function unmountStripe() { if (mounted) { try { mounted.destroy(); } catch (err) {} mounted = null; } }
     function body(ui) {
       return { ui: ui, hotel: String(tok.hotel || ""), zone: String(tok.zone), place: String(tok.place || ""), placeKind: tok.placeKind === "zone" ? "zone" : "hotel", airport: String(tok.airport || ""), trip: t, people: Number(tok.people) || 1, vehicle: String(tok.vehicle), seats: seats,

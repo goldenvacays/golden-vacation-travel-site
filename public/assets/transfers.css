@@ -178,6 +178,8 @@ body.jmd .ck-tot-v b .jmd-v, body.jmd .ck-tot-v > span .jmd-v { display: inline;
 .ck-inc span svg { color: var(--gold-txt); margin-top: 1px; }
 .ck-div { height: 2px; background: var(--line); }
 .ck-stripe { display: flex; flex-direction: column; gap: 10px; min-height: 120px; }
+.ck-grid[data-state="details"] .ck-stripe { min-height: 0; }
+.ck-stripe:empty { display: none; }
 .ck-stripe .btn { align-self: flex-start; }
 .ck-ph { display: flex; align-items: center; justify-content: center; text-align: center; min-height: 120px; margin: 0; padding: 18px; border-radius: 14px; border: 2px dashed var(--line); font-size: 13px; line-height: 1.5; color: var(--muted); }
 .ck-ph:empty { display: none; }
