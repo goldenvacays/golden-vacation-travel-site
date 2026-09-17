@@ -28,6 +28,8 @@
   function parseDate(s) { if (!s) return null; var p = s.split("-"); if (p.length !== 3) return null; return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])); }
   function longDate(s) { var d = parseDate(s); if (!d) return ""; return DAYS[d.getUTCDay()] + " " + d.getUTCDate() + " " + MONTHS[d.getUTCMonth()] + " " + d.getUTCFullYear(); }
   function todayISO() { return (window.GV_TR && window.GV_TR.today) || new Date().toISOString().slice(0, 10); }
+  /* eighteen months out: past this, a date is a mistyped year far more often than a real booking */
+  function farOut() { var p = todayISO().split("-"), d = new Date(Date.UTC(+p[0], +p[1] - 1 + 18, +p[2])); return d.toISOString().slice(0, 10); }
   function waUrl(text) { return "https://wa.me/" + WA + "?text=" + encodeURIComponent(text); }
   function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
   function session(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) { return null; } }
@@ -198,6 +200,9 @@
       }
       if (!e.date.value) return { f: e.date, t: isHotel() ? "Pick the date." : needIn() ? "Pick your arrival date." : "Pick your departure date.", cal: 0 };
       if (e.date.value < today) return { f: e.date, t: "That date has passed.", cal: 0 };
+      /* a date years out is almost always the wrong year typed into the picker, and no airline has published a
+         schedule that far ahead for us to check it against */
+      if (e.date.value > farOut()) return { f: e.date, t: "That date is more than 18 months away. Check the year.", cal: 0 };
       if (isHotel()) { if (!TIME.test(tt(e.time))) return { f: e.time, t: "What time should the driver come?" }; return null; }
       if (needIn()) {
         if (!FLIGHT.test(e.flightIn.value.trim().toUpperCase())) return { f: e.flightIn, t: "We need the arriving flight number, e.g. AA1497." };
@@ -210,6 +215,7 @@
       if (trip() === "both") {
         if (!e.date2.value) return { f: e.date2, t: "Pick your departure date.", cal: 1 };
         if (e.date2.value < e.date.value) return { f: e.date2, t: "The departure is before the arrival.", cal: 1 };
+        if (e.date2.value > farOut()) return { f: e.date2, t: "That date is more than 18 months away. Check the year.", cal: 1 };
         if (!FLIGHT.test(e.flightOut.value.trim().toUpperCase())) return { f: e.flightOut, t: "We need the departing flight number, e.g. AA1496." };
         if (!TIME.test(tt(e.time2))) return { f: e.time2, t: "What time does it take off?" };
       }
@@ -371,6 +377,16 @@
     e.toName.addEventListener("input", function () { st.place2Name = e.toName.value.trim(); afterChange(); });
     [e.airport, e.trip, e.people].forEach(function (s) { s.addEventListener("change", function () { clearAlert(); renderForm(); afterChange(); if (s === e.trip && isHotel() && !st.zone2) setTimeout(function () { focusEl(e.toIn); }, 60); }); });
     [e.flightIn, e.flightOut, e.time, e.time2].forEach(function (i) { i.addEventListener("input", function () { clearAlert(); afterChange(); }); });
+    /* the flight number, checked as the guest leaves the box rather than when they press Search: "aa 1497" becomes
+       AA1497 so it reads back the way it does on their ticket, and a number that can't be a flight number is caught
+       here, while they still have the ticket in front of them */
+    [e.flightIn, e.flightOut].forEach(function (i) {
+      i.addEventListener("blur", function () {
+        var v = i.value.trim().toUpperCase().replace(/\s+/g, "");
+        if (v !== i.value) i.value = v;
+        if (v && !FLIGHT.test(v)) warn("“" + v + "” doesn't look like a flight number. It's the two letters and the digits on your ticket, like AA1497.", i, false);
+      });
+    });
     /* the clock icon opens the time picker where the browser allows it (phones open it on any tap in the box anyway) */
     [e.time, e.time2].forEach(function (i) { var box = i.parentNode; box.addEventListener("click", function (ev) { if (ev.target === i) return; i.focus(); try { if (i.showPicker) i.showPicker(); } catch (err) {} }); });
     var cals = [];
