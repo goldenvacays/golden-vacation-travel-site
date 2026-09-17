@@ -279,22 +279,27 @@ function priceLine(p) {
 const featured = (v) => (X.hub.featured || []).includes(v.slug);
 /* the grid leads with the featured tours (hub.featured, in that order), then the rest in catalogue order */
 const gridOrder = () => [...X.venues.filter(featured).sort((a, b) => X.hub.featured.indexOf(a.slug) - X.hub.featured.indexOf(b.slug)), ...X.venues.filter((v) => !featured(v))];
+/* A card a guest can compare at a glance: the name, one line of what it is, then a foot carrying the price
+   and the single fact that decides it. The region moved into that foot, because "where" is one of the things
+   being compared, and the other two facts moved to the tour's own page: five stacked levels of text in a
+   200px card read as a spec sheet, and the price disappeared into them. */
 function venueCard(v) {
   const fp = fromPrice(v);
-  const price = fp ? (fp.usd != null ? `<b>${dual(fp.usd)}</b><small>${fp.same ? "per person" : "from, per person"}</small>` : `<b>${jmd(fp.jmd)}</b><small>${fp.same ? "per person" : "from, per person"}</small>`) : `<b>Price on request</b>`;
+  const price = fp ? (fp.usd != null ? `<b>${dual(fp.usd)}</b><small>${fp.same ? "each" : "from"}</small>` : `<b>${jmd(fp.jmd)}</b><small>${fp.same ? "each" : "from"}</small>`) : `<b>Price on request</b>`;
   const n = v.products.filter(live).length;
   const doors = (v.doors || []).join(" ");
-  /* three facts a guest compares on (venue.facts), instead of the option count and the category names */
-  const meta = v.facts && v.facts.length ? `<span class="vcard-facts">${v.facts.slice(0, 3).map((f) => `<span>${esc(noDash(f))}</span>`).join("")}</span>` : `<span class="vcard-meta">${n} ${n === 1 ? "option" : "options"} · ${v.categories.map((c) => esc(CATS[c])).join(" · ")}</span>`;
-  return `<a class="vcard" href="${BASE}/${v.slug}" data-slug="${v.slug}" data-cats="${esc(v.categories.join(" "))}" data-area="${v.area}" data-doors="${esc(doors)}" data-booking="${v.booking}">
+  const where = `${esc(AREAS[v.area])}`;
+  const fact = v.facts && v.facts.length ? esc(noDash(v.facts[0])) : `${n} ${n === 1 ? "option" : "options"}`;
+  return `<a class="vcard${featured(v) ? " feat" : ""}" href="${BASE}/${v.slug}" data-slug="${v.slug}" data-cats="${esc(v.categories.join(" "))}" data-area="${v.area}" data-doors="${esc(doors)}" data-booking="${v.booking}">
     <span class="vcard-photo">${pic(small(v.photos[0].file), v.photos[0].alt)}${featured(v) ? `<span class="tag tag-gold top-tag">Most booked</span>` : ""}<span class="tag tag-white drive-tag" hidden></span></span>
     <span class="vcard-t">
-      <span class="vcard-where">${esc(AREAS[v.area])} · ${esc(v.parish)}</span>
       <span class="h hh">${esc(v.name)}</span>
       <small>${esc(v.card)}</small>
-      ${meta}
     </span>
-    <span class="vcard-p">${price}</span>
+    <span class="vcard-foot">
+      <span class="vcard-p">${price}</span>
+      <span class="vcard-facts"><span class="vf-where">${where}</span><span class="vf-fact">${fact}</span></span>
+    </span>
   </a>`;
 }
 
@@ -355,11 +360,12 @@ ${ticker(hb.trust)}
       <button class="chip" type="button" data-max="120">Under 2 hours</button>
       <button class="chip" type="button" data-max="0" aria-pressed="true">Anywhere</button>
     </div>
+    <label class="area-pick"><span>Or pick an area</span><select id="area-pick" aria-label="Area">${areaOpts}</select></label>
     <p class="pf-hint" id="hotel-note">Pick your hotel and every card shows the drive time from it, nearest first. Not staying yet? <a href="/hotel-status">See which resorts are open</a>.</p>
   </div>
+  <!-- one panel answers "where", this row answers "what": the area select used to sit down here competing with it -->
   <div class="filters">
     <div class="chip-row cat-chips" role="group" aria-label="Category">${chips}</div>
-    <label class="area-pick"><span>Where</span><select id="area-pick" aria-label="Area">${areaOpts}</select></label>
   </div>
   <div class="vgrid" id="vgrid">
 ${cards}
@@ -396,14 +402,15 @@ ${scripts({ page: "hub", whatsapp: S.whatsapp, hotels: HOTELS.map((h) => [h.name
 }
 
 /* ---------- venue page ---------- */
-function optionRow(v, p, i) {
+function optionRow(v, p, i, only = false) {
   const attrs = [`data-id="${p.id}"`, p.until ? ` data-until="${p.until}"` : "", p.group ? ` data-group="${p.group}"` : ""].join("");
-  const badge = p.badge ? `<span class="op-badge">${esc(p.badge)}</span>` : "";
+  /* a badge like "best value" only means something next to another option */
+  const badge = p.badge && !only ? `<span class="op-badge">${esc(p.badge)}</span>` : "";
   const notes = (p.notes || []).map((n) => `<li>${esc(noDash(n))}</li>`).join("");
   const choose = p.choose ? `<div class="op-choose" data-pick="${p.choose.pick}">${p.choose.fixed ? `<span class="fixed">${esc(p.choose.fixed)}<small>always in</small></span>` : ""}<span class="op-choose-l">${esc(p.choose.label)}${p.choose.pick > 1 ? ` (${p.choose.pick})` : ""}</span><span class="op-choose-c">${p.choose.from.map((c) => `<button type="button" class="chip" data-choice="${esc(c)}">${esc(c)}</button>`).join("")}</span></div>` : "";
   const times = p.times && p.times.length ? `<span class="op-times">${icon("clock", 14)}${esc(p.times.join(" · "))}</span>` : "";
-  return `<label class="op"${attrs}>
-    <input type="radio" name="product" value="${p.id}"${i === 0 ? " checked" : ""}>
+  return `<label class="op${only ? " op-only" : ""}"${attrs}>
+    <input type="radio" name="product" value="${p.id}"${i === 0 ? " checked" : ""}${only ? ' tabindex="-1"' : ""}>
     <span class="op-body">
       <span class="op-head"><span class="op-name">${esc(p.name)}</span>${badge}</span>
       <span class="op-hours">${esc(noDash(p.hours))}</span>
@@ -499,15 +506,17 @@ function panel(v) {
 function venuePage(v) {
   const hero = v.photos[0];
   const gallery = v.photos.slice(1, 5).map((p, i) => `<button type="button" class="gph lb-open" data-i="${i + 1}" aria-label="Open photo ${i + 2} of ${v.photos.length}">${pic(small(p.file), p.alt)}</button>`).join(""); // every photo opens the viewer at its own place; the hero is photo 1
-  const photosBtn = v.photos.length > 1 ? `<button type="button" class="tag tag-white photos-btn lb-open" data-i="0">${icon("photo", 14, 2.2)}${v.photos.length} photos</button>` : "";
+  /* no count: "2 photos" tells a guest how few there are, which is worse than saying nothing */
+  const photosBtn = v.photos.length > 1 ? `<button type="button" class="tag tag-white photos-btn lb-open" data-i="0">${icon("photo", 14, 2.2)}See photos</button>` : "";
   // the hero is a strip of every photo: a swipe on a phone, arrows on a laptop, dots for where you are; the first one loads first, the rest lazily
   const slides = v.photos.map((p, i) => `<div class="hero-slide">${pic(p.file, p.alt, i === 0 ? ' loading="eager" fetchpriority="high" class="lb-open" data-i="0"' : ` class="lb-open" data-i="${i}"`)}</div>`).join("");
   const dots = v.photos.length > 1 ? `<div class="hero-dots" role="tablist" aria-label="Which photo">${v.photos.map((p, i) => `<button type="button" role="tab" aria-selected="${i === 0 ? "true" : "false"}" aria-label="Photo ${i + 1} of ${v.photos.length}" data-i="${i}"></button>`).join("")}</div>` : "";
   const arrows = v.photos.length > 1 ? `<button type="button" class="hero-arrow hero-prev" aria-label="Previous photo">${icon("arrow", 18, 2.4)}</button><button type="button" class="hero-arrow hero-next" aria-label="Next photo">${icon("arrow", 18, 2.4)}</button>` : "";
   const groups = v.groups ? v.groups : [{ key: "all", label: "", sub: "" }];
+  const onlyOne = v.products.filter(live).length === 1;
   const options = groups.map((g) => {
     const ps = v.products.filter((p) => (g.key === "all" || p.group === g.key));
-    const rows = ps.map((p, i) => optionRow(v, p, i === 0 && g === groups[0])).join("\n");
+    const rows = ps.map((p, i) => optionRow(v, p, i === 0 && g === groups[0], onlyOne)).join("\n");
     return `${g.label ? `<div class="op-group"><b>${esc(g.label)}</b><small>${esc(noDash(g.sub))}</small></div>` : ""}${rows}`;
   }).join("\n");
   const enquiries = v.enquiries ? `<div class="enq"><div class="enq-t">${kicker("Price on request")}<b class="hh">${esc(v.enquiries.title)}</b><p>${esc(v.enquiries.sub)}</p></div><ul class="enq-list">${v.enquiries.items.map(([t, d]) => `<li><b>${esc(t)}</b><span>${esc(noDash(d))}</span></li>`).join("")}</ul>${btn(v.enquiries.cta, wa(`Hi Golden Vacation! I'm interested in ${v.enquiries.title.toLowerCase()} at ${v.name}. Ref GV-EXP-ENQ`), "outline", "", "chat")}</div>` : "";
@@ -548,7 +557,7 @@ ${nav()}
 <section class="vbody wrap">
   <div class="vmain">
     <div class="opts-sec" id="options">
-      <div class="sec-head"><div><h2 class="hh">Choose your ${esc(v.optionNoun)}</h2>${v.rates ? `<p class="sec-sub">Two rates, both printed. Visitor rate: ${esc(noDash(v.rates.visitor.note))} Resident rate: ${esc(noDash(v.rates.resident.note))}</p>` : ""}</div></div>
+      <div class="sec-head"><div><h2 class="hh">${onlyOne ? `What you get` : `Choose your ${esc(v.optionNoun)}`}</h2>${v.rates ? `<p class="sec-sub">Two rates, both printed. Visitor rate: ${esc(noDash(v.rates.visitor.note))} Resident rate: ${esc(noDash(v.rates.resident.note))}</p>` : ""}</div></div>
       <div class="ops" id="ops">
 ${options}
       </div>
@@ -557,8 +566,8 @@ ${options}
     <div class="info-grid">
       ${listBlock("What's included", v.included, "check", "inc")}
       ${listBlock("Not included", v.notIncluded, "x", "exc")}
-      ${listBlock("Before you book", v.before, "alert", "warn")}
       ${listBlock("Getting there", v.gettingThere, "pin", "go")}
+      ${listBlock("Before you book", v.before, "alert", "warn")}
     </div>
     ${often ? `<div class="often"><div class="sec-head"><b class="hh">Often booked with this</b><small>Only if it helps</small></div><div class="pairs">${often}</div></div>` : ""}
   </div>
