@@ -701,12 +701,12 @@
       "card": "Pick an entry time and stay all day. Same price for locals and visitors.",
       "photos": [
         {
-          "file": "jamwater-park-wide.jpg",
-          "alt": "The water park at JamWest"
-        },
-        {
           "file": "jamwater-slides.jpg",
           "alt": "Slides at the JamWest water park"
+        },
+        {
+          "file": "jamwater-park-wide.jpg",
+          "alt": "The water park at JamWest"
         }
       ],
       "panel": "pass",
