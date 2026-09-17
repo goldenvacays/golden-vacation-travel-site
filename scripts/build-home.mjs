@@ -67,6 +67,9 @@ const ICONS = {
   users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path>',
   plane: '<path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 11l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 2.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"></path>',
   map: '<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><path d="M8 2v16M16 6v16"></path>',
+  sun: '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>',
+  x: '<path d="M18 6L6 18M6 6l12 12"></path>',
+  back: '<path d="M19 12H5"></path><path d="M11 18l-6-6 6-6"></path>',
 };
 const icon = (name, size = 20, sw = 2.2) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block">${ICONS[name]}</svg>`;
 const tag = (text, tone = "black") => `<span class="tag tag-${tone}">${esc(text)}</span>`;
@@ -155,7 +158,36 @@ function footer() {
 </div></footer>`;
 }
 
-const scripts = () => `<script>window.GV_HOME=${JSON.stringify({ whatsapp: S.whatsapp, modes: H.quote.modes })};</script>
+/* Everywhere the front page search can send someone, for the outbound side: the four destination pages, the
+   two-country combos, and the sixteen hotel pages. Small enough to carry in the HTML. The Jamaica list is
+   ten times the size, so that one is fetched from /assets/jm-places.json on the first keystroke instead. */
+const gaPlaces = (() => {
+  const raw = JSON.parse(fs.readFileSync(path.join(ROOT, "data/hotels.json"), "utf8"));
+  const hotels = Array.isArray(raw) ? raw : raw.hotels || [];
+  const bySlug = Object.fromEntries(hotels.map((h) => [h.slug, h]));
+  const pages = JSON.parse(fs.readFileSync(path.join(ROOT, "data/hotel-pages.json"), "utf8"));
+  const out = [];
+  /* [what they see, where it goes, the line underneath, extra words the search should match on] */
+  for (const d of G.destinations) out.push([d.name, `/getaways/${d.slug}/`, d.country, `${d.country} ${d.short || ""} ${(d.airports || []).map((a) => a.code).join(" ")}`]);
+  const combos = [...new Set(G.destinations.filter((d) => d.combo && d.combo.href).map((d) => d.combo.href))];
+  for (const href of combos) {
+    /* the slug names the two halves: a part is a country when one matches, otherwise the destination it is */
+    const parts = href.replace(/^\/getaways\/|\/$/g, "").split("-").map((p) => {
+      const byCountry = G.destinations.find((d) => (d.country || "").toLowerCase() === p);
+      if (byCountry) return byCountry.country;
+      const bySlug = G.destinations.find((d) => d.slug === p);
+      return bySlug ? bySlug.short || bySlug.name : p;
+    });
+    out.push([parts.join(" + "), href, "Two countries, one ticket", `combo two countries ${parts.join(" ")}`]);
+  }
+  for (const p of pages) {
+    const h = bySlug[String(p).split("/").pop()];
+    if (h) out.push([h.name, `${p}.html`, `${h.city}, ${h.country}`, `${h.city} ${h.country} ${h.group_or_brand || ""}`]);
+  }
+  return out;
+})();
+
+const scripts = () => `<script>window.GV_HOME=${JSON.stringify({ whatsapp: S.whatsapp, modes: H.quote.modes, kinds: H.quote.kinds, needs: H.quote.needs, copy: { notSure: H.quote.notSure, childAge: H.quote.childAge, adults: H.quote.adults, children: H.quote.children }, places: gaPlaces, maxGuests: (TR && TR.site && TR.site.maxGuests) || 16, overflowEmail: (H.footer && H.footer.email) || "", today: new Date().toISOString().slice(0, 10) })};</script>
 <script src="/getaways/assets/getaways.js" defer></script>
 <script src="${ASSETS}/home.js" defer></script>`;
 
@@ -204,12 +236,24 @@ function homePage() {
 </section>
 ${modeChips("qmodes mob")}
 <div class="wrap">
-  <form id="home-quote" class="qcard" action="/getaways/quote/" method="get">
-    <div class="qf">${icon("pin", 20)}<label><span id="hq-where-label">Where to</span><select id="hq-where" name="d"></select></label></div>
-    <div class="qf">${icon("calendar", 20)}<label><span>When</span><input type="date" id="hq-when" name="from" placeholder="Pick a date"></label></div>
-    <div class="qf">${icon("users", 20)}<label><span>Who</span><select id="hq-who" name="who">${H.quote.who.map((w) => `<option>${esc(w)}</option>`).join("")}</select></label></div>
-    <div class="qsubmit"><button class="btn btn-black btn-lg btn-full" type="submit">Get a quote${icon("arrow", 18)}</button></div>
+  <form id="home-quote" class="qcard" action="/quote/" method="get">
+    <div class="qf qf-air" data-f="air" hidden>${icon("plane", 20)}<label><span>Flying into</span><select id="hq-air" name="airport">${(TR ? TR.airports : []).map((a) => `<option value="${a.code}">${esc(a.short || a.name)}</option>`).join("")}</select></label></div>
+    <div class="qf qf-place" data-f="place">${icon("pin", 20)}<label><span id="hq-where-label">Where to</span><input type="text" id="hq-where" name="place" autocomplete="off" autocapitalize="words" spellcheck="false" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="hq-list" placeholder="Country, city or hotel"></label><button type="button" class="hq-clear" id="hq-clear" aria-label="Clear" hidden>${icon("x", 16)}</button><ul class="hq-list" id="hq-list" role="listbox" aria-label="Suggestions" hidden></ul></div>
+    <div class="qf qf-kind" data-f="kind" hidden>${icon("sun", 20)}<label><span>What kind of day</span><select id="hq-kind" name="kind">${H.quote.kinds.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select></label></div>
+    <div class="qf qf-dates" data-f="dates">${icon("calendar", 20)}<div class="hq-dates"><label><span id="hq-in-label">Check in</span><input type="date" id="hq-in" name="in" min="${today}"></label><label><span id="hq-out-label">Check out</span><input type="date" id="hq-out" name="out" min="${today}"></label></div></div>
+    <div class="qf qf-who" data-f="who">${icon("users", 20)}<label><span>${esc(H.quote.whoLabel)}</span><button type="button" class="hq-who" id="hq-who" aria-expanded="false" aria-controls="hq-pop">2 adults</button></label>
+      <div class="hq-pop" id="hq-pop" hidden>
+        <div class="hq-line"><b>${esc(H.quote.adults)}</b><span class="hq-step"><button type="button" data-step="a" data-d="-1" aria-label="One fewer adult">&minus;</button><output id="hq-a" aria-live="polite">2</output><button type="button" data-step="a" data-d="1" aria-label="One more adult">+</button></span></div>
+        <div class="hq-line"><b>${esc(H.quote.children)}</b><span class="hq-step"><button type="button" data-step="k" data-d="-1" aria-label="One fewer child">&minus;</button><output id="hq-k" aria-live="polite">0</output><button type="button" data-step="k" data-d="1" aria-label="One more child">+</button></span></div>
+        <div class="hq-ages" id="hq-ages" hidden></div>
+        <p class="hq-hint" id="hq-hint">${esc(H.quote.childAgeHint)}</p>
+        <button type="button" class="btn btn-black btn-sm" id="hq-done">${esc(H.quote.whoDone)}</button>
+      </div>
+      <input type="hidden" name="adults" id="hq-adults" value="2"><input type="hidden" name="kids" id="hq-kids" value="0"><input type="hidden" name="ages" id="hq-ages-v" value="">
+    </div>
+    <div class="qsubmit"><button class="btn btn-black btn-lg btn-full" type="submit" id="hq-go">Find a getaway${icon("arrow", 18)}</button></div>
   </form>
+  <div class="qneeds" id="hq-needs" hidden><span class="qneeds-l">${esc(H.quote.needsLabel)}</span><span class="qneeds-c">${H.quote.needs.map(([v, l]) => `<button type="button" class="chip chip-sm" data-need="${v}" aria-pressed="false">${esc(l)}</button>`).join("")}</span></div>
   <span class="qnote">${esc(H.hero.note)}</span>
 </div>`;
 
@@ -390,8 +434,53 @@ ${scripts()}
   return head({ title, description, pathname: `/${kind}/`, image: H.meta.ogImage, bodyClass: "legal-page" }) + body;
 }
 
+/* ---------- the Jamaica quote page ----------
+   Where a Staycation or a Coming to Jamaica search lands. It reads the search back out of the URL, shows
+   the person what they asked for so they can see we got it right, and hands off to WhatsApp from here.
+   The outbound side has had /getaways/quote/ doing this job for a while; this is the Jamaica half.
+   When the Jamaica hotel pages exist, a search that names a hotel goes straight there instead of here. */
+function quotePage() {
+  const body = `
+${nav()}
+<main class="qp wrap">
+  <div class="qp-head">
+    ${kicker("Your request")}
+    <h1 class="hh" id="qp-title">Let's price this up.</h1>
+    <p class="sec-sub" id="qp-sub">Here's what you told us. Check it over, add anything we've missed, and send it across.</p>
+  </div>
+  <div class="qp-grid">
+    <div class="qp-card">
+      <dl class="qp-dl" id="qp-dl"></dl>
+      <label class="qp-note"><span>Anything else we should know</span><textarea id="qp-more" rows="3" placeholder="Room type, a budget, an occasion, anything at all."></textarea></label>
+      <div class="qp-btns">
+        <button type="button" class="btn btn-black btn-lg" id="qp-send">Send this to us${icon("chat", 18)}</button>
+        <a class="btn btn-outline" href="/" id="qp-back">Change the search${icon("back", 18)}</a>
+      </div>
+      <p class="qp-ref">Reference <b id="qp-ref">&mdash;</b></p>
+    </div>
+    <aside class="qp-aside">
+      <h2 class="h">What happens next</h2>
+      <ol class="qp-steps">
+        <li><b>One of our team reads it.</b> Dino or Neomi, during working hours, from our office in Jamaica.</li>
+        <li><b>You get real prices.</b> Named hotels, what's included, and the total, in US$ or J$.</li>
+        <li><b>Nothing is booked until you say so.</b> No account, no card, no deposit to ask a question.</li>
+      </ol>
+      <p class="qp-alt">Rather just talk? <a href="${waHome}" data-where="quote-page">Message us on WhatsApp</a> or call <a href="tel:${S.phoneTel}">${esc(S.phone)}</a>.</p>
+    </aside>
+  </div>
+</main>
+${footer()}
+${scripts()}
+</body></html>`;
+  return head({
+    title: "Your Jamaica quote | Golden Vacation & Travel",
+    description: "Send us your dates, your party and where you want to stay, and one of our team in Jamaica prices it up.",
+    pathname: "/quote/", image: H.meta.ogImage, noindex: true, bodyClass: "quote-page",
+  }) + body;
+}
+
 /* ---------- write ---------- */
-const pages = [["index.html", homePage()], ["public/privacy/index.html", legalPage("privacy")], ["public/terms/index.html", legalPage("terms")]];
+const pages = [["index.html", homePage()], ["public/privacy/index.html", legalPage("privacy")], ["public/terms/index.html", legalPage("terms")], ["public/quote/index.html", quotePage()]];
 
 if (!BUNDLE) {
   for (const [rel, html] of pages) {
