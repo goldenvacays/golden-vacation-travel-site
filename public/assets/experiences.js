@@ -330,17 +330,17 @@
     function price() {
       var p = product(); if (!p) return { lead: usd(0), sub: "", total: 0, cur: "USD", note: "" };
       var r = rateOf(p), a = state.adults, c = state.children;
-      if (p.perParty) { return { lead: usd(p.visitor.usd), sub: "for two", total: p.visitor.usd, cur: "USD", note: "Priced for two people, not per person." }; }
+      if (p.perParty) { return { lead: usd(p.visitor.usd), sub: "total for two people", total: p.visitor.usd, cur: "USD", note: "Priced for two people, not per person." }; }
       if (r === "resident" && p.resident) {
         var childKnown = p.resident.jmdChild != null;
         var tot = a * p.resident.jmd + (childKnown ? c * p.resident.jmdChild : 0);
-        return { lead: jmd(tot), sub: a + " adult" + (a === 1 ? "" : "s") + (c ? " + " + c + " child" + (c === 1 ? "" : "ren") : ""), total: tot, cur: "JMD", note: !childKnown && c ? "Children on the resident rate are priced when we confirm." : "Resident rate, Jamaican ID at the gate." };
+        return { lead: jmd(tot), sub: "total for " + a + " adult" + (a === 1 ? "" : "s") + (c ? " + " + c + " child" + (c === 1 ? "" : "ren") : ""), total: tot, cur: "JMD", note: !childKnown && c ? "Children on the resident rate are priced when we confirm." : "Resident rate, Jamaican ID at the gate." };
       }
       if (p.visitor) {
         var pk = pickupOf(), add = pk ? (pk.add || 0) : 0, addC = pk ? (pk.addChild != null ? pk.addChild : add) : 0;
         var childKnownV = p.visitor.usdChild != null;
         var totV = a * (p.visitor.usd + add) + (childKnownV ? c * (p.visitor.usdChild + addC) : 0);
-        return { lead: usd(totV), sub: a + " adult" + (a === 1 ? "" : "s") + (c ? " + " + c + " child" + (c === 1 ? "" : "ren") : ""), total: totV, cur: "USD", note: !childKnownV && c ? "Children are priced when we confirm." : (add ? "Includes " + usd(add) + " per person for pickup." : "") };
+        return { lead: usd(totV), sub: "total for " + a + " adult" + (a === 1 ? "" : "s") + (c ? " + " + c + " child" + (c === 1 ? "" : "ren") : ""), total: totV, cur: "USD", note: !childKnownV && c ? "Children are priced when we confirm." : (add ? "Includes " + usd(add) + " per person for pickup." : "") };
       }
       return { lead: "Price on request", sub: "", total: 0, cur: "USD", note: "" };
     }
