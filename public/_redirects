@@ -1,3 +1,11 @@
 # Pretty URL for the interactive resort map (files live in /map, base href handles asset paths)
 /hotel-status-map     /map/index.html   200
 /hotel-status-map/    /map/index.html   200
+
+# These two pages used to be folders, so /hotel-status answered with a permanent redirect
+# to /hotel-status/. Browsers keep a permanent redirect for good. They are plain files now,
+# so the slashed form would redirect back to the slashless one and anyone holding the old
+# redirect would bounce between the two until the browser gave up. Serving the page at the
+# slashed form as well ends that. The canonical tag in the page still names the slashless URL.
+/hotel-status/        /hotel-status.html    200
+/group-inquiry/       /group-inquiry.html   200
