@@ -43,132 +43,90 @@
     "img": "hero-fisher.jpg",
     "imgMobile": "hero-fisher-m.jpg",
     "alt": "A fisherman standing on his raft off the north coast of Jamaica",
-    "note": "No account, no payment. On WhatsApp, within working hours, one of our travel professionals is ready to help."
+    "note": "No account, no payment. Prices and dates on the page, and a person from our team checks every booking."
   },
   "quote": {
     "modes": [
       {
         "key": "getaways",
         "label": "Getaways",
-        "whereLabel": "Where to",
-        "options": [
-          [
-            "panama",
-            "Panama City"
-          ],
-          [
-            "medellin",
-            "Medellín"
-          ],
-          [
-            "punta-cana",
-            "Punta Cana"
-          ],
-          [
-            "lima",
-            "Lima"
-          ],
-          [
-            "panama-peru",
-            "Panama + Peru"
-          ],
-          [
-            "panama-medellin",
-            "Panama + Medellín"
-          ],
-          [
-            "",
-            "Somewhere else"
-          ]
-        ]
+        "code": "PTY",
+        "placeLabel": "Where to",
+        "placeHint": "Country, city or hotel",
+        "dateIn": "Check in",
+        "dateOut": "Check out",
+        "cta": "Find a getaway"
       },
       {
         "key": "coming",
         "label": "Coming to Jamaica",
-        "whereLabel": "Coming from",
-        "options": [
-          [
-            "USA",
-            "The USA"
-          ],
-          [
-            "Canada",
-            "Canada"
-          ],
-          [
-            "UK",
-            "The UK"
-          ],
-          [
-            "home",
-            "Coming home for a visit"
-          ],
-          [
-            "other",
-            "Somewhere else"
-          ]
-        ],
-        "code": "JAM"
+        "code": "JAM",
+        "placeLabel": "Flying from",
+        "placeHint": "Your city",
+        "dateIn": "Check in",
+        "dateOut": "Check out",
+        "cta": "Plan my trip",
+        "needs": true
       },
       {
         "key": "staycation",
         "label": "Staycation",
-        "whereLabel": "Where in Jamaica",
-        "options": [
-          [
-            "Ocho Rios",
-            "Ocho Rios"
-          ],
-          [
-            "Montego Bay",
-            "Montego Bay"
-          ],
-          [
-            "Negril",
-            "Negril"
-          ],
-          [
-            "Runaway Bay",
-            "Runaway Bay"
-          ],
-          [
-            "South Coast",
-            "South Coast"
-          ],
-          [
-            "Anywhere",
-            "Anywhere, best value"
-          ]
-        ],
-        "code": "STAY"
+        "code": "STAY",
+        "placeLabel": "Where in Jamaica",
+        "placeHint": "Hotel or area",
+        "places": "jamaica",
+        "dateIn": "Check in",
+        "dateOut": "Check out",
+        "cta": "Find a staycation"
       },
       {
         "key": "tours",
         "label": "Tours",
-        "whereLabel": "What kind of day",
-        "options": [
-          [
-            "Add to my stay",
-            "Add tours to my hotel stay"
-          ],
-          [
-            "Cruise day",
-            "In port for the day, off a ship"
-          ],
-          [
-            "Locals' day out",
-            "A locals' day out"
-          ]
-        ],
-        "code": "TOURS"
+        "code": "TOURS",
+        "placeLabel": "What kind of day",
+        "kinds": true,
+        "dateIn": "Date",
+        "dateOut": "Or up to",
+        "dateOptional": true,
+        "cta": "Show me days out"
+      },
+      {
+        "key": "transfers",
+        "label": "Transfers",
+        "code": "TR",
+        "placeLabel": "Going to",
+        "placeHint": "Hotel or area",
+        "places": "jamaica",
+        "airports": true,
+        "dateIn": "Arriving",
+        "dateOut": "Going back",
+        "dateOptional": true,
+        "cta": "Price my transfer"
       }
     ],
-    "who": [
-      "2 adults",
-      "1 adult",
-      "2 adults, kids",
-      "3 or more adults"
-    ]
+    "kinds": [
+      ["passes", "Day and evening passes"],
+      ["tours", "Tours and adventure"],
+      ["water", "On the water"],
+      ["night", "Nightlife and evenings"],
+      ["lounges", "Airport lounges"],
+      ["family", "Family days"],
+      ["all", "Not sure yet, show me everything"]
+    ],
+    "needs": [
+      ["hotel", "Hotel"],
+      ["flights", "Flights"],
+      ["transfers", "Airport transfer"],
+      ["tours", "Tours"]
+    ],
+    "needsLabel": "What do you need",
+    "notSure": "Not sure yet",
+    "whoLabel": "Who's travelling",
+    "adults": "Adults",
+    "children": "Children",
+    "childAge": "Age",
+    "childAgeHint": "Ages at the time of travel. They decide the price.",
+    "whoDone": "Done"
   },
   "doors": {
     "kicker": "Start here",
