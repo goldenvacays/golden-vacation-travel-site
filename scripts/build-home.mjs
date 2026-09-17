@@ -253,6 +253,14 @@ ${modeChips("qmodes mob")}
     </div>
     <div class="qsubmit"><button class="btn btn-black btn-lg btn-full" type="submit" id="hq-go">Find a getaway${icon("arrow", 18)}</button></div>
   </form>
+  <div class="qextra" id="hq-flight" hidden>
+    <span class="qneeds-l">Your flight</span>
+    <label class="qx"><span>Landing time</span><input type="time" id="hq-time" name="time"></label>
+    <label class="qx"><span>Flight number</span><input type="text" id="hq-flt" name="flight" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="AA1497" maxlength="8"></label>
+    <label class="qx" id="hq-out-wrap" hidden><span>Take-off time</span><input type="time" id="hq-time2" name="time2"></label>
+    <label class="qx" id="hq-flt2-wrap" hidden><span>Flight back</span><input type="text" id="hq-flt2" name="flight2" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="AA1496" maxlength="8"></label>
+    <span class="qx-note" id="hq-flt-note">With these we go straight to prices and the driver knows when to be there.</span>
+  </div>
   <div class="qneeds" id="hq-needs" hidden><span class="qneeds-l">${esc(H.quote.needsLabel)}</span><span class="qneeds-c">${H.quote.needs.map(([v, l]) => `<button type="button" class="chip chip-sm" data-need="${v}" aria-pressed="false">${esc(l)}</button>`).join("")}</span></div>
   <span class="qnote">${esc(H.hero.note)}</span>
 </div>`;

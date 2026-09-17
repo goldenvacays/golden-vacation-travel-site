@@ -23,8 +23,17 @@ function hubPage() {
   const quoteForm = `<form id="hub-quote" class="qcard" action="${BASE}/quote/" method="get">
     <div class="qf">${icon("pin", 20)}<label><span>Where to</span><select name="d">${dests.map((d) => `<option value="${d.slug}">${esc(d.name)}</option>`).join("")}${DATA.combos.map((c) => `<option value="${c.slug}">${esc(c.name)}</option>`).join("")}<option value="">Somewhere else</option></select></label></div>
     <div class="qf">${icon("send", 20)}<label><span>Leaving from</span><select name="a"><option value="KIN">Kingston</option><option value="MBJ">Montego Bay</option></select></label></div>
-    <div class="qf">${icon("calendar", 20)}<label><span>Leaving</span><input type="date" name="from" placeholder="Pick a date"></label></div>
-    <div class="qf">${icon("users", 20)}<label><span>Who</span><select name="who"><option>2 adults</option><option>1 adult</option><option>2 adults, kids</option><option>3 or more adults</option></select></label></div>
+    <div class="qf qf-dates">${icon("calendar", 20)}<div class="hq-dates"><label><span>Check in</span><input type="date" id="hub-in" name="from"></label><label><span>Check out</span><input type="date" id="hub-out" name="to"></label></div></div>
+    <div class="qf qf-who">${icon("users", 20)}<label><span>Who's travelling</span><button type="button" class="hq-who" id="hub-who" aria-expanded="false" aria-controls="hub-pop">2 adults</button></label>
+      <div class="hq-pop" id="hub-pop" hidden>
+        <div class="hq-line"><b>Adults</b><span class="hq-step"><button type="button" data-hub="a" data-d="-1" aria-label="One fewer adult">&minus;</button><output id="hub-a" aria-live="polite">2</output><button type="button" data-hub="a" data-d="1" aria-label="One more adult">+</button></span></div>
+        <div class="hq-line"><b>Children</b><span class="hq-step"><button type="button" data-hub="k" data-d="-1" aria-label="One fewer child">&minus;</button><output id="hub-k" aria-live="polite">0</output><button type="button" data-hub="k" data-d="1" aria-label="One more child">+</button></span></div>
+        <div class="hq-ages" id="hub-ages" hidden></div>
+        <p class="hq-hint">Ages at the time of travel. They decide the price.</p>
+        <button type="button" class="btn btn-black btn-sm" id="hub-done">Done</button>
+      </div>
+      <input type="hidden" name="adults" id="hub-adults" value="2"><input type="hidden" name="kids" id="hub-kids" value="0"><input type="hidden" name="ages" id="hub-ages-v" value="">
+    </div>
     <div class="qsubmit"><button class="btn btn-black btn-lg btn-full" type="submit">Get a quote${icon("arrow", 18)}</button></div>
   </form>
   <span class="qnote">No account, no payment. On WhatsApp, within working hours, one of our travel professionals is ready to help.</span>`;
@@ -254,6 +263,7 @@ ${nav({ back: `${BASE}/`, title: "the quote page" })}
   <div class="grid2"><label class="field"><span>Leaving</span><span class="field-in">${icon("calendar", 20)}<input type="date" id="q-leaving" name="from"></span></label><label class="field"><span>Returning</span><span class="field-in">${icon("calendar", 20)}<input type="date" id="q-returning" name="to"></span></label></div>
   <div class="row2"><div class="stepper"><span>Adults</span><div class="stepper-in"><button type="button" data-step="adults" data-dir="-1" aria-label="Fewer adults">−</button><output id="out-adults">2</output><button type="button" data-step="adults" data-dir="1" aria-label="More adults">+</button></div></div>
     <div class="stepper"><span>Kids</span><div class="stepper-in"><button type="button" data-step="kids" data-dir="-1" aria-label="Fewer kids">−</button><output id="out-kids">0</output><button type="button" data-step="kids" data-dir="1" aria-label="More kids">+</button></div></div></div>
+  <div class="hq-ages" id="q-ages" hidden></div>
   <div class="opt"><span class="lbl">Budget per person</span><div class="chip-row">${budgets.map((b) => `<button type="button" class="chip" data-budget="${esc(b)}" aria-pressed="${b === "Not sure"}">${esc(b)}</button>`).join("")}</div></div>
   <label class="field"><span>Your name</span><span class="field-in">${icon("users", 20)}<input type="text" id="q-name" name="name" placeholder="So we know who we're talking to" autocomplete="given-name"></span></label>
   <div class="opt"><span class="lbl">Quote me in</span><div class="curr" role="group" aria-label="Quote currency"><button type="button" data-cur="US$" class="on">US$</button><button type="button" data-cur="J$">J$</button></div></div>
