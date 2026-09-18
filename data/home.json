@@ -42,8 +42,7 @@
     "subMobile": "Getaways in and out of Jamaica, island tours and everything between. Real people, in Jamaica. We travel just like you.",
     "img": "hero-fisher.jpg",
     "imgMobile": "hero-fisher-m.jpg",
-    "alt": "A fisherman standing on his raft off the north coast of Jamaica",
-    "note": "No account, no payment. Prices and dates on the page, and a person from our team checks every booking."
+    "alt": "A fisherman standing on his raft off the north coast of Jamaica"
   },
   "quote": {
     "modes": [
@@ -55,18 +54,21 @@
         "placeHint": "Country, city or hotel",
         "dateIn": "Check in",
         "dateOut": "Check out",
-        "cta": "Find a getaway"
+        "cta": "Find a getaway",
+        "rooms": true
       },
       {
         "key": "coming",
         "label": "Coming to Jamaica",
         "code": "JAM",
-        "placeLabel": "Flying from",
-        "placeHint": "Your city",
+        "placeLabel": "Going to",
+        "placeHint": "Hotel or area",
+        "places": "jamaica",
         "dateIn": "Check in",
         "dateOut": "Check out",
         "cta": "Plan my trip",
-        "needs": true
+        "needs": true,
+        "rooms": true
       },
       {
         "key": "staycation",
@@ -77,7 +79,8 @@
         "places": "jamaica",
         "dateIn": "Check in",
         "dateOut": "Check out",
-        "cta": "Find a staycation"
+        "cta": "Find a staycation",
+        "rooms": true
       },
       {
         "key": "tours",
@@ -87,6 +90,7 @@
         "kinds": true,
         "dateIn": "Date",
         "dateOut": "Or up to",
+        "pickup": true,
         "dateOptional": true,
         "cta": "Show me days out"
       },
@@ -124,8 +128,14 @@
     "whoLabel": "Who's travelling",
     "adults": "Adults",
     "children": "Children",
+    "rooms": "Rooms",
     "childAge": "Age",
-    "childAgeHint": "Ages at the time of travel. They decide the price.",
+    "childAgeHint": "Ages at the time of travel.",
+    "fromLabel": "Flying from",
+    "fromHint": "City or airport code",
+      "pickLabel": "Pick up from",
+      "pickHint": "Hotel or area (optional)",
+      "pickNote": "Optional. Tells us where to collect you, and we show the days out nearest you first.",
     "whoDone": "Done"
   },
   "doors": {
@@ -479,12 +489,12 @@
     },
     "search": {
       "hotel": "Where are you staying?",
-      "hotelPlaceholder": "Hotel, villa or Airbnb area",
+      "hotelPlaceholder": "Hotel, villa or area",
       "airport": "Airport",
       "people": "People",
       "date": "Arrival date",
       "go": "Search transfers"
     },
-    "note": "Resorts across the island are on the list. Don't see your villa or Airbnb? Type in the area."
+    "note": "Resorts across the island are on the list. Don't see your villa or hotel? Type in the area."
   }
 }

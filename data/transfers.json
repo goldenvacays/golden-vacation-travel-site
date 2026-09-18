@@ -152,7 +152,7 @@
     },
     "search": {
       "hotel": "Where are you staying?",
-      "hotelPlaceholder": "Hotel, villa or Airbnb area",
+      "hotelPlaceholder": "Hotel, villa or area",
       "to": "Going to",
       "toPlaceholder": "The other hotel, or its area",
       "airport": "Airport",
@@ -167,7 +167,7 @@
       "date": "Date",
       "time": "Pickup time",
       "go": "Search",
-      "hint": "Resorts across the island are on the list. Don't see your villa or Airbnb? Type in the area."
+      "hint": "Resorts across the island are on the list. Don't see your villa or hotel? Type in the area."
     },
     "results": {
       "kicker": "Your options",
@@ -331,7 +331,7 @@
     {
       "key": "mobay",
       "name": "Montego Bay",
-      "airbnbLabel": "Montego Bay, villa or Airbnb",
+      "airbnbLabel": "Montego Bay, villa or hotel",
       "regions": [
         "mobay"
       ],
@@ -361,7 +361,7 @@
     {
       "key": "mobay-nonai",
       "name": "Montego Bay",
-      "airbnbLabel": "Montego Bay, villa or Airbnb (not a resort)",
+      "airbnbLabel": "Montego Bay, villa or hotel (not a resort)",
       "aliases": [
         "montego bay",
         "mobay",
@@ -371,12 +371,12 @@
       ],
       "places": [],
       "hidden": true,
-      "note": "Montego Bay hotels that are not all-inclusive: same drive, the sheet prices them on their own row. Not offered as a villa or Airbnb area (the mobay zone covers that)."
+      "note": "Montego Bay hotels that are not all-inclusive: same drive, the sheet prices them on their own row. Not offered as a villa or area (the mobay zone covers that)."
     },
     {
       "key": "rose-hall",
       "name": "Rose Hall",
-      "airbnbLabel": "Rose Hall, villa or Airbnb",
+      "airbnbLabel": "Rose Hall, villa or hotel",
       "rule": {
         "region": "mobay",
         "lngMin": -77.85
@@ -395,7 +395,7 @@
     {
       "key": "lucea",
       "name": "Hanover (Lucea)",
-      "airbnbLabel": "Hanover (Lucea), villa or Airbnb",
+      "airbnbLabel": "Hanover (Lucea), villa or hotel",
       "regions": [
         "lucea"
       ],
@@ -427,7 +427,7 @@
     {
       "key": "falmouth",
       "name": "Trelawny (Falmouth)",
-      "airbnbLabel": "Trelawny (Falmouth), villa or Airbnb",
+      "airbnbLabel": "Trelawny (Falmouth), villa or hotel",
       "regions": [
         "falmouth"
       ],
@@ -449,7 +449,7 @@
     {
       "key": "runaway-bay",
       "name": "Runaway Bay",
-      "airbnbLabel": "Runaway Bay, villa or Airbnb",
+      "airbnbLabel": "Runaway Bay, villa or hotel",
       "rule": {
         "region": "ocho",
         "lngMax": -77.25
@@ -469,7 +469,7 @@
     {
       "key": "ocho-rios",
       "name": "Ocho Rios",
-      "airbnbLabel": "Ocho Rios, villa or Airbnb",
+      "airbnbLabel": "Ocho Rios, villa or hotel",
       "rule": {
         "region": "ocho",
         "lngMin": -77.25
@@ -500,7 +500,7 @@
     {
       "key": "negril",
       "name": "Negril",
-      "airbnbLabel": "Negril, villa or Airbnb",
+      "airbnbLabel": "Negril, villa or hotel",
       "regions": [
         "negril"
       ],
@@ -532,7 +532,7 @@
     {
       "key": "south-coast",
       "name": "South Coast",
-      "airbnbLabel": "South Coast, villa or Airbnb",
+      "airbnbLabel": "South Coast, villa or hotel",
       "regions": [
         "south"
       ],
@@ -553,7 +553,7 @@
     {
       "key": "treasure-beach",
       "name": "Treasure Beach",
-      "airbnbLabel": "Treasure Beach or Black River, villa or Airbnb",
+      "airbnbLabel": "Treasure Beach or Black River, villa or hotel",
       "aliases": [
         "treasure beach",
         "black river",
@@ -572,7 +572,7 @@
     {
       "key": "kingston",
       "name": "Kingston",
-      "airbnbLabel": "Kingston, villa or Airbnb",
+      "airbnbLabel": "Kingston, villa or hotel",
       "aliases": [
         "kingston",
         "new kingston",
@@ -595,7 +595,7 @@
     {
       "key": "blue-mountains",
       "name": "Blue Mountains",
-      "airbnbLabel": "Blue Mountains or Irish Town, villa or Airbnb",
+      "airbnbLabel": "Blue Mountains or Irish Town, villa or hotel",
       "aliases": [
         "blue mountains",
         "irish town",
@@ -609,7 +609,7 @@
     {
       "key": "port-antonio",
       "name": "Port Antonio",
-      "airbnbLabel": "Port Antonio, villa or Airbnb",
+      "airbnbLabel": "Port Antonio, villa or hotel",
       "aliases": [
         "port antonio",
         "portland",
