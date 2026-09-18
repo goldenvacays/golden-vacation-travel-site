@@ -140,4 +140,4 @@ export function footer() {
 
 export const bottomBar = (label, href, note) => `<div class="bar mob" role="region" aria-label="Get a quote"><a class="btn btn-black btn-lg btn-full" href="${href}">${esc(label)}${icon("chat", 18)}</a><small>${esc(note)}</small></div>`;
 
-export const scripts = () => `<script src="${BASE}/assets/getaways.js" defer></script>`;
+export const scripts = (dates) => `<script src="${BASE}/assets/getaways.js" defer></script>${dates ? `\n<script src="/assets/daterange.js" defer></script>` : ""}`;

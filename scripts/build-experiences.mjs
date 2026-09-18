@@ -493,7 +493,7 @@ function panel(v) {
   const pickup = v.pickups ? `<div class="pf" id="pf-pickup-wrap">
       <div class="hotel-q pf-f"><span class="pf-l">Pickup from</span>
         <label class="pf-f hotel-f"><span class="pf-in">${icon("pin", 18)}<input type="search" id="pf-hotel-in" placeholder="Type your hotel, area or cruise port" autocomplete="off" autocapitalize="words" aria-label="Pickup hotel, area or cruise port"></span></label><ul class="hotel-list" id="pf-hotel-list" role="listbox" hidden></ul></div>
-      <label class="pf-f" id="pf-pickup-other-wrap" hidden><span class="pf-in">${icon("pin", 18)}<input type="text" id="pf-pickup-hotel" placeholder="Villa or Airbnb name, for the driver" autocomplete="off"></span></label>
+      <label class="pf-f" id="pf-pickup-other-wrap" hidden><span class="pf-in">${icon("pin", 18)}<input type="text" id="pf-pickup-hotel" placeholder="Villa or hotel name, for the driver" autocomplete="off"></span></label>
       <div class="chip-row pickup-alts"><button type="button" class="chip chip-sm" data-pick="own" aria-pressed="false">I'll make my own way</button></div>
       <p class="pf-hint" id="pickup-note">${v.pickups.some((p) => p.add) ? "Pickup from Negril hotels is included. Lucea and Montego Bay pickups are priced per person." : "Hotel pickup from Negril and Montego Bay is included."}</p>
     </div>` : "";

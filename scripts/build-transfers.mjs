@@ -270,6 +270,7 @@ const STRIPE_JS = "https://js.stripe.com/dahlia/stripe.js";
    pays for 243K it has nothing to do with. */
 const scripts = (cfg, withRates, withStripe = false) => `<script>window.GV_TR=${JSON.stringify(cfg)};</script>
 <script src="${ASSETS}/chrome.js?v=${CHROME_STAMP}" defer></script>
+<script src="/assets/daterange.js" defer></script>
 ${withRates ? `<script src="${ASSETS}/transfers-rates.js?v=${RATES_STAMP}" defer></script>\n` : ""}${withStripe ? `<script src="${STRIPE_JS}" defer></script>\n` : ""}<script src="${ASSETS}/transfers.js?v=${STAMP}" defer></script>`;
 
 /* ---------- the page ---------- */
@@ -321,18 +322,18 @@ ${nav()}
       <div class="tr-f tr-f-trip"><label class="pf-l" for="s-trip">${esc(SR.trip)}</label><span class="pf-in">${icon("car", 18)}<select id="s-trip">${trips}</select></span></div>
       <div class="tr-f tr-f-people"><label class="pf-l" for="s-people">${esc(SR.people)}</label><span class="pf-in">${icon("users", 18)}<select id="s-people">${people}</select></span></div>
     </div>
-    <div class="tr-row tr-row-name" id="s-name-wrap" hidden><div class="tr-f"><span class="pf-in">${icon("pin", 18)}<input type="text" id="s-name" placeholder="Villa or Airbnb name, for the driver" autocomplete="off"></span></div></div>
+    <div class="tr-row tr-row-name" id="s-name-wrap" hidden><div class="tr-f"><span class="pf-in">${icon("pin", 18)}<input type="text" id="s-name" placeholder="Villa or hotel name, for the driver" autocomplete="off"></span></div></div>
     <div class="tr-row tr-row-to" id="s-to-wrap" hidden>
       <div class="tr-f tr-f-hotel hotel-q"><label class="pf-l" for="s-to">${esc(SR.to)}</label><span class="pf-in">${icon("pin", 18)}<input type="search" id="s-to" placeholder="${esc(SR.toPlaceholder)}" autocomplete="off" autocapitalize="words" aria-autocomplete="list" aria-controls="s-to-list"><button type="button" id="s-to-clear" class="clr" aria-label="Clear" hidden>${icon("x", 16, 2.6)}</button></span><ul class="hotel-list" id="s-to-list" role="listbox" hidden></ul></div>
-      <div class="tr-f" id="s-to-name-wrap" hidden><span class="pf-l">&nbsp;</span><span class="pf-in">${icon("pin", 18)}<input type="text" id="s-to-name" placeholder="Villa or Airbnb name, for the driver" autocomplete="off"></span></div>
+      <div class="tr-f" id="s-to-name-wrap" hidden><span class="pf-l">&nbsp;</span><span class="pf-in">${icon("pin", 18)}<input type="text" id="s-to-name" placeholder="Villa or hotel name, for the driver" autocomplete="off"></span></div>
     </div>
     <div class="tr-row tr-row-when" id="s-in-wrap">
-      <div class="tr-f"><label class="pf-l" id="s-date-l" for="s-date">${esc(SR.dateIn)}</label><span class="pf-in">${icon("calendar", 18)}<input type="date" id="s-date"></span></div>
+      <div class="tr-f"><label class="pf-l" id="s-date-l" for="s-date">${esc(SR.dateIn)}</label><span class="pf-in"><input type="date" id="s-date" data-dr="single"></span></div>
       <div class="tr-f" id="s-flight-in-wrap"><label class="pf-l" for="s-flight-in">${esc(SR.flightIn)}</label><span class="pf-in">${icon("plane", 18)}<input type="text" id="s-flight-in" placeholder="e.g. AA1497" autocapitalize="characters" autocomplete="off"></span></div>
       <div class="tr-f" id="s-time-in-wrap"><label class="pf-l" id="s-time-l" for="s-time">${esc(SR.timeIn)}</label><span class="pf-in pf-in-time">${icon("clock", 18)}<input type="time" id="s-time" autocomplete="off"></span></div>
     </div>
     <div class="tr-row tr-row-when" id="s-out-wrap" hidden>
-      <div class="tr-f"><label class="pf-l" for="s-date2">${esc(SR.dateOut)}</label><span class="pf-in">${icon("calendar", 18)}<input type="date" id="s-date2"></span></div>
+      <div class="tr-f"><label class="pf-l" for="s-date2">${esc(SR.dateOut)}</label><span class="pf-in"><input type="date" id="s-date2" data-dr="single"></span></div>
       <div class="tr-f"><label class="pf-l" for="s-flight-out">${esc(SR.flightOut)}</label><span class="pf-in">${icon("plane", 18)}<input type="text" id="s-flight-out" placeholder="e.g. AA1496" autocapitalize="characters" autocomplete="off"></span></div>
       <div class="tr-f"><label class="pf-l" for="s-time2">${esc(SR.timeOut)}</label><span class="pf-in pf-in-time">${icon("clock", 18)}<input type="time" id="s-time2" autocomplete="off"></span></div>
     </div>

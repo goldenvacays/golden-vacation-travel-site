@@ -23,13 +23,13 @@ function hubPage() {
   const quoteForm = `<form id="hub-quote" class="qcard" action="${BASE}/quote/" method="get">
     <div class="qf">${icon("pin", 20)}<label><span>Where to</span><select name="d">${dests.map((d) => `<option value="${d.slug}">${esc(d.name)}</option>`).join("")}${DATA.combos.map((c) => `<option value="${c.slug}">${esc(c.name)}</option>`).join("")}<option value="">Somewhere else</option></select></label></div>
     <div class="qf">${icon("send", 20)}<label><span>Leaving from</span><select name="a"><option value="KIN">Kingston</option><option value="MBJ">Montego Bay</option></select></label></div>
-    <div class="qf qf-dates">${icon("calendar", 20)}<div class="hq-dates"><label><span>Check in</span><input type="date" id="hub-in" name="from"></label><label><span>Check out</span><input type="date" id="hub-out" name="to"></label></div></div>
+    <div class="qf qf-dates"><div class="hq-dates"><label><span>Check in</span><input type="date" id="hub-in" name="from" data-dr="start" data-dr-pair="#hub-out" data-dr-optional></label><label><span>Check out</span><input type="date" id="hub-out" name="to" data-dr="end"></label></div></div>
     <div class="qf qf-who">${icon("users", 20)}<label><span>Who's travelling</span><button type="button" class="hq-who" id="hub-who" aria-expanded="false" aria-controls="hub-pop">2 adults</button></label>
       <div class="hq-pop" id="hub-pop" hidden>
         <div class="hq-line"><b>Adults</b><span class="hq-step"><button type="button" data-hub="a" data-d="-1" aria-label="One fewer adult">&minus;</button><output id="hub-a" aria-live="polite">2</output><button type="button" data-hub="a" data-d="1" aria-label="One more adult">+</button></span></div>
         <div class="hq-line"><b>Children</b><span class="hq-step"><button type="button" data-hub="k" data-d="-1" aria-label="One fewer child">&minus;</button><output id="hub-k" aria-live="polite">0</output><button type="button" data-hub="k" data-d="1" aria-label="One more child">+</button></span></div>
         <div class="hq-ages" id="hub-ages" hidden></div>
-        <p class="hq-hint">Ages at the time of travel. They decide the price.</p>
+        <p class="hq-hint">Ages at the time of travel.</p>
         <button type="button" class="btn btn-black btn-sm" id="hub-done">Done</button>
       </div>
       <input type="hidden" name="adults" id="hub-adults" value="2"><input type="hidden" name="kids" id="hub-kids" value="0"><input type="hidden" name="ages" id="hub-ages-v" value="">
@@ -109,7 +109,7 @@ function hubPage() {
     { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: H.faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) },
     { "@context": "https://schema.org", "@type": "ItemList", name: "Getaways from Jamaica", itemListElement: dests.map((d, i) => ({ "@type": "ListItem", position: i + 1, name: d.name, url: `${S.origin}${BASE}/${d.slug}/` })) },
   ];
-  const body = `<body class="has-bar">
+  const body = `<body class="ga-page has-bar">
 ${nav()}
 ${hero}
 ${howMobile}
@@ -126,7 +126,7 @@ ${people}
 ${stay}
 ${footer()}
 ${bottomBar("Get a quote on WhatsApp", `${BASE}/quote/`, "Replies within working hours · no payment yet")}
-${scripts()}
+${scripts(true)}
 </body></html>`;
   return head({ title: H.title, description: H.description, pathname: `${BASE}/`, image: H.hero.img, jsonld }) + body;
 }
@@ -169,7 +169,7 @@ function destPage(d) {
     { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: d.faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: replyLine(a) } })) },
     { "@context": "https://schema.org", "@type": "TouristTrip", name: `${d.name} package from Jamaica`, description: d.description, touristType: "Jamaican passport holders", url: `${S.origin}${BASE}/${d.slug}/`, provider: { "@id": `${S.origin}/#organization` }, offers: { "@type": "AggregateOffer", priceCurrency: "USD", lowPrice: d.from, offerCount: d.groups.reduce((n, g) => n + g.hotels.length, 0), availability: "https://schema.org/InStock" } },
   ];
-  const body = `<body class="has-bar" data-dest="${d.slug}" data-default-airport="${d.airports[0].code}" data-default-nights="${d.defaultNights}" data-lead="${lead.slug}">
+  const body = `<body class="ga-page has-bar" data-dest="${d.slug}" data-default-airport="${d.airports[0].code}" data-default-nights="${d.defaultNights}" data-lead="${lead.slug}">
 ${nav({ back: `${BASE}/`, title: `the ${d.name} page` })}
 <section class="hero-photo">${heroPic(d.hero.img, d.hero.alt)}<div class="hero-tags">${d.heroTags.map((t, i) => tag(t, i ? "white" : "gold")).join("")}</div></section>
 <div class="wrap">
@@ -191,7 +191,7 @@ ${opts}
 ${ticker(d.ticker)}
 ${footer()}
 ${bottomBar("Get a quote for these dates", quoteUrl(lead.slug), d.bottomNote)}
-${scripts()}
+${scripts(true)}
 </body></html>`;
   return head({ title: d.title, description: d.description, pathname: `${BASE}/${d.slug}/`, image: d.hero.img, jsonld }) + body;
 }
@@ -204,7 +204,7 @@ function comboPage(c) {
   const included = `<section class="list"><div>${kicker("What's included")}</div>${c.included.map((t) => check(esc(t))).join("")}</section>`;
   const tours = `<section class="list"><div>${kicker("Days out")}</div><p class="sec-sub">${esc(c.toursNote)}</p>${c.tours.map((t) => `<div class="tour">${pic(t.img, t.alt)}<div class="tour-t"><b>${esc(t.name)}</b><small>${esc(t.text)}</small></div><span class="hh">${usd(t.price)}</span></div>`).join("")}</section>`;
   const dates = `<form class="dates" action="${BASE}/quote/" method="get"><input type="hidden" name="d" value="${c.slug}"><div>${kicker("Your dates")}</div>
-    <div class="dates-grid"><label class="field"><span>Leaving</span><span class="field-in">${icon("calendar", 20)}<input type="date" name="from"></span></label><label class="field"><span>Returning</span><span class="field-in">${icon("calendar", 20)}<input type="date" name="to"></span></label></div>
+    <div class="dates-grid"><label class="field"><span>Leaving</span><span class="field-in"><input type="date" name="from" id="d-leaving" data-dr="start" data-dr-pair="#d-returning" data-dr-optional></span></label><label class="field"><span>Returning</span><span class="field-in"><input type="date" name="to" id="d-returning" data-dr="end"></span></label></div>
     <span class="note">${esc(c.datesNote)}</span>
     <button class="btn btn-black btn-full" type="submit">Get a quote for these dates${icon("arrow", 18)}</button></form>`;
   const deposit = `<div class="deposit"><span class="h">Hold it with a deposit from ${usd(c.deposit)}.</span><p>Balance due 30 days before departure, in J$ or US$, by card link or bank transfer.</p></div>`;
@@ -214,7 +214,7 @@ function comboPage(c) {
     { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: c.faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) },
     { "@context": "https://schema.org", "@type": "TouristTrip", name: `${c.name} from Jamaica`, description: c.description, url: `${S.origin}${BASE}/${c.slug}/`, provider: { "@id": `${S.origin}/#organization` }, offers: { "@type": "Offer", priceCurrency: "USD", price: c.price, availability: "https://schema.org/InStock" } },
   ];
-  const body = `<body class="has-bar">
+  const body = `<body class="ga-page has-bar">
 ${nav({ back: `${BASE}/`, title: `the ${c.name} page` })}
 <section class="hero-photo">${heroPic(c.hero.img, c.hero.alt)}<div class="hero-tags">${c.heroTags.map((t, i) => tag(t, i < 2 ? "gold" : "white")).join("")}</div></section>
 <div class="wrap">
@@ -235,7 +235,7 @@ ${nav({ back: `${BASE}/`, title: `the ${c.name} page` })}
 ${ticker(c.ticker)}
 ${footer()}
 ${bottomBar("Get a quote for these dates", quoteUrl, c.bottomNote)}
-${scripts()}
+${scripts(true)}
 </body></html>`;
   return head({ title: c.title, description: c.description, pathname: `${BASE}/${c.slug}/`, image: c.hero.img, jsonld }) + body;
 }
@@ -247,8 +247,8 @@ function quotePage() {
     combos: DATA.combos.map((c) => ({ slug: c.slug, code: c.code, name: c.name, short: c.name, img: c.hero.img, combo: true, airport: c.airport, airportName: c.airportName, hotelLabel: c.hotelLabel })),
   };
   [...DATA.destinations.map((d) => d.hero.img), ...DATA.combos.map((c) => c.hero.img), ...DATA.destinations.flatMap((d) => d.groups.flatMap((g) => g.hotels.map((h) => h.img)))].filter(Boolean).forEach((f) => usedImages.add(f));
-  const budgets = ["Under US$600", "US$600–900", "US$900+", "Not sure"];
-  const body = `<body>
+  const meals = ["Bed and breakfast", "All inclusive", "No meals", "Not sure"];
+  const body = `<body class="ga-page">
 ${nav({ back: `${BASE}/`, title: "the quote page" })}
 <div class="quote-wrap">
 <form id="quote-form" class="quote-form" onsubmit="return false">
@@ -260,11 +260,11 @@ ${nav({ back: `${BASE}/`, title: "the quote page" })}
 <div class="qform">
   <div class="opt"><span class="lbl">Leaving from</span><div class="chip-row" id="q-airports"></div></div>
   <div class="opt"><span class="lbl">Nights</span><div class="chip-row" id="q-nights"></div></div>
-  <div class="grid2"><label class="field"><span>Leaving</span><span class="field-in">${icon("calendar", 20)}<input type="date" id="q-leaving" name="from"></span></label><label class="field"><span>Returning</span><span class="field-in">${icon("calendar", 20)}<input type="date" id="q-returning" name="to"></span></label></div>
+  <div class="grid2"><label class="field"><span>Leaving</span><span class="field-in"><input type="date" id="q-leaving" name="from" data-dr="start" data-dr-pair="#q-returning" data-dr-optional></span></label><label class="field"><span>Returning</span><span class="field-in"><input type="date" id="q-returning" name="to" data-dr="end"></span></label></div>
   <div class="row2"><div class="stepper"><span>Adults</span><div class="stepper-in"><button type="button" data-step="adults" data-dir="-1" aria-label="Fewer adults">−</button><output id="out-adults">2</output><button type="button" data-step="adults" data-dir="1" aria-label="More adults">+</button></div></div>
     <div class="stepper"><span>Kids</span><div class="stepper-in"><button type="button" data-step="kids" data-dir="-1" aria-label="Fewer kids">−</button><output id="out-kids">0</output><button type="button" data-step="kids" data-dir="1" aria-label="More kids">+</button></div></div></div>
   <div class="hq-ages" id="q-ages" hidden></div>
-  <div class="opt"><span class="lbl">Budget per person</span><div class="chip-row">${budgets.map((b) => `<button type="button" class="chip" data-budget="${esc(b)}" aria-pressed="${b === "Not sure"}">${esc(b)}</button>`).join("")}</div></div>
+  <div class="opt"><span class="lbl">Meals</span><div class="chip-row">${meals.map((b) => `<button type="button" class="chip" data-meals="${esc(b)}" aria-pressed="${b === "Not sure"}">${esc(b)}</button>`).join("")}</div></div>
   <label class="field"><span>Your name</span><span class="field-in">${icon("users", 20)}<input type="text" id="q-name" name="name" placeholder="So we know who we're talking to" autocomplete="given-name"></span></label>
   <div class="opt"><span class="lbl">Quote me in</span><div class="curr" role="group" aria-label="Quote currency"><button type="button" data-cur="US$" class="on">US$</button><button type="button" data-cur="J$">J$</button></div></div>
 </div>
@@ -281,7 +281,7 @@ ${nav({ back: `${BASE}/`, title: "the quote page" })}
 </div>
 ${footer()}
 <script>window.GV_QUOTE=${JSON.stringify(quoteData)};</script>
-${scripts()}
+${scripts(true)}
 </body></html>`;
   return head({ title: "Get a quote for your getaway | Golden Vacation & Travel", description: "Tell us where, when and who's going. Your quote comes back on WhatsApp from one of our travel professionals, within working hours. No account, no payment yet.", pathname: `${BASE}/quote/`, image: S.ogImage, noindex: true }) + body;
 }

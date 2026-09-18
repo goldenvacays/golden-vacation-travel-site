@@ -187,9 +187,10 @@ const gaPlaces = (() => {
   return out;
 })();
 
-const scripts = () => `<script>window.GV_HOME=${JSON.stringify({ whatsapp: S.whatsapp, modes: H.quote.modes, kinds: H.quote.kinds, needs: H.quote.needs, copy: { notSure: H.quote.notSure, childAge: H.quote.childAge, adults: H.quote.adults, children: H.quote.children }, places: gaPlaces, maxGuests: (TR && TR.site && TR.site.maxGuests) || 16, overflowEmail: (H.footer && H.footer.email) || "", today: new Date().toISOString().slice(0, 10) })};</script>
+const scripts = () => `<script>window.GV_HOME=${JSON.stringify({ whatsapp: S.whatsapp, modes: H.quote.modes, kinds: H.quote.kinds, needs: H.quote.needs, copy: { notSure: H.quote.notSure, childAge: H.quote.childAge, childAgeHint: H.quote.childAgeHint, adults: H.quote.adults, children: H.quote.children, rooms: H.quote.rooms }, places: gaPlaces, maxGuests: (TR && TR.site && TR.site.maxGuests) || 16, overflowEmail: (H.footer && H.footer.email) || "", today: new Date().toISOString().slice(0, 10) })};</script>
 <script src="/getaways/assets/getaways.js" defer></script>
-<script src="${ASSETS}/home.js" defer></script>`;
+<script src="${ASSETS}/home.js" defer></script>
+<script src="${ASSETS}/daterange.js" defer></script>`;
 
 /* ---------- front page ---------- */
 /* airport transfers: the island with the arrivals photo, and a search that hands over to /transfers with the choices filled in */
@@ -211,7 +212,7 @@ function transfersBlock(today) {
         <div class="qf qf-wide">${icon("pin", 20)}<label><span>${esc(B.search.hotel)}</span><input type="search" name="q" placeholder="${esc(B.search.hotelPlaceholder)}" autocomplete="off" autocapitalize="words"></label></div>
         <div class="qf">${icon("plane", 20)}<label><span>${esc(B.search.airport)}</span><select name="airport">${TR.airports.map((a) => `<option value="${a.code}">${esc(a.short || a.name)}</option>`).join("")}</select></label></div>
         <div class="qf">${icon("users", 20)}<label><span>${esc(B.search.people)}</span><select name="people">${people}</select></label></div>
-        <div class="qf qf-wide">${icon("calendar", 20)}<label><span>${esc(B.search.date)}</span><input type="date" name="date" min="${today}"></label></div>
+        <div class="qf qf-wide"><label><span>${esc(B.search.date)}</span><input type="date" name="date" min="${today}" data-dr="single" data-dr-optional></label></div>
         <div class="qsubmit"><button class="btn btn-gold btn-lg btn-full" type="submit">${esc(B.search.go)}${icon("arrow", 18)}</button></div>
       </form>
       <small class="trh-note">${esc(B.note)}</small>
@@ -240,29 +241,43 @@ ${modeChips("qmodes mob")}
     <div class="qf qf-air" data-f="air" hidden>${icon("plane", 20)}<label><span>Flying into</span><select id="hq-air" name="airport">${(TR ? TR.airports : []).map((a) => `<option value="${a.code}">${esc(a.short || a.name)}</option>`).join("")}</select></label></div>
     <div class="qf qf-place" data-f="place">${icon("pin", 20)}<label><span id="hq-where-label">Where to</span><input type="text" id="hq-where" name="place" autocomplete="off" autocapitalize="words" spellcheck="false" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="hq-list" placeholder="Country, city or hotel"></label><button type="button" class="hq-clear" id="hq-clear" aria-label="Clear" hidden>${icon("x", 16)}</button><ul class="hq-list" id="hq-list" role="listbox" aria-label="Suggestions" hidden></ul></div>
     <div class="qf qf-kind" data-f="kind" hidden>${icon("sun", 20)}<label><span>What kind of day</span><select id="hq-kind" name="kind">${H.quote.kinds.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select></label></div>
-    <div class="qf qf-dates" data-f="dates">${icon("calendar", 20)}<div class="hq-dates"><label><span id="hq-in-label">Check in</span><input type="date" id="hq-in" name="in" min="${today}"></label><label><span id="hq-out-label">Check out</span><input type="date" id="hq-out" name="out" min="${today}"></label></div></div>
+    <div class="qf qf-dates" data-f="dates"><div class="hq-dates"><label><span id="hq-in-label">Check in</span><input type="date" id="hq-in" name="in" min="${today}" data-dr="start" data-dr-pair="#hq-out"></label><label><span id="hq-out-label">Check out</span><input type="date" id="hq-out" name="out" min="${today}" data-dr="end"></label></div></div>
     <div class="qf qf-who" data-f="who">${icon("users", 20)}<label><span>${esc(H.quote.whoLabel)}</span><button type="button" class="hq-who" id="hq-who" aria-expanded="false" aria-controls="hq-pop">2 adults</button></label>
       <div class="hq-pop" id="hq-pop" hidden>
         <div class="hq-line"><b>${esc(H.quote.adults)}</b><span class="hq-step"><button type="button" data-step="a" data-d="-1" aria-label="One fewer adult">&minus;</button><output id="hq-a" aria-live="polite">2</output><button type="button" data-step="a" data-d="1" aria-label="One more adult">+</button></span></div>
         <div class="hq-line"><b>${esc(H.quote.children)}</b><span class="hq-step"><button type="button" data-step="k" data-d="-1" aria-label="One fewer child">&minus;</button><output id="hq-k" aria-live="polite">0</output><button type="button" data-step="k" data-d="1" aria-label="One more child">+</button></span></div>
+        <div class="hq-line" id="hq-rooms-line" hidden><b>${esc(H.quote.rooms)}</b><span class="hq-step"><button type="button" data-step="r" data-d="-1" aria-label="One fewer room">&minus;</button><output id="hq-r" aria-live="polite">1</output><button type="button" data-step="r" data-d="1" aria-label="One more room">+</button></span></div>
         <div class="hq-ages" id="hq-ages" hidden></div>
+        <p class="hq-rooms-list" id="hq-rooms-list" hidden></p>
         <p class="hq-hint" id="hq-hint">${esc(H.quote.childAgeHint)}</p>
         <button type="button" class="btn btn-black btn-sm" id="hq-done">${esc(H.quote.whoDone)}</button>
       </div>
-      <input type="hidden" name="adults" id="hq-adults" value="2"><input type="hidden" name="kids" id="hq-kids" value="0"><input type="hidden" name="ages" id="hq-ages-v" value="">
+      <input type="hidden" name="adults" id="hq-adults" value="2"><input type="hidden" name="kids" id="hq-kids" value="0"><input type="hidden" name="ages" id="hq-ages-v" value=""><input type="hidden" name="rooms" id="hq-rooms-v" value="1">
     </div>
     <div class="qsubmit"><button class="btn btn-black btn-lg btn-full" type="submit" id="hq-go">Find a getaway${icon("arrow", 18)}</button></div>
   </form>
-  <div class="qextra" id="hq-flight" hidden>
-    <span class="qneeds-l">Your flight</span>
-    <label class="qx"><span>Landing time</span><input type="time" id="hq-time" name="time"></label>
-    <label class="qx"><span>Flight number</span><input type="text" id="hq-flt" name="flight" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="AA1497" maxlength="8"></label>
-    <label class="qx" id="hq-out-wrap" hidden><span>Take-off time</span><input type="time" id="hq-time2" name="time2"></label>
-    <label class="qx" id="hq-flt2-wrap" hidden><span>Flight back</span><input type="text" id="hq-flt2" name="flight2" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="AA1496" maxlength="8"></label>
-    <span class="qx-note" id="hq-flt-note">With these we go straight to prices and the driver knows when to be there.</span>
+  <div class="qtray" id="hq-tray" hidden>
+    <div class="qneeds" id="hq-needs" hidden><span class="qneeds-l">${esc(H.quote.needsLabel)}</span><span class="qneeds-c">${H.quote.needs.map(([v, l]) => `<button type="button" class="chip chip-sm" data-need="${v}" aria-pressed="false">${esc(l)}</button>`).join("")}</span></div>
+    <div class="qextra" id="hq-from-wrap" hidden>
+      <label class="qx qx-from"><span>${esc(H.quote.fromLabel)}</span><input type="text" id="hq-from" name="from" autocomplete="off" autocapitalize="words" spellcheck="false" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="hq-from-list" placeholder="${esc(H.quote.fromHint)}"></label>
+      <button type="button" class="hq-clear hq-clear-from" id="hq-from-clear" aria-label="Clear">${icon("x", 16)}</button>
+      <ul class="hq-list" id="hq-from-list" role="listbox" aria-label="Suggestions" hidden></ul>
+    </div>
+    <div class="qextra" id="hq-pick-wrap" hidden>
+      <label class="qx qx-from"><span>${esc(H.quote.pickLabel)}</span><input type="text" id="hq-pick" name="pickup" autocomplete="off" autocapitalize="words" spellcheck="false" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="hq-pick-list" placeholder="${esc(H.quote.pickHint)}"></label>
+      <button type="button" class="hq-clear hq-clear-from" id="hq-pick-clear" aria-label="Clear">${icon("x", 16)}</button>
+      <ul class="hq-list" id="hq-pick-list" role="listbox" aria-label="Suggestions" hidden></ul>
+      <span class="qx-note">${esc(H.quote.pickNote)}</span>
+    </div>
+    <div class="qextra" id="hq-flight" hidden>
+      <span class="qneeds-l">Your flight</span>
+      <label class="qx"><span>Landing time</span><input type="time" id="hq-time" name="time"></label>
+      <label class="qx"><span>Flight number</span><input type="text" id="hq-flt" name="flight" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="AA1497" maxlength="8"></label>
+      <label class="qx" id="hq-out-wrap" hidden><span>Take-off time</span><input type="time" id="hq-time2" name="time2"></label>
+      <label class="qx" id="hq-flt2-wrap" hidden><span>Flight back</span><input type="text" id="hq-flt2" name="flight2" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="AA1496" maxlength="8"></label>
+      <span class="qx-note" id="hq-flt-note"></span>
+    </div>
   </div>
-  <div class="qneeds" id="hq-needs" hidden><span class="qneeds-l">${esc(H.quote.needsLabel)}</span><span class="qneeds-c">${H.quote.needs.map(([v, l]) => `<button type="button" class="chip chip-sm" data-need="${v}" aria-pressed="false">${esc(l)}</button>`).join("")}</span></div>
-  <span class="qnote">${esc(H.hero.note)}</span>
 </div>`;
 
   // start here
@@ -508,15 +523,22 @@ if (!BUNDLE) {
   console.log(`resorts: ${counts.open} open, ${counts.reopening} reopening, ${counts.tracked} tracked (data from ${resortsUpdated || "unknown"})`);
 } else {
   const css = fs.readFileSync(path.join(ROOT, "public/getaways/assets/getaways.css"), "utf8") + "\n" + fs.readFileSync(path.join(ROOT, "public/assets/home.css"), "utf8");
-  const js = fs.readFileSync(path.join(ROOT, "public/getaways/assets/getaways.js"), "utf8") + "\n" + fs.readFileSync(path.join(ROOT, "public/assets/home.js"), "utf8");
+  const js = ["public/getaways/assets/getaways.js", "public/assets/home.js", "public/assets/daterange.js"]
+    .map((f) => fs.readFileSync(path.join(ROOT, f), "utf8")).join("\n");
   let html = pages[0][1];
   for (const f of usedImages) {
     const p = fs.existsSync(path.join(IMG_SRC, f)) ? path.join(IMG_SRC, f) : path.join(IMG_OUT, f);
     if (fs.existsSync(p)) html = html.split(`${ASSETS}/img/${f}`).join(`data:image/jpeg;base64,${fs.readFileSync(p).toString("base64")}`);
   }
   html = html.replace(/<link rel="stylesheet" href="\/getaways\/assets\/getaways\.css">\n<link rel="stylesheet" href="\/assets\/home\.css">/, `<style>${css}</style>`);
-  const previewJs = js.replace("window.location.href = u;", `window.open("${S.origin}" + u, "_blank", "noopener");`);
-  html = html.replace(/<script src="\/getaways\/assets\/getaways\.js" defer><\/script>\n<script src="\/assets\/home\.js" defer><\/script>/, `<script>${previewJs}</script>`);
+  // In the preview the two lazy lists cannot be fetched from a path, so they ride along inline, and a
+  // search opens the live site in a new tab instead of navigating the preview itself.
+  const inline = (p) => `data:application/json;base64,${fs.readFileSync(path.join(ROOT, p)).toString("base64")}`;
+  const previewJs = js
+    .split('"/assets/jm-places.json"').join(JSON.stringify(inline("public/assets/jm-places.json")))
+    .split('"/assets/cities.json"').join(JSON.stringify(inline("public/assets/cities.json")))
+    .replace("window.location.href = url;", `window.open("${S.origin}" + url, "_blank", "noopener");`);
+  html = html.replace(/<script src="\/getaways\/assets\/getaways\.js" defer><\/script>\n<script src="\/assets\/home\.js" defer><\/script>\n<script src="\/assets\/daterange\.js" defer><\/script>/, `<script>${previewJs}</script>`);
   // in the preview, site links open the live site in a new tab; anchors stay on the page
   html = html.replace(/<\/body><\/html>$/, `<script>document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a)return;var h=a.getAttribute('href')||'';if(h.charAt(0)==='/'){a.setAttribute('target','_blank');a.href='${S.origin}'+h;}});</script></body></html>`);
   html = html.replace(/<meta name="robots" content="[^"]*">/, '<meta name="robots" content="noindex,nofollow">').replace(/<title>[^<]*<\/title>/, "<title>Golden Vacays front page</title>");
