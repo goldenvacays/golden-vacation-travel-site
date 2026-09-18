@@ -410,3 +410,30 @@
   .qextra { justify-content: center; margin-top: 16px; }
   .qx-note { flex: 0 1 auto; max-width: 420px; }
 }
+
+/* ---- the tray under the search card ----------------------------------------------------------------
+   What you need, the city you fly from and the flight boxes used to sit on the page background below
+   the card, which read as a separate widget sitting near the search rather than part of it. They are
+   part of the search, so the tray is attached: tucked under the card, same white, no gap between. */
+.qtray { position: relative; z-index: 2; display: flex; flex-direction: column; gap: 14px; margin: 0 var(--pad); padding: 14px 18px 16px; background: #fff; border: 2px solid var(--ink); border-top: 0; border-radius: 0 0 22px 22px; }
+.qtray[hidden] { display: none; }
+.qtray .qneeds, .qtray .qextra { margin: 0; }
+.home .qcard { margin-bottom: 0; }
+.hq-line[hidden] { display: none; }
+
+/* flying from: asked only when they want us to book the flight, so it lives in the tray beside the
+   chip that asked for it rather than taking a cell in the card nobody else needs */
+#hq-from-wrap { position: relative; align-items: center; }
+.qx-from { flex: 1 1 280px; max-width: 380px; }
+.qx-from input { width: 100%; }
+#hq-from-wrap .hq-clear { position: absolute; right: 10px; bottom: 8px; margin: 0; }
+#hq-from-list { left: 0; right: 0; min-width: 0; max-width: none; }
+
+@media (max-width: 899px) {
+  .home .qcard.has-tray { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+}
+@media (min-width: 900px) {
+  .qtray { margin: -34px calc(var(--pad) + 54px) 0; padding: 50px 28px 20px; border: 0; border-radius: 0 0 28px 28px; box-shadow: 0 24px 60px rgba(14,15,14,.16); }
+  .qtray .qneeds, .qtray .qextra { justify-content: flex-start; }
+  #hq-from-list { max-width: 460px; }
+}
