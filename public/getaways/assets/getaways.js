@@ -101,9 +101,14 @@
       var c = $('[data-airport="' + code + '"]', page);
       return c ? c.getAttribute("data-name") : code;
     }
+    /* Whatever the front page search already asked, the quote page should not ask again: the party,
+       the rooms and the dates ride along through the destination page. */
+    var CARRY = ["adults", "kids", "rooms", "split", "ages", "from", "to"];
+    var carried = new URLSearchParams(location.search);
     function quoteUrl(hotel) {
       var u = CFG.base + "/quote/?d=" + encodeURIComponent(page.getAttribute("data-dest")) + "&n=" + encodeURIComponent(state.nights) + "&a=" + encodeURIComponent(state.airport);
       if (hotel) u += "&h=" + encodeURIComponent(hotel);
+      CARRY.forEach(function (k) { var v = carried.get(k); if (v) u += "&" + k + "=" + encodeURIComponent(v); });
       return u;
     }
     $$("[data-airport]", page).forEach(function (c) {
@@ -136,21 +141,40 @@
     var params = new URLSearchParams(location.search);
     var st = {
       d: params.get("d") || "", h: params.get("h") || "", n: params.get("n") || "", a: params.get("a") || "",
-      adults: 2, kids: 0, meals: "Not sure", name: "", leaving: params.get("from") || "", returning: params.get("to") || "", currency: "US$"
+      party: [{ a: 2, k: 0, ages: [] }], meals: "Not sure", name: "", leaving: params.get("from") || "", returning: params.get("to") || "", currency: "US$"
     };
+    var MAXG = 16, MAXROOMS = 8;
+    function tot(key) { return st.party.reduce(function (n, r) { return n + r[key]; }, 0); }
+    function heads() { return tot("a") + tot("k"); }
+    function allAges() { return st.party.reduce(function (l, r) { return l.concat(r.ages.slice(0, r.k)); }, []); }
+    function splitText() { return st.party.map(function (r) { return r.a + "-" + r.k; }).join(","); }
     var ref = "GV-" + Math.random().toString(36).slice(2, 6).toUpperCase();
-    /* The search now hands over real numbers. The old "2 adults, kids" phrase is still read, for any
-       link or bookmark made before the change. */
+    /* The front page hands over the party. "split" says who is in which room, so a two room search
+       arrives as two rooms rather than as one lump the guest has to split again. adults and kids are
+       still read on their own, for a link made before the split existed, and the old "2 adults, kids"
+       phrase is still read after that. */
+    var qSplit = (params.get("split") || "").split(",").map(function (p) {
+      var x = p.split("-"); return { a: parseInt(x[0], 10), k: parseInt(x[1], 10) };
+    }).filter(function (r) { return r.a >= 1 && r.a <= MAXG && r.k >= 0 && r.k <= MAXG; });
     var qa = parseInt(params.get("adults") || "", 10), qk = parseInt(params.get("kids") || "", 10);
-    if (qa >= 1 && qa <= 12) st.adults = qa;
-    if (qk >= 0 && qk <= 12) st.kids = qk;
-    st.ages = (params.get("ages") || "").split(",").map(function (x) { return x.trim(); }).filter(function (x) { return /^\d{1,2}$/.test(x); }).slice(0, 12);
-    if (isNaN(qa) && isNaN(qk)) {
-      var who = params.get("who") || "";
-      if (/^1 adult/.test(who)) st.adults = 1;
-      if (/^3/.test(who)) st.adults = 3;
-      if (/kids/.test(who)) st.kids = 1;
+    if (qSplit.length) {
+      st.party = qSplit.slice(0, MAXROOMS).map(function (r) { return { a: r.a, k: r.k, ages: [] }; });
+    } else {
+      if (qa >= 1 && qa <= MAXG) st.party[0].a = qa;
+      if (qk >= 0 && qk <= MAXG) st.party[0].k = qk;
+      if (isNaN(qa) && isNaN(qk)) {
+        var who = params.get("who") || "";
+        if (/^1 adult/.test(who)) st.party[0].a = 1;
+        if (/^3/.test(who)) st.party[0].a = 3;
+        if (/kids/.test(who)) st.party[0].k = 1;
+      }
     }
+    /* the ages arrive as one flat list, in room order, so they go back into the rooms in that order */
+    (function () {
+      var flat = (params.get("ages") || "").split(",").map(function (x) { return x.trim(); }).filter(function (x) { return /^\d{1,2}$/.test(x); });
+      var at = 0;
+      st.party.forEach(function (r) { r.ages = flat.slice(at, at + r.k); at += r.k; });
+    })();
     st.other = params.get("other") || "";
 
     function findDest() {
@@ -230,8 +254,15 @@
       if (d && d.combo) what += " · " + d.hotelLabel;
       var lines = ["Hi Golden Vacation! I'd like a quote for " + what + "."];
       lines.push("Dates: " + (st.leaving ? fmtDate(st.leaving) : "flexible") + (st.returning ? " to " + fmtDate(st.returning) : ""));
-      var kidAges = (st.ages || []).slice(0, st.kids).filter(function (x) { return x !== "" && x != null; });
-      lines.push("Travellers: " + st.adults + " adult" + (st.adults === 1 ? "" : "s") + ", " + st.kids + " kid" + (st.kids === 1 ? "" : "s") + (kidAges.length ? " (aged " + kidAges.join(", ") + ")" : ""));
+      var kidAges = allAges().filter(function (x) { return x !== "" && x != null; });
+      function roomLine(r, i) {
+        var t = "Room " + (i + 1) + ": " + r.a + " adult" + (r.a === 1 ? "" : "s");
+        if (r.k) t += ", " + r.k + " kid" + (r.k === 1 ? "" : "s");
+        return t;
+      }
+      lines.push(st.party.length > 1
+        ? "Travellers: " + st.party.map(roomLine).join(" \u00b7 ") + (kidAges.length ? " (aged " + kidAges.join(", ") + ")" : "")
+        : "Travellers: " + tot("a") + " adult" + (tot("a") === 1 ? "" : "s") + ", " + tot("k") + " kid" + (tot("k") === 1 ? "" : "s") + (kidAges.length ? " (aged " + kidAges.join(", ") + ")" : ""));
       var apName = "";
       if (d && d.airports) d.airports.forEach(function (x) { if (x.code === st.a) apName = x.name + " (" + x.code + ")"; });
       if (d && d.combo) apName = d.airportName + " (" + d.airport + ")";
@@ -265,41 +296,101 @@
     }
     if (selHotel) selHotel.addEventListener("change", function () { st.h = selHotel.value; render(); });
     if (otherIn) { otherIn.value = st.other; otherIn.addEventListener("input", function () { st.other = otherIn.value.trim(); render(); }); }
-    /* one age box per child. Child pricing and room occupancy both turn on the ages, so asking here
-       saves a round trip on WhatsApp later. */
-    var ageBox = $("#q-ages", q);
-    function drawAges() {
-      if (!ageBox) return;
-      ageBox.hidden = !st.kids;
-      if ($$("input", ageBox).length === st.kids) return;
-      ageBox.innerHTML = "";
-      for (var i = 0; i < st.kids; i++) {
+    /* ---- the party, a room at a time. Same shape as the front page search, because a quote for
+       four adults in one room is a different number from four in two, and the ages decide both
+       child pricing and what the hotel will put them in. ---- */
+    var partyBox = $("#q-party", q), addRoomBtn = $("#q-addroom", q);
+    function qStepper(label, which, at, value, off) {
+      var wrap = document.createElement("div");
+      wrap.className = "stepper";
+      var sp = document.createElement("span");
+      sp.textContent = label;
+      var inner = document.createElement("div");
+      inner.className = "stepper-in";
+      var minus = document.createElement("button"), out = document.createElement("output"), plus = document.createElement("button");
+      minus.type = plus.type = "button";
+      minus.textContent = "−"; plus.textContent = "+";
+      minus.setAttribute("aria-label", "Fewer " + label.toLowerCase());
+      plus.setAttribute("aria-label", "More " + label.toLowerCase());
+      minus.disabled = off(-1); plus.disabled = off(1);
+      minus.setAttribute("data-focus", at + which + "-");
+      plus.setAttribute("data-focus", at + which + "+");
+      minus.addEventListener("click", function () { qBump(at, which, -1); });
+      plus.addEventListener("click", function () { qBump(at, which, 1); });
+      out.textContent = value;
+      inner.appendChild(minus); inner.appendChild(out); inner.appendChild(plus);
+      wrap.appendChild(sp); wrap.appendChild(inner);
+      return wrap;
+    }
+    function qBump(at, which, d) {
+      var r = st.party[at];
+      if (!r || (d > 0 && heads() >= MAXG)) return;
+      if (which === "a") r.a = Math.max(1, r.a + d);
+      else { r.k = Math.max(0, r.k + d); if (d < 0) r.ages.length = r.k; }
+      drawParty();
+    }
+    function qAges(at) {
+      var r = st.party[at], box = document.createElement("div");
+      box.className = "hq-ages";
+      if (!r.k) { box.hidden = true; return box; }
+      for (var i = 0; i < r.k; i++) {
         var lab = document.createElement("label"), sp = document.createElement("span"), inp = document.createElement("input");
         sp.textContent = "Age " + (i + 1);
         inp.type = "number"; inp.min = "0"; inp.max = "17"; inp.inputMode = "numeric"; inp.placeholder = "0-17";
-        inp.value = st.ages && st.ages[i] != null ? st.ages[i] : "";
+        inp.value = r.ages[i] == null ? "" : r.ages[i];
         inp.setAttribute("data-age", String(i));
+        inp.setAttribute("data-focus", at + "age" + i);
         inp.addEventListener("input", function () {
-          var n = parseInt(this.value, 10);
-          st.ages = st.ages || [];
-          st.ages[+this.getAttribute("data-age")] = isNaN(n) ? "" : Math.max(0, Math.min(17, n));
-          if (this.value !== "" && String(st.ages[+this.getAttribute("data-age")]) !== this.value) this.value = st.ages[+this.getAttribute("data-age")];
+          var n = parseInt(this.value, 10), k = +this.getAttribute("data-age");
+          r.ages[k] = isNaN(n) ? "" : Math.max(0, Math.min(17, n));
+          if (this.value !== "" && String(r.ages[k]) !== this.value) this.value = r.ages[k];
           render();
         });
         lab.appendChild(sp); lab.appendChild(inp);
-        ageBox.appendChild(lab);
+        box.appendChild(lab);
       }
+      return box;
     }
-    $$("[data-step]", q).forEach(function (b) {
-      b.addEventListener("click", function () {
-        var k = b.getAttribute("data-step"), dir = Number(b.getAttribute("data-dir"));
-        st[k] = Math.max(k === "adults" ? 1 : 0, Math.min(12, st[k] + dir));
-        $("#out-" + k).textContent = st[k];
-        if (k === "kids") { if (st.ages) st.ages.length = st.kids; drawAges(); }
-        render();
+    function drawParty() {
+      if (!partyBox) return;
+      var was = document.activeElement, mark = was && was.getAttribute ? was.getAttribute("data-focus") : null;
+      partyBox.innerHTML = "";
+      st.party.forEach(function (r, at) {
+        var sec = document.createElement("div");
+        sec.className = "hq-room";
+        var head = document.createElement("div");
+        head.className = "hq-room-h";
+        var t = document.createElement("b");
+        t.textContent = "Room " + (at + 1);
+        head.appendChild(t);
+        if (st.party.length > 1) {
+          var rm = document.createElement("button");
+          rm.type = "button";
+          rm.className = "hq-room-x";
+          rm.textContent = "Remove";
+          rm.setAttribute("aria-label", "Remove room " + (at + 1));
+          rm.addEventListener("click", function () { st.party.splice(at, 1); drawParty(); });
+          head.appendChild(rm);
+        }
+        sec.appendChild(head);
+        var row = document.createElement("div");
+        row.className = "row2";
+        row.appendChild(qStepper("Adults", "a", at, r.a, function (d) { return d > 0 ? heads() >= MAXG : r.a <= 1; }));
+        row.appendChild(qStepper("Kids", "k", at, r.k, function (d) { return d > 0 ? heads() >= MAXG : r.k <= 0; }));
+        sec.appendChild(row);
+        sec.appendChild(qAges(at));
+        partyBox.appendChild(sec);
       });
+      if (addRoomBtn) addRoomBtn.hidden = st.party.length >= MAXROOMS || heads() >= MAXG;
+      render();
+      if (mark) { var back = $('[data-focus="' + mark + '"]', partyBox); if (back) back.focus(); }
+    }
+    if (addRoomBtn) addRoomBtn.addEventListener("click", function () {
+      if (st.party.length >= MAXROOMS || heads() >= MAXG) return;
+      st.party.push({ a: heads() + 2 <= MAXG ? 2 : 1, k: 0, ages: [] });
+      drawParty();
     });
-    drawAges();
+    drawParty();
     $$("[data-meals]", q).forEach(function (b) {
       b.addEventListener("click", function () {
         st.meals = b.getAttribute("data-meals");
@@ -327,7 +418,6 @@
       track("quote_send", { dest: st.d, hotel: st.h || "any", nights: st.n, airport: st.a, code: send.getAttribute("data-code") });
       waExit({ ref: send.getAttribute("data-code") || "", where: "getaways-quote", context: message().text });
     });
-    $("#out-adults").textContent = st.adults; $("#out-kids").textContent = st.kids;
     fillHotels(); fillChips(); syncOther(); render();
   }
 

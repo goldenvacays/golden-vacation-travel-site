@@ -559,8 +559,16 @@ body.jmd .jmd-v { display: inline; }
 .hq-ages input { width: 62px; padding: 7px 9px; border: 2px solid var(--line); border-radius: 10px; font-size: 15px; font-weight: 700; font-family: inherit; color: var(--ink); }
 .hq-ages input:focus { outline: 0; border-color: var(--ink); }
 .hq-hint { margin: 0; font-size: 12px; font-weight: 600; color: var(--muted); }
-/* the rooms, named, once there is more than one of them */
-.hq-rooms-list { margin: -2px 0 0; font-size: 13px; font-weight: 700; color: var(--ink); letter-spacing: .01em; }
+/* the party panel, a room at a time. A room is a block with its own steppers, so the rooms read
+   as separate things rather than as one long list of controls. */
+.hq-room + .hq-room { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(0,0,0,.09); }
+.hq-room-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 6px; }
+.hq-room-h b { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.hq-room-x { border: 0; background: none; padding: 2px 0; font: inherit; font-size: 12px; font-weight: 700; color: var(--muted); text-decoration: underline; cursor: pointer; }
+.hq-room-x:hover { color: var(--ink); }
+.hq-addroom { display: block; margin: 12px auto 0 0; border: 0; background: none; padding: 4px 0; font: inherit; font-size: 14px; font-weight: 800; color: var(--ink); text-align: left; cursor: pointer; }
+.hq-addroom:hover { text-decoration: underline; }
+.hq-addroom[hidden] { display: none; }
 .hq-hint.on { color: var(--gold-txt); font-weight: 800; }
 
 
