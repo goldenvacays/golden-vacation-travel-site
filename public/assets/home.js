@@ -33,17 +33,22 @@
       air: $("#hq-air"), airCell: $('[data-f="air"]'), place: $("#hq-where"), placeLbl: $("#hq-where-label"),
       placeCell: $('[data-f="place"]'), clear: $("#hq-clear"), list: $("#hq-list"), kind: $("#hq-kind"),
       kindCell: $('[data-f="kind"]'), din: $("#hq-in"), dout: $("#hq-out"), dinLbl: $("#hq-in-label"),
-      doutLbl: $("#hq-out-label"), who: $("#hq-who"), pop: $("#hq-pop"), a: $("#hq-a"), k: $("#hq-k"),
-      ages: $("#hq-ages"), hint: $("#hq-hint"), done: $("#hq-done"), adults: $("#hq-adults"),
+      doutLbl: $("#hq-out-label"), who: $("#hq-who"), pop: $("#hq-pop"),
+      hint: $("#hq-hint"), done: $("#hq-done"), adults: $("#hq-adults"),
       kids: $("#hq-kids"), agesV: $("#hq-ages-v"), go: $("#hq-go"), needs: $("#hq-needs"),
       flight: $("#hq-flight"), time: $("#hq-time"), flt: $("#hq-flt"), fltNote: $("#hq-flt-note"),
       time2: $("#hq-time2"), flt2: $("#hq-flt2"), outWrap: $("#hq-out-wrap"), flt2Wrap: $("#hq-flt2-wrap"),
-      r: $("#hq-r"), roomsLine: $("#hq-rooms-line"), roomsV: $("#hq-rooms-v"), roomsList: $("#hq-rooms-list"),
+      roomsV: $("#hq-rooms-v"), splitV: $("#hq-split"), party: $("#hq-party"), addRoom: $("#hq-addroom"),
       tray: $("#hq-tray"), from: $("#hq-from"), fromWrap: $("#hq-from-wrap"),
       fromList: $("#hq-from-list"), fromClear: $("#hq-from-clear"),
       pick: $("#hq-pick"), pickWrap: $("#hq-pick-wrap"), pickList: $("#hq-pick-list"), pickClear: $("#hq-pick-clear")
     };
-    var st = { adults: 2, kids: 0, rooms: 1, ages: [], need: [] };
+    /* One entry per room, always at least one. The tabs that do not book a room use just the first. */
+    var st = { party: [{ a: 2, k: 0, ages: [] }], need: [] };
+    function tot(key) { return st.party.reduce(function (n, r) { return n + r[key]; }, 0); }
+    function allAges() { return st.party.reduce(function (l, r) { return l.concat(r.ages.slice(0, r.k)); }, []); }
+    function heads() { return tot("a") + tot("k"); }
+    function splitText() { return st.party.map(function (r) { return r.a + "-" + r.k; }).join(","); }
 
     /* ---- the three place lists. The outbound one rides along in the HTML (22 entries). The Jamaica
        one is 117 hotels and 12 areas, and the city one is every airport city in the world, so both of
@@ -171,83 +176,129 @@
       return JM ? "Not on our list. Type the area and we'll sort the pickup." : "";
     }, null);
 
-    /* ---- who's travelling: adults, children, and an age for each child ---- */
+    /* ---- who's travelling: a room at a time, each with its own adults and children ----
+       Four adults in one room is a different price from four adults in two, so an enquiry that
+       does not say which is one Dino or Neomi has to hand straight back and ask about. The panel
+       is drawn from state rather than sitting in the HTML, because its shape follows the number
+       of rooms. The guest cap is the whole party, not the room. ---- */
     function whoText() {
-      var s = st.adults + (st.adults === 1 ? " adult" : " adults");
-      if (st.kids) s += ", " + st.kids + (st.kids === 1 ? " child" : " children");
-      if (mode.rooms && st.rooms > 1) s += ", " + st.rooms + " rooms";
+      var a = tot("a"), k = tot("k"), n = st.party.length;
+      var s = a + (a === 1 ? " adult" : " adults");
+      if (k) s += ", " + k + (k === 1 ? " child" : " children");
+      if (mode.rooms && n > 1) s += ", " + n + " rooms";
       return s;
     }
-    function drawAges() {
-      e.ages.hidden = !st.kids;
-      var have = $$("input", e.ages).length;
-      if (have !== st.kids) {
-        e.ages.innerHTML = "";
-        for (var i = 0; i < st.kids; i++) {
-          var lab = document.createElement("label");
-          var sp = document.createElement("span");
-          sp.textContent = (COPY.childAge || "Age") + " " + (i + 1);
-          var inp = document.createElement("input");
-          inp.type = "number"; inp.min = "0"; inp.max = "17"; inp.inputMode = "numeric";
-          inp.placeholder = "0-17";
-          inp.value = st.ages[i] == null ? "" : st.ages[i];
-          inp.setAttribute("data-age", String(i));
-          inp.addEventListener("input", function () {
-            var n = parseInt(this.value, 10);
-            st.ages[+this.getAttribute("data-age")] = isNaN(n) ? "" : Math.max(0, Math.min(17, n));
-            if (String(st.ages[+this.getAttribute("data-age")]) !== this.value && this.value !== "") this.value = st.ages[+this.getAttribute("data-age")];
-            sync();
-          });
-          lab.appendChild(sp); lab.appendChild(inp);
-          e.ages.appendChild(lab);
-        }
+    function bump(at, which, d) {
+      var r = st.party[at];
+      if (!r || (d > 0 && heads() >= MAXG)) return;
+      if (which === "a") r.a = Math.max(1, r.a + d);
+      else { r.k = Math.max(0, r.k + d); if (d < 0) r.ages.length = r.k; }
+      draw();
+    }
+    function stepper(label, which, at, value, off) {
+      var line = document.createElement("div");
+      line.className = "hq-line";
+      var b = document.createElement("b");
+      b.textContent = label;
+      var wrap = document.createElement("span");
+      wrap.className = "hq-step";
+      var minus = document.createElement("button"), out = document.createElement("output"), plus = document.createElement("button");
+      minus.type = plus.type = "button";
+      minus.textContent = "−";
+      plus.textContent = "+";
+      minus.setAttribute("aria-label", "One fewer " + label.toLowerCase());
+      plus.setAttribute("aria-label", "One more " + label.toLowerCase());
+      minus.disabled = off(-1);
+      plus.disabled = off(1);
+      minus.setAttribute("data-focus", at + which + "-");
+      plus.setAttribute("data-focus", at + which + "+");
+      minus.addEventListener("click", function () { bump(at, which, -1); });
+      plus.addEventListener("click", function () { bump(at, which, 1); });
+      out.setAttribute("aria-live", "polite");
+      out.textContent = value;
+      wrap.appendChild(minus); wrap.appendChild(out); wrap.appendChild(plus);
+      line.appendChild(b); line.appendChild(wrap);
+      return line;
+    }
+    function ageBoxes(at) {
+      var r = st.party[at], box = document.createElement("div");
+      box.className = "hq-ages";
+      if (!r.k) { box.hidden = true; return box; }
+      for (var i = 0; i < r.k; i++) {
+        var lab = document.createElement("label"), sp = document.createElement("span"), inp = document.createElement("input");
+        sp.textContent = (COPY.childAge || "Age") + " " + (i + 1);
+        inp.type = "number"; inp.min = "0"; inp.max = "17"; inp.inputMode = "numeric"; inp.placeholder = "0-17";
+        inp.value = r.ages[i] == null ? "" : r.ages[i];
+        inp.setAttribute("data-age", String(i));
+        inp.setAttribute("data-focus", at + "age" + i);
+        inp.addEventListener("input", function () {
+          var n = parseInt(this.value, 10), k = +this.getAttribute("data-age");
+          r.ages[k] = isNaN(n) ? "" : Math.max(0, Math.min(17, n));
+          if (this.value !== "" && String(r.ages[k]) !== this.value) this.value = r.ages[k];
+          sync();
+        });
+        lab.appendChild(sp); lab.appendChild(inp);
+        box.appendChild(lab);
       }
+      return box;
+    }
+    /* Redrawn rather than patched: a room that goes away has to take its steppers and its age
+       boxes with it. Whatever had focus gets it back, so holding + does not lose the button. */
+    function draw() {
+      var was = document.activeElement, mark = was && was.getAttribute ? was.getAttribute("data-focus") : null;
+      e.party.innerHTML = "";
+      st.party.forEach(function (r, at) {
+        var sec = document.createElement("div");
+        sec.className = "hq-room";
+        if (mode.rooms) {
+          var head = document.createElement("div");
+          head.className = "hq-room-h";
+          var t = document.createElement("b");
+          t.textContent = (COPY.room || "Room") + " " + (at + 1);
+          head.appendChild(t);
+          if (st.party.length > 1) {
+            var rm = document.createElement("button");
+            rm.type = "button";
+            rm.className = "hq-room-x";
+            rm.textContent = COPY.removeRoom || "Remove";
+            rm.setAttribute("aria-label", "Remove room " + (at + 1));
+            rm.addEventListener("click", function () { st.party.splice(at, 1); draw(); });
+            head.appendChild(rm);
+          }
+          sec.appendChild(head);
+        }
+        sec.appendChild(stepper(COPY.adults || "Adults", "a", at, r.a, function (d) { return d > 0 ? heads() >= MAXG : r.a <= 1; }));
+        sec.appendChild(stepper(COPY.children || "Children", "k", at, r.k, function (d) { return d > 0 ? heads() >= MAXG : r.k <= 0; }));
+        sec.appendChild(ageBoxes(at));
+        e.party.appendChild(sec);
+      });
+      e.addRoom.hidden = !mode.rooms || st.party.length >= MAXROOMS || heads() >= MAXG;
+      sync();
+      if (mark) { var back = $('[data-focus="' + mark + '"]', e.party); if (back) back.focus(); }
     }
     function sync() {
-      e.a.textContent = st.adults;
-      e.k.textContent = st.kids;
-      e.r.textContent = st.rooms;
-      if (e.roomsList) {
-        var many = mode.rooms && st.rooms > 1;
-        e.roomsList.hidden = !many;
-        if (many) {
-          var names = [];
-          for (var ri = 1; ri <= st.rooms; ri++) names.push("Room " + ri);
-          e.roomsList.textContent = names.join(" \u00b7 ");
-        }
-      }
       e.who.textContent = whoText();
-      e.adults.value = st.adults;
-      e.kids.value = st.kids;
-      e.roomsV.value = mode.rooms ? st.rooms : 1;
-      e.agesV.value = st.ages.slice(0, st.kids).join(",");
-      var full = st.adults + st.kids >= MAXG;
+      e.adults.value = tot("a");
+      e.kids.value = tot("k");
+      e.roomsV.value = mode.rooms ? st.party.length : 1;
+      e.agesV.value = allAges().join(",");
+      e.splitV.value = mode.rooms && st.party.length > 1 ? splitText() : "";
+      var full = heads() >= MAXG;
       e.hint.textContent = full && CFG.overflowEmail
         ? "That's our biggest vehicle and our largest group online. For more than " + MAXG + ", email " + CFG.overflowEmail + " and we'll arrange it."
         : COPY.childAgeHint || "Ages at the time of travel.";
       e.hint.classList.toggle("on", full);
-      $$("[data-step]", e.pop).forEach(function (b) {
-        var which = b.getAttribute("data-step"), d = +b.getAttribute("data-d");
-        if (which === "r") { b.disabled = d > 0 ? st.rooms >= MAXROOMS : st.rooms <= 1; return; }
-        var at = which === "a" ? st.adults : st.kids;
-        b.disabled = d > 0 ? st.adults + st.kids >= MAXG : at <= (which === "a" ? 1 : 0);
-      });
     }
-    $$("[data-step]", e.pop).forEach(function (b) {
-      b.addEventListener("click", function () {
-        var which = b.getAttribute("data-step"), d = +b.getAttribute("data-d");
-        if (which === "r") { st.rooms = Math.min(MAXROOMS, Math.max(1, st.rooms + d)); return sync(); }
-        if (d > 0 && st.adults + st.kids >= MAXG) return;
-        if (which === "a") st.adults = Math.max(1, st.adults + d);
-        else { st.kids = Math.max(0, st.kids + d); if (d < 0) st.ages.length = st.kids; }
-        drawAges();
-        sync();
-      });
+    e.addRoom.addEventListener("click", function () {
+      if (st.party.length >= MAXROOMS || heads() >= MAXG) return;
+      /* a new room starts with the smallest party that still fits */
+      st.party.push({ a: heads() + 2 <= MAXG ? 2 : 1, k: 0, ages: [] });
+      draw();
     });
     function openWho(on) {
       e.pop.hidden = !on;
       e.who.setAttribute("aria-expanded", on ? "true" : "false");
-      if (on) { var f = $("input", e.ages); if (f && st.kids) f.focus(); }
+      if (on) { var f = $(".hq-ages input", e.party); if (f) f.focus(); }
     }
     e.who.addEventListener("click", function (ev) { ev.stopPropagation(); openWho(e.pop.hidden); });
     e.done.addEventListener("click", function () { openWho(false); e.go.focus(); });
@@ -314,7 +365,6 @@
       e.airCell.hidden = !mode.airports;
       e.kindCell.hidden = !mode.kinds;
       e.placeCell.hidden = !!mode.kinds;
-      e.roomsLine.hidden = !mode.rooms;
       /* "Not sure yet" only where the dates are genuinely optional. A transfer or a day out is one
          flat price whatever the date, so the guest can leave it and still see what it costs. A
          hotel is not: the rate IS the dates, and a room enquiry with no dates on it is one Dino or
@@ -333,8 +383,8 @@
       e.doutLbl.textContent = mode.dateOut || "Check out";
       e.go.childNodes[0].nodeValue = mode.cta || "Search";
       where.reset();
-      st.rooms = 1;
-      sync();
+      st.party = [{ a: 2, k: 0, ages: [] }];
+      draw();
       if (mode.places === "jamaica") loadJM();
       if (!quiet) track("quote_mode", { mode: mode.key });
     }
@@ -342,16 +392,17 @@
 
     /* ---- where each search goes ---- */
     function params(extra) {
-      var q = { adults: st.adults, kids: st.kids };
-      if (mode.rooms && st.rooms > 1) q.rooms = st.rooms;
-      if (st.ages.slice(0, st.kids).filter(String).length) q.ages = st.ages.slice(0, st.kids).join(",");
+      var q = { adults: tot("a"), kids: tot("k") };
+      /* the split says who is in which room, so the quote page and the WhatsApp message can too */
+      if (mode.rooms && st.party.length > 1) { q.rooms = st.party.length; q.split = splitText(); }
+      if (allAges().filter(String).length) q.ages = allAges().join(",");
       if (e.din.value) q["in"] = e.din.value;
       if (e.dout.value) q.out = e.dout.value;
       for (var k in extra) if (extra[k]) q[k] = extra[k];
       return new URLSearchParams(q).toString();
     }
     function go(url, how) {
-      track("search_go", { mode: mode.key, landing: how, adults: st.adults, kids: st.kids, picked: where.pick() ? where.pick().name : (where.typed() || "") });
+      track("search_go", { mode: mode.key, landing: how, adults: tot("a"), kids: tot("k"), picked: where.pick() ? where.pick().name : (where.typed() || "") });
       window.location.href = url;
     }
     form.addEventListener("submit", function (ev) {
@@ -376,7 +427,7 @@
       if (mode.key === "transfers") {
         /* Everything the picker needs to price the ride, so it lands on options rather than a form.
            The trip type is worked out rather than asked: a date back means a round trip. */
-        var p = { airport: e.air.value, people: st.adults + st.kids, date: e.din.value || "",
+        var p = { airport: e.air.value, people: heads(), date: e.din.value || "",
           trip: e.dout.value ? "both" : "in", time: e.time.value || "", flight: fltVal(), date2: e.dout.value || "",
           time2: e.dout.value && e.time2 ? e.time2.value || "" : "", flight2: e.dout.value ? fltVal(e.flt2) : "" };
         if (pick && pick.kind === "hotel") p.hotel = pick.slug; else if (typed) p.q = typed;
@@ -431,7 +482,7 @@
     /* arrived here with the hash already set, from another page or a bookmark */
     if (location.hash) fromHash(location.hash, false);
     addEventListener("hashchange", function () { fromHash(location.hash, false); });
-    drawAges();
+    draw();
     sync();
   }
 
@@ -464,6 +515,15 @@
     var dIn = Q.get("in") || "", dOut = Q.get("out") || "", n = nights(dIn, dOut);
     var place = Q.get("place") || "", from = Q.get("from") || "";
     var rooms = Math.max(1, parseInt(Q.get("rooms") || "1", 10) || 1);
+    /* who is in which room, as "2-0,2-2". The totals still stand on their own if it is missing. */
+    var split = (Q.get("split") || "").split(",").map(function (p) {
+      var x = p.split("-"); return { a: parseInt(x[0], 10) || 0, k: parseInt(x[1], 10) || 0 };
+    }).filter(function (r) { return r.a || r.k; });
+    function roomLine(r, i) {
+      var t = ((CFG.copy || {}).room || "Room") + " " + (i + 1) + ": " + r.a + (r.a === 1 ? " adult" : " adults");
+      if (r.k) t += ", " + r.k + (r.k === 1 ? " child" : " children");
+      return t;
+    }
     var need = (Q.get("needs") || "").split(",").filter(Boolean);
     var ref = "GV-" + (qMode === "coming" ? "JAM" : "STAY") + "-" + Math.random().toString(36).slice(2, 6).toUpperCase();
 
@@ -490,7 +550,8 @@
     row("Check in", dIn ? niceDate(dIn) : "Flexible");
     row("Check out", dOut ? niceDate(dOut) + (n ? " · " + n + (n === 1 ? " night" : " nights") : "") : "Flexible");
     row("Who's travelling", party);
-    if (rooms > 1) row("Rooms", String(rooms));
+    if (split.length > 1) row("Rooms", split.map(roomLine).join(" \u00b7 "));
+    else if (rooms > 1) row("Rooms", String(rooms));
     if (need.length) row("What you need", need.map(function (k) { return NEEDS[k] || k; }).join(", "));
     $("#qp-ref").textContent = ref;
     $("#qp-back").href = "/#home";
@@ -502,7 +563,9 @@
         : "Hi Golden Vacation! I'd like a staycation quote" + (place ? " for " + place : "") + ", priced in J$ where there's a resident rate.");
       if (dIn || dOut) lines.push("Dates: " + (dIn ? niceDate(dIn) : "flexible") + " to " + (dOut ? niceDate(dOut) : "flexible") + (n ? " (" + n + (n === 1 ? " night" : " nights") + ")" : ""));
       else lines.push("Dates: flexible");
-      lines.push("Travellers: " + party + (rooms > 1 ? " in " + rooms + " rooms" : ""));
+      lines.push(split.length > 1
+        ? "Travellers: " + split.map(roomLine).join(" \u00b7 ") + (ages.length ? " (ages " + ages.join(", ") + ")" : "")
+        : "Travellers: " + party);
       if (need.length) lines.push("I need: " + need.map(function (k) { return NEEDS[k] || k; }).join(", "));
       var more = ($("#qp-more").value || "").trim();
       if (more) lines.push("Also: " + more);
