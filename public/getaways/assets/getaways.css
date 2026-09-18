@@ -496,9 +496,11 @@ body.jmd .jmd-v { display: inline; }
   .quote h1 { font-size: 52px; }
   .quote > p { font-size: 16px; }
 }
-/* the pages with the full site menu (home, experiences, transfers, privacy, terms) carry seven links: under 1200px they sit behind the
-   menu button, which those pages have; the Getaways pages keep their own short header at every width */
-@media (min-width: 900px) and (max-width: 1199px) {
+/* The pages with the full site menu (home, experiences, transfers, privacy, terms) carry seven links.
+   Measured: the wordmark, those seven links and the currency switch want 1129px, which the nav only has
+   from 1280px up, so below that they sit behind the menu button those pages have. It used to say 1200px,
+   which was 80px optimistic and left the wordmark sitting under "Getaways" between 1200 and 1280. */
+@media (min-width: 900px) and (max-width: 1279px) {
   .home .nav-links, .exp .nav-links, .legal-page .nav-links { display: none; }
   .home .nav .menu-btn.mob, .exp .nav .menu-btn.mob, .legal-page .nav .menu-btn.mob { display: inline-flex !important; }
   .home .menu.mob.open, .exp .menu.mob.open, .legal-page .menu.mob.open { display: flex !important; }
@@ -506,6 +508,17 @@ body.jmd .jmd-v { display: inline; }
 }
 @media (min-width: 1200px) {
   .hero h1 { font-size: 96px; }
+}
+
+/* The Getaways pages have no menu button, so their four links cannot be tucked behind one and
+   hiding them would strand the only route to those sections. The wordmark, the pill, the links and
+   the currency switch want about 1050px and the nav has that only from 1200px up; .nav-l carries
+   min-width:0, so rather than overflow it was shrinking under its own content and sliding the
+   wordmark behind "Destinations". Below 1200px the links take a row of their own. */
+@media (min-width: 900px) and (max-width: 1199px) {
+  .ga-page .nav { flex-wrap: wrap; height: auto; padding-top: 12px; padding-bottom: 12px; row-gap: 10px; }
+  .ga-page .nav-l { flex: none; }                            /* never narrower than its own content */
+  .ga-page .nav-links { order: 3; flex-basis: 100%; }
 }
 @media (min-width: 1340px) { .nav-links { gap: 30px; } }
 
@@ -546,6 +559,8 @@ body.jmd .jmd-v { display: inline; }
 .hq-ages input { width: 62px; padding: 7px 9px; border: 2px solid var(--line); border-radius: 10px; font-size: 15px; font-weight: 700; font-family: inherit; color: var(--ink); }
 .hq-ages input:focus { outline: 0; border-color: var(--ink); }
 .hq-hint { margin: 0; font-size: 12px; font-weight: 600; color: var(--muted); }
+/* the rooms, named, once there is more than one of them */
+.hq-rooms-list { margin: -2px 0 0; font-size: 13px; font-weight: 700; color: var(--ink); letter-spacing: .01em; }
 .hq-hint.on { color: var(--gold-txt); font-weight: 800; }
 
 
@@ -562,3 +577,75 @@ body.jmd .jmd-v { display: inline; }
   .hq-dates { gap: 12px; }
   .hq-pop { right: auto; left: 0; }
 }
+
+/* Golden Vacation & Travel — the date picker. Pairs with public/assets/daterange.js.
+   It borrows the site's own tokens, so it looks like the rest of the page on every surface it
+   appears on: the front page search, the Getaways pill and quote, and the transfers picker. */
+
+.dr-btn {
+  display: block; width: 100%; padding: 0; border: 0; background: transparent;
+  font-family: inherit; font-size: 16px; font-weight: 700; color: var(--muted);
+  text-align: left; cursor: pointer;
+}
+.dr-btn.dr-set { color: var(--ink); }
+[data-dr-icon] { cursor: pointer; }
+.dr-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 6px; }
+@media (min-width: 900px) { .qcard .dr-btn, .trh-q .dr-btn { font-size: 18px; } }
+
+.dr-panel {
+  position: absolute; z-index: 60; width: min(660px, calc(100vw - 16px));
+  padding: 16px; background: #fff; border: 2px solid var(--ink); border-radius: 22px;
+  box-shadow: 0 26px 60px rgba(14,15,14,.26);
+}
+.dr-panel[hidden] { display: none; }
+.dr-panel.dr-single { width: min(360px, calc(100vw - 16px)); }
+
+.dr-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.dr-months { font-size: 15px; font-weight: 800; color: var(--ink); }
+@media (min-width: 720px) { .dr-months { visibility: hidden; } }   /* each grid names its own month */
+.dr-nav {
+  flex: none; width: 36px; height: 36px; display: grid; place-items: center;
+  border: 2px solid var(--ink); border-radius: 999px; background: #fff;
+  font-size: 20px; line-height: 1; font-weight: 800; color: var(--ink); cursor: pointer;
+}
+.dr-nav:hover { background: var(--ink); color: #fff; }
+
+.dr-grids { display: grid; grid-template-columns: 1fr; gap: 18px; margin-top: 6px; }
+@media (min-width: 720px) { .dr-grids { grid-template-columns: 1fr 1fr; gap: 22px; } }
+.dr-panel.dr-single .dr-grids { grid-template-columns: 1fr; }
+.dr-panel.dr-single .dr-grid:last-child { display: none; }
+@media (max-width: 719px) { .dr-grid:last-child { display: none; } }
+
+.dr-mname { margin-bottom: 8px; text-align: center; font-size: 14px; font-weight: 800; color: var(--ink); }
+@media (max-width: 719px) { .dr-mname { display: none; } }
+.dr-dow, .dr-days { display: grid; grid-template-columns: repeat(7, 1fr); }
+.dr-dow span { padding-bottom: 6px; text-align: center; font-size: 11px; font-weight: 800; color: var(--muted); }
+.dr-days { row-gap: 2px; }
+.dr-day {
+  position: relative; height: 40px; border: 0; background: transparent; border-radius: 999px;
+  font-family: inherit; font-size: 14px; font-weight: 700; color: var(--ink); cursor: pointer;
+}
+.dr-day:hover:not(:disabled) { background: var(--line); }
+.dr-day:disabled { color: var(--muted); opacity: .35; cursor: default; }
+.dr-day:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+/* the nights between the two dates, so the stay reads as one thing and not two numbers */
+.dr-mid { background: var(--alt); border-radius: 0; }
+.dr-a, .dr-b { background: var(--ink); color: #fff; }
+.dr-a:hover, .dr-b:hover { background: var(--ink); }
+.dr-a { border-radius: 999px 0 0 999px; }
+.dr-b { border-radius: 0 999px 999px 0; }
+.dr-a.dr-b, .dr-panel.dr-single .dr-a { border-radius: 999px; }
+
+.dr-foot {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+  margin-top: 14px; padding-top: 12px; border-top: 2px solid var(--line);
+}
+.dr-sum { flex: 1 1 200px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.dr-acts { display: flex; align-items: center; gap: 8px; }
+.dr-clear, .dr-done {
+  padding: 9px 16px; border-radius: 999px; font-family: inherit; font-size: 14px; font-weight: 800; cursor: pointer;
+}
+.dr-clear { border: 2px solid var(--line); background: #fff; color: var(--ink); }
+.dr-clear:hover { border-color: var(--ink); }
+.dr-clear[hidden] { display: none; }
+.dr-done { border: 0; background: var(--ink); color: #fff; }

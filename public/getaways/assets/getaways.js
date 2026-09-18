@@ -136,7 +136,7 @@
     var params = new URLSearchParams(location.search);
     var st = {
       d: params.get("d") || "", h: params.get("h") || "", n: params.get("n") || "", a: params.get("a") || "",
-      adults: 2, kids: 0, budget: "Not sure", name: "", leaving: params.get("from") || "", returning: params.get("to") || "", currency: "US$"
+      adults: 2, kids: 0, meals: "Not sure", name: "", leaving: params.get("from") || "", returning: params.get("to") || "", currency: "US$"
     };
     var ref = "GV-" + Math.random().toString(36).slice(2, 6).toUpperCase();
     /* The search now hands over real numbers. The old "2 adults, kids" phrase is still read, for any
@@ -236,7 +236,7 @@
       if (d && d.airports) d.airports.forEach(function (x) { if (x.code === st.a) apName = x.name + " (" + x.code + ")"; });
       if (d && d.combo) apName = d.airportName + " (" + d.airport + ")";
       if (apName) lines.push("From: " + apName);
-      lines.push("Budget: " + st.budget);
+      lines.push("Meals: " + st.meals);
       lines.push("Quote me in: " + st.currency);
       if (st.name) lines.push("Name: " + st.name);
       var code = "GV-" + (d ? d.code : "OTHER") + (h ? "-" + h.slug.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 5) : "") + (st.n && st.n !== "ask" ? "-" + st.n + "N" : "") + "-" + ref.slice(3);
@@ -300,10 +300,10 @@
       });
     });
     drawAges();
-    $$("[data-budget]", q).forEach(function (b) {
+    $$("[data-meals]", q).forEach(function (b) {
       b.addEventListener("click", function () {
-        st.budget = b.getAttribute("data-budget");
-        $$("[data-budget]", q).forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+        st.meals = b.getAttribute("data-meals");
+        $$("[data-meals]", q).forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
         render();
       });
     });
