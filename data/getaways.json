@@ -13,7 +13,7 @@
     "iata": "IATA-accredited · 85500310",
     "instagram": "https://www.instagram.com/goldenvacays/",
     "facebook": "https://www.facebook.com/goldenvacays/",
-    "replyLine": "On WhatsApp, within working hours, one of our travel professionals is ready to help. Outside those hours our assistant confirms we've got it and someone picks up first thing.",
+    "replyLine": "On WhatsApp, within working hours, one of our travel professionals is ready to help.",
     "ogImage": "casco-viejo.jpg"
   },
   "hub": {
@@ -55,7 +55,7 @@
       ["Can I pay in Jamaican dollars?", "Yes. We quote in US$ and show J$ at 160. Pay the deposit and the balance in either, by card link or bank transfer."],
       ["Do I need a visa for Panama?", "No. Panama is visa-free for Jamaican passports, and Jamaica to Panama City is a direct flight from Kingston or Montego Bay, so you never touch the US. From there you connect to most of Latin America the same way."],
       ["How much is the deposit, and when is the rest due?", "Usually US$500 on Panama, Medellín and Lima and US$450 on Punta Cana; your quote gives the exact figure. It holds your seat and hotel. The balance is due 30 days before departure. We remind you before we ever release a booking."],
-      ["What if I have to cancel?", "Flights are non-refundable once ticketed. Refunds on the balance vary by hotel. We tell you the rules before you pay."],
+      ["What if I have to cancel?", "Flights are non-refundable once ticketed. Refunds on the balance vary. We'll let you know."],
       ["Is baggage included?", "Panama and Medellín: one carry-on and one personal item, checked bag US$120 or US$110. Punta Cana: a personal item; carry-on US$70, checked bag US$75. Lima: bags quoted with your dates. Add bags to your quote."]
     ],
     "people": {
@@ -146,7 +146,7 @@
       "faq": [
         ["Visa", "Jamaican passport holders enter Panama visa-free, and the flight is direct, so there is no US transit. Passport valid 6 months past your return to be safe (3 is the minimum). We check it before ticketing."],
         ["Money", "Panama uses the US dollar. Change your J$ before you leave. Nobody in Panama will take it. Cards work but add fees; cash is easier for taxis and small places."],
-        ["Cancelling", "Flights are non-refundable once ticketed. Refunds on the balance vary by hotel. We tell you the rules before you pay."],
+        ["Cancelling", "Flights are non-refundable once ticketed. Refunds on the balance vary. We'll let you know."],
         ["Who replies", "REPLY_LINE"]
       ],
       "bottomNote": "Opens WhatsApp with hotel, nights, airport and travellers filled in · no payment yet",
@@ -222,7 +222,7 @@
         ["Visa", "Jamaican passport holders enter Colombia visa-free, and the flight is direct, so there is no US transit. Passport valid 6 months past your return to be safe (3 is the minimum). We check it before ticketing."],
         ["Money", "Colombia uses the peso. Cards are fine in hotels and restaurants; carry pesos for taxis, tips and the tours. Change US$ there, not J$. Nobody will take J$."],
         ["Weather", "Spring all year. Mid-20s by day, cooler at night. Pack a light layer, and an umbrella for afternoon showers."],
-        ["Cancelling", "Flights are non-refundable once ticketed. Refunds on the balance vary by hotel. We tell you the rules before you pay."],
+        ["Cancelling", "Flights are non-refundable once ticketed. Refunds on the balance vary. We'll let you know."],
         ["Who replies", "REPLY_LINE"]
       ],
       "bottomNote": "Opens WhatsApp with hotel, nights and travellers filled in · no payment yet",
@@ -300,7 +300,7 @@
         ["Visa", "Jamaican passport holders enter the Dominican Republic visa-free, and the flight from Kingston doesn't pass through the US. Passport valid 6 months past your return to be safe (3 is the minimum). We check it before ticketing."],
         ["Money", "The resort is all-inclusive, so you need very little cash. US$ works everywhere. Carry small bills for tips and the tours. Nobody will take J$."],
         ["Weather", "Hot and sunny most of the year, same as home. June to November is hurricane season. We watch it and tell you if anything changes."],
-        ["Cancelling", "Flights are non-refundable once ticketed. Refunds on the balance vary by hotel. We tell you the rules before you pay."],
+        ["Cancelling", "Flights are non-refundable once ticketed. Refunds on the balance vary. We'll let you know."],
         ["Who replies", "REPLY_LINE"]
       ],
       "bottomNote": "Opens WhatsApp with resort, nights and travellers filled in · no payment yet",
@@ -385,7 +385,7 @@
         ["Machu Picchu?", "Available on request. Machu Picchu is an experience on its own and needs extra nights added to the trip. Say so when you ask for a quote and we build it in."],
         ["Money", "Peru uses the sol. Cards work in hotels and restaurants; carry soles for taxis, markets and tips. Change US$ there, not J$. Nobody will take J$."],
         ["Weather", "Cooler than home. Lima is grey and mild from May to October and warm from December to March. Pack a light jacket either way."],
-        ["Cancelling", "Flights are non-refundable once ticketed. Refunds on the balance vary by hotel. We tell you the rules before you pay."],
+        ["Cancelling", "Flights are non-refundable once ticketed. Refunds on the balance vary. We'll let you know."],
         ["Who replies", "REPLY_LINE"]
       ],
       "bottomNote": "Opens WhatsApp with hotel, nights and travellers filled in · no payment yet",
@@ -439,7 +439,7 @@
       "faq": [
         ["Visas", "Jamaican passports enter Panama visa-free, and Peru visa-free for up to 90 days. The whole trip routes through Panama, with no US transit. Passport valid 6 months past your return to be safe (3 is the minimum). We check it before ticketing."],
         ["Machu Picchu?", "Available on request. Machu Picchu is an experience on its own and needs extra nights added to the trip. Say so when you ask for a quote and we build it in."],
-        ["Cancelling", "Flights are non-refundable once ticketed. Refunds on the balance vary by hotel. We tell you the rules before you pay."]
+        ["Cancelling", "Flights are non-refundable once ticketed. Refunds on the balance vary. We'll let you know."]
       ],
       "bottomNote": "Opens WhatsApp with both legs, dates and travellers filled in · no payment yet",
       "ticker": ["IATA-accredited", "Direct flights", "Visa-free", "Thousands of travellers"],
@@ -482,7 +482,7 @@
       "faq": [
         ["Visas", "Jamaican passports enter Panama and Colombia visa-free. The whole trip routes through Panama, with no US transit. Passport valid 6 months past your return to be safe (3 is the minimum). We check it before ticketing."],
         ["Can I do Medellín on its own?", "Yes. On its own, Medellín leaves from Montego Bay. This two-in-one is the Kingston option, with Panama City added on the way home."],
-        ["Cancelling", "Flights are non-refundable once ticketed. Refunds on the balance vary by hotel. We tell you the rules before you pay."]
+        ["Cancelling", "Flights are non-refundable once ticketed. Refunds on the balance vary. We'll let you know."]
       ],
       "bottomNote": "Opens WhatsApp with both legs, dates and travellers filled in · no payment yet",
       "ticker": ["IATA-accredited", "Direct flights", "Visa-free", "Thousands of travellers"],
