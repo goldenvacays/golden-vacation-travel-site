@@ -187,7 +187,7 @@ const gaPlaces = (() => {
   return out;
 })();
 
-const scripts = () => `<script>window.GV_HOME=${JSON.stringify({ whatsapp: S.whatsapp, modes: H.quote.modes, kinds: H.quote.kinds, needs: H.quote.needs, copy: { notSure: H.quote.notSure, childAge: H.quote.childAge, childAgeHint: H.quote.childAgeHint, adults: H.quote.adults, children: H.quote.children, rooms: H.quote.rooms }, places: gaPlaces, maxGuests: (TR && TR.site && TR.site.maxGuests) || 16, overflowEmail: (H.footer && H.footer.email) || "", today: new Date().toISOString().slice(0, 10) })};</script>
+const scripts = () => `<script>window.GV_HOME=${JSON.stringify({ whatsapp: S.whatsapp, modes: H.quote.modes, kinds: H.quote.kinds, needs: H.quote.needs, copy: { notSure: H.quote.notSure, childAge: H.quote.childAge, childAgeHint: H.quote.childAgeHint, adults: H.quote.adults, children: H.quote.children, rooms: H.quote.rooms, room: H.quote.room, addRoom: H.quote.addRoom, removeRoom: H.quote.removeRoom }, places: gaPlaces, maxGuests: (TR && TR.site && TR.site.maxGuests) || 16, overflowEmail: (H.footer && H.footer.email) || "", today: new Date().toISOString().slice(0, 10) })};</script>
 <script src="/getaways/assets/getaways.js" defer></script>
 <script src="${ASSETS}/home.js" defer></script>
 <script src="${ASSETS}/daterange.js" defer></script>`;
@@ -244,15 +244,12 @@ ${modeChips("qmodes mob")}
     <div class="qf qf-dates" data-f="dates"><div class="hq-dates"><label><span id="hq-in-label">Check in</span><input type="date" id="hq-in" name="in" min="${today}" data-dr="start" data-dr-pair="#hq-out"></label><label><span id="hq-out-label">Check out</span><input type="date" id="hq-out" name="out" min="${today}" data-dr="end"></label></div></div>
     <div class="qf qf-who" data-f="who">${icon("users", 20)}<label><span>${esc(H.quote.whoLabel)}</span><button type="button" class="hq-who" id="hq-who" aria-expanded="false" aria-controls="hq-pop">2 adults</button></label>
       <div class="hq-pop" id="hq-pop" hidden>
-        <div class="hq-line"><b>${esc(H.quote.adults)}</b><span class="hq-step"><button type="button" data-step="a" data-d="-1" aria-label="One fewer adult">&minus;</button><output id="hq-a" aria-live="polite">2</output><button type="button" data-step="a" data-d="1" aria-label="One more adult">+</button></span></div>
-        <div class="hq-line"><b>${esc(H.quote.children)}</b><span class="hq-step"><button type="button" data-step="k" data-d="-1" aria-label="One fewer child">&minus;</button><output id="hq-k" aria-live="polite">0</output><button type="button" data-step="k" data-d="1" aria-label="One more child">+</button></span></div>
-        <div class="hq-line" id="hq-rooms-line" hidden><b>${esc(H.quote.rooms)}</b><span class="hq-step"><button type="button" data-step="r" data-d="-1" aria-label="One fewer room">&minus;</button><output id="hq-r" aria-live="polite">1</output><button type="button" data-step="r" data-d="1" aria-label="One more room">+</button></span></div>
-        <div class="hq-ages" id="hq-ages" hidden></div>
-        <p class="hq-rooms-list" id="hq-rooms-list" hidden></p>
+        <div id="hq-party"></div>
+        <button type="button" class="hq-addroom" id="hq-addroom" hidden>${esc(H.quote.addRoom)}</button>
         <p class="hq-hint" id="hq-hint">${esc(H.quote.childAgeHint)}</p>
         <button type="button" class="btn btn-black btn-sm" id="hq-done">${esc(H.quote.whoDone)}</button>
       </div>
-      <input type="hidden" name="adults" id="hq-adults" value="2"><input type="hidden" name="kids" id="hq-kids" value="0"><input type="hidden" name="ages" id="hq-ages-v" value=""><input type="hidden" name="rooms" id="hq-rooms-v" value="1">
+      <input type="hidden" name="adults" id="hq-adults" value="2"><input type="hidden" name="kids" id="hq-kids" value="0"><input type="hidden" name="ages" id="hq-ages-v" value=""><input type="hidden" name="rooms" id="hq-rooms-v" value="1"><input type="hidden" name="split" id="hq-split" value="">
     </div>
     <div class="qsubmit"><button class="btn btn-black btn-lg btn-full" type="submit" id="hq-go">Find a getaway${icon("arrow", 18)}</button></div>
   </form>

@@ -261,9 +261,8 @@ ${nav({ back: `${BASE}/`, title: "the quote page" })}
   <div class="opt"><span class="lbl">Leaving from</span><div class="chip-row" id="q-airports"></div></div>
   <div class="opt"><span class="lbl">Nights</span><div class="chip-row" id="q-nights"></div></div>
   <div class="grid2"><label class="field"><span>Leaving</span><span class="field-in"><input type="date" id="q-leaving" name="from" data-dr="start" data-dr-pair="#q-returning" data-dr-optional></span></label><label class="field"><span>Returning</span><span class="field-in"><input type="date" id="q-returning" name="to" data-dr="end"></span></label></div>
-  <div class="row2"><div class="stepper"><span>Adults</span><div class="stepper-in"><button type="button" data-step="adults" data-dir="-1" aria-label="Fewer adults">−</button><output id="out-adults">2</output><button type="button" data-step="adults" data-dir="1" aria-label="More adults">+</button></div></div>
-    <div class="stepper"><span>Kids</span><div class="stepper-in"><button type="button" data-step="kids" data-dir="-1" aria-label="Fewer kids">−</button><output id="out-kids">0</output><button type="button" data-step="kids" data-dir="1" aria-label="More kids">+</button></div></div></div>
-  <div class="hq-ages" id="q-ages" hidden></div>
+  <div id="q-party"></div>
+  <button type="button" class="hq-addroom" id="q-addroom">+ Add room</button>
   <div class="opt"><span class="lbl">Meals</span><div class="chip-row">${meals.map((b) => `<button type="button" class="chip" data-meals="${esc(b)}" aria-pressed="${b === "Not sure"}">${esc(b)}</button>`).join("")}</div></div>
   <label class="field"><span>Your name</span><span class="field-in">${icon("users", 20)}<input type="text" id="q-name" name="name" placeholder="So we know who we're talking to" autocomplete="given-name"></span></label>
   <div class="opt"><span class="lbl">Quote me in</span><div class="curr" role="group" aria-label="Quote currency"><button type="button" data-cur="US$" class="on">US$</button><button type="button" data-cur="J$">J$</button></div></div>
