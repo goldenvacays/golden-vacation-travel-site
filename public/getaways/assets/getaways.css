@@ -368,7 +368,10 @@ body.jmd .jmd-v { display: inline; }
   .sec-head > div { display: flex; flex-direction: column; gap: 12px; max-width: 760px; }
   .sec-sub { font-size: 18px; max-width: 640px; }
   .sec-tight { padding-top: 28px; padding-bottom: 8px; }
-  .how { margin: 28px var(--pad) 8px; padding: 40px 44px; border-radius: 24px; background: var(--alt); display: grid; grid-template-columns: 1.1fr 1fr 1fr 1fr; gap: 36px; align-items: start; }
+  /* width:auto overrides the width:100% this element also gets from .wrap. Margins sit
+     outside the width, so 100% plus these side margins pushed its right edge to
+     viewport + 56px and scrolled the whole page sideways on any screen under 1496px. */
+  .how { width: auto; margin: 28px var(--pad) 8px; padding: 40px 44px; border-radius: 24px; background: var(--alt); display: grid; grid-template-columns: 1.1fr 1fr 1fr 1fr; gap: 36px; align-items: start; }
   .how .steps { display: contents; }
   .how .step { display: flex; flex-direction: column; gap: 10px; padding: 0; border: 0; }
   .how .step-n { width: 36px; height: 36px; font-size: 15px; }
