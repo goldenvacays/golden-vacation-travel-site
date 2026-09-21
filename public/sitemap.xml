@@ -3,7 +3,7 @@
 
 <url>
   <loc>https://goldenvacays.com/</loc>
-  <lastmod>2026-08-18T00:00:00+00:00</lastmod>
+  <lastmod>2026-09-19T00:00:00+00:00</lastmod>
   <priority>1.0</priority>
 </url>
 
@@ -66,6 +66,88 @@
   <lastmod>2026-09-07T00:00:00+00:00</lastmod>
   <priority>0.8</priority>
 </url>
+<!-- getaways hotels -->
+<url>
+  <loc>https://goldenvacays.com/getaways/lima/estelar-miraflores</loc>
+  <lastmod>2026-09-16T00:00:00+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
+<url>
+  <loc>https://goldenvacays.com/getaways/lima/hilton-lima</loc>
+  <lastmod>2026-09-16T00:00:00+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
+<url>
+  <loc>https://goldenvacays.com/getaways/lima/melia-lima</loc>
+  <lastmod>2026-09-16T00:00:00+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
+<url>
+  <loc>https://goldenvacays.com/getaways/lima/nhow</loc>
+  <lastmod>2026-09-16T00:00:00+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
+<url>
+  <loc>https://goldenvacays.com/getaways/lima/nobility</loc>
+  <lastmod>2026-09-16T00:00:00+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
+<url>
+  <loc>https://goldenvacays.com/getaways/lima/souma</loc>
+  <lastmod>2026-09-16T00:00:00+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
+<url>
+  <loc>https://goldenvacays.com/getaways/lima/suites-del-bosque</loc>
+  <lastmod>2026-09-16T00:00:00+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
+<url>
+  <loc>https://goldenvacays.com/getaways/panama/decameron-panama</loc>
+  <lastmod>2026-09-16T00:00:00+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
+<url>
+  <loc>https://goldenvacays.com/getaways/panama/dreams-playa-bonita</loc>
+  <lastmod>2026-09-16T00:00:00+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
+<url>
+  <loc>https://goldenvacays.com/getaways/panama/hospedium-princess</loc>
+  <lastmod>2026-09-16T00:00:00+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
+<url>
+  <loc>https://goldenvacays.com/getaways/panama/las-americas</loc>
+  <lastmod>2026-09-16T00:00:00+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
+<url>
+  <loc>https://goldenvacays.com/getaways/panama/marinn-place</loc>
+  <lastmod>2026-09-16T00:00:00+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
+<url>
+  <loc>https://goldenvacays.com/getaways/panama/megapolis</loc>
+  <lastmod>2026-09-16T00:00:00+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
+<url>
+  <loc>https://goldenvacays.com/getaways/panama/ramada-plaza</loc>
+  <lastmod>2026-09-16T00:00:00+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
+<url>
+  <loc>https://goldenvacays.com/getaways/panama/riu-playa-blanca</loc>
+  <lastmod>2026-09-16T00:00:00+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
+<url>
+  <loc>https://goldenvacays.com/getaways/panama/riu-plaza</loc>
+  <lastmod>2026-09-16T00:00:00+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
+<!-- /getaways hotels -->
 <!-- experiences -->
 <url>
   <loc>https://goldenvacays.com/experiences/</loc>
@@ -549,5 +631,18 @@
   <priority>0.8</priority>
 </url>
 <!-- /transfers -->
+
+
+<url>
+  <loc>https://goldenvacays.com/privacy/</loc>
+  <lastmod>2026-09-08T00:00:00+00:00</lastmod>
+  <priority>0.3</priority>
+</url>
+
+<url>
+  <loc>https://goldenvacays.com/terms/</loc>
+  <lastmod>2026-09-08T00:00:00+00:00</lastmod>
+  <priority>0.3</priority>
+</url>
 
 </urlset>
