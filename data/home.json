@@ -27,7 +27,7 @@
     ],
     [
       "Groups",
-      "/group-inquiry"
+      "/groups/"
     ],
     [
       "Resort status",
@@ -428,7 +428,7 @@
       ],
       [
         "Group travel",
-        "/group-inquiry"
+        "/groups/"
       ]
     ],
     "coming": [

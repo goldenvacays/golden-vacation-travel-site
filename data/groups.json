@@ -1,0 +1,508 @@
+{
+  "base": "/groups",
+  "turnaround": "one working day",
+  "bigGroupNote": "Over 20 rooms? A full quote can take up to five working days.",
+  "email": "goldentravellers@outlook.com",
+  "hold": {
+    "usd": 95,
+    "jmd": 15000
+  },
+  "minAdults": 10,
+  "minRooms": 10,
+  "airport": "Kingston",
+  "iataLine": "IATA-accredited since 2021",
+  "officesLine": "Offices in Jamaica and Florida",
+  "hero": {
+    "kicker": "Groups, ten or more",
+    "title": "What are you planning?",
+    "text": "Church trips, company retreats, family reunions, group trips abroad. Pick yours, tell us what you need and we provide the rates. It's that simple.",
+    "proof": [
+      "IATA-accredited",
+      "Offices in Jamaica and Florida",
+      "Groups handled every year",
+      "Quick turnaround"
+    ]
+  },
+  "tiles": [
+    {
+      "id": "rooms",
+      "branch": "groups",
+      "img": "tile-rooms",
+      "alt": "The pools at a north coast resort from above, Jamaica",
+      "kick": "Resort / hotel rooms",
+      "title": "Church, school, company or family outings",
+      "text": "Ten rooms or more? Let us handle it for you. Group rate, small deposit, one person to call.",
+      "cta": "Quote me"
+    },
+    {
+      "id": "jamaica",
+      "branch": "overseas",
+      "img": "tile-overseas",
+      "alt": "A catamaran at sunset off the coast of Jamaica",
+      "kick": "Coming to Jamaica",
+      "title": "From the USA, UK or Canada",
+      "text": "Bring everyone to Jamaica, first visit or homecoming. Rooms, drivers, days out and the last-night dinner, planned by people who live here, on one quote.",
+      "cta": "Quote me"
+    },
+    {
+      "id": "trips",
+      "branch": "trips",
+      "img": "tile-trips",
+      "alt": "Bávaro beach at sunrise, Punta Cana",
+      "kick": "International group trip",
+      "title": "Group trips from Jamaica",
+      "text": "Panama City or Punta Cana with your people, on your dates. Each person holds a spot for US$95, you never front the trip.",
+      "cta": "See the trips"
+    }
+  ],
+  "rooms": {
+    "kicker": "Resort / hotel rooms",
+    "title": "Ten rooms or more",
+    "img": "rooms-resort",
+    "alt": "Rooms around the pool at a north coast resort, Jamaica",
+    "text": "You bring the people. We book the rooms. Hold them with a small deposit, making your group travel simpler and easier.",
+    "chips": [
+      "Churches",
+      "Schools",
+      "Companies",
+      "Family outings",
+      "Sports teams",
+      "Conventions"
+    ],
+    "gets": [
+      {
+        "title": "Discounted rates",
+        "text": "Group pricing for ten rooms or more, taxes in."
+      },
+      {
+        "title": "Small deposits",
+        "text": "A little down holds the rooms, the rest on a plan around your dates."
+      },
+      {
+        "title": "Pay by invoice",
+        "text": "For organisations and group leaders, whenever you need one."
+      }
+    ],
+    "note": "",
+    "cta": "Quote me"
+  },
+  "overseas": {
+    "kicker": "Coming to Jamaica",
+    "title": "Group visiting Jamaica?",
+    "img": "overseas-arrivals",
+    "alt": "A catamaran beach day on the north coast of Jamaica",
+    "text": "Whatever you need, whether for a family reunion, a wedding, a church group, an alumni weekend or a company retreat. First time on the island or coming home? We handle it all. You let us know your needs. We book the rooms, day trips, flights and everything in between.",
+    "chips": [
+      "Family reunion",
+      "Wedding",
+      "Church group",
+      "Alumni weekend",
+      "Company retreat",
+      "Friends trip"
+    ],
+    "cta": "Quote me",
+    "note": "Your quote in US$, by email, within TURNAROUND."
+  },
+  "trips": {
+    "kicker": "International group trip",
+    "title": "Planning an international group trip? Pick the destination.",
+    "text": "Flights, hotel and private transfers from Kingston or Montego Bay. Ten adults or more. Your group can hold their spots for as little as US$95 each. See what the price looks like.",
+    "note": "US$95 holds a spot, non-refundable, and comes off that person's deposit. Somewhere else in mind, like Medellín or Lima? Tell us on the form.",
+    "destinations": [
+      {
+        "id": "panama",
+        "name": "Panama City",
+        "img": "dest-panama",
+        "alt": "The pool at Riu Plaza Panama with the towers behind",
+        "nights": 4,
+        "days": 5,
+        "board": "Bed and breakfast",
+        "meta": "4 nights, 5 days · Bed and breakfast",
+        "includes": [
+          "Flights",
+          "Personal item",
+          "Carry-on",
+          "Checked bag",
+          "Seat selection",
+          "Private transfers",
+          "Breakfast every morning"
+        ],
+        "hotels": [
+          {
+            "name": "Megapolis",
+            "usd": 899,
+            "img": "h-megapolis",
+            "alt": "The pool at Megapolis, Panama City"
+          },
+          {
+            "name": "Riu Plaza Panama",
+            "usd": 965,
+            "img": "h-riu-plaza",
+            "alt": "The pool at Riu Plaza Panama"
+          }
+        ]
+      },
+      {
+        "id": "punta-cana",
+        "name": "Punta Cana",
+        "img": "dest-punta-cana",
+        "alt": "Riu Republica from above, Punta Cana",
+        "nights": 3,
+        "days": 4,
+        "board": "All inclusive",
+        "meta": "3 nights, 4 days · All inclusive",
+        "includes": [
+          "Flights",
+          "Personal item",
+          "Checked bag",
+          "Seat selection",
+          "Private transfers",
+          "All inclusive"
+        ],
+        "hotels": [
+          {
+            "name": "Sunscape Coco",
+            "usd": 796,
+            "img": "h-sunscape-coco",
+            "alt": "Sunscape Coco, Punta Cana"
+          },
+          {
+            "name": "Riu Republica",
+            "usd": 899,
+            "img": "h-riu-republica",
+            "alt": "Riu Republica from above, Punta Cana"
+          }
+        ]
+      }
+    ],
+    "holdCta": "Hold booking",
+    "more": ""
+  },
+  "holdSteps": [
+    {
+      "title": "US$95 holds a spot",
+      "text": "Or J$15,000 per traveller, non-refundable."
+    },
+    {
+      "title": "It comes off their deposit",
+      "text": "When that person commits, their hold counts toward their own package deposit."
+    },
+    {
+      "title": "You collect and pay once",
+      "text": "Your group pays you, you send us one payment. Nobody fronts the whole trip."
+    }
+  ],
+  "holdNote": "Travel agents and trip hosts: we help everyone. Say so on the form.",
+  "why": [
+    {
+      "title": "Quick quotations",
+      "text": "Your quote by email within TURNAROUND, with the price, the deposit and the plan.",
+      "icon": "clock"
+    },
+    {
+      "title": "Discounted rates",
+      "text": "US$95 holds a spot on a trip abroad. A small deposit holds the rooms. You never carry the whole cost.",
+      "icon": "tag"
+    },
+    {
+      "title": "Flexible payment",
+      "text": "Small deposits, payment plans around your travel date, and invoice for organisations and group leaders.",
+      "icon": "calendar"
+    },
+    {
+      "title": "Experts at work",
+      "text": "Our travel professionals look after your group from first email to last night. We've done thousands of trips, and every week we have guests flying in and out of the island.",
+      "icon": "people"
+    }
+  ],
+  "flow": [
+    {
+      "n": "Step 1",
+      "title": "Tell us what you need",
+      "text": "Which of the three you are, dates, numbers and who pays. Two minutes."
+    },
+    {
+      "n": "Step 2",
+      "title": "Your quote lands by email",
+      "text": "Within TURNAROUND. Your price, deposit, payment plan and what is included."
+    },
+    {
+      "n": "Step 3",
+      "title": "Make the deposit, secure your reservations",
+      "text": "Pay the deposit and your rooms or spots are held from there."
+    }
+  ],
+  "cta": {
+    "title": "Tell us what you need",
+    "text": "Two minutes. Tell us your requirements and look out for your quote.",
+    "button": "Quote me"
+  },
+  "form": {
+    "kicker": "Your quote",
+    "title": "What are you planning?",
+    "text": "Four short screens. Dates and numbers are what let us price it, so the starred rows are needed. Your quote lands by email within TURNAROUND.",
+    "who": [
+      {
+        "value": "groups",
+        "title": "Resort / hotel rooms",
+        "sub": "Church, school, company or family outings"
+      },
+      {
+        "value": "overseas",
+        "title": "Coming to Jamaica",
+        "sub": "From the USA, UK or Canada"
+      },
+      {
+        "value": "trips",
+        "title": "International group trip",
+        "sub": "Group trips from Jamaica"
+      }
+    ],
+    "orgTypes": [
+      "Church",
+      "School",
+      "Company",
+      "Family",
+      "Sports team",
+      "Other"
+    ],
+    "occasions": [
+      "Family reunion",
+      "Wedding",
+      "Church group",
+      "Alumni weekend",
+      "Company retreat",
+      "Friends trip",
+      "Other"
+    ],
+    "roles": [
+      "Group leader",
+      "Travel agent",
+      "Trip host",
+      "Church or school"
+    ],
+    "decides": [
+      "I decide",
+      "On behalf of someone"
+    ],
+    "based": [
+      "Jamaica",
+      "USA",
+      "UK",
+      "Canada",
+      "Somewhere else"
+    ],
+    "next": [
+      {
+        "title": "A reference number, now",
+        "text": "On screen straight away, and in our reply."
+      },
+      {
+        "title": "Your quote by email, within TURNAROUND",
+        "text": "Your price, your deposit, your payment plan and what is included. Forward it to your group."
+      },
+      {
+        "title": "Make the deposit, secure your reservations",
+        "text": "Pay the deposit and your rooms or spots are held from there."
+      }
+    ],
+    "submit": "Quote me",
+    "submitNote": "",
+    "steps": [
+      "Pick yours",
+      "The trip",
+      "The people",
+      "You"
+    ],
+    "tiers": [
+      "Budget",
+      "Mid-range",
+      "Luxury",
+      "5 star"
+    ],
+    "yesNo": [
+      "Yes",
+      "No"
+    ],
+    "childAges": [
+      "0 to 2",
+      "3 to 12",
+      "13 to 17"
+    ],
+    "roomTypes": [
+      [
+        "r_double",
+        "Double"
+      ],
+      [
+        "r_single",
+        "Single"
+      ],
+      [
+        "r_triple",
+        "Triple"
+      ],
+      [
+        "r_quad",
+        "Quad"
+      ]
+    ],
+    "catering": [
+      "Coffee breaks",
+      "Lunch",
+      "Dinner",
+      "None"
+    ],
+    "airportsIn": [
+      "Montego Bay",
+      "Kingston",
+      "Ocho Rios",
+      "Not sure"
+    ],
+    "comingFrom": [
+      "USA",
+      "UK",
+      "Canada",
+      "Somewhere else"
+    ],
+    "airportsOut": [
+      "Kingston",
+      "Montego Bay",
+      "Not sure"
+    ],
+    "status": [
+      "Ready to book",
+      "Still deciding",
+      "Just pricing"
+    ],
+    "places": [
+      "Montego Bay",
+      "Negril",
+      "Ocho Rios",
+      "Runaway Bay",
+      "Falmouth",
+      "Kingston",
+      "South coast",
+      "Port Antonio",
+      "Not decided yet"
+    ],
+    "invoice": [
+      "Yes",
+      "No"
+    ],
+    "hotelNames": [
+      "Azul Beach Resort Negril",
+      "Bahia Principe Escape Runaway Bay",
+      "Bahia Principe Explore Jamaica",
+      "Bahia Principe Luxury Runaway Bay",
+      "Beaches Negril",
+      "Beaches Ocho Rios",
+      "Beaches Runaway Bay",
+      "Breathless Montego Bay",
+      "Catalonia Montego Bay",
+      "Couples Negril",
+      "Couples Sans Souci",
+      "Couples Swept Away",
+      "Couples Tower Isle",
+      "Deja Resort",
+      "Dreams Playa Bonita Panama",
+      "Dreams Rose Hall",
+      "ESTELAR Miraflores",
+      "Excellence Oyster Bay",
+      "FDR - Franklyn D. Resort",
+      "Grand Decameron Cornwall Beach",
+      "Grand Decameron Montego Beach",
+      "Grand Decameron Panama, A Trademark All Inclusive",
+      "Grand Lido Negril",
+      "Grand Muthu Runaway Bay Club Caribbean",
+      "Grand Palladium Jamaica Resort & Spa",
+      "Grand Palladium Lady Hamilton Resort & Spa",
+      "Grand Pineapple Beach Negril",
+      "Hedonism II",
+      "Hilton Lima Miraflores",
+      "Hospedium Princess Hotel Panama",
+      "Hotel Las Americas Golden Tower Panama",
+      "Hotel Riu Guanacaste",
+      "Hotel Riu Montego Bay",
+      "Hotel Riu Negril",
+      "Hotel Riu Ocho Rios",
+      "Hotel Riu Palace Aquarelle",
+      "Hotel Riu Palace Costa Rica",
+      "Hotel Riu Palace Jamaica",
+      "Hotel Riu Palace Tropical Bay",
+      "Hotel Riu Playa Blanca",
+      "Hotel Riu Plaza Panama",
+      "Hotel Riu Reggae",
+      "Hotel Suites del Bosque",
+      "Hyatt Zilara Rose Hall",
+      "Hyatt Ziva Rose Hall",
+      "Iberostar Selection Rose Hall",
+      "Iberostar Waves Rose Hall",
+      "JOIA Rose Hall by Iberostar",
+      "Jewel Grande Montego Bay",
+      "Marinn Place Financial District",
+      "Megapolis Hotel Panama",
+      "Melia Braco Village",
+      "Melia Lima",
+      "Moon Palace Jamaica",
+      "Moon Palace The Grand - Montego Bay",
+      "Nobility Hotel",
+      "Oasis at Sunset Beach or Sunset Beach Resort",
+      "Occidental Papagayo",
+      "Ocean Coral Spring",
+      "Ocean Eden Bay",
+      "Princess Grand Jamaica",
+      "Princess Senses The Mangrove",
+      "RIU Montego Bay",
+      "RIU Negril",
+      "RIU Ocho Rios",
+      "RIU Palace Aquarelle",
+      "RIU Palace Jamaica",
+      "RIU Palace Tropical Bay",
+      "RIU Reggae",
+      "Ramada Plaza Panama Punta Pacifica",
+      "Royalton Blue Waters",
+      "Royalton CHIC Jamaica Paradise Cove",
+      "Royalton Hideaway Blue Waters",
+      "Royalton Hideaway Negril",
+      "Royalton Negril",
+      "S Hotel Montego Bay",
+      "Sandals Caribbean Cay",
+      "Sandals Dunn's River",
+      "Sandals Montego Bay",
+      "Sandals Negril",
+      "Sandals Ochi",
+      "Sandals Royal Plantation",
+      "Sandals South Coast",
+      "Sea Garden Hotel",
+      "Secrets St. James Montego Bay",
+      "Secrets Wild Orchid Montego Bay",
+      "Souma Hotel Lima",
+      "Sunscape Coco Punta Cana",
+      "Sunset at the Palms",
+      "UNICO 18°77° Montego Bay",
+      "Zoetry Montego Bay",
+      "nhow Lima"
+    ],
+    "under10": "Fewer than ten people? That's a regular booking, and quicker on WhatsApp.",
+    "under10cta": "Message us on WhatsApp",
+    "whatsapp": "18763601567",
+    "privacy": "We use these details only to quote your trip."
+  },
+  "sent": {
+    "title": "Got it. Your quote is on its way.",
+    "text": "It lands by email within TURNAROUND with your price, your deposit and your payment plan, written so you can forward it straight to your group.",
+    "refNote": "Quote this if you write to us in the meantime.",
+    "briefTitle": "What we're working from",
+    "fixNote": "Spotted a mistake? Email goldentravellers@outlook.com with your reference and we fix it before quoting.",
+    "peopleLine": "Within working hours, one of our travel professionals is on it."
+  },
+  "holdKicker": "For leaders",
+  "howTitle": "A few quick questions to start",
+  "howText": "We receive your request and provide group rates that fit your plans, so you can book smoothly.",
+  "navShort": {
+    "rooms": "Hotel rooms",
+    "jamaica": "Coming to Jamaica",
+    "trips": "International trips"
+  }
+}
