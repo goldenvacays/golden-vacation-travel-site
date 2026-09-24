@@ -360,7 +360,7 @@ ${bodies.map((b) => `<template data-route="${b.route}" data-cls="${esc(b.cls)}" 
   document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a)return;var href=a.getAttribute('href')||'';
     if(href.indexOf('${BASE}')===0){e.preventDefault();if(('#'+href)===location.hash){render();}else{location.hash='#'+href;}}
     else if(href.charAt(0)==='#' && href.indexOf('#${BASE}')!==0){var el=root.querySelector(href);if(el){e.preventDefault();el.scrollIntoView({behavior:'smooth'});}}
-    else if(href==='/'||href.indexOf('/hotel-status')===0||href.indexOf('/group-inquiry')===0){a.setAttribute('target','_blank');a.href='https://goldenvacays.com'+href;}
+    else if(href==='/'||href.indexOf('/hotel-status')===0||href.indexOf('/groups/')===0){a.setAttribute('target','_blank');a.href='https://goldenvacays.com'+href;}
   });
   document.addEventListener('submit',function(e){var f=e.target;if(f.getAttribute('action')&&f.getAttribute('action').indexOf('${BASE}')===0){e.preventDefault();var qs=new URLSearchParams(new FormData(f)).toString();location.hash='#'+f.getAttribute('action')+'?'+qs;}});
   window.addEventListener('hashchange',render);render();

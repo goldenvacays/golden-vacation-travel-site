@@ -94,7 +94,7 @@ const btn = (label, href, kind = "black", size = "", iconName = "arrow", extra =
 const currency = () => `<div class="curr" role="group" aria-label="Currency"><button type="button" data-c="USD" class="on">US$</button><button type="button" data-c="JMD">J$</button></div>`;
 const longShort = (long, short) => `<span class="long">${esc(long)}</span><span class="short">${esc(short || long)}</span>`;
 
-const NAV = [["Getaways", "/getaways/"], ["Staycations", "/#staycations"], ["Jamaica", "/#coming"], ["Experiences", "/experiences/"], ["Transfers", "/transfers/"], ["Groups", "/group-inquiry"], ["Resort status", "/hotel-status"]];
+const NAV = [["Getaways", "/getaways/"], ["Staycations", "/#staycations"], ["Jamaica", "/#coming"], ["Experiences", "/experiences/"], ["Transfers", "/transfers/"], ["Groups", "/groups/"], ["Resort status", "/hotel-status"]];
 const ZONE = Object.fromEntries(T.zones.map((z) => [z.key, z]));
 
 /* ---------- hotels: the resort list, each priced at its sheet row or its zone ---------- */
