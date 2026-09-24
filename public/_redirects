@@ -1,3 +1,7 @@
 # Pretty URL for the interactive resort map (files live in /map, base href handles asset paths)
 /hotel-status-map     /map/index.html   200
 /hotel-status-map/    /map/index.html   200
+
+# The old single-page group form moved to the groups pages (folder to folder, never a file page)
+/group-inquiry        /groups/          301
+/group-inquiry/       /groups/          301
