@@ -71,6 +71,14 @@ export const handler = async (event) => {
     const g = guestEmail(f);
     jobs.push(send(key, { from: FROM, to: [f.email], reply_to: REPLY_TO, subject: g.subject, text: g.text, html: g.html }));
   }
+  if (form === "tour-partners" && f.email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email)) {
+    const who = f.name ? f.name.split(" ")[0] : "there", biz = f.business || "your business";
+    const text = [`Hi ${who},`, "", `Thanks for sending the details of ${biz}. Your reference is ${f.ref || ""}.`,
+      "Our team will be in touch on WhatsApp or by email about listing your tours on Golden Experiences.", "",
+      "Golden Vacation & Travel", "IATA-accredited, offices in Jamaica and Florida.", "Call 876 817 3467"].join("\n");
+    const html = `<div style="font-family:Archivo,Helvetica,Arial,sans-serif;color:#0E0F0E;max-width:560px;line-height:1.5;font-size:16px"><p>Hi ${esc(who)},</p><p>Thanks for sending the details of ${esc(biz)}. Your reference is <b style="background:#F2B93B;padding:2px 8px;border-radius:999px">${esc(f.ref || "")}</b>.</p><p>Our team will be in touch on WhatsApp or by email about listing your tours on Golden Experiences.</p><p style="font-size:14px;margin-top:24px"><b>Golden Vacation &amp; Travel</b><br>IATA-accredited, offices in Jamaica and Florida.<br>Call 876 817 3467</p></div>`;
+    jobs.push(send(key, { from: process.env.PARTNERS_FROM || "Golden Experiences <experiences@goldenvacays.com>", to: [f.email], reply_to: REPLY_TO, subject: `We have your details: ${biz} (${f.ref || ""})`, text, html }));
+  }
   if (NOTIFY.length && !isDuplicateTap(payload)) {
     const t = teamEmail(payload);
     if (t) jobs.push(send(key, { from: TEAM_FROM, to: NOTIFY, reply_to: t.replyTo || REPLY_TO, subject: t.subject, text: t.text, html: t.html }));

@@ -178,6 +178,10 @@ function build(form, d) {
         phone: d.phone, email: d.email, firstName: first(d.name),
         note: /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email || "") ? "They've been emailed a copy of this brief with their reference." : "" };
     }
+    case "tour-partners":
+      return { kind: "New tour partner", headline: d.business || "A tour operator sent their details", who: d.name, ref: d.ref,
+        rows: [["Runs", d.offers], ["Where", d.areas], ["Their tours", d.tours], ["Hotel pickup", d.pickup], ["TPDCo licence", d.tpdco], ["Insurance", d.insurance], ["Works with agents", d.rates], ["Booking system", d.system], ["Website", d.website], ["Phone", d.phone], ["Email", d.email]],
+        todo: "Reply to set up their listing", phone: d.phone, email: d.email, firstName: first(d.name), mailSubject: `Listing ${d.business || "your tours"} on Golden Experiences` };
     case "exp-alerts":
       return { kind: "Needs attention", loud: true, headline: d.error || "A booking needs a look", ref: d.ref,
         rows: [["Tour", [d.venue, d.product].filter(Boolean).join(", ")], ["When", d.when], ["Guest", d.customer], ["Total", d.total]] };
@@ -204,7 +208,7 @@ export function teamEmail(payload, opts = {}) {
   const buttons = [
     pl ? [`WhatsApp ${c.firstName || ""}`.trim(), pl.wa, true] : null,
     pl ? ["Call", pl.tel, false] : null,
-    c.email ? ["Email", `mailto:${c.email}?subject=${encodeURIComponent(`${form === "groups" ? "Your group quote" : "Your booking"} ${c.ref || ""}`.trim())}`, false] : null,
+    c.email ? ["Email", `mailto:${c.email}?subject=${encodeURIComponent(c.mailSubject || `${form === "groups" ? "Your group quote" : "Your booking"} ${c.ref || ""}`.trim())}`, false] : null,
   ].filter(Boolean);
   const netlify = payload.site_name && payload.form_id ? `https://app.netlify.com/sites/${payload.site_name}/forms/${payload.form_id}` : "";
   const band = c.loud ? `background:${GOLD};color:${INK}` : `background:${INK};color:${GOLD}`;

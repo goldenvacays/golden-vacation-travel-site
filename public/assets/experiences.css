@@ -604,3 +604,6 @@
   .hero-dots { top: 16px; }
 }
 @media (prefers-reduced-motion: reduce) { .hero-track { scroll-behavior: auto; } .hero-dots button, .hero-arrow { transition: none; } }
+
+/* the lead under a near page's heading lines up with the heading (getaways.css pads every .lead for its own pages) */
+.near-t .lead { padding: 0; }

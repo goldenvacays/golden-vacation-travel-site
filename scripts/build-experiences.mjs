@@ -91,8 +91,26 @@ const venueBySlug = Object.fromEntries(X.venues.map((v) => [v.slug, v]));
 const resortsJs = fs.readFileSync(path.join(ROOT, "public/map/resorts.js"), "utf8");
 const RESORTS = JSON.parse(resortsJs.slice(resortsJs.indexOf("["), resortsJs.lastIndexOf("]") + 1));
 const slugify = (s) => String(s).toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-const HOTELS = RESORTS.filter((r) => r.status !== "Permanently closed" && r.region && X.regions[r.region] && r.lat && r.lng)
-  .map((r) => ({ name: r.name, slug: slugify(r.name), region: r.region, lat: r.lat, lng: r.lng, status: r.status, area: r.area }))
+/* the smaller hotels (boutique, cliff and beach hotels, B&Bs) the site already knows from the transfers list, by area.
+   They are not on the resort status list, so each carries the middle of its area instead of its own pin (drive times
+   come from the area), and its page points at an airport transfer instead of the status page. */
+const T_ZONES = JSON.parse(fs.readFileSync(path.join(ROOT, "data/transfers.json"), "utf8")).zones || [];
+const ZONE_REGION = { negril: "negril", mobay: "mobay", "mobay-nonai": "mobay", "rose-hall": "mobay", lucea: "lucea", "hanover-villas": "lucea", falmouth: "falmouth", "runaway-bay": "ocho", "ocho-rios": "ocho", "south-coast": "south", "treasure-beach": "south" };
+const ZONE_POINT = { negril: [18.27, -78.34], mobay: [18.49, -77.92], "mobay-nonai": [18.49, -77.9], "rose-hall": [18.51, -77.83], lucea: [18.45, -78.17], "hanover-villas": [18.45, -78.0], falmouth: [18.49, -77.65], "runaway-bay": [18.45, -77.33], "ocho-rios": [18.41, -77.11], "south-coast": [18.07, -77.95], "treasure-beach": [17.88, -77.76] };
+const ZONE_AREA = { negril: "Negril", mobay: "Montego Bay", "mobay-nonai": "Montego Bay", "rose-hall": "Rose Hall", lucea: "Hanover", "hanover-villas": "Hanover", falmouth: "Trelawny", "runaway-bay": "Runaway Bay", "ocho-rios": "Ocho Rios", "south-coast": "South Coast", "treasure-beach": "Treasure Beach" };
+const sameHotel = (a, b) => { const k = (x) => String(x).toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9 ]/g, " ").replace(/\b(the|hotel|resort|resorts|and|spa|villas?|inn|jamaica|negril)\b/g, " ").replace(/\s+/g, " ").trim(); return k(a) === k(b); };
+const RESORT_HOTELS = RESORTS.filter((r) => r.status !== "Permanently closed" && r.region && X.regions[r.region] && r.lat && r.lng)
+  .map((r) => ({ name: r.name, slug: slugify(r.name), region: r.region, lat: r.lat, lng: r.lng, status: r.status, area: r.area }));
+/* transfers-list names that are a resort already on the status list under its newer name */
+const SAME_AS_RESORT = new Set(["Braco Village", "Bahia Principe Grand Jamaica", "Jewel Paradise Cove"]);
+const SMALL_HOTELS = [];
+for (const z of T_ZONES) for (const name of z.places || []) {
+  const region = ZONE_REGION[z.key];
+  if (!region || !X.regions[region] || !ZONE_POINT[z.key] || SAME_AS_RESORT.has(name)) continue;
+  if (RESORTS.some((r) => sameHotel(r.name, name)) || SMALL_HOTELS.some((h) => sameHotel(h.name, name))) continue;
+  SMALL_HOTELS.push({ name, slug: slugify(name), region, lat: ZONE_POINT[z.key][0], lng: ZONE_POINT[z.key][1], status: "Open", area: ZONE_AREA[z.key] || X.regions[region].label, small: true });
+}
+const HOTELS = RESORT_HOTELS.concat(SMALL_HOTELS)
   .concat((X.ports || []).map((p) => ({ name: p.name, slug: p.slug, region: p.region, lat: p.lat, lng: p.lng, status: "Open", area: "Cruise port", port: true, short: p.short, note: p.note })))
   .sort((a, b) => a.name.localeCompare(b.name));
 const km = (a, b) => { const R = 6371, dLat = (b.lat - a.lat) * Math.PI / 180, dLng = (b.lng - a.lng) * Math.PI / 180; const x = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * Math.PI / 180) * Math.cos(b.lat * Math.PI / 180) * Math.sin(dLng / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(x)); };
@@ -422,6 +440,11 @@ ${cards}
   </div>
 </section>
 
+<section class="wrap pt-door" style="display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding-top:4px;padding-bottom:56px">
+  <div style="display:flex;flex-direction:column;gap:8px;max-width:620px">${kicker("For tour operators")}<h2 class="hh" style="font-size:clamp(24px,3vw,32px)">Run tours or excursions in Jamaica?</h2><p class="sec-sub">Get them in front of visitors, cruise passengers and locals, sold at your published prices.</p></div>
+  ${btn("List your tours", `${BASE}/partners`, "outline", "", "arrow")}
+</section>
+
 <section class="cta-band">
   <div class="wrap cta-in">
     <div>${kicker("Not sure which one", true)}<h2 class="hh">Tell us the date, the group and the budget.</h2><p>We'll say which pass is worth it and which one isn't. ${esc(S.hours)}</p></div>
@@ -682,7 +705,7 @@ ${nav()}
   <div class="sec-head"><div>${kicker("Also from here")}<h2 class="hh">Airport, transfers and the room itself.</h2></div></div>
   <div class="near-links">
     <a class="pair" href="${BASE}/club-mobay"><span class="pair-t"><b>Club MoBay</b><small>Fast track and lounge at Montego Bay airport, timed to your flight</small></span>${icon("arrow", 18, 2.4)}</a>
-    ${h.port ? `<a class="pair" href="${BASE}/#port"><span class="pair-t"><b>In port for the day</b><small>Every day out that fits a ship day, nearest ports first</small></span>${icon("arrow", 18, 2.4)}</a>` : `<a class="pair" href="/hotel-status"><span class="pair-t"><b>Is ${esc(h.name)} open?</b><small>What's open, reopening and closed across the island, updated from the hotels</small></span>${icon("arrow", 18, 2.4)}</a>`}
+    ${h.port ? `<a class="pair" href="${BASE}/#port"><span class="pair-t"><b>In port for the day</b><small>Every day out that fits a ship day, nearest ports first</small></span>${icon("arrow", 18, 2.4)}</a>` : (h.small ? `<a class="pair" href="/transfers/"><span class="pair-t"><b>Airport transfer to ${esc(h.name)}</b><small>A private ride from the airport to your hotel, priced before you book</small></span>${icon("arrow", 18, 2.4)}</a>` : `<a class="pair" href="/hotel-status"><span class="pair-t"><b>Is ${esc(h.name)} open?</b><small>What's open, reopening and closed across the island, updated from the hotels</small></span>${icon("arrow", 18, 2.4)}</a>`)}
     <a class="pair" href="${wa(`Hi Golden Vacation! I'd like a quote for a stay at ${h.name} with a day out added. Ref GV-EXP-STAY`)}"><span class="pair-t"><b>Your hotel, tours and pickup</b><small>We put the accommodation, the tours and the transportation together, giving you one total</small></span>${icon("chat", 18, 2.4)}</a>
   </div>
 </section>
@@ -714,11 +737,117 @@ ${scripts({ page: "booked", whatsapp: S.whatsapp, ...(previewState ? { previewSt
 </body></html>`;
 }
 
+
+/* ---------- tour partners: operators and people who run excursions send their details to be listed ---------- */
+const PT_CSS = `<style>
+.partners { padding: 0 var(--pad) 80px; }
+.partners .crumbs { padding: 22px 0 0; }
+.partners .lead { padding: 0; }
+.pt-grid { display: grid; grid-template-columns: minmax(0, 780px) minmax(240px, 340px); gap: 40px; align-items: start; }
+.pt-aside { position: sticky; top: 104px; display: flex; flex-direction: column; gap: 14px; padding: 24px; border: 2px solid var(--ink); border-radius: 22px; }
+.pt-aside ol { margin: 0; padding: 0; list-style: none; counter-reset: s; display: flex; flex-direction: column; gap: 14px; }
+.pt-aside li { counter-increment: s; display: grid; grid-template-columns: 30px 1fr; gap: 10px; font-size: 15px; line-height: 1.45; color: var(--ink-2); }
+.pt-aside li::before { content: counter(s); width: 28px; height: 28px; border-radius: 50%; background: var(--gold); color: var(--ink); font-weight: 800; font-size: 14px; display: grid; place-items: center; }
+.pt-aside b { color: var(--ink); }
+@media (max-width: 980px) { .pt-grid { grid-template-columns: minmax(0, 1fr); } .pt-aside { position: static; } }
+.pt-hero { max-width: 780px; margin: 22px 0 30px; display: flex; flex-direction: column; gap: 12px; }
+.pt-form { max-width: 780px; display: flex; flex-direction: column; gap: 22px; }
+.pt-form fieldset { border: 0; margin: 0; padding: 24px; background: var(--alt); border-radius: 22px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.pt-form legend { float: left; width: 100%; padding: 0; font-weight: 800; font-size: 20px; letter-spacing: -.01em; }
+.pt-f { display: flex; flex-direction: column; gap: 7px; font-weight: 700; font-size: 14px; }
+.pt-f small { font-weight: 500; color: var(--ink-3); }
+.pt-f input, .pt-f textarea { font: inherit; font-weight: 500; font-size: 16px; line-height: 1.45; padding: 12px 14px; border: 2px solid var(--line); border-radius: 14px; background: #fff; color: var(--ink); width: 100%; box-sizing: border-box; }
+.pt-f input:focus, .pt-f textarea:focus { outline: none; border-color: var(--ink); }
+.pt-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.pt-q { display: flex; flex-direction: column; gap: 9px; }
+.pt-l { font-weight: 700; font-size: 14px; }
+.pt-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.pt-chip { position: relative; display: inline-flex; }
+.pt-chip input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.pt-chip span { display: inline-flex; align-items: center; min-height: 38px; padding: 0 15px; border: 2px solid var(--ink); border-radius: 999px; font-weight: 700; font-size: 14px; background: #fff; }
+.pt-chip input:checked + span { background: var(--ink); color: #fff; }
+.pt-chip input:focus-visible + span { outline: 3px solid var(--gold); outline-offset: 2px; }
+.pt-send { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.pt-send .btn[disabled] { opacity: .6; }
+.pt-done { max-width: 780px; margin: 22px 0 8px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+@media (max-width: 640px) { .pt-form fieldset { padding: 18px; border-radius: 18px; } }
+</style>`;
+function partnersPage() {
+  const chipSet = (name, items, type = "checkbox") => `<div class="pt-chips">${items.map((t) => `<label class="pt-chip"><input type="${type}" name="${name}" value="${esc(t)}"><span>${esc(t)}</span></label>`).join("")}</div>`;
+  const q = (label, name, items, type) => `<div class="pt-q" role="group" aria-label="${esc(label)}"><span class="pt-l">${esc(label)}</span>${chipSet(name, items, type)}</div>`;
+  const field = (label, name, attrs = "", hint = "") => `<label class="pt-f"><span>${esc(label)}${hint ? ` <small>${esc(hint)}</small>` : ""}</span><input name="${name}" ${attrs}></label>`;
+  return `${head({ title: "List your tours with Golden Experiences | for tour operators in Jamaica", description: "Run tours, excursions, boat trips or an attraction in Jamaica? Send us your details to be listed on Golden Experiences and sold at published prices to visitors, cruise passengers and locals.", pathname: `${BASE}/partners`, image: X.venues[0].photos[0].file, bodyClass: "exp exp-partners" })}
+${PT_CSS}
+${nav()}
+<main class="partners wrap">
+<nav class="crumbs" aria-label="Breadcrumb"><a href="${BASE}/">Golden Experiences</a><span>/</span><span>List your tours</span></nav>
+<section class="pt-hero" id="pt-top">
+  ${kicker("For tour operators")}
+  <h1 class="hh">List your tours with Golden Experiences.</h1>
+  <p class="lead">We sell days out across Jamaica to visitors, cruise passengers and locals, at published prices and with hotel pickup where it runs. Send us what you run and our team will get back to you on WhatsApp or by email.</p>
+</section>
+<div class="pt-grid">
+<form class="pt-form" id="pt-form" name="tour-partners" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="${BASE}/partners?sent=1">
+  <input type="hidden" name="form-name" value="tour-partners"><input type="hidden" name="ref" id="pt-ref" value="">
+  <p hidden><label>Leave this empty <input name="bot-field"></label></p>
+  <fieldset><legend>Your business</legend>
+    <div class="pt-two">${field("Business name", "business", 'required autocomplete="organization"')}${field("Your name", "name", 'required autocomplete="name"')}</div>
+    <div class="pt-two">${field("WhatsApp or phone", "phone", 'type="tel" required autocomplete="tel" placeholder="876 555 0123"')}${field("Email", "email", 'type="email" required autocomplete="email" placeholder="you@yourbusiness.com"')}</div>
+    ${field("Website or Instagram", "website", 'placeholder="instagram.com/yourtours"', "optional")}
+  </fieldset>
+  <fieldset><legend>What you run</legend>
+    ${q("What you offer", "offers", ["Tours", "Excursions", "Attraction or park", "Boat trips", "Day passes", "Transport", "Something else"])}
+    ${q("Where", "areas", ["Negril", "Hanover", "Montego Bay", "Trelawny", "Ocho Rios and Runaway Bay", "South Coast", "Kingston", "Portland", "Island-wide"])}
+    <label class="pt-f"><span>Your tours</span><textarea name="tours" rows="6" required placeholder="Each tour's name, how long it runs, what's included, and your adult and child prices"></textarea></label>
+    ${q("Hotel pickup", "pickup", ["Yes", "Some areas", "No"], "radio")}
+  </fieldset>
+  <fieldset><legend>Working together</legend>
+    ${q("TPDCo licence", "tpdco", ["Yes", "In progress", "No"], "radio")}
+    ${q("Public liability insurance", "insurance", ["Yes", "No"], "radio")}
+    ${q("How you work with agents", "rates", ["Net rates", "Commission", "Not sure yet"], "radio")}
+    ${q("Booking system", "system", ["Rezdy", "FareHarbor", "Bokun", "Another one", "None"], "radio")}
+  </fieldset>
+  <div class="pt-send"><button class="btn btn-black btn-lg" type="submit">Send my details${icon("arrow", 18, 2.4)}</button><p class="pf-hint" id="pt-msg">We only use these details to talk to you about listing your tours.</p></div>
+</form>
+<aside class="pt-aside" aria-label="What happens next">${kicker("What happens next")}<ol>
+  <li><span><b>We read what you run</b> and check it fits what our guests ask us for.</span></li>
+  <li><span><b>We call or WhatsApp you</b> to agree rates, pickup and how bookings reach you.</span></li>
+  <li><span><b>Your tours go on Golden Experiences</b> with your photos and published prices.</span></li>
+</ol></aside>
+</div>
+<section class="pt-done" id="pt-done" hidden>${kicker("Sent")}<h2 class="hh">Thanks. We have your details.</h2><p class="lead">Your reference is <b id="pt-ref-out">on its way to your email</b>. Our team will be in touch on WhatsApp or by email.</p>${btn("Back to Golden Experiences", `${BASE}/`, "outline", "", "arrow")}</section>
+</main>
+${footer()}
+${scripts({ page: "partners", whatsapp: S.whatsapp })}
+<script>(function () {
+  var f = document.getElementById("pt-form"), done = document.getElementById("pt-done"), out = document.getElementById("pt-ref-out");
+  if (!f) return;
+  var ref = "GV-PTN-" + Math.random().toString(36).slice(2, 6).toUpperCase();
+  document.getElementById("pt-ref").value = ref;
+  function shown(r) { f.hidden = true; var a = document.querySelector(".pt-aside"); if (a) a.hidden = true; done.hidden = false; if (r) out.textContent = r; }
+  if (/[?&]sent=1/.test(location.search)) shown("");
+  f.addEventListener("submit", function (e) {
+    if (!f.checkValidity()) return;
+    e.preventDefault();
+    var body = new URLSearchParams(), multi = {};
+    new FormData(f).forEach(function (v, k) { if (k === "offers" || k === "areas") (multi[k] = multi[k] || []).push(v); else body.append(k, v); });
+    Object.keys(multi).forEach(function (k) { body.append(k, multi[k].join(", ")); });
+    var b = f.querySelector("button[type=submit]"), m = document.getElementById("pt-msg");
+    b.disabled = true;
+    fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body.toString() })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); shown(ref); window.scrollTo({ top: 0, behavior: "smooth" }); })
+      .catch(function () { b.disabled = false; m.textContent = "That didn't send. Check your connection and try again, or message us on WhatsApp."; m.classList.add("bad"); });
+  });
+})();</script>
+</body></html>`;
+}
+
 /* ---------- write ---------- */
 const pages = [
   ["public/experiences/index.html", hubPage(), "hub"],
   ...X.venues.map((v) => [`public/experiences/${v.slug}.html`, venuePage(v), v.slug]),
   ["public/experiences/booked.html", bookedPage(), "booked"],
+  ["public/experiences/partners.html", partnersPage(), "partners"],
   ...(BUNDLE ? [["public/experiences/booked-team.html", bookedPage("team"), "booked-team"]] : []),
   ...(BUNDLE ? HOTELS.filter((h) => /RIU Ocho Rios|Iberostar Waves Rose Hall|Royalton Negril|Falmouth cruise port/.test(h.name)) : HOTELS).map((h) => [`public/experiences/near/${h.slug}.html`, nearPage(h), `near-${h.slug}`]),
 ];
