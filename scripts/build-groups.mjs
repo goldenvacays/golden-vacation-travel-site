@@ -305,7 +305,8 @@ ${nav({ here: false, back: true })}
       <div data-show="place:!Panama City|Punta Cana" hidden>${style(f, "Beach or city, all inclusive, nightlife nearby, a pool, the things that matter to your group")}</div>
       ${datePair("depart", "return", "Departure", "Return")}
       ${flexDates("t", "Departure", "Return")}
-      ${row("Flying from", chips("airport", f.airportsOut, { on: "Kingston", req: true }), { req: true })}`)}
+      ${row("Flying from", chips("airport", f.airportsOut, { on: "Kingston", req: true }), { req: true })}
+      <div data-show="airport:Another airport" hidden>${field("airport_other", "Which airport?", { req: true, placeholder: "For example Miami, Nassau or Port of Spain", id: "f-airport-other" })}</div>`)}
     ${wizNav(2)}`, "Dates and numbers are what let us price it.")}
 
   ${screen(3, "The people", `
@@ -401,19 +402,19 @@ function copa() {
   const Q = `${BASE}/enquire/?branch=trips`;
   const svg = (inner) => `<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
   const perks = [
-    [svg('<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/>'), "Pay over time", `US$${fmt(G.hold.usd)} (J$${fmt(G.hold.jmd)}) holds each seat, non-refundable. The rest can be paid over time.`],
+    [svg('<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/>'), "Pay over time", `US$${fmt(G.hold.usd)} holds each seat, non-refundable. The rest can be paid over time.`],
     [svg('<rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M9 12v4M15 12v4"/>'), "Bags included", "A personal item, a carry-on and a checked bag for everyone in the group."],
     [svg('<path d="M7 11V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v5"/><path d="M5 11a2 2 0 0 1 2 2v1h10v-1a2 2 0 1 1 4 0v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z"/>'), "Seat selection", "Pick seats for the whole group, so you travel together."],
     [svg('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>'), "One quote, whole trip", "Flights, hotel and airport transfers on one quote. Organisations can pay by invoice."],
   ];
   const places = [["Panama City", "/assets/img/tile-panama.jpg", "Panama City skyline lit up at night"], ["Lima", "/assets/img/tile-lima.jpg", "Lima's Miraflores cliffs over the Pacific"], ["Medellín", "/assets/img/tile-medellin.jpg", "Medellín's city centre below the mountains"], ["Panama + Lima", "/assets/img/deal-panama.jpg", "Casco Viejo in Panama City from above"]];
-  const steps = [["Tell us the trip", "Dates, how many are going and where."], ["Get your quote", "Group fare, hotel and transfers, within TURNAROUND."], ["Hold the seats", `US$${fmt(G.hold.usd)} each holds your place. Pay the rest over time.`]];
+  const steps = [["Tell us about the trip", "Dates, how many are going, where from and where to."], ["Get your quote", "Group fare, hotel and transfers, within TURNAROUND."], ["Hold the seats", `US$${fmt(G.hold.usd)} each holds your place. Pay the rest over time.`]];
   const faq = [
     ["Can we book a Copa group fare online?", "No. copa.com takes up to 8 people in one booking, and 10 or more count as a group, handled by Copa's call centre, its sales offices or a travel agency. We handle it for you, with the hotel and transfers."],
     ["How many people make a group?", "Ten or more, travelling together on the same flights."],
     ["Do we need everyone's names now?", "No. The seats are held first, and the names are due by the date in your quote."],
-    ["Where can we fly from?", "Kingston (KIN) or Montego Bay (MBJ)."],
-    ["Are you Copa Airlines?", "No. We're Golden Vacation & Travel, an independent IATA-accredited travel agency in Jamaica. We book Copa group fares for our clients."],
+    ["Where can we fly from?", "Most groups fly from Montego Bay (MBJ) or Kingston (KIN), and we also arrange flights from airports in the USA, across the Caribbean and beyond."],
+    ["Are you Copa Airlines?", "No. We're Golden Vacation & Travel, an independent IATA-accredited travel agency with offices in Jamaica and Florida. We book Copa group fares for our clients."],
   ];
   const ld = [
     { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: `${S.origin}/` }, { "@type": "ListItem", position: 2, name: "Groups", item: `${S.origin}${BASE}/` }, { "@type": "ListItem", position: 3, name: "Copa group fares", item: `${S.origin}${BASE}/copa/` }] },
@@ -424,7 +425,7 @@ function copa() {
 .cp-band{background:var(--ink,#0E0F0E);color:#fff}
 .cp-hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:48px;align-items:center;padding-top:56px;padding-bottom:60px}
 .cp-hero .kicker{color:var(--gold,#F2B93B)}
-.cp-hero h1{color:#fff;font-size:clamp(40px,5.6vw,72px);line-height:.96;letter-spacing:-.02em;margin:12px 0 18px}
+.cp-hero h1{color:#fff;font-size:clamp(48px,7vw,92px);line-height:.96;letter-spacing:-.02em;margin:12px 0 18px}
 .cp-hero h1 em{font-style:normal;color:var(--gold,#F2B93B)}
 .cp-sub{font-size:18px;line-height:1.55;color:rgba(255,255,255,.8);max-width:560px}
 .cp-price{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:24px 0 6px}
@@ -507,28 +508,28 @@ function copa() {
 }
 @media (max-width:520px){ .cp-perks{grid-template-columns:1fr} .cp-place{aspect-ratio:1/1} .cp-hotel{flex-wrap:wrap} .cp-hotel .cp-btn{flex:1 1 100%} }
 </style>`;
-  return `${head({ title: "Copa Airlines group fares from Jamaica | Golden Vacation & Travel", description: `Flying ten or more on Copa from Kingston or Montego Bay? Group fares with payment plans, bags and seat selection. Panama City group trips from US$${fmt(from)} per person. IATA-accredited agency in Jamaica.`, pathname: `${BASE}/copa/`, image: `${S.origin}/assets/img/deal-panama-peru.jpg`, jsonld: ld })}
+  return `${head({ title: "Copa Airlines group fares for Caribbean groups | Golden Vacation & Travel", description: `Ten or more flying Copa from the Caribbean or the USA? Group fares with payment plans, included luggage and seat selection. Panama City group trips from US$${fmt(from)} per person.`, pathname: `${BASE}/copa/`, image: `${S.origin}/assets/img/deal-panama-peru.jpg`, jsonld: ld })}
 <body class="groups">
 ${nav()}
 <main class="cp">
 ${css}
 <section class="cp-band" id="top"><div class="wrap cp-hero">
   <div>
-    <span class="kicker">Copa Airlines group fares</span>
-    <h1 class="h1">Your whole group. <em>One Copa fare.</em></h1>
-    <p class="cp-sub">Access group benefits such as payment plans, additional luggage and seat selection for your groups. We get your group fare and quote the hotel and transfers.</p>
+    <span class="kicker">For groups across the Caribbean</span>
+    <h1 class="h1">Copa Airlines <em>group fares</em></h1>
+    <p class="cp-sub">Access group benefits such as payment plans, included luggage and seat selection for your groups. We get your group fare and hotel and transfers in one rate.</p>
     <div class="cp-price"><b>From US$${fmt(from)}</b><span>per person, Panama City group trip</span></div>
-    <p class="cp-inc">Flights, bags, seat selection, 4 nights' hotel, breakfast and private transfers.</p>
+    <p class="cp-inc">Flights from Kingston or Montego Bay, bags, seat selection, 4 nights' hotel, breakfast and private transfers.</p>
     <div class="cp-ctas"><a class="cp-btn cp-gold" href="${Q}" data-track="copa-top">Get my group quote</a><a class="cp-btn cp-ghost" href="#trip" data-track="copa-trips">See trips</a></div>
     <div class="cp-trust"><span>IATA-accredited</span><span>${esc(T("Quote within TURNAROUND"))}</span><span>US$${fmt(G.hold.usd)} holds a seat</span></div>
   </div>
   <div class="cp-photo"><img src="/assets/img/deal-panama-peru.jpg" width="640" height="800" alt="A traveller with her arms up on a glass lookout over Panama City" fetchpriority="high">
-    <div class="cp-badge"><b>Kingston and Montego Bay to Panama City</b>Ten or more flying together? That's a group fare.</div></div>
+    <div class="cp-badge"><b>From the Caribbean to Panama City and beyond</b>Ten or more flying together? That's a group fare.</div></div>
 </div></section>
 
 <section class="cp-sec"><div class="wrap">
   <span class="kicker">What your group gets</span>
-  <h2 class="cp-h2">Group perks you can't get on copa.com.</h2>
+  <h2 class="cp-h2">Group perks you can't get anywhere else.</h2>
   <p class="cp-lead">Copa doesn't sell group fares online. We get yours, with everything below built in.</p>
   <div class="cp-perks">${perks.map(([ic, t, x]) => `<div class="cp-card cp-perk"><div class="ic">${ic}</div><b>${esc(t)}</b><span>${esc(x)}</span></div>`).join("")}</div>
 </div></section>
@@ -543,7 +544,7 @@ ${css}
       <div class="cp-trip-price"><b>From US$${fmt(from)}</b><span>per person · ${esc(pan.meta)}</span></div>
       <div class="cp-chips">${pan.includes.map((x) => `<span>${esc(x)}</span>`).join("")}</div>
       <div>${pan.hotels.map((ht) => `<div class="cp-hotel"><div><b>${esc(ht.name)}</b><small>From US$${fmt(ht.usd)} per person</small></div><a class="cp-btn cp-dark" href="${Q}&amp;dest=${encodeURIComponent(pan.name)}&amp;hotel=${encodeURIComponent(ht.name)}" data-track="copa-hotel">Hold seats</a></div>`).join("")}</div>
-      <p class="cp-fine">Starting prices per person for ten adults, based on double occupancy, taxes included. Your dates set the final price.</p>
+      <p class="cp-fine">Starting prices per person for ten adults flying from Kingston or Montego Bay, based on double occupancy, taxes included. Your airport and dates set the final price.</p>
     </div>
   </div>
 </div></section>
@@ -551,7 +552,7 @@ ${css}
 <section class="cp-sec"><div class="wrap">
   <span class="kicker">Where Copa can take your group</span>
   <h2 class="cp-h2">Panama City and over 80 more.</h2>
-  <p class="cp-lead">Copa flies from Kingston and Montego Bay to Panama City, and over 80 other destinations across the Americas.</p>
+  <p class="cp-lead">Copa flies from across the Caribbean to Panama City, and on to over 80 destinations across the Americas.</p>
   <div class="cp-places">${places.map(([n, src, alt]) => `<a class="cp-place" href="${Q}&amp;dest=${encodeURIComponent(n)}" data-track="copa-place"><img src="${src}" alt="${esc(alt)}" loading="lazy"><span><b>${esc(n)}</b><small>Get a group fare</small></span></a>`).join("")}</div>
   <p class="cp-more">Also <span>Bogotá</span><span>San José</span><span>and more</span></p>
 </div></section>
@@ -560,7 +561,7 @@ ${css}
   <span class="kicker" style="color:var(--gold,#F2B93B)">How it works</span>
   <h2 class="cp-h2" style="color:#fff">Three steps to seats held.</h2>
   <div class="cp-steps">${steps.map(([t, x], i) => `<div class="cp-card cp-step"><span class="n">${i + 1}</span><b>${esc(t)}</b><span>${esc(T(x))}</span></div>`).join("")}</div>
-  <div class="cp-proof"><div><b>Thousands of travellers</b><small>since 2021</small></div><div><b>IATA-accredited</b><small>agency in Jamaica</small></div><div><b>Offices</b><small>in Jamaica and Florida</small></div><div><b>Quotes</b><small>${esc(T("within TURNAROUND"))}</small></div></div>
+  <div class="cp-proof"><div><b>Thousands of travellers</b><small>since 2021</small></div><div><b>IATA-accredited</b><small>travel agency</small></div><div><b>Offices</b><small>in Jamaica and Florida</small></div><div><b>Quotes</b><small>${esc(T("within TURNAROUND"))}</small></div></div>
 </div></section>
 
 <section class="cp-sec" id="faq"><div class="wrap">
@@ -573,7 +574,7 @@ ${css}
   <p>Group seats are limited on every flight, so the sooner you hold, the more choice you have. Your quote comes by email within ${esc(G.turnaround)}.</p>
   <a class="cp-btn cp-gold" href="${Q}" data-track="copa-cta">Get my group quote</a>
 </div></section>
-<p class="cp-note wrap">Golden Vacation &amp; Travel is an independent IATA-accredited travel agency in Jamaica, not Copa Airlines. Copa Airlines is a trademark of its owner.</p>
+<p class="cp-note wrap">Golden Vacation &amp; Travel is an independent IATA-accredited travel agency, not Copa Airlines. Copa Airlines is a trademark of its owner.</p>
 </main>
 <div class="sticky-cta" id="sticky-cta" hidden><a class="btn" href="${Q}" data-track="copa-sticky">Get my group quote</a></div>
 ${footer()}

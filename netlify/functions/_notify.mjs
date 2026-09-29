@@ -51,7 +51,7 @@ export function briefLines(f) {
     L.push(["Where", [f.place, f.hotel].filter(Boolean).join(", ")]);
     if (f.tier) L.push(["Style", f.tier]);
     L.push(["Dates", dates("depart", "return")]);
-    if (f.airport) L.push(["Flying from", f.airport]);
+    if (f.airport) L.push(["Flying from", f.airport === "Another airport" && f.airport_other ? f.airport_other : f.airport]);
     if (Number(f.ready_now)) L.push(["Ready to book now", `${f.ready_now} people`]);
   }
   if (alts) L.push(["Other dates", alts]);
