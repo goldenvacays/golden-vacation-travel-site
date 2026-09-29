@@ -145,6 +145,9 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
 .cp-form-note{grid-column:1/-1;font-size:13px;color:rgba(14,15,14,.55);text-align:center;margin:0}
 .cp-hotel-note{grid-column:1/-1;justify-self:start;font-size:14px;font-weight:800;background:#FBEFCF;color:#8A6D12;border-radius:999px;padding:6px 12px;margin:0}
 .cp-final{padding:76px 0}
+.cp-inbound{margin:16px 8px 0;font-size:15px}
+.cp-inbound a{color:#0E0F0E;font-weight:800;text-decoration:underline;text-underline-offset:3px}
+.cp-hhint{font-size:13px;color:rgba(14,15,14,.6);margin:0}
 .cp-hpick{display:flex;flex-direction:column;gap:12px;padding-bottom:18px;border-bottom:2px solid var(--line,#E4E4DF)}
 .cp-hopts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .cp-hopt{display:flex;flex-direction:column;gap:3px;text-align:left;padding:14px 16px;border:2px solid var(--line,#E4E4DF);border-radius:16px;background:#fff;cursor:pointer;font:inherit;color:#0E0F0E}
@@ -251,6 +254,7 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
     <div class="cp-hpick" id="cp-hpick">
       <p class="cp-step2-t">Pick your hotel</p>
       <div class="cp-hopts" id="cp-hopts" role="radiogroup" aria-label="Hotel"></div>
+      <p class="cp-hhint" id="cp-hhint" hidden>Have a resort in mind? Type it under Where to and it will show here.</p>
       <div class="cp-tiers" id="cp-tiers" hidden><span class="cp-tl">What kind of hotel?</span><div class="cp-tier-row"><button type="button" class="cp-tier" data-tier="Budget">Budget</button><button type="button" class="cp-tier" data-tier="Mid-range">Mid-range</button><button type="button" class="cp-tier" data-tier="Luxury">Luxury</button><button type="button" class="cp-tier" data-tier="5 star">5 star</button></div></div>
       <input type="hidden" name="tier" value="">
     </div>
@@ -265,6 +269,7 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
     <p class="cp-form-note">We reply by email within one working day. Your details are only used for your quote.</p>
   </div>
 </form>
+<p class="cp-inbound"><a href="#quote" data-inbound="1" data-track="copa-inbound">Bringing a group to Jamaica from Panama or South America? Start here</a></p>
 </div></section>
 
 <section class="cp-sec"><div class="wrap">
@@ -328,7 +333,7 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
     function close() { box.hidden = true; input.setAttribute("aria-expanded", "false"); act = -1; }
     function render() {
       var t = input.dataset.typed === "1" ? norm(input.value.trim()) : "";
-      shown = list.map(function (x, i) { return { x: x, s: x.score(t), i: i }; }).filter(function (o) { return o.s > 0; }).sort(function (a, b) { return b.s - a.s || a.i - b.i; }).slice(0, 8).map(function (o) { return o.x; });
+      shown = list.map(function (x, i) { return { x: x, s: x.score(t), i: i }; }).filter(function (o) { return o.s > 0; }).sort(function (a, b) { return b.s - a.s || a.i - b.i; }).slice(0, t ? 8 : 10).map(function (o) { return o.x; });
       box.innerHTML = shown.map(function (x, i) { return '<div class="cp-opt-row" role="option" id="' + box.id + '-' + i + '" data-i="' + i + '">' + rowHtml(x) + "</div>"; }).join("") + (t && !shown.length ? '<div class="cp-opt-none">' + emptyNote + "</div>" : "");
       box.hidden = !box.innerHTML; input.setAttribute("aria-expanded", box.hidden ? "false" : "true"); act = -1;
     }
@@ -345,28 +350,46 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
       else if (e.key === "Escape") { close(); }
     });
     box.addEventListener("mousedown", function (e) { var r = e.target.closest(".cp-opt-row"); if (r) { e.preventDefault(); choose(Number(r.dataset.i)); } });
+    return { render: function () { if (!box.hidden) render(); } };
   }
   function scorer(fields, bonus) { return function (t) { if (!t) return 1 + (bonus || 0); var best = 0; fields.forEach(function (f, k) { var n = norm(f); if (!n) return; if (n === t) best = Math.max(best, 100 - k); else if (n.indexOf(t) === 0) best = Math.max(best, 90 - k * 10); else if ((" " + n).indexOf(" " + t) > -1) best = Math.max(best, 70 - k * 10); else if (n.indexOf(t) > -1) best = Math.max(best, 50 - k * 10); }); return best ? best + (bonus || 0) : 0; }; }
 
   /* Where to: a place or a hotel; a hotel fills the place with its city */
-  var TO = [["d","Panama City","Panama"],["d","Lima","Peru"],["d","Medellín","Colombia"],["d","Bogotá","Colombia"],["d","San José","Costa Rica"],["d","Punta Cana","Dominican Republic"],["d","Panama + Lima","Two countries"],["d","Panama + Medellín","Two countries"],["h","Megapolis Hotel Panama","Panama City","Panama",1],["h","Hotel Riu Plaza Panama","Panama City","Panama",1],["h","Sunscape Coco Punta Cana","Punta Cana","Dominican Republic",1],["h","ESTELAR Miraflores","Lima","Peru",0],["h","Hilton Lima Miraflores","Lima","Peru",0],["h","Melia Lima","Lima","Peru",0],["h","nhow Lima","Lima","Peru",0],["h","Nobility Hotel","Lima","Peru",0],["h","Souma Hotel Lima","Lima","Peru",0],["h","Hotel Suites del Bosque","Lima","Peru",0],["h","Grand Decameron Panama, A Trademark All Inclusive","Rio Hato","Panama",0],["h","Dreams Playa Bonita Panama","Playa Bonita, Veracruz","Panama",0],["h","Hospedium Princess Hotel Panama","Panama City","Panama",0],["h","Hotel Las Americas Golden Tower Panama","Panama City","Panama",0],["h","Marinn Place Financial District","Panama City","Panama",0],["h","Ramada Plaza Panama Punta Pacifica","Panama City","Panama",0],["h","Hotel Riu Playa Blanca","Playa Blanca","Panama",0],["h","Occidental Papagayo","Playa Hermosa","Costa Rica",0],["h","Hotel Riu Guanacaste","Playa Matapalo","Costa Rica",0],["h","Hotel Riu Palace Costa Rica","Playa Matapalo","Costa Rica",0]];
+  var TO = [["d","Panama City","Panama"],["d","Lima","Peru"],["d","Medellín","Colombia"],["d","Bogotá","Colombia"],["d","San José","Costa Rica"],["d","Punta Cana","Dominican Republic"],["d","Kingston","Jamaica"],["d","Montego Bay","Jamaica"],["d","Panama + Lima","Two countries"],["d","Panama + Medellín","Two countries"],["d","Ocho Rios","Jamaica"],["d","Negril","Jamaica"],["d","Runaway Bay","Jamaica"],["d","South Coast","Jamaica"],["h","Megapolis Hotel Panama","Panama City","Panama",1],["h","Hotel Riu Plaza Panama","Panama City","Panama",1],["h","Sunscape Coco Punta Cana","Punta Cana","Dominican Republic",1],["h","ESTELAR Miraflores","Lima","Peru",0],["h","Hilton Lima Miraflores","Lima","Peru",0],["h","Melia Lima","Lima","Peru",0],["h","nhow Lima","Lima","Peru",0],["h","Nobility Hotel","Lima","Peru",0],["h","Souma Hotel Lima","Lima","Peru",0],["h","Hotel Suites del Bosque","Lima","Peru",0],["h","Grand Decameron Panama, A Trademark All Inclusive","Rio Hato","Panama",0],["h","Dreams Playa Bonita Panama","Playa Bonita, Veracruz","Panama",0],["h","Hospedium Princess Hotel Panama","Panama City","Panama",0],["h","Hotel Las Americas Golden Tower Panama","Panama City","Panama",0],["h","Marinn Place Financial District","Panama City","Panama",0],["h","Ramada Plaza Panama Punta Pacifica","Panama City","Panama",0],["h","Hotel Riu Playa Blanca","Playa Blanca","Panama",0],["h","Occidental Papagayo","Playa Hermosa","Costa Rica",0],["h","Hotel Riu Guanacaste","Playa Matapalo","Costa Rica",0],["h","Hotel Riu Palace Costa Rica","Playa Matapalo","Costa Rica",0]];
   var toIn = q("#cp-to"), hidPlace = q("[name=place]"), hidHotel = q("[name=hotel]");
   var toList = TO.map(function (x) { var o = { k: x[0], name: x[1], where: x[2], country: x[3], trip: x[4] }; o.score = o.k === "d" ? scorer([o.name, o.where], 5) : scorer([o.name, o.where, o.country], o.trip ? 3 : 0); if (o.k === "h") { var base = o.score; o.score = function (t) { return t ? base(t) : 0; }; } return o; });
   function setTo(place, hotel, label) { hidPlace.value = place; hidHotel.value = hotel || ""; toIn.value = label || (hotel ? hotel + ", " + place : place); if (typeof paintHotels === "function" && !step2.hidden) paintHotels(); }
-  combo(toIn, q("#cp-sug-to"), toList,
+  var toBox = combo(toIn, q("#cp-sug-to"), toList,
     function (o) { return o.k === "d" ? "<b>" + o.name + "</b><small>" + o.where + "</small>" : "<b>" + o.name + (o.trip ? ' <span>Group trip</span>' : "") + "</b><small>Hotel · " + o.where + "</small>"; },
-    function (o) { if (o.k === "d") setTo(o.name, ""); else setTo(o.where === "Panama City" || o.where === "Lima" ? o.where : o.where + ", " + o.country, o.name, o.name + ", " + o.where); },
+    function (o) { if (o.k === "d") setTo(o.where === "Jamaica" ? o.name + ", Jamaica" : o.name, "", o.where === "Jamaica" ? o.name + ", Jamaica" : o.name); else setTo(o.where === "Panama City" || o.where === "Lima" ? o.where : o.where + ", " + o.country, o.name, o.name + ", " + o.where); },
     function (text) { hidPlace.value = text.trim(); hidHotel.value = ""; },
     "Not on the list? Keep typing, we'll price anywhere Copa flies.");
+  var jmLoaded = false;
+  function loadJM() {
+    if (jmLoaded) return; jmLoaded = true;
+    fetch("/assets/jm-places.json").then(function (r) { return r.json(); }).then(function (d) {
+      var zones = {}; (d.zones || []).forEach(function (z) { zones[z[0]] = z[1]; });
+      (d.hotels || []).forEach(function (h) { var o = { k: "h", name: h[0], where: zones[h[2]] || "Jamaica", country: "Jamaica", trip: 0 }; var base = scorer([o.name, o.where, "Jamaica"], 0); o.score = function (t) { return t ? base(t) : 0; }; toList.push(o); });
+      toBox.render();
+    }).catch(function () {});
+  }
+  toIn.addEventListener("focus", loadJM);
 
   /* Flying from: Kingston and Montego Bay are sent as themselves, anything else as "Another airport" plus what they chose or typed */
-  var AIR = [["Kingston","KIN","Jamaica"],["Montego Bay","MBJ","Jamaica"],["Nassau","NAS","Bahamas"],["Freeport","FPO","Bahamas"],["Grand Cayman","GCM","Cayman Islands"],["Providenciales","PLS","Turks and Caicos"],["Havana","HAV","Cuba"],["Port-au-Prince","PAP","Haiti"],["Santo Domingo","SDQ","Dominican Republic"],["Punta Cana","PUJ","Dominican Republic"],["Santiago","STI","Dominican Republic"],["San Juan","SJU","Puerto Rico"],["St Maarten","SXM","Sint Maarten"],["Antigua","ANU","Antigua and Barbuda"],["St Kitts","SKB","St Kitts and Nevis"],["Dominica","DOM","Dominica"],["Guadeloupe","PTP","Guadeloupe"],["Martinique","FDF","Martinique"],["St Lucia","UVF","St Lucia"],["Barbados","BGI","Barbados"],["St Vincent","SVD","St Vincent and the Grenadines"],["Grenada","GND","Grenada"],["Port of Spain","POS","Trinidad and Tobago"],["Tobago","TAB","Trinidad and Tobago"],["Aruba","AUA","Aruba"],["Curaçao","CUR","Curaçao"],["Bonaire","BON","Bonaire"],["Georgetown","GEO","Guyana"],["Paramaribo","PBM","Suriname"],["Belize City","BZE","Belize"],["Miami","MIA","USA"],["Fort Lauderdale","FLL","USA"],["Orlando","MCO","USA"],["Tampa","TPA","USA"],["New York","JFK","USA"],["Newark","EWR","USA"],["Atlanta","ATL","USA"],["Houston","IAH","USA"],["Washington","IAD","USA"],["Boston","BOS","USA"],["Chicago","ORD","USA"],["Los Angeles","LAX","USA"],["Toronto","YYZ","Canada"],["Montreal","YUL","Canada"]];
+  var AIR = [["Kingston","KIN","Jamaica"],["Montego Bay","MBJ","Jamaica"],["Nassau","NAS","Bahamas"],["Freeport","FPO","Bahamas"],["Grand Cayman","GCM","Cayman Islands"],["Providenciales","PLS","Turks and Caicos"],["Havana","HAV","Cuba"],["Port-au-Prince","PAP","Haiti"],["Santo Domingo","SDQ","Dominican Republic"],["Punta Cana","PUJ","Dominican Republic"],["Santiago","STI","Dominican Republic"],["San Juan","SJU","Puerto Rico"],["St Maarten","SXM","Sint Maarten"],["Antigua","ANU","Antigua and Barbuda"],["St Kitts","SKB","St Kitts and Nevis"],["Dominica","DOM","Dominica"],["Guadeloupe","PTP","Guadeloupe"],["Martinique","FDF","Martinique"],["St Lucia","UVF","St Lucia"],["Barbados","BGI","Barbados"],["St Vincent","SVD","St Vincent and the Grenadines"],["Grenada","GND","Grenada"],["Port of Spain","POS","Trinidad and Tobago"],["Tobago","TAB","Trinidad and Tobago"],["Aruba","AUA","Aruba"],["Curaçao","CUR","Curaçao"],["Bonaire","BON","Bonaire"],["Georgetown","GEO","Guyana"],["Paramaribo","PBM","Suriname"],["Belize City","BZE","Belize"],["Miami","MIA","USA"],["Fort Lauderdale","FLL","USA"],["Orlando","MCO","USA"],["Tampa","TPA","USA"],["New York","JFK","USA"],["Newark","EWR","USA"],["Atlanta","ATL","USA"],["Houston","IAH","USA"],["Washington","IAD","USA"],["Boston","BOS","USA"],["Chicago","ORD","USA"],["Los Angeles","LAX","USA"],["Toronto","YYZ","Canada"],["Montreal","YUL","Canada"],["Panama City","PTY","Panama"],["Lima","LIM","Peru"],["Bogotá","BOG","Colombia"],["Medellín","MDE","Colombia"],["Cali","CLO","Colombia"],["Cartagena","CTG","Colombia"],["Barranquilla","BAQ","Colombia"],["San José","SJO","Costa Rica"],["Guatemala City","GUA","Guatemala"],["San Salvador","SAL","El Salvador"],["San Pedro Sula","SAP","Honduras"],["Managua","MGA","Nicaragua"],["Mexico City","MEX","Mexico"],["Cancún","CUN","Mexico"],["Quito","UIO","Ecuador"],["Guayaquil","GYE","Ecuador"],["Caracas","CCS","Venezuela"],["Santiago de Chile","SCL","Chile"],["Buenos Aires","EZE","Argentina"],["Montevideo","MVD","Uruguay"],["São Paulo","GRU","Brazil"],["Rio de Janeiro","GIG","Brazil"],["Asunción","ASU","Paraguay"],["Santa Cruz","VVI","Bolivia"]];
   var from = q("#cp-from"), hidA = q("[name=airport]"), hidO = q("[name=airport_other]");
   function setFrom(text) {
     var t = norm(text), k = /kingston|\bkin\b/.test(t) ? "Kingston" : /montego|\bmbj\b/.test(t) ? "Montego Bay" : "";
     if (k) { hidA.value = k; hidO.value = ""; } else { hidA.value = text.trim() ? "Another airport" : ""; hidO.value = text.trim(); }
   }
-  var airList = AIR.map(function (a) { return { city: a[0], code: a[1], country: a[2], score: scorer([a[1], a[0], a[2]]) }; });
+  /* before they type: Jamaica's airports first for trips out; for a group coming into Jamaica, Copa's Central and South American cities first */
+  var LATAM = "PTY LIM BOG MDE SJO GUA SAL MEX CLO CTG UIO".split(" ");
+  var airList = AIR.map(function (a) { var base = scorer([a[1], a[0], a[2]]); return { city: a[0], code: a[1], country: a[2], score: function (t) {
+    if (t) return base(t);
+    var inbound = norm(hidPlace.value).indexOf("jamaica") > -1;
+    if (inbound) return a[2] === "Jamaica" ? 0 : (LATAM.indexOf(a[1]) > -1 ? 3 + (LATAM.length - LATAM.indexOf(a[1])) / 100 : 1);
+    return a[2] === "Jamaica" ? 3 : 1;
+  } }; });
   combo(from, document.getElementById("cp-sug"), airList,
     function (a) { return "<b>" + a.city + " <span>" + a.code + "</span></b><small>" + a.country + "</small>"; },
     function (a) { from.value = a.city + " (" + a.code + ")" + (a.country === "Jamaica" ? "" : ", " + a.country); setFrom(from.value); },
@@ -390,6 +413,7 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
       + hopt("Pick one for me", list.length ? "Tell us the style, we suggest the best fit" : "Tell us the style, we suggest hotels for you", "")
       + hopt("Flights only", "No hotel needed", "");
     tiers.hidden = hidHotel.value !== "Pick one for me";
+    document.getElementById("cp-hhint").hidden = !(norm(hidPlace.value).indexOf("jamaica") > -1 && !list.length);
   }
   hopts.addEventListener("click", function (e) {
     var b = e.target.closest(".cp-hopt"); if (!b) return;
@@ -404,6 +428,7 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
     a.addEventListener("click", function () {
       if (a.dataset.place || a.dataset.hotel) setTo(a.dataset.place || "", a.dataset.hotel || "");
       if (a.dataset.airport) { setTimeout(function () { from.value = ""; setFrom(""); from.focus(); }, 450); }
+      if (a.dataset.inbound) { setTo("Jamaica", "", "Jamaica"); loadJM(); setTimeout(function () { from.value = ""; setFrom(""); from.focus(); }, 450); }
     });
   });
   var today = new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10);
@@ -437,6 +462,7 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
     if (!say(m)) return;
     var cs = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", r = ""; for (var i = 0; i < 4; i++) r += cs[Math.floor(Math.random() * cs.length)];
     var ref = "GV-GRP-" + r; q("[name=ref]").value = ref;
+    q("[name=subject]").value = norm(hidPlace.value).indexOf("jamaica") > -1 ? "Group quote into Jamaica · Copa page" : "Group quote · Copa page";
     var btn = q(".cp-send"); btn.disabled = true; btn.textContent = "Sending...";
     fetch(location.pathname, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams(new FormData(f)).toString() })
       .then(function (res) { if (!res.ok) throw new Error(res.status); location.href = "/groups/sent/?ref=" + encodeURIComponent(ref); })
