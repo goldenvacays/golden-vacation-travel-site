@@ -153,13 +153,14 @@ function build(form, d) {
     case "exp-bookings":
     case "tr-bookings": {
       const tour = form === "exp-bookings";
+      const arrival = /PAY ON ARRIVAL/i.test(status);
       const [, next] = status.split(/\s·\s(.+)/);
       const headline = tour ? [d.venue, d.product].filter(Boolean).join(", ") : [d.route, d.vehicle].filter(Boolean).join(", ");
-      return { kind: paid ? `PAID ${tour ? "tour booking" : "transfer"} ${d.total || ""}`.trim() : tour ? "Tour booking" : "Transfer booking", loud: paid,
-        subject: paid ? `PAID ${d.total || ""} · ${tour ? "Tour" : "Transfer"}: ${headline}${d.when ? ` · ${d.when}` : ""}`.replace("PAID  ·", "PAID ·") : "",
+      return { kind: arrival ? `PAY ON ARRIVAL ${tour ? "tour booking" : "transfer"} ${d.total || ""}`.trim() : paid ? `PAID ${tour ? "tour booking" : "transfer"} ${d.total || ""}`.trim() : tour ? "Tour booking" : "Transfer booking", loud: paid || arrival,
+        subject: arrival ? `PAY ON ARRIVAL ${d.total || ""} · ${tour ? "Tour" : "Transfer"}: ${headline}${d.when ? ` · ${d.when}` : ""}` : paid ? `PAID ${d.total || ""} · ${tour ? "Tour" : "Transfer"}: ${headline}${d.when ? ` · ${d.when}` : ""}`.replace("PAID  ·", "PAID ·") : "",
         headline: tour ? [d.venue, d.product].filter(Boolean).join(", ") : [d.route, d.vehicle].filter(Boolean).join(", "), who: d.customer, ref: d.ref,
-        rows: [["When", d.when], ["Guests", d.guests], [tour ? "Pickup" : "Pickup and drop-off", tour ? d.pickup : d.place], ["Total paid", paid ? d.total : ""], ["Total", paid ? "" : d.total], ["Phone", d.phone], ["Email", d.email], ["Park order", d.order], ["Notes", d.note]],
-        todo: next ? next.replace(/^confirmed to the guest\s·\s/i, "").replace(/^./, (c) => c.toUpperCase()) : paid ? "" : status,
+        rows: [["When", d.when], ["Guests", d.guests], [tour ? "Pickup" : "Pickup and drop-off", tour ? d.pickup : d.place], ["To collect on arrival", arrival ? d.total : ""], ["Total paid", paid ? d.total : ""], ["Total", paid || arrival ? "" : d.total], ["Phone", d.phone], ["Email", d.email], ["Park order", d.order], ["Notes", d.note]],
+        todo: next ? next.replace(/^(confirmed to the guest|nothing charged online)\s·\s/i, "").replace(/^./, (c) => c.toUpperCase()) : paid ? "" : status,
         phone: d.phone, email: d.email, firstName: first(d.customer) };
     }
     case "tr-enquiries":

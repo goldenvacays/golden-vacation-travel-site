@@ -607,3 +607,16 @@
 
 /* the lead under a near page's heading lines up with the heading (getaways.css pads every .lead for its own pages) */
 .near-t .lead { padding: 0; }
+
+/* pay on arrival: two big choices in step two of the JamWest panel, and the reserved note that replaces the step when it goes through */
+.pay-when .pw-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pw { position: relative; display: block; cursor: pointer; }
+.pw input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.pw span { display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; border: 2px solid var(--line); border-radius: 14px; background: #fff; }
+.pw span b { font-weight: 800; font-size: 14px; }
+.pw span small { font-size: 12px; color: var(--ink-3); }
+.pw input:checked + span { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.pw input:focus-visible + span { outline: 3px solid var(--gold); outline-offset: 2px; }
+.reserved { display: flex; flex-direction: column; gap: 10px; padding: 4px 2px 8px; }
+.reserved .hh { font-size: 24px; line-height: 1.1; }
+.reserved p { font-size: 15px; line-height: 1.5; color: var(--ink-2); }

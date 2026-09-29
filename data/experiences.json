@@ -30,7 +30,11 @@
       "Prices in US$ or J$",
       "Resident rates where they exist"
     ],
-    "featured": ["jamwest", "mystic-mountain", "jamwest-catamaran"],
+    "featured": [
+      "jamwest",
+      "mystic-mountain",
+      "jamwest-catamaran"
+    ],
     "doors": [
       {
         "key": "stay",
@@ -40,7 +44,11 @@
         "subMobile": "Hotel pickup where it runs. One price.",
         "img": "jamwest-zipline-rider.jpg",
         "alt": "Riding the zipline at JamWest, Westmoreland",
-        "star": {"slug": "jamwest", "product": "zipline", "label": "Zipline at JamWest"}
+        "star": {
+          "slug": "jamwest",
+          "product": "zipline",
+          "label": "Zipline at JamWest"
+        }
       },
       {
         "key": "port",
@@ -50,7 +58,11 @@
         "subMobile": "Falmouth · Ocho Rios · Montego Bay",
         "img": "poko-upper-deck-view.jpg",
         "alt": "The upper deck at Poko Loko, Ocho Rios",
-        "star": {"slug": "poko-loko", "product": null, "label": "Poko Loko"}
+        "star": {
+          "slug": "poko-loko",
+          "product": null,
+          "label": "Poko Loko"
+        }
       },
       {
         "key": "locals",
@@ -60,7 +72,12 @@
         "subMobile": "Resident rates in J$, ID at the gate.",
         "img": "jamwest-quad-water.jpg",
         "alt": "Riding a quad through the water at JamWest",
-        "star": {"slug": "jamwest", "product": "atv", "label": "JamWest ATV", "resident": true}
+        "star": {
+          "slug": "jamwest",
+          "product": "atv",
+          "label": "JamWest ATV",
+          "resident": true
+        }
       }
     ],
     "why": {
@@ -213,7 +230,11 @@
         "Hotel pickup on the visitor rate",
         "Resident rate with Jamaican ID"
       ],
-      "facts": ["1 to 4 hours", "Hotel pickup included", "Children from US$45"],
+      "facts": [
+        "1 to 4 hours",
+        "Hotel pickup included",
+        "Children from US$45"
+      ],
       "blurb": "ATV trails through the mangroves, eight zipline towers, horseback into the sea and a half-mile push kart run, twenty minutes outside Negril.",
       "card": "ATV, zipline, horseback, safari and push karts. Book the visitor rate on the spot.",
       "photos": [
@@ -246,7 +267,6 @@
       "booking": "instant",
       "doors": [
         "stay",
-        "port",
         "locals"
       ],
       "optionNoun": "tour",
@@ -645,16 +665,6 @@
           "add": 0
         },
         {
-          "key": "montego-bay-cruise-port",
-          "label": "Montego Bay cruise port",
-          "request": true
-        },
-        {
-          "key": "falmouth-cruise-port",
-          "label": "Falmouth cruise port",
-          "request": true
-        },
-        {
           "key": "own",
           "label": "I'll make my own way",
           "add": 0
@@ -680,7 +690,9 @@
         "ocho": 195,
         "south": 60
       },
-      "calendar": "rezdy"
+      "calendar": "rezdy",
+      "shipDay": false,
+      "shipDayNote": "Negril is too far from the cruise ports for a ship day"
     },
     {
       "slug": "jamwest-water-park",
@@ -696,7 +708,11 @@
         "Same price for everyone",
         "Pickup from Negril included"
       ],
-      "facts": ["Stay all day", "Pickup from Negril included", "Children US$25"],
+      "facts": [
+        "Stay all day",
+        "Pickup from Negril included",
+        "Children US$25"
+      ],
       "blurb": "Slides, bumper boats, mineral bath, aviary and petting zoo. The cheapest full day out we sell.",
       "card": "Pick an entry time and stay all day. Same price for locals and visitors.",
       "photos": [
@@ -772,7 +788,9 @@
         "falmouth": 125,
         "ocho": 195,
         "south": 60
-      }
+      },
+      "shipDay": false,
+      "shipDayNote": "Negril is too far from the cruise ports for a ship day"
     },
     {
       "slug": "jamwest-catamaran",
@@ -788,7 +806,11 @@
         "Departs 2:30pm daily",
         "Pickup from Negril included"
       ],
-      "facts": ["3.5 hours, sails 2:30pm", "Hotel pickup included", "Children Tue and Thu, US$65"],
+      "facts": [
+        "3.5 hours, sails 2:30pm",
+        "Hotel pickup included",
+        "Children Tue and Thu, US$65"
+      ],
       "blurb": "Sunset cruise along Seven Mile Beach with an open bar, a snorkel stop and Rick's Cafe for the cliff jumpers as the sun goes down.",
       "card": "Sunset sail from Negril, open bar, snorkel stop, Rick's Cafe.",
       "photos": [
@@ -808,7 +830,10 @@
         "locals"
       ],
       "optionNoun": "cruise",
-      "childDays": [2, 4],
+      "childDays": [
+        2,
+        4
+      ],
       "childDaysText": "Children sail on Tuesdays and Thursdays, the family days. Pick one of those, or book adults only.",
       "rates": {
         "visitor": {
@@ -891,11 +916,6 @@
           "addChild": 35
         },
         {
-          "key": "montego-bay-cruise-port",
-          "label": "Montego Bay cruise port",
-          "request": true
-        },
-        {
           "key": "own",
           "label": "I'll make my own way",
           "add": 0,
@@ -918,7 +938,8 @@
         "ocho": 190,
         "south": 75
       },
-      "shipDayNote": "sails at 2:30pm and is back after most all-aboard times"
+      "shipDayNote": "sails at 2:30pm and is back after most all-aboard times",
+      "shipDay": false
     },
     {
       "slug": "mystic-mountain",
@@ -934,7 +955,11 @@
         "Bobsled and Raggamuffin coaster",
         "Closed Fridays"
       ],
-      "facts": ["About 2 hours", "10 min from the Ocho Rios port", "Closed Fridays"],
+      "facts": [
+        "About 2 hours",
+        "10 min from the Ocho Rios port",
+        "Closed Fridays"
+      ],
       "blurb": "Bobsled, Raggamuffin coaster and the canopy zipline above Ocho Rios, with Dunn's River Falls on the bigger passes.",
       "card": "The Bobsled, the coaster, the zipline, and Dunn's River on the bigger passes.",
       "photos": [
@@ -1128,7 +1153,11 @@
         "Four sessions a day",
         "Same price, any session"
       ],
-      "facts": ["Three-hour sessions", "Adults only, 18+", "Four sessions a day"],
+      "facts": [
+        "Three-hour sessions",
+        "Adults only, 18+",
+        "Four sessions a day"
+      ],
       "blurb": "Jamaica's first floating bar, off Mahogany Beach in Ocho Rios. Four sessions a day, from morning swim to midnight dancing.",
       "card": "Jamaica's floating bar. Morning swim, afternoon chill, sunset sips or midnight vibes.",
       "photos": [
@@ -1288,7 +1317,11 @@
         "Adults only, 18+",
         "Evening pass to 2am"
       ],
-      "facts": ["Day or evening", "Adults only, 18+", "All-inclusive"],
+      "facts": [
+        "Day or evening",
+        "Adults only, 18+",
+        "All-inclusive"
+      ],
       "blurb": "Adults only. The evening pass runs to 2am for the same price as the day, and nothing else on the island does that.",
       "card": "Adults-only all-inclusive, day or evening. The evening runs to 2am.",
       "photos": [
@@ -1396,7 +1429,11 @@
         "Families welcome",
         "Kids half price"
       ],
-      "facts": ["Day or evening", "Families welcome", "Children half price"],
+      "facts": [
+        "Day or evening",
+        "Families welcome",
+        "Children half price"
+      ],
       "blurb": "All-inclusive resort access on the Trelawny coast, day or evening. Families welcome, and the evening runs to 2am.",
       "card": "All-inclusive day or evening, families welcome, children half price.",
       "photos": [
@@ -1504,7 +1541,11 @@
         "Closest to Montego Bay",
         "Spa and day-room options"
       ],
-      "facts": ["Full day", "15 min from Montego Bay", "Spa and day-room options"],
+      "facts": [
+        "Full day",
+        "15 min from Montego Bay",
+        "Spa and day-room options"
+      ],
       "blurb": "The closest of the three Rose Hall resorts to Montego Bay. Two pools, a kids' pool, Star Camp and towel service.",
       "card": "The entry point of the three Rose Hall day passes, fifteen minutes from Montego Bay.",
       "photos": [
@@ -1609,7 +1650,11 @@
         "The middle of the three",
         "Children's area"
       ],
-      "facts": ["Full day", "15 min from Montego Bay", "Children's area"],
+      "facts": [
+        "Full day",
+        "15 min from Montego Bay",
+        "Children's area"
+      ],
       "blurb": "Pools, a children's area, the beach, and all-inclusive restaurants and bars. The middle of the three Rose Hall resorts.",
       "card": "Pools, a children's area, the beach and all-inclusive restaurants, fifteen minutes from Montego Bay.",
       "photos": [
@@ -1713,7 +1758,11 @@
         "Adults only, 18+",
         "Night pass"
       ],
-      "facts": ["Day, spa or night", "Adults only, 18+", "15 min from Montego Bay"],
+      "facts": [
+        "Day, spa or night",
+        "Adults only, 18+",
+        "15 min from Montego Bay"
+      ],
       "blurb": "Adults only. Three adults-only pools, the beach, unlimited food and drink, tennis and volleyball.",
       "card": "The premium of the three Rose Hall resorts. Adults only, day, spa or night.",
       "photos": [
@@ -1832,7 +1881,11 @@
         "Fast track",
         "Five lounges"
       ],
-      "facts": ["Fast track", "Timed to your flight", "Children US$23 to US$48"],
+      "facts": [
+        "Fast track",
+        "Timed to your flight",
+        "Children US$23 to US$48"
+      ],
       "blurb": "Sangster International. Fast track through the airport, five departure lounges, a spa, a children's room and an adults-only room.",
       "card": "Met at the ramp on the way in, fast-tracked and looked after on the way out.",
       "photos": [
@@ -1945,7 +1998,11 @@
         "Fast track",
         "Escort to the gate"
       ],
-      "facts": ["Fast track", "Escort to the gate", "Children US$23 to US$48"],
+      "facts": [
+        "Fast track",
+        "Escort to the gate",
+        "Children US$23 to US$48"
+      ],
       "blurb": "Norman Manley International. Fast track, full bar, showers and an escort to your gate.",
       "card": "Fast track, hot food, showers and an escort to the gate at Norman Manley.",
       "photos": [

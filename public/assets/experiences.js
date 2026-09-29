@@ -283,7 +283,7 @@
       preview: $("#msg-preview", root), cta: $("#cta", root), ctaLabel: $("#cta-label", root), ctaSub: $("#cta-sub", root), ctaAlt: $("#cta-alt", root), ctaWa: $("#cta-wa", root),
       rateNote: $("#rate-note", root), flightIn: $("#pf-flight-in", root), flightOut: $("#pf-flight-out", root),
       stickyTotal: $("#sticky-total", root), stickySub: $("#sticky-sub", root), stickyCta: $("#sticky-cta", root),
-      step1: $("#step-1", root), step2: $("#step-2", root), next: $("#next", root), nextSub: $("#next-sub", root), back: $("#step-back", root), sum: $("#sum", root),
+      payWhen: $("#pay-when", root), step1: $("#step-1", root), step2: $("#step-2", root), next: $("#next", root), nextSub: $("#next-sub", root), back: $("#step-back", root), sum: $("#sum", root),
       cruiseLink: $("#cruise-link", root), cruiseWrap: $("#pf-cruise-wrap", root),
     };
     var state = { product: null, rate: V.rates ? "visitor" : (V.products[0] && V.products[0].audience === "resident" ? "resident" : "visitor"), date: "", time: "", adults: 2, children: 0, pickup: V.pickups ? V.pickups[0].key : null, pickupMode: "hotel", pickupHotel: "", pickupPlace: null, choices: {}, sessions: null, availOk: null, ref: ref(), aboard: 0, cruisePort: null, step: 1, cruiseOpen: false };
@@ -331,6 +331,10 @@
     function rateOf(p) { if (!p) return "visitor"; if (p.audience === "resident") return "resident"; if (p.audience === "visitor") return "visitor"; return state.rate; }
     function pickupByHand() { var pk = V.pickups && rateOf(product()) === "visitor" ? pickupOf() : null; return !!(pk && pk.request); }
     function instant() { var p = product(); return V.booking === "instant" && rateOf(p) === "visitor" && p && p.visitor && !p.request && !pickupByHand() && !shipBlock() && !shipAsk(); }
+    /* JamWest tours in the next 7 days can be reserved now and paid on arrival */
+    function daysAhead(d) { var t = new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10); return Math.round((Date.parse(d + "T00:00:00Z") - Date.parse(t + "T00:00:00Z")) / 864e5); }
+    function arrivalOk() { var p = product(); if (!el.payWhen || !state.date || !p || rateOf(p) !== "visitor" || !instant()) return false; var n = daysAhead(state.date); return n >= 0 && n <= 7; }
+    function payOnArrival() { if (!arrivalOk()) return false; var c = el.payWhen.querySelector("input[name=paywhen]:checked"); return !!(c && c.value === "arrival"); }
     function isRequest() { var p = product(); return V.booking === "request" || (p && p.request) || pickupByHand() || shipAsk() || shipBlock(); }
     function pickupOf() { if (!V.pickups) return null; for (var i = 0; i < V.pickups.length; i++) if (V.pickups[i].key === state.pickup) return V.pickups[i]; return V.pickups[0]; }
     function chosen() { var p = product(); if (!p || !p.choose) return []; return state.choices[p.id] || []; }
@@ -502,6 +506,10 @@
       var canPay = inst && !liveOff;
       el.cta.innerHTML = (canPay ? ICON_CARD : ICON_CHAT) + '<span id="cta-label"></span>';
       $("#cta-label", el.cta).textContent = canPay ? "Book and pay " + pr.lead : shipBlock() ? "Ask us anyway" : (isRequest() ? "Request this date" : "Send enquiry");
+      if (el.payWhen) {
+        el.payWhen.hidden = !arrivalOk();
+        if (payOnArrival()) { el.cta.innerHTML = ICON_CARD + '<span id="cta-label"></span>'; $("#cta-label", el.cta).textContent = "Reserve, pay " + pr.lead + " on arrival"; if (el.preview && el.preview.parentNode) el.preview.parentNode.hidden = true; if (el.ctaAlt) el.ctaAlt.hidden = true; }
+      }
       el.ctaSub.textContent = canPay ? (live ? "Confirmed straight away, paid by card on a secure page. You'll get the confirmation by email." : "Paid by card on a secure page and confirmed straight away. We send your booking details shortly by email and WhatsApp.") : liveOff ? "Live availability is offline, so this goes to us on WhatsApp and we confirm the time with the park. Nothing is charged now." : shipBlock() ? shipText() + " Ask us anyway and we'll suggest what fits your ship day. Nothing is charged now." : shipAsk() ? shipText() + " This goes to us on WhatsApp first. Nothing is charged now." : pickupByHand() ? "Pickup from the port is priced by hand, so this goes to us on WhatsApp first and we confirm the total. Nothing is charged now." : isRequest() ? "We confirm availability first, then send a secure card link. Nothing is charged now." : "We reply within working hours with a secure card link. Nothing is charged now.";
       if (el.ctaAlt) el.ctaAlt.hidden = !canPay;
       if (el.previewWrap) el.previewWrap.hidden = canPay; // the WhatsApp text only matters when the booking goes by WhatsApp
@@ -782,7 +790,7 @@
       window.open(waUrl(text), "_blank", "noopener");
     }
     function need(field, msg) { if (!field || !field.value.trim()) { field && field.focus(); throw new Error(msg); } }
-    function pay() {
+    function pay(mode) {
       var p = product(), prob = dateProblem(state.date), legs = p.legs || "both";
       if (!state.date) { openDate(0); throw new Error(isFlight ? (legs === "out" ? "Pick your departure date first." : "Pick your arrival date first.") : "Pick a date first."); }
       if (prob) throw new Error(prob);
@@ -801,6 +809,7 @@
       need(el.phone, "A WhatsApp or phone number, so we can send your details.");
       if (V.pickups && rateOf(p) === "visitor" && state.pickup !== "own" && !state.pickupHotel) { if (el.hotelIn) el.hotelIn.focus(); throw new Error("Where should the driver collect you? Pick your hotel or area from the list, or choose I'll make my own way."); }
       var body = { slug: V.slug, product: p.id, date: state.date, time: wantsTime ? state.time : "", date2: date2, flightIn: flightIn, flightOut: flightOut, adults: state.adults, children: state.children, pickup: state.pickup, pickupHotel: state.pickup === "own" ? "" : state.pickupHotel, choices: chosen(), ref: state.ref, ship: el.ship ? el.ship.value.trim() : "", port: cruise() && portOf() ? portOf().slug : "", aboard: cruise() ? (state.aboard || "") : "", customer: { first: el.first.value.trim(), last: el.last.value.trim(), email: el.email.value.trim(), phone: el.phone.value.trim() } };
+      if (mode === "arrival") { reserve(body); return; }
       track("exp_checkout", { venue: V.slug, product: p.id, total: price().total, code: state.ref });
       if (PREVIEW) { alertBox("In the live site this opens the secure card page for " + price().lead + ". After paying, " + (live ? "the booking is created with the park" : "the guest is confirmed and the team gets the booking to send the details") + ", and the guest lands on the confirmation page (see \"After paying\" in the page picker)."); return; }
       el.cta.disabled = true; $("#cta-label", el.cta).textContent = "Opening secure payment…";
@@ -809,6 +818,23 @@
         .then(function (x) {
           if (x.j && x.j.url) { window.location.href = x.j.url; return; }
           throw new Error((x.j && x.j.error) || "The payment page didn't open.");
+        })
+        .catch(function (e) { el.cta.disabled = false; render(); alertBox((e && e.message ? e.message : "Something went wrong.") + " You can send the same booking by WhatsApp and we'll confirm it by hand.", true); });
+    }
+    function reserve(body) {
+      track("exp_reserve", { venue: V.slug, product: body.product, total: price().total, code: state.ref });
+      if (PREVIEW) { alertBox("In the live site this reserves the booking and the guest pays " + price().lead + " on arrival."); return; }
+      el.cta.disabled = true; $("#cta-label", el.cta).textContent = "Reserving…";
+      fetch(FN + "exp-reserve", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+        .then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); })
+        .then(function (x) {
+          if (!(x.j && x.j.ok)) throw new Error((x.j && x.j.error) || "That didn't go through.");
+          var lead = price().lead, box = document.createElement("div");
+          box.className = "reserved"; box.setAttribute("role", "status");
+          box.innerHTML = '<span class="kicker">Reserved</span><h3 class="hh"></h3><p>Your reference is <b class="r-ref"></b>. The details are on their way to <b class="r-mail"></b>, and one of our travel professionals will send your pickup details shortly.</p>';
+          $("h3", box).textContent = "You're booked in. You pay " + lead + " when you arrive.";
+          $(".r-ref", box).textContent = x.j.ref || state.ref; $(".r-mail", box).textContent = (body.customer && body.customer.email) || "your email";
+          el.step2.innerHTML = ""; el.step2.appendChild(box); box.scrollIntoView({ behavior: "smooth", block: "center" });
         })
         .catch(function (e) { el.cta.disabled = false; render(); alertBox((e && e.message ? e.message : "Something went wrong.") + " You can send the same booking by WhatsApp and we'll confirm it by hand.", true); });
     }
@@ -821,11 +847,13 @@
       if (offerWa) { var a = document.createElement("a"); a.href = "#"; a.textContent = "Send by WhatsApp"; a.style.cssText = "text-decoration:underline;color:inherit;font-weight:800"; a.addEventListener("click", function (e) { e.preventDefault(); sendWhatsApp(); }); box.appendChild(a); }
       box.scrollIntoView({ behavior: "smooth", block: "center" });
     }
+    if (el.payWhen) el.payWhen.addEventListener("change", function () { render(); });
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var box = $("#exp-alert", root); if (box) box.remove();
       try {
         if (state.step === 1 && el.next) { checkStep1(); goStep(2); return; } // Enter in a step-one field moves on, it never tries to pay
+        if (payOnArrival()) { pay("arrival"); return; }
         if (instant() && (!live || state.availOk !== false)) { pay(); return; }
         if (!isFlight) { var prob = dateProblem(state.date); if (prob) { alertBox(prob); return; } }
         sendWhatsApp();

@@ -549,6 +549,7 @@ function panel(v) {
       <button type="button" class="link-btn step-back" id="step-back">${icon("arrow", 14, 2.6)}Change the booking</button>
       <div class="sum" id="sum"></div>
       ${contact}
+      ${/^jamwest/.test(v.slug) ? `<div class="pf pay-when" id="pay-when" hidden><span class="pf-l">How you'd like to pay</span><div class="pw-opts" role="radiogroup" aria-label="How you'd like to pay"><label class="pw"><input type="radio" name="paywhen" value="card" checked><span><b>Card now</b><small>On the secure card page</small></span></label><label class="pw"><input type="radio" name="paywhen" value="arrival"><span><b>Pay on arrival</b><small>Nothing charged now</small></span></label></div></div>` : ""}
       <div class="pf pf-preview" id="pf-preview"${instant ? " hidden" : ""}><span class="pf-l">This is what we'll get</span><pre id="msg-preview"></pre></div>
       <button class="btn btn-black btn-lg btn-full" type="submit" id="cta">${instant ? icon("card", 18) : icon("chat", 18)}<span id="cta-label">${cta}</span></button>
       <p class="pf-sub" id="cta-sub">${ctaSub}</p>
