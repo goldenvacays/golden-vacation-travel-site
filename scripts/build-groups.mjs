@@ -736,7 +736,7 @@ ${css}
     <div class="cp-hpick" id="cp-hpick">
       <p class="cp-step2-t">Pick your hotel</p>
       <div class="cp-hopts" id="cp-hopts" role="radiogroup" aria-label="Hotel"></div>
-      <div class="cp-hsearch cp-from-seg"><label class="cp-tl" for="cp-hs">Have a hotel in mind?</label><input id="cp-hs" type="text" autocomplete="off" spellcheck="false" placeholder="Search hotels and resorts" role="combobox" aria-expanded="false" aria-controls="cp-sug-h" aria-autocomplete="list"><div class="cp-sug" id="cp-sug-h" role="listbox" hidden></div></div>
+      <div class="cp-hsearch cp-from-seg" id="cp-hs-wrap" hidden><label class="cp-tl" for="cp-hs">Which hotel?</label><input id="cp-hs" type="text" autocomplete="off" spellcheck="false" placeholder="Search hotels and resorts" role="combobox" aria-expanded="false" aria-controls="cp-sug-h" aria-autocomplete="list"><div class="cp-sug" id="cp-sug-h" role="listbox" hidden></div></div>
       <div class="cp-tiers" id="cp-tiers" hidden><span class="cp-tl">What kind of hotel?</span><div class="cp-tier-row">${G.form.tiers.map((t) => `<button type="button" class="cp-tier" data-tier="${esc(t)}">${esc(t)}</button>`).join("")}</div></div>
       <input type="hidden" name="tier" value="">
       <div class="cp-rooms" id="cp-rooms"><span class="cp-tl">Rooms</span>
@@ -829,10 +829,11 @@ ${css}
     input.addEventListener("input", function () { input.dataset.typed = "1"; typed(input.value); render(); });
     input.addEventListener("blur", function () { setTimeout(close, 150); });
     input.addEventListener("keydown", function (e) {
+      /* Enter in a search box picks the highlighted (or first) match and never sends the form */
+      if (e.key === "Enter") { e.preventDefault(); if (!box.hidden && shown.length) choose(act > -1 ? act : 0); else close(); return; }
       if (box.hidden) return;
       if (e.key === "ArrowDown") { act = Math.min(act + 1, shown.length - 1); mark(); e.preventDefault(); }
       else if (e.key === "ArrowUp") { act = Math.max(act - 1, 0); mark(); e.preventDefault(); }
-      else if (e.key === "Enter" && act > -1) { choose(act); e.preventDefault(); }
       else if (e.key === "Escape") { close(); }
     });
     box.addEventListener("mousedown", function (e) { var r = e.target.closest(".cp-opt-row"); if (r) { e.preventDefault(); choose(Number(r.dataset.i)); } });
@@ -844,7 +845,7 @@ ${css}
   var TO = ${JSON.stringify(TO)};
   var toIn = q("#cp-to"), hidPlace = q("[name=place]"), hidHotel = q("[name=hotel]");
   var toList = TO.map(function (x) { var o = { k: x[0], name: x[1], where: x[2], country: x[3], trip: x[4] }; o.score = o.k === "d" ? scorer([o.name, o.where], 5) : scorer([o.name, o.where, o.country], o.trip ? 3 : 0); if (o.k === "h") { var base = o.score; o.score = function (t) { return t ? base(t) : 0; }; } return o; });
-  function setTo(place, hotel, label) { hidPlace.value = place; hidHotel.value = hotel || ""; toIn.value = label || (hotel ? hotel + ", " + place : place); if (typeof paintHotels === "function" && !step2.hidden) paintHotels(); }
+  function setTo(place, hotel, label) { hidPlace.value = place; hidHotel.value = hotel || ""; if (hotel && typeof hmode !== "undefined") hmode = "list"; toIn.value = label || (hotel ? hotel + ", " + place : place); if (typeof paintHotels === "function" && !step2.hidden) paintHotels(); }
   var toBox = combo(toIn, q("#cp-sug-to"), toList,
     function (o) { return o.k === "d" ? "<b>" + o.name + "</b><small>" + o.where + "</small>" : "<b>" + o.name + (o.trip ? ' <span>Group trip</span>' : "") + "</b><small>Hotel · " + o.where + "</small>"; },
     function (o) { if (o.k === "d") setTo(o.where === "Jamaica" ? o.name + ", Jamaica" : o.name, "", o.where === "Jamaica" ? o.name + ", Jamaica" : o.name); else setTo(o.where === "Panama City" || o.where === "Lima" ? o.where : o.where + ", " + o.country, o.name, o.name + ", " + o.where); },
@@ -888,22 +889,28 @@ ${css}
     var pl = norm(place); if (!pl || place.indexOf("+") > -1) return [];
     return HOT.filter(function (h) { var c = norm(h[1]); return pl.indexOf(c) > -1 || c.indexOf(pl.split(",")[0].trim()) > -1; }).sort(function (a, b) { return b[5] - a[5]; }).slice(0, 6);
   }
-  function hopt(name, sub, tag) { return '<button type="button" role="radio" class="cp-hopt' + (hidHotel.value === name ? " on" : "") + '" aria-checked="' + (hidHotel.value === name) + '" data-h="' + name.replace(/"/g, "&quot;") + '"><b>' + name + (tag ? " <span>" + tag + "</span>" : "") + "</b><small>" + sub + "</small></button>"; }
+  var hmode = "";  /* list: a named hotel, mind: they will search for one, pick: Pick one for me, flights: Flights only */
+  function hopt(key, title, sub, tag) { var on = key === "__mind" ? hmode === "mind" : (hmode !== "mind" && hidHotel.value === key); return '<button type="button" role="radio" class="cp-hopt' + (on ? " on" : "") + '" aria-checked="' + on + '" data-h="' + key.replace(/"/g, "&quot;") + '"><b>' + title + (tag ? " <span>" + tag + "</span>" : "") + "</b><small>" + sub + "</small></button>"; }
   function paintHotels() {
     var list = hotelsFor(hidPlace.value), hv = norm(hidHotel.value);
     if (hv && ["Pick one for me", "Flights only"].indexOf(hidHotel.value) < 0) {
       var same = list.filter(function (h) { var n = norm(h[0]); return n === hv || n.indexOf(hv) > -1 || hv.indexOf(n) > -1; })[0];
       if (same) hidHotel.value = same[0]; else list.unshift([hidHotel.value, hidPlace.value, "", "", 0, 0]);
     }
-    hopts.innerHTML = list.map(function (h) { return hopt(h[0], h[4] ? "From US$" + h[4] + " per person" : (h[3] || "Priced with your dates"), h[5] ? "Group trip" : ""); }).join("")
-      + hopt("Pick one for me", list.length ? "Tell us the style, we suggest the best fit" : "Tell us the style, we suggest hotels for you", "")
-      + hopt("Flights only", "No hotel needed", "");
-    tiers.hidden = hidHotel.value !== "Pick one for me";
+    hopts.innerHTML = list.map(function (h) { return hopt(h[0], h[0], h[4] ? "From US$" + h[4] + " per person" : (h[3] || "Priced with your dates"), h[5] ? "Group trip" : ""); }).join("")
+      + hopt("__mind", list.length ? "Another hotel" : "I have a hotel in mind", "Search any hotel or resort", "")
+      + hopt("Pick one for me", "Pick one for me", "Tell us the style, we suggest the best fit", "")
+      + hopt("Flights only", "Flights only", "No hotel needed", "");
+    document.getElementById("cp-hs-wrap").hidden = hmode !== "mind";
+    tiers.hidden = hmode === "mind" || hidHotel.value !== "Pick one for me";
     document.getElementById("cp-rooms").hidden = hidHotel.value === "Flights only";
   }
   hopts.addEventListener("click", function (e) {
     var b = e.target.closest(".cp-hopt"); if (!b) return;
-    var h = b.dataset.h; hidHotel.value = h;
+    var h = b.dataset.h;
+    if (h === "__mind") { hmode = "mind"; hidHotel.value = ""; hidTier.value = ""; paintHotels(); setTimeout(function () { document.getElementById("cp-hs").focus(); }, 60); return; }
+    hmode = h === "Pick one for me" ? "pick" : h === "Flights only" ? "flights" : "list";
+    hidHotel.value = h;
     if (h !== "Pick one for me") { hidTier.value = ""; [].forEach.call(tiers.querySelectorAll(".cp-tier"), function (t) { t.classList.remove("on"); }); }
     if (["Pick one for me", "Flights only"].indexOf(h) < 0) toIn.value = h + ", " + hidPlace.value;
     paintHotels();
@@ -915,8 +922,8 @@ ${css}
   var hs = document.getElementById("cp-hs");
   combo(hs, document.getElementById("cp-sug-h"), toList.filter(function (o) { return o.k === "h"; }).concat([]),
     function (o) { return "<b>" + o.name + (o.trip ? ' <span>Group trip</span>' : "") + "</b><small>" + o.where + "</small>"; },
-    function (o) { setTo(o.where === "Panama City" || o.where === "Lima" ? o.where : o.where + ", " + o.country, o.name, o.name + ", " + o.where); hs.value = ""; paintHotels(); },
-    function () {}, "Not on our list? Tell us under Anything else and we'll price it.");
+    function (o) { setTo(o.where === "Panama City" || o.where === "Lima" ? o.where : o.where + ", " + o.country, o.name, o.name + ", " + o.where); hmode = "list"; hs.value = ""; paintHotels(); },
+    function (text) { hidHotel.value = text.trim(); }, "Not on our list? Just type the name, we'll price it.");
   hs.addEventListener("focus", function () { loadJM(); });
 
   /* who's travelling: adults, children and their ages */
@@ -1037,7 +1044,8 @@ ${css}
     e.preventDefault();
     if (step2.hidden) { next(); return; }
     var m = tripMissing();
-    if (!v("hotel")) m.push("a hotel, or Pick one for me");
+    if (hmode === "mind" && !v("hotel")) m.push("the hotel you have in mind");
+    else if (!v("hotel")) m.push("a hotel, or Pick one for me");
     else if (v("hotel") === "Pick one for me" && !v("tier")) m.push("the kind of hotel");
     if (v("hotel") && v("hotel") !== "Flights only" && !(R.single + R.double + R.triple + R.quad)) m.push("the rooms you need");
     if (!v("org_name")) m.push("your group's name");
