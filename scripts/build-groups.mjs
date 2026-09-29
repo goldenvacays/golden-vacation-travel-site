@@ -399,7 +399,7 @@ function copa() {
   const gets = [
     ["Everyone on the same flights", "One fare per person for the whole group, agreed before anyone pays."],
     ["Luggage included", "A personal item, a carry-on and a checked bag for everyone in the group."],
-    [`US$${fmt(G.hold.usd)} holds a seat`, `Each traveller holds a place with US$${fmt(G.hold.usd)} (J$${fmt(G.hold.jmd)}), non-refundable, and it comes off their deposit. The group leader pays us in one payment.`],
+    [`US$${fmt(G.hold.usd)} holds a seat`, `Each traveller holds a place with US$${fmt(G.hold.usd)} (J$${fmt(G.hold.jmd)}), non-refundable. The rest can be paid over time.`],
     ["Flights, hotel and transfers on one quote", "One quote for the whole trip. Organisations can pay by invoice."],
   ];
   const steps = [
