@@ -270,7 +270,7 @@ ${nav({ here: false, back: true })}
   <input type="hidden" name="form-name" value="groups">
   <input type="hidden" name="subject" id="f-subject" value="Group quote">
   <input type="hidden" name="ref" id="f-ref" value="">
-  <input type="hidden" name="currency" id="f-currency" value="US$">
+  <input type="hidden" name="currency" id="f-currency" value="US$"><input type="hidden" name="airline" value="">
   <p class="hp" aria-hidden="true"><label>Leave this field empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
   <datalist id="places">${f.places.map((p) => `<option value="${esc(p)}">`).join("")}</datalist>
   <datalist id="hotels-list">${f.hotelNames.map((p) => `<option value="${esc(p)}">`).join("")}</datalist>
@@ -403,7 +403,11 @@ function copa() {
   /* hotels offered in the hotel step: [name, city, country, stars, from US$ (Panama City group trip only), group trip] */
   const panTrip = Object.fromEntries(G.trips.destinations.filter((d) => d.id === "panama").flatMap((d) => d.hotels.map((ht) => [ht.name.toLowerCase(), ht.usd])));
   const HOT = HOTELS.map((h) => { const k = Object.keys(panTrip).find((t) => h.name.toLowerCase().includes(t)); return [h.name, h.city, h.country, /^\d star/.test(h.star_rating || "") ? h.star_rating.slice(0, 6) : "", k ? panTrip[k] : 0, k ? 1 : 0]; });
-  const TO = [["d", "Panama City", "Panama"], ["d", "Lima", "Peru"], ["d", "Medellín", "Colombia"], ["d", "Bogotá", "Colombia"], ["d", "San José", "Costa Rica"], ["d", "Punta Cana", "Dominican Republic"], ["d", "Kingston", "Jamaica"], ["d", "Montego Bay", "Jamaica"], ["d", "Panama + Lima", "Two countries"], ["d", "Panama + Medellín", "Two countries"], ["d", "Ocho Rios", "Jamaica"], ["d", "Negril", "Jamaica"], ["d", "Runaway Bay", "Jamaica"], ["d", "South Coast", "Jamaica"]]
+  const TO = [["d", "Panama City", "Panama"], ["d", "Lima", "Peru"], ["d", "Medellín", "Colombia"], ["d", "Bogotá", "Colombia"], ["d", "San José", "Costa Rica"], ["d", "Punta Cana", "Dominican Republic"], ["d", "Kingston", "Jamaica"], ["d", "Montego Bay", "Jamaica"], ["d", "Panama + Lima", "Two countries"], ["d", "Panama + Medellín", "Two countries"], ["d", "Ocho Rios", "Jamaica"], ["d", "Negril", "Jamaica"], ["d", "Runaway Bay", "Jamaica"], ["d", "South Coast", "Jamaica"],
+    ["d", "Cartagena", "Colombia"], ["d", "Cancún", "Mexico"], ["d", "Mexico City", "Mexico"], ["d", "Havana", "Cuba"], ["d", "Santo Domingo", "Dominican Republic"], ["d", "Aruba", "Aruba"], ["d", "Curaçao", "Curaçao"], ["d", "Nassau", "Bahamas"], ["d", "Barbados", "Barbados"], ["d", "Port of Spain", "Trinidad and Tobago"],
+    ["d", "Orlando", "USA"], ["d", "Miami", "USA"], ["d", "New York", "USA"], ["d", "Atlanta", "USA"], ["d", "Washington DC", "USA"], ["d", "Las Vegas", "USA"], ["d", "Los Angeles", "USA"], ["d", "Toronto", "Canada"],
+    ["d", "London", "United Kingdom"], ["d", "Paris", "France"], ["d", "Rome", "Italy"], ["d", "Madrid", "Spain"], ["d", "Amsterdam", "Netherlands"], ["d", "Israel (Holy Land)", "Israel"], ["d", "Dubai", "United Arab Emirates"],
+    ["d", "Accra", "Ghana"], ["d", "Lagos", "Nigeria"], ["d", "Johannesburg", "South Africa"], ["d", "Cape Town", "South Africa"]]
     .concat(HOTELS.map((h) => ["h", h.name, h.city, h.country, tripHotels.some((t) => h.name.toLowerCase().includes(t)) ? 1 : 0]).sort((a, b) => b[4] - a[4]));
   const tr = G.trips, pan = tr.destinations.find((d) => d.id === "panama");
   const from = Math.min(...pan.hotels.map((h) => h.usd));
@@ -421,6 +425,7 @@ function copa() {
     ["Can we book a Copa group fare online?", "No. copa.com takes up to 8 people in one booking, and 10 or more count as a group, handled by Copa's call centre, its sales offices or a travel agency. We handle it for you, with the hotel and transfers."],
     ["How many people make a group?", "Ten or more, travelling together on the same flights."],
     ["Do we need everyone's names now?", "No. The seats are held first, and the names are due by the date in your quote."],
+    ["What if Copa doesn't fly where we're going?", "We'll recommend the airline that works best for your group and quote it the same way: one price for flights, hotel and transfers, with a payment plan."],
     ["Where can we fly from?", "Most groups fly from Montego Bay (MBJ) or Kingston (KIN), and we also arrange flights from airports in the USA, across the Caribbean and beyond."],
     ["Are you Copa Airlines?", "No. We're Golden Vacation & Travel, an independent IATA-accredited travel agency with offices in Jamaica and Florida. We book Copa group fares for our clients."],
   ];
@@ -524,6 +529,8 @@ function copa() {
 .cp-form-note{grid-column:1/-1;font-size:13px;color:rgba(14,15,14,.55);text-align:center;margin:0}
 .cp-hotel-note{grid-column:1/-1;justify-self:start;font-size:14px;font-weight:800;background:#FBEFCF;color:#8A6D12;border-radius:999px;padding:6px 12px;margin:0}
 .cp-final{padding:76px 0}
+.cp-airpref{display:flex;flex-direction:column;gap:8px;padding-bottom:18px;border-bottom:2px solid var(--line,#E4E4DF)}
+.cp-inbound span{display:block;margin-top:6px;font-weight:600;color:rgba(14,15,14,.62);font-size:14px}
 .cp-inbound{margin:16px 8px 0;font-size:15px}
 .cp-inbound a{color:#0E0F0E;font-weight:800;text-decoration:underline;text-underline-offset:3px}
 .cp-hhint{font-size:13px;color:rgba(14,15,14,.6);margin:0}
@@ -642,6 +649,8 @@ ${css}
       <div class="cp-tiers" id="cp-tiers" hidden><span class="cp-tl">What kind of hotel?</span><div class="cp-tier-row">${G.form.tiers.map((t) => `<button type="button" class="cp-tier" data-tier="${esc(t)}">${esc(t)}</button>`).join("")}</div></div>
       <input type="hidden" name="tier" value="">
     </div>
+    <div class="cp-airpref"><span class="cp-tl">Airline</span><div class="cp-tier-row" id="cp-airpref"><button type="button" class="cp-tier on" data-air="Copa, or another airline if it fits better">Copa, or the best fit</button><button type="button" class="cp-tier" data-air="Copa only">Copa only</button></div>
+      <input type="hidden" name="airline" value="Copa, or another airline if it fits better"><p class="cp-hhint">If Copa doesn't fly there, or another airline works better for your group, we'll tell you and quote it.</p></div>
     <p class="cp-step2-t">Where should we send your price?</p>
     <div class="cp-contact">
       <label class="cp-f"><span>Your name</span><input name="name" type="text" autocomplete="name"></label>
@@ -653,7 +662,7 @@ ${css}
     <p class="cp-form-note">We reply by email within ${esc(G.turnaround)}. Your details are only used for your quote.</p>
   </div>
 </form>
-<p class="cp-inbound"><a href="#quote" data-inbound="1" data-track="copa-inbound">Bringing a group to Jamaica from Panama or South America? Start here</a></p>
+<p class="cp-inbound"><a href="#quote" data-inbound="1" data-track="copa-inbound">Bringing a group to Jamaica from Panama or South America? Start here</a><span>Going somewhere Copa doesn't fly? Type it in, we quote the best airline for your group.</span></p>
 </div></section>
 
 <section class="cp-sec"><div class="wrap">
@@ -747,7 +756,7 @@ ${css}
     function (o) { return o.k === "d" ? "<b>" + o.name + "</b><small>" + o.where + "</small>" : "<b>" + o.name + (o.trip ? ' <span>Group trip</span>' : "") + "</b><small>Hotel · " + o.where + "</small>"; },
     function (o) { if (o.k === "d") setTo(o.where === "Jamaica" ? o.name + ", Jamaica" : o.name, "", o.where === "Jamaica" ? o.name + ", Jamaica" : o.name); else setTo(o.where === "Panama City" || o.where === "Lima" ? o.where : o.where + ", " + o.country, o.name, o.name + ", " + o.where); },
     function (text) { hidPlace.value = text.trim(); hidHotel.value = ""; },
-    "Not on the list? Keep typing, we'll price anywhere Copa flies.");
+    "Not on the list? Keep typing, we'll price anywhere.");
   var jmLoaded = false;
   function loadJM() {
     if (jmLoaded) return; jmLoaded = true;
@@ -760,7 +769,7 @@ ${css}
   toIn.addEventListener("focus", loadJM);
 
   /* Flying from: Kingston and Montego Bay are sent as themselves, anything else as "Another airport" plus what they chose or typed */
-  var AIR = [["Kingston","KIN","Jamaica"],["Montego Bay","MBJ","Jamaica"],["Nassau","NAS","Bahamas"],["Freeport","FPO","Bahamas"],["Grand Cayman","GCM","Cayman Islands"],["Providenciales","PLS","Turks and Caicos"],["Havana","HAV","Cuba"],["Port-au-Prince","PAP","Haiti"],["Santo Domingo","SDQ","Dominican Republic"],["Punta Cana","PUJ","Dominican Republic"],["Santiago","STI","Dominican Republic"],["San Juan","SJU","Puerto Rico"],["St Maarten","SXM","Sint Maarten"],["Antigua","ANU","Antigua and Barbuda"],["St Kitts","SKB","St Kitts and Nevis"],["Dominica","DOM","Dominica"],["Guadeloupe","PTP","Guadeloupe"],["Martinique","FDF","Martinique"],["St Lucia","UVF","St Lucia"],["Barbados","BGI","Barbados"],["St Vincent","SVD","St Vincent and the Grenadines"],["Grenada","GND","Grenada"],["Port of Spain","POS","Trinidad and Tobago"],["Tobago","TAB","Trinidad and Tobago"],["Aruba","AUA","Aruba"],["Curaçao","CUR","Curaçao"],["Bonaire","BON","Bonaire"],["Georgetown","GEO","Guyana"],["Paramaribo","PBM","Suriname"],["Belize City","BZE","Belize"],["Miami","MIA","USA"],["Fort Lauderdale","FLL","USA"],["Orlando","MCO","USA"],["Tampa","TPA","USA"],["New York","JFK","USA"],["Newark","EWR","USA"],["Atlanta","ATL","USA"],["Houston","IAH","USA"],["Washington","IAD","USA"],["Boston","BOS","USA"],["Chicago","ORD","USA"],["Los Angeles","LAX","USA"],["Toronto","YYZ","Canada"],["Montreal","YUL","Canada"],["Panama City","PTY","Panama"],["Lima","LIM","Peru"],["Bogotá","BOG","Colombia"],["Medellín","MDE","Colombia"],["Cali","CLO","Colombia"],["Cartagena","CTG","Colombia"],["Barranquilla","BAQ","Colombia"],["San José","SJO","Costa Rica"],["Guatemala City","GUA","Guatemala"],["San Salvador","SAL","El Salvador"],["San Pedro Sula","SAP","Honduras"],["Managua","MGA","Nicaragua"],["Mexico City","MEX","Mexico"],["Cancún","CUN","Mexico"],["Quito","UIO","Ecuador"],["Guayaquil","GYE","Ecuador"],["Caracas","CCS","Venezuela"],["Santiago de Chile","SCL","Chile"],["Buenos Aires","EZE","Argentina"],["Montevideo","MVD","Uruguay"],["São Paulo","GRU","Brazil"],["Rio de Janeiro","GIG","Brazil"],["Asunción","ASU","Paraguay"],["Santa Cruz","VVI","Bolivia"]];
+  var AIR = [["Kingston","KIN","Jamaica"],["Montego Bay","MBJ","Jamaica"],["Nassau","NAS","Bahamas"],["Freeport","FPO","Bahamas"],["Grand Cayman","GCM","Cayman Islands"],["Providenciales","PLS","Turks and Caicos"],["Havana","HAV","Cuba"],["Port-au-Prince","PAP","Haiti"],["Santo Domingo","SDQ","Dominican Republic"],["Punta Cana","PUJ","Dominican Republic"],["Santiago","STI","Dominican Republic"],["San Juan","SJU","Puerto Rico"],["St Maarten","SXM","Sint Maarten"],["Antigua","ANU","Antigua and Barbuda"],["St Kitts","SKB","St Kitts and Nevis"],["Dominica","DOM","Dominica"],["Guadeloupe","PTP","Guadeloupe"],["Martinique","FDF","Martinique"],["St Lucia","UVF","St Lucia"],["Barbados","BGI","Barbados"],["St Vincent","SVD","St Vincent and the Grenadines"],["Grenada","GND","Grenada"],["Port of Spain","POS","Trinidad and Tobago"],["Tobago","TAB","Trinidad and Tobago"],["Aruba","AUA","Aruba"],["Curaçao","CUR","Curaçao"],["Bonaire","BON","Bonaire"],["Georgetown","GEO","Guyana"],["Paramaribo","PBM","Suriname"],["Belize City","BZE","Belize"],["Miami","MIA","USA"],["Fort Lauderdale","FLL","USA"],["Orlando","MCO","USA"],["Tampa","TPA","USA"],["New York","JFK","USA"],["Newark","EWR","USA"],["Atlanta","ATL","USA"],["Houston","IAH","USA"],["Washington","IAD","USA"],["Boston","BOS","USA"],["Chicago","ORD","USA"],["Los Angeles","LAX","USA"],["Toronto","YYZ","Canada"],["Montreal","YUL","Canada"],["London","LHR","United Kingdom"],["Manchester","MAN","United Kingdom"],["Birmingham","BHX","United Kingdom"],["Panama City","PTY","Panama"],["Lima","LIM","Peru"],["Bogotá","BOG","Colombia"],["Medellín","MDE","Colombia"],["Cali","CLO","Colombia"],["Cartagena","CTG","Colombia"],["Barranquilla","BAQ","Colombia"],["San José","SJO","Costa Rica"],["Guatemala City","GUA","Guatemala"],["San Salvador","SAL","El Salvador"],["San Pedro Sula","SAP","Honduras"],["Managua","MGA","Nicaragua"],["Mexico City","MEX","Mexico"],["Cancún","CUN","Mexico"],["Quito","UIO","Ecuador"],["Guayaquil","GYE","Ecuador"],["Caracas","CCS","Venezuela"],["Santiago de Chile","SCL","Chile"],["Buenos Aires","EZE","Argentina"],["Montevideo","MVD","Uruguay"],["São Paulo","GRU","Brazil"],["Rio de Janeiro","GIG","Brazil"],["Asunción","ASU","Paraguay"],["Santa Cruz","VVI","Bolivia"]];
   var from = q("#cp-from"), hidA = q("[name=airport]"), hidO = q("[name=airport_other]");
   function setFrom(text) {
     var t = norm(text), k = /kingston|\\bkin\\b/.test(t) ? "Kingston" : /montego|\\bmbj\\b/.test(t) ? "Montego Bay" : "";
@@ -806,6 +815,7 @@ ${css}
     if (["Pick one for me", "Flights only"].indexOf(h) < 0) toIn.value = h + ", " + hidPlace.value;
     paintHotels();
   });
+  document.getElementById("cp-airpref").addEventListener("click", function (e) { var t = e.target.closest(".cp-tier"); if (!t) return; q("[name=airline]").value = t.dataset.air; [].forEach.call(this.querySelectorAll(".cp-tier"), function (x) { x.classList.toggle("on", x === t); }); });
   tiers.addEventListener("click", function (e) { var t = e.target.closest(".cp-tier"); if (!t) return; hidTier.value = t.dataset.tier; [].forEach.call(tiers.querySelectorAll(".cp-tier"), function (x) { x.classList.toggle("on", x === t); }); });
   toIn.addEventListener("change", function () { if (!step2.hidden) paintHotels(); });
   document.querySelectorAll('a[href="#quote"]').forEach(function (a) {

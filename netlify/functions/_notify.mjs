@@ -52,6 +52,7 @@ export function briefLines(f) {
     if (f.tier) L.push(["Style", f.tier]);
     L.push(["Dates", dates("depart", "return")]);
     if (f.airport) L.push(["Flying from", f.airport === "Another airport" && f.airport_other ? f.airport_other : f.airport]);
+    if (f.airline) L.push(["Airline", f.airline]);
     if (Number(f.ready_now)) L.push(["Ready to book now", `${f.ready_now} people`]);
   }
   if (alts) L.push(["Other dates", alts]);
