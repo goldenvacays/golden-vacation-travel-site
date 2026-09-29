@@ -570,7 +570,7 @@ ${css}
 </div></section>
 
 <section class="cp-band cp-final"><div class="wrap">
-  <h2 class="cp-h2">Get your group's Copa fare.</h2>
+  <h2 class="cp-h2">Ready to fly your group on Copa?</h2>
   <p>Group seats are limited on every flight, so the sooner you hold, the more choice you have. Your quote comes by email within ${esc(G.turnaround)}.</p>
   <a class="cp-btn cp-gold" href="${Q}" data-track="copa-cta">Get my group quote</a>
 </div></section>
