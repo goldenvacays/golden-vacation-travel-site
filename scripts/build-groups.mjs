@@ -86,7 +86,7 @@ ${ga}
 }
 
 function nav({ here = true, back = false } = {}) {
-  const links = [[G.navShort.rooms, `${BASE}/#rooms`], [G.navShort.jamaica, `${BASE}/#jamaica`], [G.navShort.trips, `${BASE}/#trips`], ["The hold", `${BASE}/#hold`], ["How it works", `${BASE}/#how`]];
+  const links = [[G.navShort.rooms, `${BASE}/#rooms`], [G.navShort.jamaica, `${BASE}/#jamaica`], [G.navShort.trips, `${BASE}/#trips`], ["Copa fares", `${BASE}/copa/`], ["The hold", `${BASE}/#hold`], ["How it works", `${BASE}/#how`]];
   return `<header class="g-nav" role="banner"><div class="wrap">
   <a class="wordmark" href="/" aria-label="Golden Vacation, home">GOLDEN VACATION</a>
   <span class="nav-sep" aria-hidden="true"></span>
@@ -110,7 +110,7 @@ function footer(short = false) {
   return `<footer class="foot" role="contentinfo"><div class="wrap">
   <div class="foot-brand"><b>GOLDEN VACATION &amp; TRAVEL</b><span>${esc(G.officesLine)}. ${esc(G.iataLine)}.</span></div>
   ${short ? "" : `<div class="foot-links">
-    <div><a href="${BASE}/#rooms">${esc(G.rooms.kicker)}</a><a href="${BASE}/#jamaica">${esc(G.overseas.kicker)}</a><a href="${BASE}/#trips">${esc(G.trips.kicker)}</a><a href="${BASE}/#hold">The hold</a></div>
+    <div><a href="${BASE}/#rooms">${esc(G.rooms.kicker)}</a><a href="${BASE}/#jamaica">${esc(G.overseas.kicker)}</a><a href="${BASE}/#trips">${esc(G.trips.kicker)}</a><a href="${BASE}/copa/">Copa group fares</a><a href="${BASE}/#hold">The hold</a></div>
     <div><a href="${BASE}/enquire/">${esc(G.cta.button)}</a><a href="${BASE}/#how">How it works</a><a href="/getaways/">Getaways</a><a href="/">Jamaica hotels &amp; tours</a></div>
     <div><a href="/terms/">Terms</a><a href="/privacy/">Privacy</a></div>
   </div>`}
@@ -187,7 +187,7 @@ ${dests}
   </div>
   <div class="dots" aria-hidden="true">${tr.destinations.map((d, i) => `<i${i === 0 ? ' class="on"' : ""}></i>`).join("")}</div>
   <p class="small trips-note">${esc(tr.more || "")} ${esc(tr.note)}</p>
-  <p class="small trips-note"><a href="${BASE}/copa/" data-track="hub-copa">Flying Copa as a group? How group fares work.</a></p>
+  <div class="sec-cta" style="margin-top:18px"><a class="btn btn-outline" href="${BASE}/copa/" data-track="hub-copa">Flying Copa as a group? See group fares</a></div>
 </section>
 
 <section class="wrap"><div class="card-alt on-alt" id="hold">
