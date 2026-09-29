@@ -145,6 +145,43 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
 .cp-form-note{grid-column:1/-1;font-size:13px;color:rgba(14,15,14,.55);text-align:center;margin:0}
 .cp-hotel-note{grid-column:1/-1;justify-self:start;font-size:14px;font-weight:800;background:#FBEFCF;color:#8A6D12;border-radius:999px;padding:6px 12px;margin:0}
 .cp-final{padding:76px 0}
+.cp-hero{padding-bottom:128px!important}
+.cp-barwrap{position:relative;z-index:3;margin-top:-84px}
+.cp-bar{background:#fff;color:#0E0F0E;border-radius:30px;box-shadow:0 24px 60px rgba(14,15,14,.22);padding:10px}
+.cp-row{display:grid;grid-template-columns:1.25fr 1.3fr 1fr 1fr .9fr auto;align-items:center}
+.cp-seg{display:flex;flex-direction:column;gap:5px;padding:12px 20px;border-right:2px solid var(--line,#E4E4DF);min-width:0;cursor:pointer}
+.cp-seg.cp-last{border-right:0}
+.cp-l{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(14,15,14,.55)}
+.cp-seg select,.cp-seg input{font:inherit;font-size:17px;font-weight:700;border:0;padding:0;background:transparent;color:#0E0F0E;width:100%;min-width:0;outline:none;-webkit-appearance:none;appearance:none}
+.cp-seg input::placeholder{color:rgba(14,15,14,.42);font-weight:600}
+.cp-seg:focus-within .cp-l{color:#8A6D12}
+.cp-go{height:64px;padding:0 26px;border:0;border-radius:999px;background:#0E0F0E;color:#fff;font:inherit;font-weight:800;font-size:16px;display:inline-flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;white-space:nowrap;margin-left:6px}
+.cp-go.done{background:var(--gold,#F2B93B);color:#0E0F0E}
+.cp-extra{border-top:2px solid var(--line,#E4E4DF);margin:8px 10px 0}
+.cp-extra .cp-seg{padding-left:10px}
+.cp-bar .cp-hotel-note,.cp-bar .cp-err{margin:10px 10px 4px}
+.cp-step2{border-top:2px solid var(--line,#E4E4DF);margin:10px 10px 0;padding:18px 0 8px;display:flex;flex-direction:column;gap:14px}
+.cp-step2-t{font-weight:900;font-size:19px;margin:0}
+.cp-contact{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.cp-contact .cp-wide{grid-column:1/-1}
+.cp-contact .cp-f span{font-size:13px;font-weight:800}
+.cp-contact .cp-f em{font-style:normal;font-weight:600;color:rgba(14,15,14,.5)}
+.cp-contact input{font:inherit;font-size:16px;padding:12px 14px;border:2px solid var(--line,#E4E4DF);border-radius:12px;width:100%;box-sizing:border-box;margin-top:6px}
+.cp-contact input:focus{outline:none;border-color:#0E0F0E}
+.cp-send{width:100%;border:0;cursor:pointer;font-family:inherit}
+.cp-close{display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px}
+.cp-close h2{color:#fff}
+.cp-close p{color:rgba(255,255,255,.75);font-size:17px;line-height:1.55;max-width:600px;margin:0}
+.cp-close .cp-ticks{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:10px 22px;margin:4px 0 8px}
+@media (max-width:1100px){
+  .cp-row{grid-template-columns:1fr 1fr}
+  .cp-seg{border-right:0;border-bottom:2px solid var(--line,#E4E4DF)}
+  .cp-go{grid-column:1/-1;margin:10px 0 0;width:100%}
+  .cp-contact{grid-template-columns:1fr}
+  .cp-barwrap{margin-top:-60px}
+  .cp-hero{padding-bottom:92px!important}
+}
+@media (max-width:560px){ .cp-row{grid-template-columns:1fr} .cp-seg{padding:12px 14px} }
 @media (max-width:900px){
   .cp-quote{grid-template-columns:1fr;gap:24px}
   .cp-form{grid-template-columns:1fr;padding:20px}
@@ -167,11 +204,39 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
     <div class="cp-price"><b>From US$899</b><span>per person, Panama City group trip</span></div>
     <p class="cp-inc">Flights from Kingston (KIN), bags, seat selection, 4 nights' hotel, breakfast and private transfers.</p>
     <p class="cp-other"><a href="#quote" data-airport="Another airport" data-track="copa-other-airport">Flying from another Caribbean airport? Ask for your price</a></p>
-    <div class="cp-ctas"><a class="cp-btn cp-gold" href="#quote" data-track="copa-top">Get my group quote</a><a class="cp-btn cp-ghost" href="#trip" data-track="copa-trips">See trips</a></div>
     <div class="cp-trust"><span>IATA-accredited</span><span>Quote within one working day</span><span>US$95 holds a seat</span></div>
   </div>
   <div class="cp-photo"><img src="/assets/img/deal-panama-peru.jpg" width="640" height="800" alt="A traveller with her arms up on a glass lookout over Panama City" fetchpriority="high">
     <div class="cp-badge"><b>From the Caribbean to Panama City and beyond</b>Ten or more flying together? That's a group fare.</div></div>
+</div></section>
+
+<section class="cp-barwrap" id="quote"><div class="wrap">
+<form class="cp-bar" id="cp-form" name="groups" method="POST" action="/groups/sent/" novalidate>
+  <input type="hidden" name="form-name" value="groups"><input type="hidden" name="subject" value="Group quote · Copa page"><input type="hidden" name="branch" value="trips"><input type="hidden" name="ref" value=""><input type="hidden" name="currency" value="US$"><input type="hidden" name="hotel" value="">
+  <p hidden><label>Leave this empty <input name="bot-field"></label></p>
+  <div class="cp-row">
+    <label class="cp-seg"><span class="cp-l">Where to</span><select name="place"><option>Panama City</option><option>Lima</option><option>Medellín</option><option>Bogotá</option><option>San José</option><option>Panama + Lima</option><option>Somewhere else</option></select></label>
+    <label class="cp-seg"><span class="cp-l">Flying from</span><select name="airport"><option value="Kingston">Kingston (KIN)</option><option value="Montego Bay">Montego Bay (MBJ)</option><option value="Another airport">Another airport</option></select></label>
+    <label class="cp-seg"><span class="cp-l">Leaving</span><input name="depart" type="date"></label>
+    <label class="cp-seg"><span class="cp-l">Coming back</span><input name="return" type="date"></label>
+    <label class="cp-seg cp-last"><span class="cp-l">Group size</span><input name="adults" type="number" min="10" inputmode="numeric" placeholder="10 or more"></label>
+    <button class="cp-go" type="button" id="cp-next" data-track="copa-next">Get my group price <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </div>
+  <div class="cp-extra" id="cp-other-wrap" hidden><label class="cp-seg cp-last"><span class="cp-l">Which airport?</span><input name="airport_other" type="text" placeholder="For example Miami, Nassau or Port of Spain"></label></div>
+  <p class="cp-hotel-note" id="cp-hotel-note" hidden></p>
+  <p class="cp-err" id="cp-err" role="alert" hidden></p>
+  <div class="cp-step2" id="cp-step2" hidden>
+    <p class="cp-step2-t">Where should we send your price?</p>
+    <div class="cp-contact">
+      <label class="cp-f"><span>Your name</span><input name="name" type="text" autocomplete="name"></label>
+      <label class="cp-f"><span>Email</span><input name="email" type="email" autocomplete="email"></label>
+      <label class="cp-f"><span>Phone <em>optional</em></span><input name="phone" type="tel" autocomplete="tel"></label>
+      <label class="cp-f cp-wide"><span>Anything else? <em>optional</em></span><input name="notes" type="text" placeholder="Hotel wishes, rooms, the occasion"></label>
+    </div>
+    <button class="cp-btn cp-gold cp-send" type="submit" data-track="copa-send">Send my request</button>
+    <p class="cp-form-note">We reply by email within one working day. Your details are only used for your quote.</p>
+  </div>
+</form>
 </div></section>
 
 <section class="cp-sec"><div class="wrap">
@@ -217,35 +282,17 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
   <div class="cp-faq"><details open><summary>Can we book a Copa group fare online?</summary><p>No. copa.com takes up to 8 people in one booking, and 10 or more count as a group, handled by Copa's call centre, its sales offices or a travel agency. We handle it for you, with the hotel and transfers.</p></details><details><summary>How many people make a group?</summary><p>Ten or more, travelling together on the same flights.</p></details><details><summary>Do we need everyone's names now?</summary><p>No. The seats are held first, and the names are due by the date in your quote.</p></details><details><summary>Where can we fly from?</summary><p>Most groups fly from Montego Bay (MBJ) or Kingston (KIN), and we also arrange flights from airports in the USA, across the Caribbean and beyond.</p></details><details><summary>Are you Copa Airlines?</summary><p>No. We're Golden Vacation &amp; Travel, an independent IATA-accredited travel agency with offices in Jamaica and Florida. We book Copa group fares for our clients.</p></details></div>
 </div></section>
 
-<section class="cp-band cp-final" id="quote"><div class="wrap cp-quote">
-  <div class="cp-quote-head">
-    <h2 class="cp-h2">Ready to fly your group on Copa?</h2>
-    <p>Group seats are limited on every flight, so the sooner you hold, the more choice you have. Your quote comes by email within one working day.</p>
-    <ul class="cp-ticks"><li>Nothing to pay to ask</li><li>US$95 holds each seat when you're ready</li><li>Flights, hotel and transfers in one price</li></ul>
-  </div>
-  <form class="cp-form" id="cp-form" name="groups" method="POST" action="/groups/sent/" novalidate>
-    <input type="hidden" name="form-name" value="groups"><input type="hidden" name="subject" value="Group quote · Copa page"><input type="hidden" name="branch" value="trips"><input type="hidden" name="ref" value=""><input type="hidden" name="currency" value="US$"><input type="hidden" name="hotel" value="">
-    <p hidden><label>Leave this empty <input name="bot-field"></label></p>
-    <p class="cp-hotel-note" id="cp-hotel-note" hidden></p>
-    <div class="cp-f"><label for="cp-place">Where to?</label><select id="cp-place" name="place"><option>Panama City</option><option>Lima</option><option>Medellín</option><option>Bogotá</option><option>San José</option><option>Panama + Lima</option><option>Somewhere else</option></select></div>
-    <div class="cp-f"><label for="cp-air">Flying from</label><select id="cp-air" name="airport"><option value="Kingston">Kingston (KIN)</option><option value="Montego Bay">Montego Bay (MBJ)</option><option value="Another airport">Another airport</option></select></div>
-    <div class="cp-f full" id="cp-other-wrap" hidden><label for="cp-air-other">Which airport?</label><input id="cp-air-other" name="airport_other" type="text" placeholder="For example Miami, Nassau or Port of Spain"></div>
-    <div class="cp-f"><label for="cp-dep">Leaving</label><input id="cp-dep" name="depart" type="date"></div>
-    <div class="cp-f"><label for="cp-ret">Coming back</label><input id="cp-ret" name="return" type="date"></div>
-    <div class="cp-f full"><label for="cp-n">How many are travelling?</label><input id="cp-n" name="adults" type="number" min="10" inputmode="numeric" placeholder="10 or more"></div>
-    <div class="cp-f"><label for="cp-name">Your name</label><input id="cp-name" name="name" type="text" autocomplete="name"></div>
-    <div class="cp-f"><label for="cp-email">Email</label><input id="cp-email" name="email" type="email" autocomplete="email"></div>
-    <div class="cp-f full"><label for="cp-phone">Phone <span class="cp-opt">optional</span></label><input id="cp-phone" name="phone" type="tel" autocomplete="tel"></div>
-    <div class="cp-f full"><label for="cp-notes">Anything else? <span class="cp-opt">optional</span></label><textarea id="cp-notes" name="notes" rows="2" placeholder="Hotel wishes, rooms, the occasion"></textarea></div>
-    <p class="cp-err" id="cp-err" role="alert" hidden></p>
-    <button class="cp-btn cp-gold" type="submit" data-track="copa-send">Send my request</button>
-    <p class="cp-form-note">We reply by email within one working day. Your details are only used for your quote.</p>
-  </form>
+<section class="cp-band cp-final"><div class="wrap cp-close">
+  <h2 class="cp-h2">Ready to fly your group on Copa?</h2>
+  <p>Group seats are limited on every flight, so the sooner you hold, the more choice you have. Your quote comes by email within one working day.</p>
+  <ul class="cp-ticks"><li>Nothing to pay to ask</li><li>US$95 holds each seat when you're ready</li><li>Flights, hotel and transfers in one price</li></ul>
+  <a class="cp-btn cp-gold" href="#quote" data-track="copa-cta">Get my group price</a>
 </div></section>
 <script>
 (function () {
   var f = document.getElementById("cp-form"); if (!f) return;
-  var q = function (s) { return f.querySelector(s); }, air = q("[name=airport]"), other = document.getElementById("cp-other-wrap");
+  var q = function (s) { return f.querySelector(s); }, air = q("[name=airport]"), other = document.getElementById("cp-other-wrap"), step2 = document.getElementById("cp-step2"), err = document.getElementById("cp-err");
+  var v = function (n) { return (q("[name=" + n + "]").value || "").trim(); };
   function syncAir() { other.hidden = air.value !== "Another airport"; }
   air.addEventListener("change", syncAir); syncAir();
   document.querySelectorAll('a[href="#quote"]').forEach(function (a) {
@@ -257,20 +304,33 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
   });
   var today = new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10);
   q("[name=depart]").min = today; q("[name=return]").min = today;
+  q("[name=depart]").addEventListener("change", function () { q("[name=return]").min = v("depart") || today; });
+  function tripMissing() {
+    var m = [];
+    if (air.value === "Another airport" && !v("airport_other")) m.push("which airport");
+    if (!v("depart")) m.push("the date you leave");
+    if (!v("return") || v("return") <= v("depart")) m.push("a return date after you leave");
+    if (!(Number(v("adults")) >= 10)) m.push("a group of 10 or more");
+    return m;
+  }
+  function say(m) { if (m.length) { err.textContent = "Please add " + m.join(", ") + "."; err.hidden = false; return false; } err.hidden = true; return true; }
+  function next() {
+    if (!say(tripMissing())) return false;
+    step2.hidden = false; q("#cp-next").classList.add("done");
+    setTimeout(function () { q("[name=name]").focus(); }, 60);
+    return true;
+  }
+  q("#cp-next").addEventListener("click", next);
   f.addEventListener("submit", function (e) {
     e.preventDefault();
-    var err = document.getElementById("cp-err"), miss = [], v = function (n) { return (q("[name=" + n + "]").value || "").trim(); };
-    if (air.value === "Another airport" && !v("airport_other")) miss.push("which airport");
-    if (!v("depart")) miss.push("the date you leave");
-    if (!v("return") || v("return") <= v("depart")) miss.push("a return date after you leave");
-    if (!(Number(v("adults")) >= 10)) miss.push("10 or more travellers");
-    if (!v("name")) miss.push("your name");
-    if (!/^[^@s]+@[^@s]+.[^@s]+$/.test(v("email"))) miss.push("your email");
-    if (miss.length) { err.textContent = "Please add " + miss.join(", ") + "."; err.hidden = false; return; }
-    err.hidden = true;
+    if (step2.hidden) { next(); return; }
+    var m = tripMissing();
+    if (!v("name")) m.push("your name");
+    if (!/^[^@s]+@[^@s]+.[^@s]+$/.test(v("email"))) m.push("your email");
+    if (!say(m)) return;
     var cs = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", r = ""; for (var i = 0; i < 4; i++) r += cs[Math.floor(Math.random() * cs.length)];
     var ref = "GV-GRP-" + r; q("[name=ref]").value = ref;
-    var btn = q("button[type=submit]"); btn.disabled = true; btn.textContent = "Sending...";
+    var btn = q(".cp-send"); btn.disabled = true; btn.textContent = "Sending...";
     fetch(location.pathname, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams(new FormData(f)).toString() })
       .then(function (res) { if (!res.ok) throw new Error(res.status); location.href = "/groups/sent/?ref=" + encodeURIComponent(ref); })
       .catch(function () { f.submit(); });
