@@ -107,7 +107,7 @@ const SMALL_HOTELS = [];
 for (const z of T_ZONES) for (const name of z.places || []) {
   const region = ZONE_REGION[z.key];
   if (!region || !X.regions[region] || !ZONE_POINT[z.key] || SAME_AS_RESORT.has(name)) continue;
-  if (RESORTS.some((r) => sameHotel(r.name, name)) || SMALL_HOTELS.some((h) => sameHotel(h.name, name))) continue;
+  if (RESORTS.some((r) => sameHotel(r.name, name) || (r.formerly && sameHotel(r.formerly, name))) || SMALL_HOTELS.some((h) => sameHotel(h.name, name))) continue;
   SMALL_HOTELS.push({ name, slug: slugify(name), region, lat: ZONE_POINT[z.key][0], lng: ZONE_POINT[z.key][1], status: "Open", area: ZONE_AREA[z.key] || X.regions[region].label, small: true });
 }
 const HOTELS = RESORT_HOTELS.concat(SMALL_HOTELS)
