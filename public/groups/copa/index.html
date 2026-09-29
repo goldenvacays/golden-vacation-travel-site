@@ -179,6 +179,32 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
 .cp-inbound{margin:16px 8px 0;font-size:15px}
 .cp-inbound a{color:#0E0F0E;font-weight:800;text-decoration:underline;text-underline-offset:3px}
 .cp-hhint{font-size:13px;color:rgba(14,15,14,.6);margin:0}
+.cp-date-seg{position:relative}
+.cp-dates{font:inherit;font-size:17px;font-weight:700;border:0;padding:0;background:transparent;color:#0E0F0E;text-align:left;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.cp-dates.empty{color:rgba(14,15,14,.42);font-weight:600}
+.cp-cal{position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);width:640px;background:#fff;border:2px solid #0E0F0E;border-radius:20px;box-shadow:0 18px 44px rgba(14,15,14,.2);padding:18px;z-index:30;cursor:default}
+.cp-cal-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cp-cal-nav{width:36px;height:36px;border-radius:50%;border:2px solid #0E0F0E;background:#fff;font:inherit;font-size:20px;font-weight:800;line-height:1;cursor:pointer;color:#0E0F0E}
+.cp-cal-nav:disabled{opacity:.25;cursor:default}
+.cp-cal-sum{font-weight:800;font-size:14px}
+#cp-cal-months{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.cp-cmh{font-weight:900;font-size:16px;text-align:center;margin-bottom:8px}
+.cp-cg{display:grid;grid-template-columns:repeat(7,1fr);row-gap:2px}
+.cp-dw{font-size:11px;font-weight:800;color:rgba(14,15,14,.45);text-align:center;padding:4px 0}
+.cp-day{height:38px;border:0;background:none;border-radius:10px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;color:#0E0F0E}
+.cp-day:hover:not(:disabled){background:#F3F3EF}
+.cp-day:disabled{color:rgba(14,15,14,.22);cursor:default}
+.cp-day.in{background:#FBEFCF;border-radius:0}
+.cp-day.s,.cp-day.e,.cp-day.s:hover:not(:disabled),.cp-day.e:hover:not(:disabled){background:#0E0F0E;color:#F2B93B}
+.cp-day.in:hover:not(:disabled){background:#F7E3AE}
+.cp-cal-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding-top:12px;border-top:2px solid var(--line,#E4E4DF);flex-wrap:wrap}
+.cp-flex{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;cursor:pointer}
+.cp-cal .cp-flex{white-space:nowrap}
+.cp-cal .cp-flex input{-webkit-appearance:checkbox;appearance:auto;width:18px;height:18px;flex:none;margin:0;padding:0;accent-color:#0E0F0E}
+.cp-cal-btns{display:flex;align-items:center;gap:14px}
+.cp-cal-clear{background:none;border:0;font:inherit;font-size:14px;font-weight:700;text-decoration:underline;cursor:pointer;color:rgba(14,15,14,.6)}
+.cp-cal-done{height:40px;padding:0 22px;border:0;border-radius:999px;background:#0E0F0E;color:#fff;font:inherit;font-weight:800;cursor:pointer}
+@media (max-width:760px){ .cp-cal{left:0;right:0;transform:none;width:auto} #cp-cal-months{grid-template-columns:1fr} }
 .cp-who-seg{position:relative}
 .cp-who{font:inherit;font-size:17px;font-weight:700;border:0;padding:0;background:transparent;color:#0E0F0E;text-align:left;cursor:pointer;white-space:nowrap}
 .cp-pop{position:absolute;top:calc(100% + 6px);right:0;width:320px;background:#fff;border:2px solid #0E0F0E;border-radius:18px;box-shadow:0 18px 44px rgba(14,15,14,.2);padding:16px;z-index:30;display:flex;flex-direction:column;gap:12px;cursor:default}
@@ -224,7 +250,7 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
 .cp-hero{padding-bottom:128px!important}
 .cp-barwrap{position:relative;z-index:3;margin-top:-84px}
 .cp-bar{background:#fff;color:#0E0F0E;border-radius:30px;box-shadow:0 24px 60px rgba(14,15,14,.22);padding:10px}
-.cp-row{display:grid;grid-template-columns:1.25fr 1.3fr 1fr 1fr .9fr auto;align-items:center}
+.cp-row{display:grid;grid-template-columns:1.2fr 1.25fr 1.45fr 1fr auto;align-items:center}
 .cp-seg{display:flex;flex-direction:column;gap:5px;padding:12px 20px;border-right:2px solid var(--line,#E4E4DF);min-width:0;cursor:pointer}
 .cp-seg.cp-last{border-right:0}
 .cp-l{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(14,15,14,.55);white-space:nowrap}
@@ -295,8 +321,14 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
   <div class="cp-row">
     <div class="cp-seg cp-from-seg"><label class="cp-l" for="cp-to">Where to</label><input id="cp-to" type="text" value="Panama City" autocomplete="off" spellcheck="false" placeholder="City or hotel" role="combobox" aria-expanded="false" aria-controls="cp-sug-to" aria-autocomplete="list"><div class="cp-sug" id="cp-sug-to" role="listbox" hidden></div><input type="hidden" name="place" value="Panama City"></div>
     <div class="cp-seg cp-from-seg"><label class="cp-l" for="cp-from">Flying from</label><input id="cp-from" type="text" value="Kingston (KIN)" autocomplete="off" spellcheck="false" placeholder="Type your city or airport" role="combobox" aria-expanded="false" aria-controls="cp-sug" aria-autocomplete="list"><div class="cp-sug" id="cp-sug" role="listbox" hidden></div><input type="hidden" name="airport" value="Kingston"><input type="hidden" name="airport_other" value=""></div>
-    <label class="cp-seg"><span class="cp-l">Leaving</span><input name="depart" type="date"></label>
-    <label class="cp-seg"><span class="cp-l">Coming back</span><input name="return" type="date"></label>
+    <div class="cp-seg cp-date-seg"><span class="cp-l">Dates</span><button type="button" class="cp-dates empty" id="cp-dates" aria-expanded="false" aria-controls="cp-cal">Add dates</button>
+      <div class="cp-cal" id="cp-cal" role="dialog" aria-label="Pick your dates" hidden>
+        <div class="cp-cal-top"><button type="button" class="cp-cal-nav" id="cp-cal-prev" aria-label="Previous month">&lsaquo;</button><span class="cp-cal-sum" id="cp-cal-sum">Pick the day you leave</span><button type="button" class="cp-cal-nav" id="cp-cal-next" aria-label="Next month">&rsaquo;</button></div>
+        <div id="cp-cal-months"></div>
+        <div class="cp-cal-foot"><label class="cp-flex"><input type="checkbox" id="cp-flex"> Our dates can move a few days</label><span class="cp-cal-btns"><button type="button" class="cp-cal-clear" id="cp-cal-clear">Clear</button><button type="button" class="cp-cal-done" id="cp-cal-done">Done</button></span></div>
+      </div>
+      <input type="hidden" name="depart" value=""><input type="hidden" name="return" value=""><input type="hidden" name="dates_flex" value="">
+    </div>
     <div class="cp-seg cp-last cp-who-seg"><span class="cp-l">Travellers</span><button type="button" class="cp-who" id="cp-who" aria-expanded="false" aria-controls="cp-pop">10 adults</button>
       <div class="cp-pop" id="cp-pop" hidden>
         <div class="cp-srow"><div><b>Adults</b><small>12 and over</small></div><div class="cp-stp"><button type="button" data-k="adults" data-d="-1" aria-label="One adult fewer">&minus;</button><span id="cp-n-adults">10</span><button type="button" data-k="adults" data-d="1" aria-label="One adult more">+</button></div></div>
@@ -535,8 +567,63 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
     });
   });
   var today = new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10);
-  q("[name=depart]").min = today; q("[name=return]").min = today;
-  q("[name=depart]").addEventListener("change", function () { q("[name=return]").min = v("depart") || today; });
+  /* dates: our own two-month calendar; tap the day you leave, then the day you come back */
+  var MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"], MONL = ["January","February","March","April","May","June","July","August","September","October","November","December"], DOW = ["Mo","Tu","We","Th","Fr","Sa","Su"], WD = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  var t0 = new Date(Date.now() - 5 * 3600e3), TODAY = new Date(Date.UTC(t0.getUTCFullYear(), t0.getUTCMonth(), t0.getUTCDate()));
+  var cal = document.getElementById("cp-cal"), dBtn = document.getElementById("cp-dates"), months = document.getElementById("cp-cal-months"), prevB = document.getElementById("cp-cal-prev"), nextB = document.getElementById("cp-cal-next");
+  var view = new Date(Date.UTC(TODAY.getUTCFullYear(), TODAY.getUTCMonth(), 1)), dStart = null, dEnd = null, dHover = null;
+  function isoD(d) { return d.toISOString().slice(0, 10); }
+  function niceD(d) { return WD[d.getUTCDay()] + " " + d.getUTCDate() + " " + MON[d.getUTCMonth()]; }
+  function monthHtml(y, m) {
+    var first = new Date(Date.UTC(y, m, 1)), days = new Date(Date.UTC(y, m + 1, 0)).getUTCDate(), lead = (first.getUTCDay() + 6) % 7;
+    var h = '<div class="cp-cm"><div class="cp-cmh">' + MONL[m] + " " + y + '</div><div class="cp-cg">' + DOW.map(function (d) { return '<span class="cp-dw">' + d + "</span>"; }).join("");
+    for (var i = 0; i < lead; i++) h += "<span></span>";
+    var b = dEnd || (dStart && dHover && dHover > dStart ? dHover : null);
+    for (var d = 1; d <= days; d++) {
+      var dt = new Date(Date.UTC(y, m, d)), cls = "cp-day";
+      if (dStart && +dt === +dStart) cls += " s"; if (b && +dt === +b) cls += " e"; if (dStart && b && dt > dStart && dt < b) cls += " in";
+      h += '<button type="button" class="' + cls + '" data-d="' + isoD(dt) + '"' + (dt < TODAY ? " disabled" : "") + ">" + d + "</button>";
+    }
+    return h + "</div></div>";
+  }
+  /* the range is re-marked on the day buttons already there, so a tap or a hover never rebuilds the grid under the pointer */
+  function paintRange() {
+    var b = dEnd || (dStart && dHover && dHover > dStart ? dHover : null);
+    [].forEach.call(months.querySelectorAll(".cp-day"), function (el) {
+      var dt = new Date(el.dataset.d + "T00:00:00Z");
+      el.classList.toggle("s", !!dStart && +dt === +dStart); el.classList.toggle("e", !!b && +dt === +b); el.classList.toggle("in", !!(dStart && b && dt > dStart && dt < b));
+    });
+  }
+  function paintDates() {
+    var y = view.getUTCFullYear(), m = view.getUTCMonth(), two = window.innerWidth > 760;
+    months.innerHTML = monthHtml(y, m) + (two ? monthHtml(m === 11 ? y + 1 : y, (m + 1) % 12) : "");
+    prevB.disabled = y === TODAY.getUTCFullYear() && m === TODAY.getUTCMonth();
+    paintSum();
+  }
+  function paintSum() {
+    q("[name=depart]").value = dStart ? isoD(dStart) : ""; q("[name=return]").value = dEnd ? isoD(dEnd) : "";
+    dBtn.textContent = dStart ? niceD(dStart) + " to " + (dEnd ? niceD(dEnd) : "...") : "Add dates"; dBtn.classList.toggle("empty", !dStart);
+    var n = dStart && dEnd ? Math.round((dEnd - dStart) / 864e5) : 0;
+    document.getElementById("cp-cal-sum").textContent = n ? n + " night" + (n === 1 ? "" : "s") : (dStart ? "Now pick the day you come back" : "Pick the day you leave");
+  }
+  function openCal(on) { cal.hidden = !on; dBtn.setAttribute("aria-expanded", on ? "true" : "false"); if (on) paintDates(); }
+  dBtn.addEventListener("click", function () { openCal(cal.hidden); });
+  months.addEventListener("click", function (e) {
+    e.stopPropagation();
+    var b = e.target.closest(".cp-day"); if (!b || b.disabled) return;
+    var d = new Date(b.dataset.d + "T00:00:00Z");
+    if (!dStart || dEnd || d <= dStart) { dStart = d; dEnd = null; } else { dEnd = d; }
+    dHover = null; paintRange(); paintSum();
+  });
+  months.addEventListener("mouseover", function (e) { var b = e.target.closest(".cp-day"); if (!b || !dStart || dEnd) return; dHover = new Date(b.dataset.d + "T00:00:00Z"); paintRange(); });
+  prevB.addEventListener("click", function () { view = new Date(Date.UTC(view.getUTCFullYear(), view.getUTCMonth() - 1, 1)); paintDates(); });
+  nextB.addEventListener("click", function () { view = new Date(Date.UTC(view.getUTCFullYear(), view.getUTCMonth() + 1, 1)); paintDates(); });
+  document.getElementById("cp-cal-clear").addEventListener("click", function () { dStart = dEnd = dHover = null; paintDates(); });
+  document.getElementById("cp-cal-done").addEventListener("click", function () { openCal(false); });
+  document.getElementById("cp-flex").addEventListener("change", function () { q("[name=dates_flex]").value = this.checked ? "Yes, a few days either way" : ""; });
+  document.addEventListener("click", function (e) { if (!cal.hidden && document.contains(e.target) && !e.target.closest(".cp-date-seg") && !e.target.closest("#cp-next")) openCal(false); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !cal.hidden) { openCal(false); dBtn.focus(); } });
+  paintDates();
   function tripMissing() {
     var m = [];
     if (!hidPlace.value.trim()) m.push("where you are going");
@@ -549,7 +636,9 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
   }
   function say(m) { if (m.length) { err.textContent = "Please add " + m.join(", ") + "."; err.hidden = false; return false; } err.hidden = true; return true; }
   function next() {
-    if (!say(tripMissing())) return false;
+    var miss = tripMissing();
+    if (miss.length && !v("depart")) openCal(true);
+    if (!say(miss)) return false;
     openPop(false); suggestRooms(); paintHotels(); step2.hidden = false; q("#cp-next").classList.add("done");
     setTimeout(function () { step2.scrollIntoView({ behavior: "smooth", block: "start" }); }, 60);
     return true;
