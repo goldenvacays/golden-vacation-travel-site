@@ -436,6 +436,26 @@ function copa() {
   const css = `<style>
 .cp{--cp-r:22px}
 .cp-band{background:var(--ink,#0E0F0E);color:#fff}
+.cpg{background:var(--gold,#F2B93B);color:#0E0F0E;overflow:hidden}
+.cpg-in{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:40px;align-items:center;padding-top:64px;padding-bottom:150px}
+.cpg .kicker{color:#0E0F0E;opacity:.72}
+.cpg h1{font-size:clamp(44px,5.6vw,76px);line-height:.98;letter-spacing:-.02em;margin:12px 0 18px;color:#0E0F0E}
+.cpg-sub{font-size:18px;line-height:1.6;color:rgba(14,15,14,.82);max-width:540px;margin:0 0 24px}
+.cpg-trust{display:flex;gap:10px 18px;flex-wrap:wrap;font-size:13px;font-weight:800}
+.cpg-trust span:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#0E0F0E;margin-right:8px;vertical-align:1px}
+.cpg-art{position:relative;justify-self:center}
+.cpg-art img{display:block;width:360px;height:440px;object-fit:cover;border-radius:22px;border:8px solid #fff;transform:rotate(3deg);box-shadow:0 24px 50px rgba(14,15,14,.25)}
+.cpg-stk{position:absolute;left:-44px;bottom:30px;width:152px;height:152px;border-radius:50%;background:#0E0F0E;color:var(--gold,#F2B93B);display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-8deg);text-decoration:none;box-shadow:0 14px 30px rgba(14,15,14,.3);transition:transform .2s}
+.cpg-stk:hover{transform:rotate(-4deg) scale(1.04)}
+.cpg-stk b{font-size:34px;font-weight:900;font-stretch:112%;line-height:1}
+.cpg-stk small{font-size:11px;font-weight:700;color:#fff}
+@media (max-width:900px){
+  .cpg-in{grid-template-columns:1fr;gap:34px;padding-top:36px;padding-bottom:120px}
+  .cpg-art img{width:min(74vw,300px);height:auto;aspect-ratio:9/11}
+  .cpg-stk{left:-12px;bottom:16px;width:124px;height:124px}
+  .cpg-stk b{font-size:27px}
+}
+
 .cp-offer{display:flex;align-items:center;justify-content:space-between;gap:20px;margin:28px 0 22px;padding:18px 20px;max-width:560px;border:1px solid rgba(255,255,255,.18);border-radius:20px;background:rgba(255,255,255,.05);color:#fff;text-decoration:none;transition:border-color .2s}
 .cp-offer:hover{border-color:rgba(242,185,59,.75)}
 .cp-offer-l b{display:block;font-size:16px;font-weight:800}
@@ -644,19 +664,17 @@ function copa() {
 ${nav()}
 <main class="cp">
 ${css}
-<section class="cp-band" id="top"><div class="wrap cp-hero">
+<section class="cpg" id="top"><div class="wrap cpg-in">
   <div>
     <span class="kicker">For groups across the Caribbean</span>
-    <h1 class="h1">Copa Airlines <em>group fares</em></h1>
-    <p class="cp-sub">Access group benefits such as payment plans, included luggage and seat selection for your groups. We get your group fare and hotel and transfers in one rate.</p>
-    <a class="cp-offer" href="#trip" data-track="copa-offer">
-      <span class="cp-offer-l"><b>Panama City group trip</b><small>4 nights from Kingston (KIN). Flights, bags, seat selection, hotel, breakfast and private transfers.</small></span>
-      <span class="cp-offer-r"><small>From</small><b>US$${fmt(from)}</b><small>per person</small></span>
-    </a>
-    <div class="cp-trust"><span>IATA-accredited</span><span>${esc(T("Quote within TURNAROUND"))}</span><span>US$${fmt(G.hold.usd)} holds a seat</span></div>
+    <h1 class="h1">Copa Airlines group fares</h1>
+    <p class="cpg-sub">Access group benefits such as payment plans, included luggage and seat selection for your groups. We get your group fare and hotel and transfers in one rate.</p>
+    <div class="cpg-trust"><span>IATA-accredited</span><span>${esc(T("Quote within TURNAROUND"))}</span><span>US$${fmt(G.hold.usd)} holds a seat</span></div>
   </div>
-  <div class="cp-photo"><img src="/assets/img/deal-panama-peru.jpg" width="640" height="800" alt="A traveller with her arms up on a glass lookout over Panama City" fetchpriority="high">
-    <div class="cp-badge"><b>From the Caribbean to Panama City and beyond</b>Ten or more flying together? That's a group fare.</div></div>
+  <div class="cpg-art">
+    <img src="/assets/img/deal-panama-peru.jpg" width="640" height="800" alt="A traveller with her arms up on a glass lookout over Panama City" fetchpriority="high">
+    <a class="cpg-stk" href="#trip" data-track="copa-sticker"><small>Panama City from</small><b>US$${fmt(from)}</b><small>per person</small></a>
+  </div>
 </div></section>
 
 <section class="cp-barwrap" id="quote"><div class="wrap">
