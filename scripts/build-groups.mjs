@@ -706,7 +706,6 @@ ${css}
     <p class="cp-form-note">We reply by email within ${esc(G.turnaround)}. Your details are only used for your quote.</p>
   </div>
 </form>
-<p class="cp-inbound"><a href="#quote" data-inbound="1" data-track="copa-inbound">Bringing a group to Jamaica from Panama or South America? Start here</a><span>Going somewhere Copa doesn't fly? Type it in, we quote the best airline for your group.</span></p>
 </div></section>
 
 <section class="cp-sec"><div class="wrap">
