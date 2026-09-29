@@ -77,5 +77,6 @@ export const handler = async (event) => {
   }
   const results = await Promise.allSettled(jobs);
   results.forEach((r) => { if (r.status === "rejected") console.error(form, "email", r.reason && r.reason.message); });
+  console.log(form, f.ref || "", `emails sent ${results.filter((r) => r.status === "fulfilled").length} of ${jobs.length}`);
   return { statusCode: 200, body: "ok" };
 };

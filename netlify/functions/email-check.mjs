@@ -10,7 +10,7 @@ const NAMES = ["RESEND_API_KEY", "FORMS_NOTIFY", "GROUPS_NOTIFY", "FORMS_FROM", 
 export const handler = async (event) => {
   const q = event.queryStringParameters || {};
   const to = notifyList();
-  const report = { settingsVisible: Object.fromEntries(NAMES.map((n) => [n, Boolean(process.env[n])])), recipients: to.length, context: process.env.CONTEXT || "" };
+  const report = { check: "forms-email v2", settingsVisible: Object.fromEntries(NAMES.map((n) => [n, Boolean(process.env[n])])), recipients: to.length, context: process.env.CONTEXT || "" };
   const want = process.env.EMAIL_CHECK_TOKEN;
   if (!(q.send && want && q.t === want)) return json(200, report);
   const key = process.env.RESEND_API_KEY;
