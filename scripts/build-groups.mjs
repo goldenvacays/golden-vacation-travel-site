@@ -187,6 +187,7 @@ ${dests}
   </div>
   <div class="dots" aria-hidden="true">${tr.destinations.map((d, i) => `<i${i === 0 ? ' class="on"' : ""}></i>`).join("")}</div>
   <p class="small trips-note">${esc(tr.more || "")} ${esc(tr.note)}</p>
+  <p class="small trips-note"><a href="${BASE}/copa/" data-track="hub-copa">Flying Copa as a group? How group fares work.</a></p>
 </section>
 
 <section class="wrap"><div class="card-alt on-alt" id="hold">
@@ -392,8 +393,97 @@ ${scripts()}
 `;
 }
 
+/* ---------- /groups/copa/: Copa Airlines group fares, for group leaders and organisations searching for them ---------- */
+function copa() {
+  const tr = G.trips, pan = tr.destinations.filter((d) => d.id === "panama");
+  const gets = [
+    ["Everyone on the same flights", "One fare per person for the whole group, agreed before anyone pays."],
+    ["Names later", "The seats are held first. Send the names by the date in your quote."],
+    [`US$${fmt(G.hold.usd)} holds a seat`, `Each traveller holds a place with US$${fmt(G.hold.usd)} (J$${fmt(G.hold.jmd)}), non-refundable, and it comes off their deposit. The group leader pays us in one payment.`],
+    ["Flights, hotel and transfers on one quote", "One quote for the whole trip. Organisations can pay by invoice."],
+  ];
+  const steps = [
+    ["Tell us the trip", "Dates, how many are going and where. The hotel too, if you want one."],
+    ["We get the group fare", "We ask Copa for your group fare and send the full quote within TURNAROUND."],
+    ["Hold the seats", `Each person holds a seat with US$${fmt(G.hold.usd)}, paid to us in one payment. Names and the balance follow by the dates in your quote.`],
+  ];
+  const faq = [
+    ["Can we book a Copa group fare online?", "No. copa.com takes up to 8 people in one booking, and 10 or more count as a group, handled by Copa's call centre, its sales offices or a travel agency. We handle it for you, with the hotel and transfers."],
+    ["How many people make a group?", "Ten or more, travelling together on the same flights."],
+    ["Do we need everyone's names now?", "No. The seats are held first, and the names are due by the date in your quote."],
+    ["Is a group fare always the cheapest?", "Not always. It keeps everyone on the same flights at one agreed price per person, and your quote shows that price before anyone pays."],
+    ["Where can we fly from?", "Kingston (KIN) or Montego Bay (MBJ)."],
+    ["Are you Copa Airlines?", "No. We're Golden Vacation & Travel, an independent IATA-accredited travel agency in Jamaica. We book Copa group fares for our clients."],
+  ];
+  const dests = pan.map((d) => `<div class="dest" id="panama">
+      ${pic(d.img, d.alt, [720, 1440], "(min-width: 900px) 46vw, 90vw")}
+      <div class="dest-body">
+        <div class="stack" style="gap:3px"><h3 class="h3">${esc(d.name)} group trip</h3><span class="dest-meta">${esc(d.meta)}</span></div>
+        <div class="inc">${d.includes.map((x) => `<span>${check()}<span>${esc(x)}</span></span>`).join("")}</div>
+        <div class="hotels">${d.hotels.map((ht) => `<div class="hotel-row">${thumb(ht.img, ht.alt)}<div class="hn"><b>${esc(ht.name)}</b><span>Starting at ${money(ht.usd)} per person</span></div><a class="btn" href="${BASE}/enquire/?branch=trips&amp;dest=${encodeURIComponent(d.name)}&amp;hotel=${encodeURIComponent(ht.name)}" data-track="copa-hotel">Get a quote</a></div>`).join("")}</div>
+      </div>
+    </div>`).join("\n");
+  const ld = [
+    { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: `${S.origin}/` }, { "@type": "ListItem", position: 2, name: "Groups", item: `${S.origin}${BASE}/` }, { "@type": "ListItem", position: 3, name: "Copa group fares", item: `${S.origin}${BASE}/copa/` }] },
+    { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) },
+  ];
+  return `${head({ title: "Copa Airlines group fares from Jamaica | Golden Vacation & Travel", description: "Ten or more flying Copa from Kingston or Montego Bay? Copa doesn't sell group fares online. We're an IATA-accredited agency in Jamaica: group fare, hotel and transfers on one quote.", pathname: `${BASE}/copa/`, image: `${S.origin}${IMG}/${pan[0] ? pan[0].img : "cta-beach"}-1440.jpg`, jsonld: ld })}
+<body class="groups">
+${nav()}
+<main>
+<section class="hero wrap" id="top">
+  <div class="hero-top">
+    <div class="hero-head"><span class="kicker">Group fares · Copa Airlines</span><h1 class="h1">Copa group fares from Kingston and Montego Bay.</h1>
+      <p class="lead">${esc(T("Ten or more flying together? Copa doesn't sell group fares on copa.com. Groups go through Copa's call centre, a Copa sales office or a travel agency. We're an IATA-accredited agency in Jamaica: we get your group fare and quote the hotel and transfers with it, within TURNAROUND."))}</p>
+      <div class="sec-cta"><a class="btn" href="${BASE}/enquire/?branch=trips" data-track="copa-top">Get a group quote</a><a class="btn btn-outline" href="#panama" data-track="copa-panama">See the Panama trip</a></div>
+    </div>
+    <div class="proof"><span><i></i>IATA-accredited</span><span><i></i>${esc(T("Quote within TURNAROUND"))}</span><span><i></i>US$${fmt(G.hold.usd)} holds a seat</span></div>
+  </div>
+</section>
+
+<section class="sec wrap" id="gets">
+  <div class="sec-head"><span class="kicker">What a group fare gets you</span><h2 class="h2">One price, one flight, names later.</h2><span class="accent" aria-hidden="true"></span></div>
+  <div class="gets">${gets.map(([t, x]) => `<div class="get">${icon("check", 18, 3, "#1F8A4C")}<div><b>${esc(t)}</b><span>${esc(x)}</span></div></div>`).join("")}</div>
+  <p class="lead" style="margin-top:28px">Copa flies from Kingston and Montego Bay to Panama City, and on through Panama to Central and South America.</p>
+  <div class="chips-row">${["Panama City", "Lima", "Medellín", "Bogotá", "San José"].map((c) => `<span class="chip-static">${esc(c)}</span>`).join("")}<span class="chip-static">Somewhere else? Tell us on the form</span></div>
+</section>
+
+<section class="sec wrap" id="trip">
+  <div class="sec-head"><span class="kicker">A group trip on Copa</span><h2 class="h2">What the price looks like.</h2><span class="accent" aria-hidden="true"></span><p class="lead">Starting prices per person for ten adults, based on double occupancy, taxes included. Your dates set the final price.</p></div>
+  <div class="dests">
+${dests}
+  </div>
+</section>
+
+<section class="wrap"><div class="card-alt on-alt" id="how">
+  <div class="card-l"><span class="kicker">How it works</span><h3 class="h3">From enquiry to seats held.</h3><p class="small">${esc(T("Quotes come by email within TURNAROUND, written so you can forward them to your group."))}</p></div>
+  <div class="steps">${steps.map(([t, x], i) => `<div class="step-card step-big"><span class="big-n" aria-hidden="true">${i + 1}</span><span class="n">${i + 1}</span><div><span class="n-lbl">${i + 1}</span><b>${esc(t)}</b><span>${esc(T(x))}</span></div></div>`).join("")}</div>
+</div></section>
+
+<section class="wrap why" id="faq">
+  <div class="sec-head"><h2 class="h2">Copa group fares, answered.</h2><span class="accent" aria-hidden="true"></span></div>
+  <div class="why-grid">${faq.map(([q, a]) => `<div class="why-card"><b>${esc(q)}</b><span>${esc(a)}</span></div>`).join("")}</div>
+</section>
+
+<section class="wrap"><div class="cta-photo">
+  ${pic("cta-beach", "Umbrellas on the beach at a north coast resort, from above", [720, 1440], "(min-width: 900px) 1312px, 100vw")}
+  <div class="cta-photo-body">
+    <div class="cta-text"><h3 class="h3">Ready to price your group?</h3><p>${esc(T("Tell us the dates and how many are going. Your quote comes by email within TURNAROUND."))}</p></div>
+    <a class="btn btn-white" href="${BASE}/enquire/?branch=trips" data-track="copa-cta">Get a group quote</a>
+  </div>
+</div></section>
+<p class="small wrap" style="margin-top:24px">Golden Vacation &amp; Travel is an independent IATA-accredited travel agency in Jamaica, not Copa Airlines. Copa Airlines is a trademark of its owner.</p>
+</main>
+<div class="sticky-cta" id="sticky-cta" hidden><a class="btn" href="${BASE}/enquire/?branch=trips" data-track="copa-sticky">Get a group quote</a></div>
+${footer()}
+${scripts()}
+</body>
+</html>
+`;
+}
+
 /* ---------- write ---------- */
-const pages = [[`public${BASE}/index.html`, hub()], [`public${BASE}/enquire/index.html`, enquire()], [`public${BASE}/sent/index.html`, sent()]];
+const pages = [[`public${BASE}/index.html`, hub()], [`public${BASE}/copa/index.html`, copa()], [`public${BASE}/enquire/index.html`, enquire()], [`public${BASE}/sent/index.html`, sent()]];
 for (const [f, html] of pages) {
   const p = path.join(ROOT, f);
   fs.mkdirSync(path.dirname(p), { recursive: true });
