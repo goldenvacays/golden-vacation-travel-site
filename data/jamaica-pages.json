@@ -1,0 +1,1033 @@
+{
+ "note": "Copy for the Coming to Jamaica pages (/jamaica/). Built by scripts/build-jamaica.mjs. Resort prices come from data/staycations-resorts.json, tours from data/experiences.json, airport pickups from data/transfer-rates.json. The three extra resorts are the Show on USA page picks in the Resort Status base (Airtable), unpriced until Hana sends rates.",
+ "extraResorts": [
+  {
+   "slug": "iberostar-waves-rose-hall",
+   "name": "Iberostar Waves Rose Hall",
+   "area": "Rose Hall",
+   "driveMbj": "about 20 min",
+   "kind": "family",
+   "flag": {
+    "en": "Adults only from 1 Nov",
+    "es": "Solo adultos desde el 1 nov"
+   },
+   "note": {
+    "en": "",
+    "es": ""
+   },
+   "img": "/jamaica/img/iberostar-waves-rose-hall.jpg"
+  },
+  {
+   "slug": "ocean-coral-spring",
+   "name": "Ocean Coral Spring",
+   "area": "Trelawny",
+   "driveMbj": "about 45 min",
+   "kind": "family",
+   "note": {
+    "en": "Halfway between Montego Bay and Ocho Rios, so both are day trips.",
+    "es": "A mitad de camino entre Montego Bay y Ocho Rios, así que puedes visitar los dos en un día."
+   },
+   "img": "/jamaica/img/ocean-coral-spring.jpg"
+  },
+  {
+   "slug": "royalton-negril",
+   "name": "Royalton Negril",
+   "area": "Negril",
+   "driveMbj": "about 1 h 30",
+   "kind": "family",
+   "note": {
+    "en": "Back open. Seven Mile Beach is a ten-minute drive.",
+    "es": "Reabierto. Seven Mile Beach queda a diez minutos en auto."
+   },
+   "img": "/jamaica/img/royalton-negril.jpg"
+  }
+ ],
+ "i18n": {
+  "en": {
+   "here": "Jamaica",
+   "cta": "Plan my trip",
+   "wa": "WhatsApp us",
+   "from": "from",
+   "ppNight": "pp/night",
+   "pp": "pp",
+   "perCar": "per car",
+   "priced": "Priced with your dates",
+   "adults": "Adults only",
+   "family": "Family friendly",
+   "park": "Water park",
+   "swim": "Swim-up rooms",
+   "aiFoot": "All inclusive, 24 hours",
+   "see": "See it",
+   "ask": "Ask for a price",
+   "ends": "Ends",
+   "fromMbj": "from MBJ",
+   "offerKids": "2 kids free",
+   "audiences": [
+    [
+     "From the USA",
+     "/jamaica/usa/"
+    ],
+    [
+     "Coming home",
+     "/jamaica/coming-home/"
+    ],
+    [
+     "En español",
+     "/jamaica/es/"
+    ],
+    [
+     "UK & Canada",
+     "/jamaica/uk-canada/"
+    ]
+   ],
+   "menuMore": [
+    [
+     "Home",
+     "/"
+    ],
+    [
+     "Getaways",
+     "/getaways/"
+    ],
+    [
+     "Staycations",
+     "/#staycations"
+    ],
+    [
+     "Airport transfers",
+     "/transfers/"
+    ],
+    [
+     "Experiences",
+     "/experiences/"
+    ],
+    [
+     "Resort status",
+     "/hotel-status"
+    ]
+   ],
+   "why": [
+    [
+     "Thousands of travellers",
+     "since 2021"
+    ],
+    [
+     "IATA-accredited",
+     "since 2021"
+    ],
+    [
+     "Offices",
+     "in Jamaica and Florida"
+    ],
+    [
+     "We check what's open",
+     "before we quote"
+    ]
+   ],
+   "howKicker": "How it works",
+   "howTitle": "Three steps, one price.",
+   "how": [
+    [
+     "Tell us your dates and who's coming",
+     "Use the form or WhatsApp. Add the resort, the airport pickup and any days out."
+    ],
+    [
+     "Get your price",
+     "One convenient price for the whole trip, on WhatsApp or by email, within working hours."
+    ],
+    [
+     "Hold it with a deposit",
+     "The deposit link comes from the chat. The balance date is on your quote."
+    ]
+   ],
+   "faqKicker": "Questions",
+   "faqTitle": "Before you ask.",
+   "pickupLine": "One way from {airport} airport, per car for up to 3, taxes included:",
+   "pickupAll": "Every hotel, villa area and vehicle",
+   "status": "Resort status",
+   "form": {
+    "arrive": "Arriving",
+    "leave": "Leaving",
+    "who": "Who's travelling",
+    "needs": "What do you need?",
+    "area": "Where on the island?",
+    "anyArea": "Not sure yet",
+    "occasion": "What's the occasion?",
+    "currency": "Quote me in",
+    "name": "Your name",
+    "phone": "WhatsApp",
+    "email": "Email",
+    "notes": "Anything else?",
+    "notesPh": "Flight numbers, the resort you like, a birthday on the trip",
+    "send": "Send my request",
+    "waBtn": "WhatsApp instead",
+    "small": "No card now. A deposit holds it once you have the price.",
+    "privacy": "Privacy",
+    "sum0": "Add your dates",
+    "nights": "nights",
+    "night": "night",
+    "errPre": "To price this we still need: ",
+    "errOrder": "leaving after arriving",
+    "req": "required"
+   },
+   "picker": {
+    "label": "Who's travelling",
+    "adult": "adult",
+    "adults": "adults",
+    "child": "child",
+    "children": "children",
+    "rooms": "rooms",
+    "room": "Room",
+    "remove": "Remove",
+    "add": "+ Add room",
+    "done": "Done",
+    "age": "Age",
+    "hint": "Ages at the time of travel.",
+    "Adults": "Adults",
+    "Children": "Children",
+    "more": "One more ",
+    "fewer": "One fewer "
+   },
+   "sent": {
+    "kicker": "Got it",
+    "title": "Your request is in",
+    "lead": "We reply within working hours with your price, on WhatsApp or by email. A confirmation with your reference is on its way to your inbox.",
+    "back": "Back to Jamaica",
+    "home": "Home"
+   },
+   "foot": {
+    "line": "Offices in Jamaica and Florida. IATA-accredited since 2021.",
+    "call": "Call",
+    "where": "St Ann, Jamaica",
+    "terms": "Terms",
+    "privacy": "Privacy"
+   },
+   "dealsKicker": "This month",
+   "dealsTitle": "Deals worth a look."
+  },
+  "es": {
+   "here": "Jamaica",
+   "cta": "Cotizar mi viaje",
+   "wa": "Escríbenos por WhatsApp",
+   "from": "desde",
+   "ppNight": "pp/noche",
+   "pp": "pp",
+   "perCar": "por auto",
+   "priced": "Precio según tus fechas",
+   "adults": "Solo adultos",
+   "family": "Para familias",
+   "park": "Parque acuático",
+   "swim": "Habitaciones swim-up",
+   "aiFoot": "Todo incluido, 24 horas",
+   "see": "Ver",
+   "ask": "Pide tu precio",
+   "ends": "Hasta el",
+   "fromMbj": "de MBJ",
+   "offerKids": "2 niños gratis",
+   "audiences": [
+    [
+     "Desde EE. UU.",
+     "/jamaica/usa/"
+    ],
+    [
+     "De vuelta a casa",
+     "/jamaica/coming-home/"
+    ],
+    [
+     "En español",
+     "/jamaica/es/"
+    ],
+    [
+     "Reino Unido y Canadá",
+     "/jamaica/uk-canada/"
+    ]
+   ],
+   "menuMore": [
+    [
+     "Inicio",
+     "/"
+    ],
+    [
+     "Viajes desde Jamaica",
+     "/getaways/"
+    ],
+    [
+     "Resorts en Jamaica",
+     "/#staycations"
+    ],
+    [
+     "Traslados desde el aeropuerto",
+     "/transfers/"
+    ],
+    [
+     "Excursiones",
+     "/experiences/"
+    ],
+    [
+     "Estado de los resorts",
+     "/hotel-status"
+    ]
+   ],
+   "why": [
+    [
+     "Miles de viajeros",
+     "desde 2021"
+    ],
+    [
+     "Acreditados por IATA",
+     "desde 2021"
+    ],
+    [
+     "Oficinas",
+     "en Jamaica y Florida"
+    ],
+    [
+     "Revisamos qué está abierto",
+     "antes de cotizar"
+    ]
+   ],
+   "howKicker": "Cómo funciona",
+   "howTitle": "Tres pasos, un solo precio.",
+   "how": [
+    [
+     "Cuéntanos tus fechas y quién viaja",
+     "Usa el formulario o WhatsApp. Agrega el resort, el traslado y las excursiones."
+    ],
+    [
+     "Recibe tu precio",
+     "Un solo precio para todo el viaje, por WhatsApp o por correo, en horario de oficina."
+    ],
+    [
+     "Resérvalo con un depósito",
+     "El enlace para pagar el depósito te llega por el chat. La fecha para pagar el resto viene en tu cotización."
+    ]
+   ],
+   "faqKicker": "Preguntas",
+   "faqTitle": "Antes de que preguntes.",
+   "pickupLine": "Solo ida desde el aeropuerto de {airport}, por auto de hasta 3 personas, impuestos incluidos:",
+   "pickupAll": "Todos los hoteles, zonas y vehículos (en inglés)",
+   "status": "Estado de los resorts",
+   "form": {
+    "arrive": "Llegada",
+    "leave": "Salida",
+    "who": "Quién viaja",
+    "needs": "¿Qué necesitas?",
+    "area": "¿En qué zona?",
+    "anyArea": "Aún no sé",
+    "occasion": "¿Cuál es la ocasión?",
+    "currency": "Cotízame en",
+    "name": "Tu nombre",
+    "phone": "WhatsApp",
+    "email": "Correo",
+    "notes": "¿Algo más?",
+    "notesPh": "Números de vuelo, el resort que te gusta, un cumpleaños en el viaje",
+    "send": "Enviar mi solicitud",
+    "waBtn": "Mejor por WhatsApp",
+    "small": "No te pedimos tarjeta ahora. Reservas con un depósito cuando tengas el precio.",
+    "privacy": "Privacidad",
+    "sum0": "Agrega tus fechas",
+    "nights": "noches",
+    "night": "noche",
+    "errPre": "Para cotizar aún nos falta: ",
+    "errOrder": "que la salida sea después de la llegada",
+    "req": "obligatorio"
+   },
+   "picker": {
+    "label": "Quién viaja",
+    "adult": "adulto",
+    "adults": "adultos",
+    "child": "niño",
+    "children": "niños",
+    "rooms": "habitaciones",
+    "room": "Habitación",
+    "remove": "Quitar",
+    "add": "+ Agregar habitación",
+    "done": "Listo",
+    "age": "Edad",
+    "hint": "Edades al momento del viaje.",
+    "Adults": "Adultos",
+    "Children": "Niños",
+    "more": "Uno más: ",
+    "fewer": "Uno menos: "
+   },
+   "sent": {
+    "kicker": "Listo",
+    "title": "Recibimos tu solicitud",
+    "lead": "Te respondemos en horario de oficina con tu precio, por WhatsApp o por correo. Te enviamos una confirmación con tu número de referencia.",
+    "back": "Volver a Jamaica en español",
+    "home": "Inicio"
+   },
+   "foot": {
+    "line": "Oficinas en Jamaica y Florida. Acreditados por IATA desde 2021.",
+    "call": "Llama al",
+    "where": "St Ann, Jamaica",
+    "terms": "Términos",
+    "privacy": "Privacidad"
+   },
+   "dealsKicker": "Este mes",
+   "dealsTitle": "Ofertas que valen la pena."
+  }
+ },
+ "tours": {
+  "es": {
+   "mystic-mountain": "El Bobsled, la montaña rusa, la tirolesa y Dunn's River en los pases más completos.",
+   "jamwest": "Cuatrimotos, tirolesa, cabalgata, safari y karts.",
+   "jamwest-catamaran": "Paseo al atardecer desde Negril, barra libre, parada para snorkel y Rick's Cafe.",
+   "poko-loko": "El bar flotante de Jamaica. Para nadar en la mañana, relajarte en la tarde, brindar al atardecer o salir de noche.",
+   "jamwest-water-park": "Elige tu hora de entrada y quédate todo el día.",
+   "ocean-coral-spring": "Todo incluido de día o de noche, familias bienvenidas, niños a mitad de precio.",
+   "club-mobay": "Te reciben al bajar del avión, pasas migración y aduana por la vía rápida y te acompañan también a la salida.",
+   "club-kingston": "Vía rápida, comida caliente, duchas y acompañamiento hasta la puerta de embarque en Norman Manley."
+  },
+  "areas": {
+   "negril": "Negril",
+   "ocho": "Ocho Rios",
+   "mobay": "Montego Bay",
+   "trelawny": "Trelawny",
+   "kingston": "Kingston"
+  },
+  "en": {
+   "jamwest": "ATV, zipline, horseback, safari and push karts."
+  }
+ },
+ "chooser": {
+  "path": "/jamaica/",
+  "meta": {
+   "title": "Coming to Jamaica | Golden Vacation & Travel",
+   "description": "From the USA, coming home, en español, or from the UK and Canada. Resorts, airport pickups and days out in Jamaica, from people who live here."
+  },
+  "hero": {
+   "img": "/assets/img/hero-fisher.jpg",
+   "alt": "A fisherman standing on his raft off the north coast of Jamaica",
+   "kicker": "Coming to Jamaica",
+   "title": "Welcome, and welcome home.",
+   "sub": "Resorts, airport pickups and days out, priced in your currency by people who live here. Pick the way that fits you."
+  },
+  "doors": [
+   {
+    "key": "usa",
+    "title": "From the USA",
+    "text": "US$ pricing, US cards, our Florida office. Land only or with flights.",
+    "img": "/assets/img/coming-usa.jpg",
+    "alt": "The welcome sign in the arrivals hall at Montego Bay airport"
+   },
+   {
+    "key": "coming-home",
+    "title": "Coming home",
+    "text": "Christmas, summer, weddings, reunions, the whole family on one quote.",
+    "img": "/assets/img/coming-home.jpg",
+    "alt": "The Club MoBay arrivals lounge at Montego Bay airport"
+   },
+   {
+    "key": "es",
+    "title": "En español",
+    "text": "Cotiza y reserva tu viaje a Jamaica por WhatsApp, en español.",
+    "img": "/assets/img/coming-es.jpg",
+    "alt": "Climbing Dunn's River Falls"
+   },
+   {
+    "key": "uk-canada",
+    "title": "UK & Canada",
+    "text": "Land only, quoted in £ and C$. You book the flight, we do the rest.",
+    "img": "/assets/img/coming-ukca.jpg",
+    "alt": "A catamaran at sunset off the north coast"
+   }
+  ]
+ },
+ "pages": [
+  {
+   "key": "usa",
+   "path": "/jamaica/usa/",
+   "lang": "en",
+   "ref": "GV-JAM-USA",
+   "label": "From the USA",
+   "alt": {
+    "es": "/jamaica/es/"
+   },
+   "meta": {
+    "title": "Jamaica vacations from the USA | Golden Vacation & Travel",
+    "description": "All-inclusive resorts, your airport pickup and days out in Jamaica, priced in US dollars and paid with your US card. Offices in Jamaica and Florida."
+   },
+   "hero": {
+    "img": "/jamaica/img/aquarelle-hero-1600.jpg",
+    "alt": "RIU Palace Aquarelle on White Bay at Falmouth, from above",
+    "kicker": "From the USA",
+    "title": "Welcome to Jamaica.",
+    "sub": "Your resort, your ride from the airport and your days out, sorted by people who live here. Priced in US dollars, paid with your US card.",
+    "chips": [
+     "US$ pricing",
+     "US cards",
+     "Florida office"
+    ]
+   },
+   "land": {
+    "kicker": "When you land",
+    "title": "From the plane to the pool.",
+    "sub": "Most flights from the US land at Montego Bay (MBJ). Kingston (KIN) works too.",
+    "order": [
+     "club-mobay",
+     "pickup",
+     "club-kingston"
+    ],
+    "pickups": [
+     [
+      "MBJ",
+      [
+       "mobay",
+       "falmouth",
+       "negril",
+       "ocho-rios"
+      ]
+     ]
+    ]
+   },
+   "stay": {
+    "kicker": "Where to stay",
+    "title": "All inclusive, all over the island.",
+    "sub": "From-prices per person a night, double occupancy. We check what's open before we quote.",
+    "order": [
+     "riu-ocho-rios",
+     "iberostar-waves-rose-hall",
+     "ocean-coral-spring",
+     "royalton-negril",
+     "riu-palace-aquarelle",
+     "riu-montego-bay",
+     "riu-reggae",
+     "riu-negril",
+     "riu-palace-tropical-bay",
+     "princess-grand-jamaica",
+     "princess-senses-the-mangrove"
+    ]
+   },
+   "do": {
+    "kicker": "Days out",
+    "title": "Plenty to do between beach days.",
+    "sub": "Add them to your trip, or book them on their own by card.",
+    "venues": [
+     "mystic-mountain",
+     "jamwest",
+     "jamwest-catamaran",
+     "poko-loko"
+    ]
+   },
+   "special": {
+    "kicker": "From the USA",
+    "title": "Built for travellers from the States.",
+    "items": [
+     [
+      "Pay in US$ with your US card",
+      "Your price is in US dollars and the deposit link takes US cards."
+     ],
+     [
+      "Land only, or with flights",
+      "Already have flights? We do everything on the ground. Need them? We quote flights from the US too."
+     ],
+     [
+      "Offices in Jamaica and Florida",
+      "IATA-accredited since 2021, with thousands of travellers since then."
+     ],
+     [
+      "Real people, in Jamaica",
+      "Something changes? Message us on WhatsApp or call. No call centre, just us, here on the island."
+     ]
+    ]
+   },
+   "faq": [
+    [
+     "Can I pay with a US card?",
+     "Yes. Prices are in US dollars and the deposit link takes US cards."
+    ],
+    [
+     "Are flights included?",
+     "Only if you want them. We quote land only (the resort, the airport pickup, the days out) or add flights from the US."
+    ],
+    [
+     "Is the resort price per person?",
+     "Yes. The from-price is per person a night, two people sharing a room, all inclusive."
+    ],
+    [
+     "What if a resort is closed?",
+     "We check before we quote. Closed and reopening resorts are on our resort status page, and we suggest the closest match."
+    ],
+    [
+     "Who meets me at the airport?",
+     "Your driver, at the arrivals exit with a sign with your name. We track your flight, so a delay doesn't mean a missed pickup."
+    ]
+   ],
+   "form": {
+    "title": "Plan my trip",
+    "sub": "Tell us what you need. We reply within working hours with one price for the lot.",
+    "needs": [
+     "Resort stay",
+     "Airport pickup",
+     "Club MoBay or Club Kingston",
+     "Days out",
+     "Flights from the US"
+    ],
+    "areas": [
+     "Montego Bay",
+     "Negril",
+     "Ocho Rios",
+     "Falmouth",
+     "Kingston"
+    ],
+    "waIntro": "Hi Golden Vacation! I'm coming to Jamaica from the USA."
+   }
+  },
+  {
+   "key": "coming-home",
+   "path": "/jamaica/coming-home/",
+   "lang": "en",
+   "ref": "GV-JAM-HOME",
+   "label": "Coming home",
+   "meta": {
+    "title": "Coming home to Jamaica | Golden Vacation & Travel",
+    "description": "Christmas, summer, weddings and reunions. The resort, the airport rides and the days out for the whole family, on one quote, from people in Jamaica."
+   },
+   "hero": {
+    "img": "/assets/img/hero-fisher.jpg",
+    "alt": "A fisherman standing on his raft off the north coast of Jamaica",
+    "kicker": "Coming home",
+    "title": "Welcome home.",
+    "sub": "Christmas, summer, a wedding or a reunion. The resort, the rides and the days out for the whole family, on one quote.",
+    "chips": [
+     "Whole family, one quote",
+     "Kingston or Montego Bay",
+     "Real people in Jamaica"
+    ]
+   },
+   "land": {
+    "kicker": "Landing",
+    "title": "Kingston or Montego Bay, we're there.",
+    "sub": "Send us the flight and the driver waits at arrivals with your name. Staying at the family house? Type the area on the transfers page and they take you to the gate.",
+    "order": [
+     "club-kingston",
+     "pickup",
+     "club-mobay"
+    ],
+    "pickups": [
+     [
+      "KIN",
+      [
+       "kingston",
+       "ocho-rios",
+       "port-antonio"
+      ]
+     ],
+     [
+      "MBJ",
+      [
+       "mobay",
+       "negril",
+       "ocho-rios"
+      ]
+     ]
+    ]
+   },
+   "stay": {
+    "kicker": "Where to stay",
+    "title": "A family weekend, or the whole trip.",
+    "sub": "From-prices per person a night, double occupancy. We check what's open before we quote.",
+    "order": [
+     "princess-grand-jamaica",
+     "riu-ocho-rios",
+     "ocean-coral-spring",
+     "riu-palace-aquarelle",
+     "riu-negril",
+     "riu-palace-tropical-bay",
+     "royalton-negril",
+     "iberostar-waves-rose-hall",
+     "riu-montego-bay",
+     "riu-reggae",
+     "princess-senses-the-mangrove"
+    ]
+   },
+   "do": {
+    "kicker": "Days out",
+    "title": "Days out for every age.",
+    "sub": "Staying with family? A day pass gets everyone the all-inclusive for the day.",
+    "venues": [
+     "jamwest-water-park",
+     "ocean-coral-spring",
+     "mystic-mountain",
+     "jamwest-catamaran"
+    ]
+   },
+   "special": {
+    "kicker": "The family way",
+    "title": "However the family does it.",
+    "items": [
+     [
+      "Staying with family?",
+      "We still do the airport pickup and the days out, and a weekend at a resort when everyone needs a break."
+     ],
+     [
+      "The whole family on one quote",
+      "Different flights, different rooms, one person keeping track. Tell us who's coming and we put it together."
+     ],
+     [
+      "Christmas and summer",
+      "The busiest weeks of the year, and some resorts price them higher. The earlier you ask, the more choice there is."
+     ],
+     [
+      "Ten rooms or more?",
+      "A wedding or a reunion that size gets group rates. Our Groups page has the details."
+     ]
+    ],
+    "link": [
+     "See Groups",
+     "/groups/"
+    ]
+   },
+   "faq": [
+    [
+     "Can you pick us up in Kingston?",
+     "Yes. Kingston (KIN), Montego Bay (MBJ) and Ocho Rios (OCJ)."
+    ],
+    [
+     "We're staying with family. Can you still help?",
+     "Yes. Airport pickups go to any area, not just resorts, and the days out and day passes work from anywhere."
+    ],
+    [
+     "Is Christmas more expensive?",
+     "At some resorts, yes. Christmas and summer are the busiest weeks, so ask early and we show you what's open and what it costs."
+    ],
+    [
+     "How big is a group?",
+     "Ten rooms or more gets group rates. Our Groups page has the details."
+    ],
+    [
+     "Is the resort price per person?",
+     "Yes. The from-price is per person a night, two people sharing a room, all inclusive."
+    ]
+   ],
+   "form": {
+    "title": "Plan the family trip",
+    "sub": "Tell us who's coming and what you need. We reply within working hours with one price for the lot.",
+    "needs": [
+     "Resort stay",
+     "Airport pickup",
+     "Club Kingston or Club MoBay",
+     "Days out",
+     "A family weekend away"
+    ],
+    "occasion": [
+     "Christmas",
+     "Summer",
+     "A wedding",
+     "A reunion",
+     "Just visiting"
+    ],
+    "areas": [
+     "Kingston",
+     "Montego Bay",
+     "Negril",
+     "Ocho Rios",
+     "Port Antonio"
+    ],
+    "waIntro": "Hi Golden Vacation! I'm coming home to Jamaica for a visit."
+   }
+  },
+  {
+   "key": "es",
+   "path": "/jamaica/es/",
+   "lang": "es",
+   "ref": "GV-JAM-ES",
+   "label": "En español",
+   "alt": {
+    "en": "/jamaica/usa/"
+   },
+   "meta": {
+    "title": "Viajes a Jamaica desde EE. UU. | Golden Vacation & Travel",
+    "description": "Resorts todo incluido, traslado desde el aeropuerto y excursiones en Jamaica, organizados por gente que vive aquí. Precios en dólares y atención en español."
+   },
+   "hero": {
+    "img": "/jamaica/img/ocho-rios-hero-1600.jpg",
+    "alt": "RIU Ocho Rios en Mammee Bay, desde el aire",
+    "kicker": "En español",
+    "title": "Bienvenidos a Jamaica.",
+    "sub": "Tu resort, tu traslado desde el aeropuerto y tus excursiones, organizados por gente que vive aquí. Precios en dólares, pagas con tu tarjeta de EE. UU. y te atendemos en español.",
+    "chips": [
+     "Atención en español",
+     "Precios en US$",
+     "Oficina en Florida"
+    ]
+   },
+   "land": {
+    "kicker": "Al llegar",
+    "title": "Del avión a la piscina.",
+    "sub": "La mayoría de los vuelos desde EE. UU. llegan a Montego Bay (MBJ). También puedes llegar por Kingston (KIN).",
+    "order": [
+     "club-mobay",
+     "pickup",
+     "club-kingston"
+    ],
+    "pickups": [
+     [
+      "MBJ",
+      [
+       "mobay",
+       "falmouth",
+       "negril",
+       "ocho-rios"
+      ]
+     ]
+    ]
+   },
+   "stay": {
+    "kicker": "Dónde quedarte",
+    "title": "Todo incluido, en toda la isla.",
+    "sub": "Precios por persona y por noche, en habitación doble. Revisamos qué está abierto antes de cotizarte. Las páginas de cada resort están en inglés, pero te atendemos en español.",
+    "order": [
+     "riu-ocho-rios",
+     "iberostar-waves-rose-hall",
+     "ocean-coral-spring",
+     "royalton-negril",
+     "riu-palace-aquarelle",
+     "riu-montego-bay",
+     "riu-reggae",
+     "riu-negril",
+     "riu-palace-tropical-bay",
+     "princess-grand-jamaica",
+     "princess-senses-the-mangrove"
+    ]
+   },
+   "do": {
+    "kicker": "Excursiones",
+    "title": "Mucho que hacer entre días de playa.",
+    "sub": "Agrégalas a tu viaje o resérvalas por separado con tarjeta.",
+    "venues": [
+     "mystic-mountain",
+     "jamwest",
+     "jamwest-catamaran",
+     "poko-loko"
+    ]
+   },
+   "special": {
+    "kicker": "Desde EE. UU.",
+    "title": "Pensado para ti.",
+    "items": [
+     [
+      "Atención en español",
+      "Cotiza y reserva por WhatsApp en español, de principio a fin."
+     ],
+     [
+      "Pagas en dólares con tu tarjeta",
+      "Tu precio está en dólares y el enlace para pagar el depósito acepta tarjetas de EE. UU."
+     ],
+     [
+      "Con vuelos o sin ellos",
+      "¿Ya tienes vuelos? Nos encargamos de todo lo demás. ¿Los necesitas? También cotizamos vuelos desde EE. UU."
+     ],
+     [
+      "Oficinas en Jamaica y Florida",
+      "Acreditados por IATA desde 2021, con miles de viajeros desde entonces."
+     ]
+    ]
+   },
+   "faq": [
+    [
+     "¿Puedo pagar con tarjeta de EE. UU.?",
+     "Sí. Los precios están en dólares y el enlace del depósito acepta tarjetas de EE. UU."
+    ],
+    [
+     "¿Incluye vuelos?",
+     "Solo si los quieres. Cotizamos sin vuelos (el resort, el traslado, las excursiones) o con vuelos desde EE. UU."
+    ],
+    [
+     "¿El precio del resort es por persona?",
+     "Sí. El precio es por persona y por noche, con dos personas en la habitación, todo incluido."
+    ],
+    [
+     "¿Y si el resort está cerrado?",
+     "Lo revisamos antes de cotizar. Los resorts cerrados o que van a reabrir están en nuestra página de estado de los resorts, y te sugerimos la mejor alternativa."
+    ],
+    [
+     "¿Quién me recibe en el aeropuerto?",
+     "Tu chofer, en la salida de llegadas con un cartel con tu nombre. Seguimos tu vuelo, así que un retraso no significa perder el traslado."
+    ]
+   ],
+   "form": {
+    "title": "Cotizar mi viaje",
+    "sub": "Cuéntanos qué necesitas. Te respondemos en horario de oficina con un solo precio para todo.",
+    "needs": [
+     "Resort",
+     "Traslado desde el aeropuerto",
+     "Club MoBay o Club Kingston",
+     "Excursiones",
+     "Vuelos desde EE. UU."
+    ],
+    "areas": [
+     "Montego Bay",
+     "Negril",
+     "Ocho Rios",
+     "Falmouth",
+     "Kingston"
+    ],
+    "waIntro": "¡Hola Golden Vacation! Quiero cotizar un viaje a Jamaica."
+   }
+  },
+  {
+   "key": "uk-canada",
+   "path": "/jamaica/uk-canada/",
+   "lang": "en",
+   "ref": "GV-JAM-UKCA",
+   "label": "UK & Canada",
+   "meta": {
+    "title": "Jamaica land only, UK & Canada | Golden Vacation & Travel",
+    "description": "You book the flight, we do the rest. All-inclusive resorts, your airport pickup and days out in Jamaica, quoted in pounds or Canadian dollars."
+   },
+   "hero": {
+    "img": "/jamaica/img/palace-tropical-bay-hero-1600.jpg",
+    "alt": "RIU Palace Tropical Bay on Bloody Bay, Negril",
+    "kicker": "UK & Canada",
+    "title": "You book the flight. We do the rest.",
+    "sub": "Your resort, your airport pickup and your days out, quoted in pounds or Canadian dollars by people who live here.",
+    "chips": [
+     "Land only",
+     "Quoted in £ or C$",
+     "Real people in Jamaica"
+    ]
+   },
+   "land": {
+    "kicker": "When you land",
+    "title": "Montego Bay or Kingston, we're there.",
+    "sub": "Send us your flight and the driver waits at arrivals with your name.",
+    "order": [
+     "club-mobay",
+     "pickup",
+     "club-kingston"
+    ],
+    "pickups": [
+     [
+      "MBJ",
+      [
+       "mobay",
+       "falmouth",
+       "negril",
+       "ocho-rios"
+      ]
+     ]
+    ]
+   },
+   "stay": {
+    "kicker": "Where to stay",
+    "title": "All inclusive, all over the island.",
+    "sub": "From-prices per person a night, double occupancy, in the currency you pick. We check what's open before we quote.",
+    "order": [
+     "riu-ocho-rios",
+     "iberostar-waves-rose-hall",
+     "ocean-coral-spring",
+     "royalton-negril",
+     "riu-palace-aquarelle",
+     "riu-montego-bay",
+     "riu-reggae",
+     "riu-negril",
+     "riu-palace-tropical-bay",
+     "princess-grand-jamaica",
+     "princess-senses-the-mangrove"
+    ]
+   },
+   "do": {
+    "kicker": "Days out",
+    "title": "Plenty to do between beach days.",
+    "sub": "Add them to your trip, or book them on their own by card.",
+    "venues": [
+     "mystic-mountain",
+     "jamwest",
+     "jamwest-catamaran",
+     "poko-loko"
+    ]
+   },
+   "special": {
+    "kicker": "From the UK and Canada",
+    "title": "Land only, done properly.",
+    "items": [
+     [
+      "Pounds or Canadian dollars",
+      "Switch the prices on this page at the top. Your quote comes in the currency you pick."
+     ],
+     [
+      "You book the flight",
+      "Send us the flight numbers and we build the rest around them: the pickup, the resort, the days out and the ride back."
+     ],
+     [
+      "Real people, in Jamaica",
+      "Something changes? Message us on WhatsApp or call. No call centre, just us, here on the island."
+     ],
+     [
+      "Offices in Jamaica and Florida",
+      "IATA-accredited since 2021, with thousands of travellers since then."
+     ]
+    ]
+   },
+   "faq": [
+    [
+     "Do you book flights from the UK or Canada?",
+     "Not at the moment. You book the flight and send us the details, and we do everything on the ground."
+    ],
+    [
+     "Which currency is my quote in?",
+     "Pounds or Canadian dollars, whichever you pick on the form."
+    ],
+    [
+     "Is the resort price per person?",
+     "Yes. The from-price is per person a night, two people sharing a room, all inclusive."
+    ],
+    [
+     "What if a resort is closed?",
+     "We check before we quote. Closed and reopening resorts are on our resort status page, and we suggest the closest match."
+    ],
+    [
+     "Who meets me at the airport?",
+     "Your driver, at the arrivals exit with a sign with your name. We track your flight, so a delay doesn't mean a missed pickup."
+    ]
+   ],
+   "form": {
+    "title": "Plan my trip",
+    "sub": "Tell us your flight and what you need. We reply within working hours with one price for the lot.",
+    "needs": [
+     "Resort stay",
+     "Airport pickup",
+     "Club MoBay or Club Kingston",
+     "Days out"
+    ],
+    "areas": [
+     "Montego Bay",
+     "Negril",
+     "Ocho Rios",
+     "Falmouth",
+     "Kingston"
+    ],
+    "currency": [
+     "£ (pounds)",
+     "C$ (Canadian dollars)"
+    ],
+    "waIntro": "Hi Golden Vacation! I'm coming to Jamaica from the UK or Canada and I'd like a land-only quote."
+   },
+   "currencies": [
+    "GBP",
+    "CAD",
+    "USD"
+   ]
+  }
+ ],
+ "currency": {
+  "note": "House rates for the £ / C$ switch, set 26 Sep 2026 from the bank table she sent (J$ per unit: US$ sell 160, GBP sell 216.4641, CAD sell 115.1680). Cross rates 0.739 and 1.389, plus about 4% so card conversion doesn't eat the margin. Prices are rounded up to the whole pound or dollar. The bank's buy-side cross (0.807, 1.505) is the fallback if pounds or Canadian dollars are paid into the J$ account instead.",
+  "rates": {
+   "USD": 1,
+   "GBP": 0.77,
+   "CAD": 1.45
+  },
+  "symbols": {
+   "USD": "US$",
+   "GBP": "£",
+   "CAD": "C$"
+  },
+  "labels": {
+   "USD": "",
+   "GBP": "£ (pounds)",
+   "CAD": "C$ (Canadian dollars)"
+  }
+ }
+}

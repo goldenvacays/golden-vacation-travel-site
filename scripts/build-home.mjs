@@ -35,7 +35,7 @@ const NOINDEX = args.includes("--noindex");
 const resortsJs = fs.readFileSync(path.join(ROOT, "public/map/resorts.js"), "utf8");
 const RESORTS = JSON.parse(resortsJs.slice(resortsJs.indexOf("["), resortsJs.lastIndexOf("]") + 1));
 let resortsUpdated = "";
-try { resortsUpdated = execSync("git log -1 --format=%cs -- public/map/resorts.js", { cwd: ROOT }).toString().trim(); } catch (e) { resortsUpdated = ""; }
+try { resortsUpdated = process.env.RESORTS_UPDATED || execSync("git log -1 --format=%cs -- public/map/resorts.js", { cwd: ROOT }).toString().trim(); } catch (e) { resortsUpdated = process.env.RESORTS_UPDATED || ""; }
 const counts = {
   tracked: RESORTS.length,
   open: RESORTS.filter((r) => r.status === "Open").length,
@@ -142,7 +142,7 @@ function nav() {
 
 function footer() {
   const F = H.footer;
-  const comingHref = (key) => wa(H.coming.doors.find((d) => d.key === key).message);
+  const comingHref = (key) => { const d = H.coming.doors.find((x) => x.key === key); return d.href || wa(d.message); };
   const col = (t, items) => `<div class="foot-col"><span>${esc(t)}</span>${items.map(([l, h]) => `<a href="${h}">${esc(l)}</a>`).join("")}</div>`;
   const help = F.help.map(([l, h]) => [l, h === "whatsapp" ? waHome : h]);
   const coming = F.coming.map(([l, k]) => [l, comingHref(k)]);
@@ -325,7 +325,7 @@ function homePage() {
 </div></section>`;
 
   // coming to jamaica
-  const pdoors = H.coming.doors.map((d) => `<a class="pdoor" href="${wa(d.message)}" data-where="coming-${d.key}">${pic(d.img, d.alt)}<span class="pdoor-in"><span class="hh">${esc(d.title)}</span><small>${longShort(d.text, d.textMobile)}</small>${biglink("Open", wa(d.message)).replace("<a ", "<span ").replace("</a>", "</span>")}</span></a>`).join("");
+  const pdoors = H.coming.doors.map((d) => `<a class="pdoor" href="${d.href || wa(d.message)}" data-where="coming-${d.key}">${pic(d.img, d.alt)}<span class="pdoor-in"><span class="hh">${esc(d.title)}</span><small>${longShort(d.text, d.textMobile)}</small>${biglink("Open", wa(d.message)).replace("<a ", "<span ").replace("</a>", "</span>")}</span></a>`).join("");
   const coming = `<section class="coming-sec" id="coming" aria-labelledby="coming-h"><div class="wrap" style="display:flex;flex-direction:column;gap:inherit">
   <div class="sec-head"><div>${kicker(H.coming.kicker, true)}<h2 id="coming-h" class="hh">${esc(H.coming.title)}</h2><p class="sec-sub desk">${esc(H.coming.sub)}</p></div>${biglink(H.coming.planMobile, waHome).replace('class="biglink', 'class="mob biglink')}</div>
   <div class="pdoors">${pdoors}</div>
@@ -441,6 +441,8 @@ function legalPage(kind) {
 <ul><li>Quotes are not guaranteed until a deposit or full payment is received.</li><li>Final prices and availability are confirmed at the time of booking.</li><li>Payment schedules and methods will be communicated in writing.</li></ul>
 <h2 class="h">Cancellations and changes</h2>
 <ul><li>The rules of the hotel, airline or tour operator govern cancellations, changes and refunds. Flights are usually non-refundable once ticketed.</li><li>Agency service fees may apply to changes or cancellations.</li></ul>
+<h2 class="h">Groups</h2>
+<ul><li>Group rates apply to ten adults or more, or ten rooms or more, and are confirmed in writing with your quote.</li><li>On international group trips, US$95 (J$15,000) per person holds a spot. The hold is non-refundable and counts toward that person's package deposit.</li><li>Deposit amounts and balance due dates are stated on your quote and depend on your travel dates. Rooms and spots are held once the deposit is paid.</li><li>Organisations and group leaders may pay by invoice where the quote says so.</li></ul>
 <h2 class="h">Travel documents</h2>
 <ul><li>You are responsible for valid passports, visas and entry requirements.</li><li>We recommend travel insurance for medical emergencies and trip interruptions.</li></ul>
 <h2 class="h">Liability</h2><p>We act as an agent for independent suppliers and are not liable for their acts, omissions, or service quality. Remedies are limited to amounts paid to us for services not provided.</p>
@@ -478,7 +480,7 @@ ${nav()}
         <button type="button" class="btn btn-black btn-lg" id="qp-send">Send this to us${icon("chat", 18)}</button>
         <a class="btn btn-outline" href="/" id="qp-back">Change the search${icon("back", 18)}</a>
       </div>
-      <p class="qp-ref">Reference <b id="qp-ref">&mdash;</b></p>
+      <p class="qp-ref">Reference <b id="qp-ref">&hellip;</b></p>
     </div>
     <aside class="qp-aside">
       <h2 class="h">What happens next</h2>

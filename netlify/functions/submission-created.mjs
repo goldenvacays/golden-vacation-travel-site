@@ -1,6 +1,7 @@
 /* Netlify runs a function named submission-created after every verified form submission.
    Every form: the team gets one readable email (layout in _notify.mjs) at FORMS_NOTIFY.
    The "groups" form also: the guest gets a confirmation with their reference and the brief we received.
+   The "jamaica" form (Coming to Jamaica pages): the guest gets a confirmation in English or Spanish, with a GV-JAM reference.
    Netlify's own notification still goes out as configured until it is switched off in the Netlify UI.
 
    Needs, in Netlify env:
@@ -19,6 +20,27 @@ const REPLY_TO = process.env.GROUPS_REPLY_TO || "goldentravellers@outlook.com";
 const NOTIFY = notifyList();
 const TURNAROUND = process.env.GROUPS_TURNAROUND || "one working day";
 const SITE = process.env.URL || "https://goldenvacays.com";
+
+function jamaicaEmail(f) {
+  const ref = f.ref || "", es = f.lang === "es";
+  const lines = briefLines(f);
+  const T = es
+    ? { hi: `Hola ${f.name || ""},`, got: `Recibimos tu solicitud de viaje a Jamaica. Tu número de referencia es ${ref}.`, reply: "Te respondemos en horario de oficina con tu precio, por WhatsApp o por correo.", told: "Lo que nos contaste:", fix: "¿Ves un error? Responde a este correo con tu referencia y lo corregimos antes de cotizar.", sign: "Oficinas en Jamaica y Florida. Acreditados por IATA.", subject: `Tu solicitud de viaje a Jamaica ${ref}` }
+    : { hi: `Hi ${f.name || "there"},`, got: `We have your Jamaica trip request. Your reference is ${ref}.`, reply: "We reply within working hours with your price, on WhatsApp or by email.", told: "What you told us:", fix: "Spotted a mistake? Reply to this email with your reference and we fix it before quoting.", sign: "Offices in Jamaica and Florida. IATA-accredited.", subject: `Your Jamaica trip request ${ref}` };
+  const people = [f.adults ? `${f.adults} ${es ? (f.adults == 1 ? "adulto" : "adultos") : f.adults == 1 ? "adult" : "adults"}` : "", Number(f.children) ? `${f.children} ${es ? (f.children == 1 ? "niño" : "niños") : f.children == 1 ? "child" : "children"}${f.child_ages ? ` (${f.child_ages})` : ""}` : ""].filter(Boolean).join(", ");
+  const rows = lines.map(([k, v]) => (k === "People" ? [es ? "Quién viaja" : "People", people] : [k, v]));
+  const text = [T.hi, "", T.got, T.reply, "", T.told, ...rows.map(([k, v]) => `  ${k}: ${v}`), "", T.fix, "", "Golden Vacation & Travel", T.sign, `${es ? "Llama al" : "Call"} 876 817 3467`].join("\n");
+  const html = `<div style="font-family:Archivo,Helvetica,Arial,sans-serif;color:#0E0F0E;max-width:560px;line-height:1.5">
+  <p style="font-size:16px">${esc(T.hi)}</p>
+  <p style="font-size:16px">${esc(T.got).replace(esc(ref), `<b style="background:#F2B93B;padding:2px 8px;border-radius:999px">${esc(ref)}</b>`)}</p>
+  <p style="font-size:16px">${esc(T.reply)}</p>
+  <p style="font-size:13px;font-weight:700;color:#A87A12;margin:24px 0 6px">${esc(T.told.replace(/:$/, "").toUpperCase())}</p>
+  <table style="border-collapse:collapse;font-size:15px">${rows.map(([k, v]) => `<tr><td style="padding:4px 12px 4px 0;font-weight:700;vertical-align:top;white-space:nowrap">${esc(k)}</td><td style="padding:4px 0;color:#3C403A">${esc(v)}</td></tr>`).join("")}</table>
+  <p style="font-size:14px;color:#5A5F57;margin-top:24px">${esc(T.fix)}</p>
+  <p style="font-size:14px;margin-top:24px"><b>Golden Vacation &amp; Travel</b><br>${esc(T.sign)}<br>${es ? "Llama al" : "Call"} 876 817 3467 · <a href="${SITE}${es ? "/jamaica/es/" : "/jamaica/"}" style="color:#A87A12">${SITE.replace(/^https?:\/\//, "")}${es ? "/jamaica/es" : "/jamaica"}</a></p>
+</div>`;
+  return { subject: T.subject, text, html };
+}
 
 function guestEmail(f) {
   const ref = f.ref || "";
@@ -66,7 +88,13 @@ export const handler = async (event) => {
   const form = payload.form_name, f = payload.data || {};
   const key = process.env.RESEND_API_KEY;
   if (!key) { console.log(form, f.ref, "no RESEND_API_KEY, no emails sent"); return { statusCode: 200, body: "no sender configured" }; }
+  /* the Jamaica pages send GV-JAM-USA, GV-JAM-HOME, GV-JAM-ES or GV-JAM-UKCA; each request gets its own number on the end */
+  if (form === "jamaica") { f.branch = "jamaica"; f.ref = `${f.ref || "GV-JAM"}-${String(payload.number || Date.now()).slice(-4)}`; }
   const jobs = [];
+  if (form === "jamaica" && f.email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email)) {
+    const g = jamaicaEmail(f);
+    jobs.push(send(key, { from: FROM, to: [f.email], reply_to: REPLY_TO, subject: g.subject, text: g.text, html: g.html }));
+  }
   if (form === "groups" && f.email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email)) {
     const g = guestEmail(f);
     jobs.push(send(key, { from: FROM, to: [f.email], reply_to: REPLY_TO, subject: g.subject, text: g.text, html: g.html }));

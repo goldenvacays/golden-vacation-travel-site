@@ -26,6 +26,17 @@ export function briefLines(f) {
     if (f.area) L.push(["Area", f.area]);
     if (f.tier) L.push(["Style", f.tier]);
     L.push(["Dates", dates("checkin", "checkout")]);
+  } else if (b === "jamaica") {
+    const es = f.lang === "es";
+    const who = { usa: "from the USA", "coming-home": "coming home", es: "from the USA, in Spanish", "uk-canada": "from the UK or Canada, land only" }[f.audience] || "";
+    L.push([es ? "Solicitud" : "Enquiry", es ? "Viaje a Jamaica" : `Coming to Jamaica${who ? `, ${who}` : ""}`]);
+    const niceEs = (d) => { if (!d) return ""; const t = new Date(d + "T00:00:00"); return isNaN(t) ? d : t.toLocaleDateString("es", { day: "numeric", month: "short", year: "numeric" }); };
+    L.push([es ? "Fechas" : "Dates", es ? (f.checkin || f.checkout ? `${niceEs(f.checkin)} a ${niceEs(f.checkout)}` : "") : dates("checkin", "checkout")]);
+    if (f.rooms && Number(f.rooms) > 1) L.push([es ? "Habitaciones" : "Rooms", `${f.rooms}${f.split ? ` (${f.split})` : ""}`]);
+    if (f.needs) L.push([es ? "Necesitas" : "Needs", f.needs]);
+    if (f.area) L.push([es ? "Zona" : "Area", f.area]);
+    if (f.occasion) L.push(["Occasion", f.occasion]);
+    if (f.currency) L.push(["Quote in", f.currency]);
   } else if (b === "overseas") {
     L.push(["Enquiry", `Coming to Jamaica${f.occasion ? ` for a ${f.occasion.toLowerCase()}` : ""}${f.org_name ? ` (${f.org_name})` : ""}`]);
     L.push(["Dates", dates("arrival", "departure")]);
@@ -178,6 +189,15 @@ function build(form, d) {
         rows: [...rows, ["Phone", d.phone], ["Email", d.email], ["Based in", d.based]], todo,
         phone: d.phone, email: d.email, firstName: first(d.name),
         note: /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email || "") ? "They've been emailed a copy of this brief with their reference." : "" };
+    }
+    case "jamaica": {
+      const lines = briefLines({ ...d, branch: "jamaica", lang: "en" });
+      const rows = lines.filter(([k]) => k !== "Enquiry");
+      if (d.notes && !rows.some(([k]) => k === "Notes")) rows.push(["Notes", d.notes]);
+      return { kind: "Jamaica trip request", headline: (lines.find(([k]) => k === "Enquiry") || [, "Coming to Jamaica"])[1], who: d.name, ref: d.ref,
+        rows: [...rows, ["Phone", d.phone], ["Email", d.email]], todo: "Reply with their price, on WhatsApp or by email",
+        phone: d.phone, email: d.email, firstName: first(d.name),
+        note: /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email || "") ? `They've been emailed a copy with their reference${d.lang === "es" ? ", in Spanish" : ""}.` : "" };
     }
     case "tour-partners":
       return { kind: "New tour partner", headline: d.business || "A tour operator sent their details", who: d.name, ref: d.ref,

@@ -1,0 +1,926 @@
+[
+  {
+    "slug": "riu-montego-bay",
+    "folder": "montego-bay",
+    "name": "RIU Montego Bay",
+    "brand": "RIU",
+    "adultsOnly": true,
+    "city": "Montego Bay",
+    "district": "Mahoe Bay, Rose Hall, Ironshore",
+    "area": "Montego Bay",
+    "type": "Adults only all inclusive resort",
+    "rooms": "826",
+    "built": "2006/07",
+    "renovated": "Complete refurbishment 2020",
+    "airport": "MBJ, Sangster International",
+    "drive": "About 10 minutes",
+    "oneLine": "An 826 room adults only Riu on Mahoe Bay with five pools, a water park and the discotheque shared with RIU Reggae next door.",
+    "restaurant": "Six: Rose Hall (main buffet), Kulinarium (gourmet), Sofia (Italian), Golden Dragon (Asian), a poolside steakhouse (a la carte, reservations required) and Pepe's Food Jerk Station.",
+    "bar": "Four: Exodus lounge bar 18.00 to 24.00 with a stage, a lobby bar 10.00 to 24.00, a 24 hour sports bar and the Roots swim up bar 10.00 to 18.00.",
+    "pool": "Five outdoor pools, one with a swim up bar. Splash Water World park on site.",
+    "spa": "Wellness centre",
+    "gym": "Yes",
+    "roomService": "",
+    "wifi": "Free throughout the hotel",
+    "kids": "Adults only, 18 years and older",
+    "goodToKnow": "Adults only. The Splash Water World park and the discotheque are here, shared with RIU Reggae next door. Family Rooms and a two bedroom category exist, for adult groups rather than children.",
+    "included": "All meals, snacks and drinks at the hotel bars and restaurants, snacks and drinks 24 hours a day, restocked minibar and liquor dispenser, in-room safe, free WiFi throughout, gym, RiuFit classes, beach volleyball, paddleboards, kayaks, snorkel gear, small catamaran, one scuba tryout in the pool, daytime entertainment, live music and shows, pedaloes, Splash Water World, Pacha discotheque with drinks",
+    "extra": "Romantic open-air dinner, speciality wine list, Renova Spa treatments, beauty salon, scuba diving, golf, horse riding, laundry, car hire, doctor",
+    "accessibility": "Six adapted Double Rooms. Ask us for door widths and bathroom measurements.",
+    "amenities": "Adults only, All Inclusive 24H, 6 restaurants, 4 bars, 5 pools, Swim up bar, Splash Water World water park, Discotheque, Mahoe Bay beach, Wellness centre, Gym, Free Wi-Fi throughout, Free parking, 24 hour reception, Air conditioning, Balcony or terrace, Minibar and liquor dispenser, Safe, Bathrobe, Concierge, USB power outlets, Family rooms, Two bedroom rooms, Adapted rooms, No pets",
+    "roomList": [
+      {
+        "name": "Double Room",
+        "size": "29 sq m, 312 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Code DBSB."
+      },
+      {
+        "name": "Double Room Garden View",
+        "size": "29 sq m, 312 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Code DBJB."
+      },
+      {
+        "name": "Double Room Ocean View",
+        "size": "29 sq m, 312 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Code DBMB."
+      },
+      {
+        "name": "Double Room Partial Ocean View",
+        "size": "29 sq m, 312 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Code DBLB."
+      },
+      {
+        "name": "Family Room",
+        "size": "36 sq m, 388 sq ft",
+        "sleeps": "4",
+        "beds": "",
+        "notes": "Sitting area. Code DGSB."
+      },
+      {
+        "name": "Family Room Partial Ocean View",
+        "size": "36 sq m, 388 sq ft",
+        "sleeps": "4",
+        "beds": "",
+        "notes": "Code DGLB."
+      },
+      {
+        "name": "Family Room Ocean View",
+        "size": "36 sq m, 388 sq ft",
+        "sleeps": "4",
+        "beds": "",
+        "notes": "Code DGMB."
+      },
+      {
+        "name": "Accessible Double Room",
+        "size": "32 sq m, 344 sq ft",
+        "sleeps": "2",
+        "beds": "",
+        "notes": "Adapted. Code DBSM, 6 rooms."
+      },
+      {
+        "name": "Suite Ocean View",
+        "size": "58 sq m, 624 sq ft",
+        "sleeps": "3",
+        "beds": "",
+        "notes": "Two steps between sleeping and lounge. Code SUMB."
+      },
+      {
+        "name": "2 Bedroom Double Room Garden View",
+        "size": "58 sq m, 624 sq ft",
+        "sleeps": "4",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Two bedrooms. Code DBJF."
+      }
+    ],
+    "driveKin": "about 2 h 45",
+    "fromUsd": 156
+  },
+  {
+    "slug": "riu-palace-aquarelle",
+    "folder": "aquarelle",
+    "name": "RIU Palace Aquarelle",
+    "brand": "RIU",
+    "adultsOnly": false,
+    "city": "Falmouth",
+    "district": "Coopers Pen, Trelawny",
+    "area": "Falmouth",
+    "type": "All inclusive resort",
+    "rooms": "753",
+    "built": "2024",
+    "renovated": "",
+    "airport": "MBJ, Sangster International",
+    "drive": "About 45 minutes",
+    "oneLine": "A 753 room Riu Palace on White Bay at Falmouth, opened 2024, with five pools and a water park.",
+    "restaurant": "Six: White Bay (main buffet), Krystal (gourmet), Napoli (Italian, reservations required), Kyoto (Asian), a steakhouse and Pepe's Food Jerk Station.",
+    "bar": "Six: Daiquiri lobby bar 10.00 to 23.00, Ska lounge bar 18.00 to 24.00, the Marley and Kingston swim up bars 10.00 to 18.00 over 18s only, and the American Country sports bar open 24 hours.",
+    "pool": "Five pools plus a children's pool with slides. Two have swim up bars for over 18s. Splash Water World park on site.",
+    "spa": "Wellness centre",
+    "gym": "Yes",
+    "roomService": "",
+    "wifi": "Free throughout the hotel",
+    "kids": "RIU Land kids club, a children's pool with slides and Splash Water World on site.",
+    "goodToKnow": "Opened 2024, the newest Riu on the island. A single 13 storey tower at Falmouth, near the cruise pier. All swim-up categories are 18 years and older, including the Swim-up Two Bedroom Family Room. Power is 220V, not the usual 110V.",
+    "included": "All meals, snacks and drinks at the hotel bars and restaurants, snacks and drinks 24 hours a day, restocked minibar and liquor dispenser, in-room safe, free WiFi throughout, gym, RiuFit classes, beach volleyball, paddleboards, kayaks, snorkel gear, small catamaran, one scuba tryout in the pool, daytime entertainment, live music and shows, 24-hour room service, drinks service at the pool, turndown, Splash Water World, RiuLand kids' club for 4 to 12, children's pool with slides",
+    "extra": "Renova wellness centre treatments, golf, laundry, car hire, doctor",
+    "accessibility": "Four adapted Junior Suites with ocean view. Ask us for door widths and bathroom measurements.",
+    "amenities": "All Inclusive 24H, Opened 2024, 6 restaurants, 6 bars, 5 pools, Two swim up bars, Splash Water World water park, Children pool with slides, RIU Land kids club, White Bay beach, 1.9 km, Wellness centre, Gym, Boutique, Digital key, Free Wi-Fi throughout, Parking, 24 hour reception, Air conditioning, Balcony or terrace, Hydromassage bathtub, Minibar and liquor dispenser, Safe, USB power outlets, TV casting, Swim up junior suites and family rooms, Two bedroom junior suites, Adapted rooms, No pets",
+    "roomList": [
+      {
+        "name": "Junior Suite Standard",
+        "size": "35 sq m, 377 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Code SJSB.",
+        "occupancy": "3 adults and 1 child"
+      },
+      {
+        "name": "Junior Suite Ocean View",
+        "size": "35 sq m, 377 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Code SJMB.",
+        "occupancy": "3 adults and 1 child"
+      },
+      {
+        "name": "Junior Suite Partial Ocean View",
+        "size": "35 sq m, 377 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Code SJLB.",
+        "occupancy": "3 adults and 1 child"
+      },
+      {
+        "name": "Junior Suite Ocean Front",
+        "size": "35 sq m, 377 sq ft",
+        "sleeps": "3",
+        "beds": "",
+        "notes": "Code SJFB.",
+        "occupancy": "3 adults and 1 child"
+      },
+      {
+        "name": "Swim-up Junior Suite",
+        "size": "35 sq m, 377 sq ft",
+        "sleeps": "2",
+        "beds": "",
+        "notes": "Direct pool access. 18 years and older. Code SJSP."
+      },
+      {
+        "name": "Swim-up Junior Suite Ocean View",
+        "size": "35 sq m, 377 sq ft",
+        "sleeps": "2",
+        "beds": "",
+        "notes": "Direct pool access. 18 years and older. Code SJMP."
+      },
+      {
+        "name": "Adapted Junior Suite Ocean View",
+        "size": "35 sq m, 377 sq ft",
+        "sleeps": "2",
+        "beds": "",
+        "notes": "Adapted. Code SJLM, 4 rooms."
+      },
+      {
+        "name": "Suite Ocean View",
+        "size": "55 sq m, 592 sq ft",
+        "sleeps": "3",
+        "beds": "",
+        "notes": "Bathtub and shower. Code SUMB."
+      },
+      {
+        "name": "Two Bedroom Family Room",
+        "size": "58 sq m, 624 sq ft",
+        "sleeps": "4",
+        "beds": "",
+        "notes": "Two bedrooms. Code F2SB."
+      },
+      {
+        "name": "Swim-up Two Bedroom Family Room",
+        "size": "60 sq m, 646 sq ft",
+        "sleeps": "4",
+        "beds": "",
+        "notes": "Direct pool access. 18 years and older. Code F2SP."
+      },
+      {
+        "name": "2 Bedroom Junior Suite Ocean View",
+        "size": "70 sq m, 753 sq ft",
+        "sleeps": "5",
+        "beds": "1 king plus 2 doubles",
+        "notes": "Two bedrooms. Code SJMF."
+      },
+      {
+        "name": "2 Bedroom Junior Suite Partial Ocean View",
+        "size": "70 sq m, 753 sq ft",
+        "sleeps": "5",
+        "beds": "1 king plus 2 doubles",
+        "notes": "Two bedrooms. Code SJLF."
+      },
+      {
+        "name": "Two Bedroom Family Superior Ocean View",
+        "size": "77 sq m, 829 sq ft",
+        "sleeps": "6",
+        "beds": "",
+        "notes": "Two bedrooms, two bathrooms. The largest category. Code F2M2."
+      }
+    ],
+    "driveKin": "about 2 h 30",
+    "fromUsd": 154
+  },
+  {
+    "slug": "riu-ocho-rios",
+    "folder": "ocho-rios",
+    "name": "RIU Ocho Rios",
+    "brand": "RIU",
+    "adultsOnly": false,
+    "city": "Ocho Rios",
+    "district": "Mammee Bay, St Ann",
+    "area": "Ocho Rios",
+    "type": "All inclusive family resort",
+    "rooms": "901",
+    "built": "2004/05",
+    "renovated": "Last complete refurbishment 2019, per the Riu fact sheet dated 15 September 2026",
+    "airport": "MBJ, Sangster International",
+    "drive": "About 1 hour 30 minutes from Montego Bay, about 2 hours from Kingston",
+    "oneLine": "A 901 room all inclusive family Riu on Mammee Bay with six pools, a water park and kids and teens clubs.",
+    "restaurant": "Six: St. Ann (main buffet), Kulinarium (gourmet), Mandalay (Asian), Piacenza (Italian), a poolside restaurant and Pepe's Food Jerk Station.",
+    "bar": "Six: Dunn's River lobby bar 10.00 to 24.00, a 24 hour sports bar, Blue 18.00 to 23.00 with a stage, the Reggae and Rastafari swim up bars 10.00 to 18.00 over 18s only, and the Seagrape beach bar 10.00 to 18.00.",
+    "pool": "Six outdoor pools plus a children's pool with slides. Two have swim up bars for over 18s. Splash Water World park on site.",
+    "spa": "Wellness centre",
+    "gym": "Yes",
+    "roomService": "",
+    "wifi": "Free throughout the hotel",
+    "kids": "RIU Land kids club and Riu4U club for teenagers. Children's pool with slides, open six days a week. Splash Water World park, minimum height 1.20 m and minimum recommended age 12.",
+    "goodToKnow": "The family Riu, with a water park, a slide pool, a kids club and a teens club. Swim up bars are over 18s only.",
+    "included": "All meals, snacks and drinks at the hotel bars and restaurants, snacks and drinks 24 hours a day, restocked minibar and liquor dispenser, in-room safe, free WiFi throughout, gym, RiuFit classes, beach volleyball, paddleboards, kayaks, snorkel gear, small catamaran, one scuba tryout in the pool, daytime entertainment, live music and shows, pedaloes, Splash Water World, RiuLand kids' club for 4 to 12, Riu4U club for teenagers, children's pool with slides",
+    "extra": "Renova Spa treatments, scuba diving, golf, horse riding, laundry, car hire, doctor",
+    "accessibility": "Eight adapted rooms, Double Rooms and Junior Suites. Ask us for door widths and bathroom measurements.",
+    "amenities": "All Inclusive 24H, Family resort, Fun4All, 6 restaurants, 6 bars, 6 pools, Splash Water World water park, Children pool with slides, RIU Land kids club, Riu4U teens club, Mammee Bay beach, Wellness centre, Gym, Conference room, Free Wi-Fi throughout, Parking, 24 hour reception, Air conditioning, Balcony or terrace, Minibar and liquor dispenser, Safe, Two bedroom family rooms and suites, Adapted rooms, No pets",
+    "roomList": [
+      {
+        "name": "Double Room",
+        "size": "28 sq m, 301 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Code DBSB."
+      },
+      {
+        "name": "Double Room Ocean View",
+        "size": "28 sq m, 301 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Balcony. Code DBLB."
+      },
+      {
+        "name": "Double Room Ocean Front",
+        "size": "28 sq m, 301 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Balcony. Code DBMB."
+      },
+      {
+        "name": "Family Room",
+        "size": "35 sq m, 377 sq ft",
+        "sleeps": "4",
+        "beds": "",
+        "notes": "Two bedrooms. Code DGSB."
+      },
+      {
+        "name": "Junior Suite Garden View",
+        "size": "34 sq m, 366 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Two steps between sleeping and lounge. Code SJJB."
+      },
+      {
+        "name": "Junior Suite Ocean View",
+        "size": "34 sq m, 366 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Code SJMB."
+      },
+      {
+        "name": "Junior Suite Ocean Front",
+        "size": "34 sq m, 366 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Code SJFB."
+      },
+      {
+        "name": "Double Room Connecting",
+        "size": "56 sq m, 603 sq ft",
+        "sleeps": "4",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Connecting pair. Code DBSF."
+      },
+      {
+        "name": "Two Bedroom Family Room",
+        "size": "60 sq m, 646 sq ft",
+        "sleeps": "4",
+        "beds": "",
+        "notes": "Two bedrooms. Code F2SB."
+      },
+      {
+        "name": "2 Bedroom Double Room Ocean View",
+        "size": "56 sq m, 603 sq ft",
+        "sleeps": "4",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Code DBLF."
+      },
+      {
+        "name": "2 Bedroom Junior Suite Garden View",
+        "size": "68 sq m, 732 sq ft",
+        "sleeps": "4",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Code SJJF."
+      },
+      {
+        "name": "2 Bedroom Junior Suite Ocean View",
+        "size": "68 sq m, 732 sq ft",
+        "sleeps": "4",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Code SJMF."
+      },
+      {
+        "name": "Suite",
+        "size": "69 sq m, 743 sq ft",
+        "sleeps": "3",
+        "beds": "",
+        "notes": "Two steps between sleeping and lounge. Code SULB."
+      },
+      {
+        "name": "Suite Ocean View",
+        "size": "69 sq m, 743 sq ft",
+        "sleeps": "3",
+        "beds": "",
+        "notes": "The largest category. Code SUMB."
+      },
+      {
+        "name": "Accessible Double Room",
+        "size": "28 sq m, 301 sq ft",
+        "sleeps": "2",
+        "beds": "",
+        "notes": "Adapted. Code DBSM, 2 rooms."
+      },
+      {
+        "name": "Accessible Junior Suite",
+        "size": "35 sq m, 377 sq ft",
+        "sleeps": "2",
+        "beds": "",
+        "notes": "Adapted. Code SJJM, 6 rooms."
+      }
+    ],
+    "driveKin": "about 2 h",
+    "fromUsd": 134
+  },
+  {
+    "slug": "riu-negril",
+    "folder": "negril",
+    "name": "RIU Negril",
+    "brand": "RIU",
+    "adultsOnly": false,
+    "city": "Negril",
+    "district": "Bloody Bay, Norman Manley Boulevard",
+    "area": "Negril",
+    "type": "All inclusive family resort",
+    "rooms": "600",
+    "built": "2003/04",
+    "renovated": "Complete refurbishment 2024",
+    "airport": "MBJ, Sangster International",
+    "drive": "About 1 hour 30 minutes",
+    "oneLine": "A 600 room all inclusive Riu on Bloody Bay in Negril with eight restaurants and five pools, refurbished in 2024.",
+    "restaurant": "Eight: Green Island (main buffet), Kulinarium (theme), a steakhouse, Luigi (Italian), Mandalay (Asian), Island Cove (poolside), Pepe's Food (grill) and a further outlet. The most of any Riu on this file.",
+    "bar": "Six: American Country sports bar and restaurant 10.00 to 07.00, Jammin lobby bar 10.00 to 23.00, Reggae Hall lounge bar 17.00 to 24.00 with a stage, The Plaza 17.00 to 24.00, the Rastaman swim up bar 10.00 to 18.00 over 18s only, and Bob's beach bar 10.00 to 18.00.",
+    "pool": "Five pools plus a children's pool with slides. One has a swim up bar for over 18s.",
+    "spa": "Wellness centre",
+    "gym": "Yes",
+    "roomService": "",
+    "wifi": "Free throughout the hotel",
+    "kids": "Children's pool with slides. Fun4All family programme.",
+    "goodToKnow": "Eight restaurants, the most of any Riu here. Refurbished 2024. The two bedroom categories are connecting pairs via a private hallway, not single suites. Swim up rooms and the swim up suite have a minimum age of 18.",
+    "included": "All meals, snacks, domestic and international drinks at the hotel bars and restaurants, snacks and drinks 24 hours a day, restocked minibar and liquor dispenser, in-room safe, free WiFi throughout, gym, sports and entertainment programme, RiuLand kids' club for 4 to 12, children's pool with slides, high chairs",
+    "extra": "Renova Spa treatments, laundry, car hire, doctor, and local-provider activities such as scuba, golf and horse riding",
+    "accessibility": "Four adapted rooms. Ask us for door widths and bathroom measurements.",
+    "amenities": "All Inclusive 24H, Family resort, Fun4All, 8 restaurants, 6 bars, 5 pools, Children pool with slides, Bloody Bay beach, 3 km, Wellness centre, Gym, Conference room, Boutique, Digital key, Free Wi-Fi throughout, Free parking, 24 hour reception, Air conditioning, Balcony or terrace, Minibar and liquor dispenser, Safe, USB power outlets, Swim up rooms and a swim up suite, Two bedroom rooms and family rooms, Connecting rooms via private hallway, Adapted rooms, No pets",
+    "roomList": [
+      {
+        "name": "Double Room",
+        "size": "29 sq m, 312 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 150x200 or 1 bed 200x200",
+        "notes": "Some with sofa or sofa bed. Code DBSB."
+      },
+      {
+        "name": "Double Room Garden View",
+        "size": "29 sq m, 312 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 150x200 or 1 bed 200x200",
+        "notes": "Some with sofa or sofa bed. Code DBJB."
+      },
+      {
+        "name": "Double Room Ocean View",
+        "size": "29 sq m, 312 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 150x200 or 1 bed 200x200",
+        "notes": "Some with sofa or sofa bed. Code DBLB."
+      },
+      {
+        "name": "Double Room Ocean Front",
+        "size": "29 sq m, 312 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 150x200 or 1 bed 200x200",
+        "notes": "Some with sofa or sofa bed. Code DBMB."
+      },
+      {
+        "name": "Swim-up Double Room Ocean Front",
+        "size": "29 sq m, 312 sq ft",
+        "sleeps": "2",
+        "beds": "",
+        "notes": "Direct pool access. 18 years and older. Code DBMP."
+      },
+      {
+        "name": "Adapted Room",
+        "size": "31 sq m, 334 sq ft",
+        "sleeps": "2",
+        "beds": "2 beds 150x200",
+        "notes": "Adapted. Code DBSM, 4 rooms."
+      },
+      {
+        "name": "Swim-up Suite Ocean Front",
+        "size": "50 sq m, 538 sq ft",
+        "sleeps": "2",
+        "beds": "",
+        "notes": "Direct pool access. 18 years and older. Code SUMP."
+      },
+      {
+        "name": "Two Bedroom Family Room Ocean View",
+        "size": "57 sq m, 614 sq ft",
+        "sleeps": "5",
+        "beds": "1 king plus 2 doubles",
+        "notes": "One bedroom with a king, second with two doubles. Code F2MB."
+      },
+      {
+        "name": "2 Bedroom Double Room",
+        "size": "58 sq m, 624 sq ft",
+        "sleeps": "6",
+        "beds": "1 king and sofa, plus 2 queens and sofa bed",
+        "notes": "Connecting pair via private hallway. Code DBSF."
+      },
+      {
+        "name": "2 Bedroom Double Room Garden View",
+        "size": "58 sq m, 624 sq ft",
+        "sleeps": "6",
+        "beds": "1 king and sofa, plus 2 queens and sofa bed",
+        "notes": "Connecting pair. Code DBJF."
+      },
+      {
+        "name": "2 Bedroom Double Room Ocean View",
+        "size": "58 sq m, 624 sq ft",
+        "sleeps": "6",
+        "beds": "1 king and sofa, plus 2 queens and sofa bed",
+        "notes": "Connecting pair. Code DBLF."
+      },
+      {
+        "name": "2 Bedroom Double Room Ocean Front",
+        "size": "58 sq m, 624 sq ft",
+        "sleeps": "6",
+        "beds": "1 king and sofa, plus 2 queens and sofa bed",
+        "notes": "Connecting pair. Code DBMF."
+      }
+    ],
+    "driveKin": "about 4 h",
+    "fromUsd": 130
+  },
+  {
+    "slug": "riu-palace-tropical-bay",
+    "folder": "palace-tropical-bay",
+    "name": "RIU Palace Tropical Bay",
+    "brand": "RIU",
+    "adultsOnly": false,
+    "city": "Negril",
+    "district": "Bloody Bay, Norman Manley Boulevard",
+    "area": "Negril",
+    "type": "All inclusive resort",
+    "rooms": "452",
+    "built": "2000/01",
+    "renovated": "Complete refurbishment 2018",
+    "airport": "MBJ, Sangster International",
+    "drive": "About 1 hour 30 minutes",
+    "oneLine": "A 452 room Riu Palace on Bloody Bay in Negril with three kilometres of beach and free 24 hour room service.",
+    "restaurant": "Six: Negril (main buffet), Krystal (fusion), Rimini (Italian, reservations required), Hakuchi (Japanese), a poolside restaurant and the Jerk Station.",
+    "bar": "Six: Daiquiri lobby bar 10.00 to 24.00, Reggae lounge bar 18.00 to 24.00, a plaza bar 18.00 to 24.00, The Sun swim up bar 10.00 to 17.00 over 18s only, and Lounge 24 open 24 hours.",
+    "pool": "Four outdoor pools plus a children's pool. One has a swim up bar for over 18s.",
+    "spa": "Wellness centre",
+    "gym": "Yes",
+    "roomService": "24 hours, free of charge",
+    "wifi": "Free throughout the hotel",
+    "kids": "RIU Land kids club and a children's pool.",
+    "goodToKnow": "Palace grade, so 24 hour room service is free and turndown is included. Three kilometres of beach at Bloody Bay. Almost every category is a junior suite with a hydromassage bathtub.",
+    "included": "All meals, snacks and drinks at the hotel bars and restaurants, snacks and drinks 24 hours a day, restocked minibar and liquor dispenser, in-room safe, free WiFi throughout, gym, RiuFit classes, beach volleyball, paddleboards, kayaks, snorkel gear, small catamaran, one scuba tryout in the pool, daytime entertainment, live music and shows, 24-hour room service, turndown, RiuLand kids' club for 4 to 12, children's pool",
+    "extra": "Renova Spa treatments, golf, laundry, car hire, doctor",
+    "accessibility": "Four adapted Junior Suites with garden view. Ask us for door widths and bathroom measurements.",
+    "amenities": "All Inclusive 24H, 24 hour room service, free, Turndown service, 6 restaurants, 6 bars, 4 pools, Bloody Bay beach, 3 km, RIU Land kids club, Wellness centre, Gym, Boutique, Free Wi-Fi throughout, Free parking, 24 hour reception, Air conditioning, Balcony or terrace, Minibar and liquor dispenser, Safe, Bathrobe, Hydromassage bathtub in most categories, Two bedroom junior suites, Adapted rooms, No pets",
+    "roomList": [
+      {
+        "name": "Double Room",
+        "size": "28 sq m, 301 sq ft",
+        "sleeps": "2",
+        "beds": "",
+        "notes": "Garden view. Code DBSB."
+      },
+      {
+        "name": "Junior Suite Garden View",
+        "size": "32 sq m, 344 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Hydromassage bathtub. Code SJSB."
+      },
+      {
+        "name": "Junior Suite Ocean View",
+        "size": "32 sq m, 344 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Balcony. Code SJLB."
+      },
+      {
+        "name": "Junior Suite Ocean Front",
+        "size": "32 sq m, 344 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Balcony. Code SJMB."
+      },
+      {
+        "name": "Suite Ocean View",
+        "size": "47 sq m, 506 sq ft",
+        "sleeps": "3",
+        "beds": "",
+        "notes": "Sitting area. Code SUMB."
+      },
+      {
+        "name": "2 Bedroom Junior Suite Ocean View",
+        "size": "64 sq m, 689 sq ft",
+        "sleeps": "4",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Two bedrooms. Code SJLF."
+      },
+      {
+        "name": "2 Bedroom Junior Suite Ocean Front",
+        "size": "64 sq m, 689 sq ft",
+        "sleeps": "4",
+        "beds": "2 beds 125x200 or 1 bed 200x200",
+        "notes": "Two bedrooms. Code SJMF."
+      },
+      {
+        "name": "Accessible Junior Suite Garden View",
+        "size": "32 sq m, 344 sq ft",
+        "sleeps": "2",
+        "beds": "",
+        "notes": "Adapted. Code SJSM, 4 rooms."
+      }
+    ],
+    "driveKin": "about 4 h",
+    "fromUsd": 168
+  },
+  {
+    "slug": "riu-reggae",
+    "folder": "reggae",
+    "name": "RIU Reggae",
+    "brand": "RIU",
+    "adultsOnly": true,
+    "city": "Montego Bay",
+    "district": "Mahoe Bay, Rose Hall, Ironshore",
+    "area": "Montego Bay",
+    "type": "Adults only all inclusive resort",
+    "rooms": "454",
+    "built": "2016",
+    "renovated": "",
+    "airport": "MBJ, Sangster International",
+    "drive": "About 10 minutes",
+    "oneLine": "A 454 room adults only Riu on Mahoe Bay, under three kilometres from Montego Bay airport.",
+    "restaurant": "Six: Ackee (main buffet), Dolce Vita (Italian a la carte), Bamboo (Asian buffet), Kulinarium (gourmet a la carte), a poolside steakhouse (a la carte) and the Jerk Station. A la carte venues require reservations.",
+    "bar": "Four: Daiquiri lobby bar 24 hours, Roots plaza bar 17.00 to 24.00, Mojito swim up 10.00 to 24.00, Margarita swim up 10.00 to 18.00.",
+    "pool": "Three outdoor infinity pools. Two have swim up bars, over 18s only.",
+    "spa": "Renova Spa, beauty salon and hairdresser, at a charge. Steam bath and whirlpool bath included.",
+    "gym": "Yes, 24 hour access. Sports shoes compulsory.",
+    "roomService": "",
+    "wifi": "Free throughout the hotel",
+    "kids": "Adults only, 18 years and older",
+    "goodToKnow": "Adults only, wristband required. Under three kilometres from Montego Bay airport. Splash Water World, the RIU Party and the Pacha discotheque are next door at RIU Montego Bay and included. Breakfast and dinner there are not.",
+    "included": "All meals, snacks and beverages at hotel bars and restaurants, international top brand drinks, 24 hour snacks and drinks, minibar and liquor dispenser restocked regularly, in room safe, sports and entertainment programme, Splash Water World and free entry to the discotheque at Riu Montego Bay, wellness facilities, Wi-Fi throughout.",
+    "extra": "Renova Spa treatments, beauty salon and hairdresser. Romantic open air dinner. Speciality wine list. Scuba diving, horse riding and golf. Laundry, car hire and doctor.",
+    "accessibility": "Four adapted rooms on the ground floor. All public areas reachable by ramp or lift. Lift door width 91 cm. Wheelchair hire available. No wheelchair access to the sea.",
+    "amenities": "Adults only, All Inclusive 24H, 6 restaurants, 4 bars, 3 pools, two with swim up bars, Mahoe Bay beach, reserved area, Renova Spa, Gym, 24 hour access, Steam bath and whirlpool, Beach volleyball, Kayaks, paddle boards and pedalos, Snorkelling, Scuba tryout in the pool, Water park at Riu Montego Bay, Nightclub at Riu Montego Bay, Exchange privileges with Riu Montego Bay, Nightly live music and shows, Free Wi-Fi throughout, Free parking, 24 hour reception, Laundry, at a charge, Air conditioning, Balcony or terrace, Minibar and liquor dispenser, Safe, Bathrobe, Concierge, Adapted rooms, Wristband required, No pets",
+    "roomList": [
+      {
+        "name": "Double Room",
+        "size": "29 sq m, 312 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 cm or 1 bed 200x200 cm",
+        "notes": "RIU code DDSB."
+      },
+      {
+        "name": "Double Room Tropical View",
+        "size": "29 sq m, 312 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 cm or 1 bed 200x200 cm",
+        "notes": "Balcony. Code DDEB."
+      },
+      {
+        "name": "Double Room Partial Ocean View",
+        "size": "29 sq m, 312 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 cm or 1 bed 200x200 cm",
+        "notes": "Balcony. Code DDLB."
+      },
+      {
+        "name": "Double Room Ocean Front",
+        "size": "29 sq m, 312 sq ft",
+        "sleeps": "3",
+        "beds": "2 beds 125x200 cm or 1 bed 200x200 cm",
+        "notes": "Balcony. Code DDMB."
+      },
+      {
+        "name": "Junior Suite Ocean Front",
+        "size": "43 sq m, 463 sq ft",
+        "sleeps": "2",
+        "beds": "",
+        "notes": "Sitting area, hydromassage bathtub. Code SJMB."
+      },
+      {
+        "name": "Accessible Double Room",
+        "size": "29 sq m, 312 sq ft",
+        "sleeps": "2",
+        "beds": "",
+        "notes": "Adapted room, ground floor. Code DDSM."
+      },
+      {
+        "name": "Family Room",
+        "size": "63 sq m, 678 sq ft",
+        "sleeps": "4",
+        "beds": "Sofa bed plus main beds",
+        "notes": "Two bedrooms, two bathrooms. Code F2SB."
+      }
+    ],
+    "driveKin": "about 2 h 45",
+    "fromUsd": 174
+  },
+  {
+    "slug": "princess-grand-jamaica",
+    "folder": "princess-grand",
+    "name": "Princess Grand Jamaica",
+    "brand": "Princess",
+    "adultsOnly": false,
+    "city": "Green Island, Hanover",
+    "district": "Negril resort area, on the coast road between Montego Bay and Negril",
+    "area": "Green Island",
+    "type": "All-inclusive family beach resort, 5 stars, opened 2023",
+    "rooms": "590 suites",
+    "built": "2023",
+    "renovated": "New build 2023",
+    "airport": "MBJ",
+    "drive": "About 1 hour 15 minutes (estimate)",
+    "oneLine": "Big family all-inclusive at Green Island with 590 suites, the Wild Princess water park, a kids' club for 3 to 12, a teen game zone and a Platinum Club with its own rooftop infinity pool",
+    "restaurant": "9: Food Market Jamaica buffet, The Reef buffet, Il Palazzo Italian, El Delirio Mexican, Jamrock Jamaican, Fusion 360 Asian, Platinum (Platinum guests), MVP Sports Bar (13+), two food trucks",
+    "bar": "8: lobby bar, Blue Mountain coffee shop, Oasis beach swim-up bar, Moonlight, Aqua pool snack bar, Divino, Green bar, Platinum bar (Platinum guests)",
+    "pool": "Main pool with jacuzzi, family pool with kids' area, rooftop infinity pool (Platinum guests), and the Wild Princess water park with two pools, a splash pool and four slides",
+    "spa": "Wellness centre with five massage cabins and a hydrotherapy area (extra charge, Platinum gets one hydrotherapy visit a week and 15% off)",
+    "gym": "Yes, fitness and wellness centre with ocean-front fitness room, spinning, free weights and cardio",
+    "roomService": "24 hours, with a service fee in standard suites and complimentary 8 am to 10 pm in Platinum suites",
+    "wifi": "High-speed WiFi in all rooms and common areas",
+    "kids": "Family friendly. Kids' club 3 to 12 with seven themed areas, family pool with kids' area, water park, bunk-bed family suites with kids' bathrobes and slippers, teen game zone 13+",
+    "goodToKnow": "Family resort. Standard suites sleep 3 adults or 2 adults and 2 children. The family suites with bunk beds take 2 adults and 2 children. The luxury hydromassage suites take 2. Swim-out rooms open onto a semi-private pool. MVP Sports Bar is 13 and over. Non-motorised water sports included. Room service carries a fee outside Platinum.",
+    "included": "All meals and drinks at the restaurants and bars, WiFi, minibar with daily refill, coffee machine, safe, kids' club 3 to 12, teen game zone 13+, Wild Princess water park, sports field (tennis, football, basketball, pickleball, archery), non-motorised water sports, fitness centre, nightly theatre shows",
+    "extra": "Spa treatments, motorised water sports, room service outside Platinum, premium drinks outside Platinum, tours",
+    "accessibility": "",
+    "amenities": "9 restaurants and food trucks, 8 bars, 4 pools including the water park, rooftop infinity pool (Platinum), kids' club, teen zone, sports field, water sports centre, fitness and wellness centre with spa, theatre, convention centre, private island, 24-hour nurse, taxi stand, tour office, Platinum Club lounge and butler service",
+    "roomList": [
+      {
+        "name": "Princess Junior Suite",
+        "size": "52 sq m plus balcony",
+        "sleeps": "3",
+        "beds": "One king with sofa bed (limited) or two queens",
+        "notes": "296 rooms. Rain shower, minibar, coffee machine",
+        "occupancy": "3 adults, or 2 adults and 2 children"
+      },
+      {
+        "name": "Swim Out Princess Junior Suite",
+        "size": "52 sq m plus terrace",
+        "sleeps": "3",
+        "beds": "One king with sofa bed (limited) or two queens",
+        "notes": "108 rooms. Terrace with two sunbeds straight into a semi-private pool",
+        "occupancy": "3 adults, or 2 adults and 2 children"
+      },
+      {
+        "name": "Princess Family Junior Suite with Bunk Beds",
+        "size": "52 sq m plus balcony",
+        "sleeps": "4",
+        "beds": "One king plus boat-design bunk beds",
+        "notes": "29 rooms. Kids' bathrobes and slippers",
+        "occupancy": "2 adults and 2 children"
+      },
+      {
+        "name": "Swim Out Princess Family Junior Suite with Bunk Beds",
+        "size": "52 sq m plus terrace",
+        "sleeps": "4",
+        "beds": "One king plus bunk beds",
+        "notes": "5 rooms. Swim-out terrace",
+        "occupancy": "2 adults and 2 children"
+      },
+      {
+        "name": "Princess Luxury Junior Suite with Hydromassage",
+        "size": "67 sq m plus balcony",
+        "sleeps": "2",
+        "beds": "One king",
+        "notes": "9 rooms. Hydromassage hot tub on the balcony",
+        "occupancy": "2 adults"
+      },
+      {
+        "name": "Swim Out Princess Luxury Junior Suite with Hydromassage",
+        "size": "67 sq m plus terrace",
+        "sleeps": "2",
+        "beds": "One king",
+        "notes": "3 rooms. Hot tub and swim-out terrace",
+        "occupancy": "2 adults"
+      },
+      {
+        "name": "Platinum Junior Suite",
+        "size": "52 sq m plus balcony",
+        "sleeps": "3",
+        "beds": "One king with sofa bed (limited) or two queens",
+        "notes": "93 rooms. Sitting area, hydromassage tub on the balcony, soaking tub, double rain shower, Platinum Club benefits and butler",
+        "occupancy": "3 adults, or 2 adults and 2 children"
+      },
+      {
+        "name": "Swim Out Platinum Junior Suite",
+        "size": "52 sq m plus terrace",
+        "sleeps": "3",
+        "beds": "One king with sofa bed (limited) or two queens",
+        "notes": "33 rooms. Platinum Club, swim-out terrace",
+        "occupancy": "3 adults, or 2 adults and 2 children"
+      },
+      {
+        "name": "Imperial One Bedroom Master Suite",
+        "size": "84 sq m plus terrace",
+        "sleeps": "3",
+        "beds": "One king, sofa bed in the living room",
+        "notes": "9 rooms. Separate bedroom and living room, walk-in closet, hot tub terrace, Platinum Club",
+        "occupancy": "3 adults, or 2 adults and 2 children"
+      },
+      {
+        "name": "Swim Out Imperial One Bedroom Master Suite",
+        "size": "84 sq m plus terrace",
+        "sleeps": "3",
+        "beds": "One king, sofa bed",
+        "notes": "3 rooms. As the Imperial suite, with a swim-out terrace",
+        "occupancy": "3 adults, or 2 adults and 2 children"
+      },
+      {
+        "name": "Two Bedroom Master Suite",
+        "size": "Two connecting suites",
+        "sleeps": "6",
+        "beds": "Platinum Junior Suite connected to an Imperial suite",
+        "notes": "5 rooms. Up to 6 with two sharing a bed"
+      }
+    ],
+    "driveKin": "about 3 h 45",
+    "fromUsd": 191,
+    "offer": "2 kids free until 21 Dec 2026"
+  },
+  {
+    "slug": "princess-senses-the-mangrove",
+    "folder": "princess-senses",
+    "name": "Princess Senses The Mangrove",
+    "brand": "Princess",
+    "adultsOnly": true,
+    "city": "Green Island, Hanover",
+    "district": "Negril resort area, on the coast road between Montego Bay and Negril",
+    "area": "Green Island",
+    "type": "Adults-only all-inclusive beach resort with overwater villas, 5 stars",
+    "rooms": "415, all ocean view",
+    "built": "2023",
+    "renovated": "New build 2023",
+    "airport": "MBJ",
+    "drive": "About 1 hour 15 minutes (estimate); private transfer included with the overwater villas and the presidential suite",
+    "oneLine": "Adults-only all-inclusive at Green Island with 415 ocean-view suites, overwater villas with their own infinity pools, swim-out suites, a rooftop infinity pool and the run of the family resort next door",
+    "restaurant": "5 on site plus 2 exclusive: Food Market The Mangroves buffet, The Pearl seafood, KA Teppanyaki (reservation), Umami sushi, Robert's Flame steakhouse, Platinum Beach Club (Platinum guests). Princess Grand Jamaica's restaurants next door too (Il Palazzo, El Delirio, Jamrock, Fusion 360, MVP Sports Bar 13+, food trucks, The Reef)",
+    "bar": "8: lobby bar, Blue Mountain coffee shop, Euphoria beach swim-up bar, Blue Velvet piano bar, Illusion night club and terrace, Platinum bar (Platinum guests), Azure pool snack bar, The Flavour Lounge. The Grand's bars too",
+    "pool": "5 on site: main pool with jacuzzis, activity and entertainment pool, rooftop infinity pool on the main building, Platinum rooftop infinity pool, spa hydrotherapy pool. The Grand's pools and the Wild Princess water park too",
+    "spa": "Spa Princess with 12 massage cabins, hydrotherapy and beauty salon (extra charge, Platinum gets one hydrotherapy visit a week, villas unlimited)",
+    "gym": "Yes, fitness centre with ocean-front fitness room, spinning, free weights and cardio",
+    "roomService": "24 hours, with a service fee in Deluxe and Pleasure suites, complimentary 8 am to 10 pm in Platinum and complimentary 24 hours in the master suites and villas",
+    "wifi": "High-speed WiFi in all rooms and common areas",
+    "kids": "Adults only, 18 years and older",
+    "goodToKnow": "Adults only, 18 years and older. Every suite is ocean view. The O'Club (Pleasure suites) is a themed adults programme with parties, mixology and a private pool. Swim-out suites open onto a semi-private pool. Platinum and above get butler service. The overwater villas get in-villa check-in, a private MBJ transfer and the airport VIP lounge. Non-motorised water sports included.",
+    "included": "All meals and drinks at the restaurants and bars here and at the Grand, WiFi, minibar with daily refill, coffee machine, safe, bathrobes, sports field, non-motorised water sports, fitness centre, theatre shows, Illusion night club, themed parties",
+    "extra": "Spa treatments, motorised water sports, room service fee in Deluxe and Pleasure suites, premium drinks outside Platinum, tours",
+    "accessibility": "",
+    "amenities": "7 restaurants on site, 8 bars, 5 pools, rooftop infinity pools, overwater villas with infinity pools, Spa Princess with hydrotherapy, fitness centre, theatre, night club, sports field, water sports centre, Dream Island, convention centre, boutiques, 24-hour nurse, taxi stand, tours office, Platinum Club lounge, butler service",
+    "roomList": [
+      {
+        "name": "Deluxe Junior Suite",
+        "size": "56 sq m plus balcony",
+        "sleeps": "3",
+        "beds": "One king or two queens, sofa bed in limited rooms",
+        "notes": "183 rooms. Sitting area, double rain shower, soaking tub. King sleeps 2, two queens sleep 3"
+      },
+      {
+        "name": "Swim Out Deluxe Junior Suite",
+        "size": "56 sq m plus terrace",
+        "sleeps": "3",
+        "beds": "One king or two queens",
+        "notes": "61 rooms. Terrace with two sunbeds straight into a semi-private pool"
+      },
+      {
+        "name": "Luxury Junior Suite with Hydromassage",
+        "size": "56 sq m plus balcony",
+        "sleeps": "2",
+        "beds": "One king",
+        "notes": "8 rooms. Bigger junior suite with a hydromassage hot tub"
+      },
+      {
+        "name": "Pleasure Junior Suite",
+        "size": "56 sq m plus balcony",
+        "sleeps": "2",
+        "beds": "Round king bed",
+        "notes": "54 rooms. O'Club experience, hot tub on the balcony, romance kit"
+      },
+      {
+        "name": "Swim Out Pleasure Junior Suite",
+        "size": "56 sq m plus terrace",
+        "sleeps": "2",
+        "beds": "Round king bed",
+        "notes": "18 rooms. O'Club, swim-out terrace"
+      },
+      {
+        "name": "Platinum Junior Suite",
+        "size": "56 sq m plus balcony",
+        "sleeps": "3",
+        "beds": "One king or two queens, sofa bed in limited rooms",
+        "notes": "47 rooms. Hydromassage tub on the balcony, Platinum Club benefits, room service free 8 am to 10 pm"
+      },
+      {
+        "name": "Swim Out Platinum Junior Suite",
+        "size": "56 sq m plus terrace",
+        "sleeps": "3",
+        "beds": "One king or two queens",
+        "notes": "19 rooms. Platinum Club, swim-out terrace"
+      },
+      {
+        "name": "Platinum One Bedroom Master Suite",
+        "size": "112 sq m plus terrace",
+        "sleeps": "3",
+        "beds": "One king, sofa bed in the living room",
+        "notes": "5 rooms. Separate bedroom and living room, two bathrooms, hot tub and round daybed on the terrace"
+      },
+      {
+        "name": "Signature Imperial One Bedroom Master Suite",
+        "size": "147 sq m plus terrace",
+        "sleeps": "3",
+        "beds": "One king, sofa bed",
+        "notes": "4 rooms. 24-hour butler and room service, private bar, pergola terrace with hot tub"
+      },
+      {
+        "name": "Platinum Two Bedroom Master Suite",
+        "size": "Two connecting suites",
+        "sleeps": "6",
+        "beds": "Platinum Junior Suite connected to a Platinum One Bedroom Master Suite",
+        "notes": "5 rooms. Up to 6"
+      },
+      {
+        "name": "Princess Bridal Suite",
+        "size": "153 sq m plus terrace",
+        "sleeps": "3",
+        "beds": "One king, sofa bed",
+        "notes": "1 room. Bride's make-up room, premium terrace with two round daybeds and a hot tub, 24-hour butler"
+      },
+      {
+        "name": "Platinum Two Bedroom Presidential Suite",
+        "size": "285 sq m plus sky terrace",
+        "sleeps": "5",
+        "beds": "One king plus two queens and a sofa bed",
+        "notes": "1 room. Private pool area, kitchen, wet bar, 24-hour butler, private airport transfer and VIP lounge"
+      },
+      {
+        "name": "Over Water Villa with Infinity Pool",
+        "size": "54 sq m plus terrace and pool",
+        "sleeps": "2",
+        "beds": "One king",
+        "notes": "12 villas. Glass floor, private infinity pool, direct sea access, in-villa check-in, private MBJ transfer, 24-hour butler"
+      },
+      {
+        "name": "Princess Over Water Villa with Infinity Pool",
+        "size": "62 sq m plus terrace and pool",
+        "sleeps": "2",
+        "beds": "One king",
+        "notes": "2 villas. The bigger villa at the end of the pier"
+      }
+    ],
+    "driveKin": "about 3 h 45",
+    "fromUsd": 225
+  }
+]

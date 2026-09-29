@@ -109,19 +109,52 @@
       }
     ],
     "kinds": [
-      ["passes", "Day and evening passes"],
-      ["tours", "Tours and adventure"],
-      ["water", "On the water"],
-      ["night", "Nightlife and evenings"],
-      ["lounges", "Airport lounges"],
-      ["family", "Family days"],
-      ["all", "Not sure yet, show me everything"]
+      [
+        "passes",
+        "Day and evening passes"
+      ],
+      [
+        "tours",
+        "Tours and adventure"
+      ],
+      [
+        "water",
+        "On the water"
+      ],
+      [
+        "night",
+        "Nightlife and evenings"
+      ],
+      [
+        "lounges",
+        "Airport lounges"
+      ],
+      [
+        "family",
+        "Family days"
+      ],
+      [
+        "all",
+        "Not sure yet, show me everything"
+      ]
     ],
     "needs": [
-      ["hotel", "Hotel"],
-      ["flights", "Flights"],
-      ["transfers", "Airport transfer"],
-      ["tours", "Tours"]
+      [
+        "hotel",
+        "Hotel"
+      ],
+      [
+        "flights",
+        "Flights"
+      ],
+      [
+        "transfers",
+        "Airport transfer"
+      ],
+      [
+        "tours",
+        "Tours"
+      ]
     ],
     "needsLabel": "What do you need",
     "notSure": "Not sure yet",
@@ -136,9 +169,9 @@
     "childAgeHint": "Ages at the time of travel.",
     "fromLabel": "Flying from",
     "fromHint": "City or airport code",
-      "pickLabel": "Pick up from",
-      "pickHint": "Hotel or area (optional)",
-      "pickNote": "Optional. Tells us where to collect you, and we show the days out nearest you first.",
+    "pickLabel": "Pick up from",
+    "pickHint": "Hotel or area (optional)",
+    "pickNote": "Optional. Tells us where to collect you, and we show the days out nearest you first.",
     "whoDone": "Done"
   },
   "doors": {
@@ -277,6 +310,7 @@
     "doors": [
       {
         "key": "usa",
+        "href": "/jamaica/usa/",
         "title": "From the USA",
         "text": "US$ pricing, US cards, our Florida office. Land-only or with flights.",
         "textMobile": "US$ · US cards · Florida office",
@@ -286,6 +320,7 @@
       },
       {
         "key": "home",
+        "href": "/jamaica/coming-home/",
         "title": "Coming home",
         "text": "Christmas, summer, weddings, reunions, the whole family on one quote.",
         "textMobile": "Christmas, summer, weddings",
@@ -295,6 +330,7 @@
       },
       {
         "key": "es",
+        "href": "/jamaica/es/",
         "title": "En español",
         "text": "Cotiza y reserva tu viaje a Jamaica por WhatsApp, en español.",
         "textMobile": "Cotiza por WhatsApp",
@@ -304,8 +340,9 @@
       },
       {
         "key": "ukca",
+        "href": "/jamaica/uk-canada/",
         "title": "UK & Canada",
-        "text": "Land-only in £ and C$. You book the flight; we do the rest.",
+        "text": "Land-only in £ and C$. You book the flight. We do the rest.",
         "textMobile": "Land-only in £ and C$",
         "img": "coming-ukca.jpg",
         "alt": "A catamaran at sunset off the north coast",

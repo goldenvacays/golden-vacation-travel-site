@@ -1,0 +1,67 @@
+{
+ "note": "One deals list for the whole site. \"for\" says where a deal shows: locals (the front page strip and /deals/), usa, home (Coming home), es (En español), ukca (UK & Canada). An entry with no \"for\" counts as locals. A deal needs a real number or a deadline; \"until\" takes it down the day after. \"resort\" pulls the from-price from data/staycations-resorts.json, \"venue\" + \"product\" pull the visitor price from data/experiences.json, so the cards never go stale.",
+ "deals": [
+  {
+   "id": "princess-grand-kids",
+   "for": [
+    "usa",
+    "home",
+    "es",
+    "ukca"
+   ],
+   "until": "2026-12-21",
+   "resort": "princess-grand-jamaica",
+   "href": "https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%27d%20like%20the%20Princess%20Grand%20Jamaica%20offer%2C%202%20kids%20free%2C%20for%20my%20dates.%20Ref%20GV-DEAL-PG",
+   "img": "/assets/img/deal-princess-grand.jpg",
+   "en": {
+    "name": "Princess Grand Jamaica",
+    "badge": "2 kids free",
+    "prefix": "from",
+    "per": "pp/night",
+    "sub": "Green Island · 1 h 15 from MBJ",
+    "text": "Two children stay free on the all inclusive, water park included.",
+    "foot": "All inclusive, 24 hours"
+   },
+   "es": {
+    "name": "Princess Grand Jamaica",
+    "badge": "2 niños gratis",
+    "prefix": "desde",
+    "per": "pp/noche",
+    "sub": "Green Island · a 1 h 15 min de MBJ",
+    "text": "Dos niños se quedan gratis en el todo incluido, con parque acuático.",
+    "foot": "Todo incluido, 24 horas"
+   }
+  },
+  {
+   "id": "jamwest-super-deal",
+   "for": [
+    "usa",
+    "home",
+    "es",
+    "ukca"
+   ],
+   "venue": "jamwest",
+   "product": "super-deal",
+   "href": "/experiences/jamwest.html",
+   "img": "/jamaica/img/card-jamwest-deal.jpg",
+   "en": {
+    "name": "JamWest Super Deal",
+    "badge": "Save 44%",
+    "prefix": "",
+    "per": "per adult",
+    "sub": "Negril · three tours in one day",
+    "text": "ATV plus any two of zipline, horseback or safari, for less than half of booking them separately.",
+    "foot": "Children {child}"
+   },
+   "es": {
+    "name": "JamWest Super Deal",
+    "badge": "Ahorra 44%",
+    "prefix": "",
+    "per": "por adulto",
+    "sub": "Negril · tres tours en un día",
+    "text": "Cuatrimoto más dos a elegir entre tirolesa, cabalgata o safari, por menos de la mitad que por separado.",
+    "foot": "Niños {child}"
+   }
+  }
+ ]
+}
