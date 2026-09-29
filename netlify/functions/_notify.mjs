@@ -154,7 +154,9 @@ function build(form, d) {
     case "tr-bookings": {
       const tour = form === "exp-bookings";
       const [, next] = status.split(/\s·\s(.+)/);
-      return { kind: paid ? `Paid ${tour ? "tour booking" : "transfer"} ${d.total || ""}`.trim() : tour ? "Tour booking" : "Transfer booking", loud: paid,
+      const headline = tour ? [d.venue, d.product].filter(Boolean).join(", ") : [d.route, d.vehicle].filter(Boolean).join(", ");
+      return { kind: paid ? `PAID ${tour ? "tour booking" : "transfer"} ${d.total || ""}`.trim() : tour ? "Tour booking" : "Transfer booking", loud: paid,
+        subject: paid ? `PAID ${d.total || ""} · ${tour ? "Tour" : "Transfer"}: ${headline}${d.when ? ` · ${d.when}` : ""}`.replace("PAID  ·", "PAID ·") : "",
         headline: tour ? [d.venue, d.product].filter(Boolean).join(", ") : [d.route, d.vehicle].filter(Boolean).join(", "), who: d.customer, ref: d.ref,
         rows: [["When", d.when], ["Guests", d.guests], [tour ? "Pickup" : "Pickup and drop-off", tour ? d.pickup : d.place], ["Total paid", paid ? d.total : ""], ["Total", paid ? "" : d.total], ["Phone", d.phone], ["Email", d.email], ["Park order", d.order], ["Notes", d.note]],
         todo: next ? next.replace(/^confirmed to the guest\s·\s/i, "").replace(/^./, (c) => c.toUpperCase()) : paid ? "" : status,
@@ -227,6 +229,6 @@ ${c.note ? `<tr><td style="padding:10px 22px 0;font-size:14px;color:${MUTED}">${
   const text = [`${c.kind} · ${when}`, "", c.headline, [c.who, c.ref].filter(Boolean).join("  "), c.todo ? `Next: ${c.todo}` : "", "",
     ...rows.map(([k, v]) => `${k}: ${v}`), "", c.note || "", src ? `${src}.` : "", netlify].filter((l, i, a) => l !== "" || (a[i - 1] !== "" && i > 0)).join("\n").trim();
   const subjectCore = c.headline.length > 70 ? c.headline.slice(0, 67).trim() + "..." : c.headline;
-  const subject = `${c.kind}: ${subjectCore}${c.who ? ` · ${c.who}` : ""}${c.ref ? ` · ${c.ref}` : ""}`;
+  const subject = `${c.subject || `${c.kind}: ${subjectCore}`}${c.who ? ` · ${c.who}` : ""}${c.ref ? ` · ${c.ref}` : ""}`;
   return { subject, html, text, replyTo: c.email || "" };
 }
