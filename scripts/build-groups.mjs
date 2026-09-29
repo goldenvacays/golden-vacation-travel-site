@@ -434,7 +434,7 @@ ${nav()}
 <section class="hero wrap" id="top">
   <div class="hero-top">
     <div class="hero-head"><span class="kicker">Group fares · Copa Airlines</span><h1 class="h1">Copa group fares from Kingston and Montego Bay.</h1>
-      <p class="lead">${esc(T("Ten or more flying together? Copa doesn't sell group fares on copa.com. Get group benefits like payment plans, extra luggage and seat selection for everyone. We get your group fare and quote the hotel and transfers with it."))}</p>
+      <p class="lead">${esc(T("Access group benefits such as payment plans, additional luggage and seat selection for your groups. We get your group fare and quote the hotel and transfers."))}</p>
       <div class="sec-cta"><a class="btn" href="${BASE}/enquire/?branch=trips" data-track="copa-top">Get a group quote</a><a class="btn btn-outline" href="#panama" data-track="copa-panama">See the Panama trip</a></div>
     </div>
     <div class="proof"><span><i></i>IATA-accredited</span><span><i></i>${esc(T("Quote within TURNAROUND"))}</span><span><i></i>US$${fmt(G.hold.usd)} holds a seat</span></div>
