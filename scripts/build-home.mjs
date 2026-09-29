@@ -225,6 +225,8 @@ function homePage() {
   const today = new Date().toISOString().slice(0, 10);
 
   // hero + quick quote
+  /* the planning modes are tabs inside the search box: one white box, the tabs along its top over a hairline, the chosen one underlined in gold */
+  const modeTabs = () => `<div class="qtabs" role="group" aria-label="What are you planning">${H.quote.modes.map((m, i) => `<button type="button" class="qtab" data-mode="${m.key}" aria-pressed="${i === 0}">${esc(m.label)}</button>`).join("")}</div>`;
   const modeChips = (cls) => `<div class="${cls}" role="group" aria-label="What are you planning">${H.quote.modes.map((m, i) => `<button type="button" class="chip" data-mode="${m.key}" aria-pressed="${i === 0}">${esc(m.label)}</button>`).join("")}</div>`;
   const hero = `<section class="hero" id="home">
   <picture><source media="(max-width: 899px)" srcset="${img(H.hero.imgMobile)}"><img src="${img(H.hero.img)}" alt="${esc(H.hero.alt)}" fetchpriority="high" decoding="async"></picture>
@@ -232,11 +234,10 @@ function homePage() {
     <div>${kicker(H.hero.kicker, true).replace('class="kicker', 'class="desk kicker')}${kicker(H.hero.kickerMobile, true).replace('class="kicker', 'class="mob kicker')}</div>
     <h1 class="hh">${esc(H.hero.headline)}</h1>
     <p class="desk">${esc(H.hero.sub)}</p><p class="mob">${esc(H.hero.subMobile)}</p>
-    ${modeChips("chip-row desk")}
   </div>
 </section>
-${modeChips("qmodes mob")}
 <div class="wrap">
+  <div class="qbox">${modeTabs()}
   <form id="home-quote" class="qcard" action="/quote/" method="get">
     <div class="qf qf-air" data-f="air" hidden>${icon("plane", 20)}<label><span>Flying into</span><select id="hq-air" name="airport">${(TR ? TR.airports : []).map((a) => `<option value="${a.code}">${esc(a.short || a.name)}</option>`).join("")}</select></label></div>
     <div class="qf qf-place" data-f="place">${icon("pin", 20)}<label><span id="hq-where-label">Where to</span><input type="text" id="hq-where" name="place" autocomplete="off" autocapitalize="words" spellcheck="false" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="hq-list" placeholder="Country, city or hotel"></label><button type="button" class="hq-clear" id="hq-clear" aria-label="Clear" hidden>${icon("x", 16)}</button><ul class="hq-list" id="hq-list" role="listbox" aria-label="Suggestions" hidden></ul></div>
@@ -253,6 +254,7 @@ ${modeChips("qmodes mob")}
     </div>
     <div class="qsubmit"><button class="btn btn-black btn-lg btn-full" type="submit" id="hq-go">Find a getaway${icon("arrow", 18)}</button></div>
   </form>
+  </div>
   <div class="qtray" id="hq-tray" hidden>
     <div class="qneeds" id="hq-needs" hidden><span class="qneeds-l">${esc(H.quote.needsLabel)}</span><span class="qneeds-c">${H.quote.needs.map(([v, l]) => `<button type="button" class="chip chip-sm" data-need="${v}" aria-pressed="false">${esc(l)}</button>`).join("")}</span></div>
     <div class="qextra" id="hq-from-wrap" hidden>

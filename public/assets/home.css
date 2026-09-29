@@ -438,19 +438,29 @@
   #hq-from-list { max-width: 460px; }
 }
 
-/* the planning modes are tabs on the search card: on a computer they sit on the card's top edge over the photo,
-   the chosen one white like the card with a gold top; on a phone they scroll in a row above the card */
+/* the planning modes are tabs inside the search box: one white box holds the tabs along its top, a hairline, then the
+   fields, so the tabs and the search read as one thing. The chosen tab is ink with a gold underline sitting on the hairline. */
+.home .qbox { position: relative; z-index: 2; margin: 16px var(--pad) 4px; background: #fff; border: 2px solid var(--ink); border-radius: 22px; box-shadow: 0 18px 50px rgba(14,15,14,.16); }
+.home .qbox .qcard { margin: 0; border: 0; border-radius: 0 0 20px 20px; box-shadow: none; background: transparent; }
+.home .qtray { position: relative; z-index: 1; }
+.home .qtabs { display: flex; gap: 2px; padding: 4px 8px 0; border-bottom: 2px solid var(--line); overflow-x: auto; scrollbar-width: none; }
+.home .qtabs::-webkit-scrollbar { display: none; }
+.home .qtab { flex: none; position: relative; height: 48px; padding: 0 12px; background: none; border: 0; font: inherit; font-size: 14px; font-weight: 800; color: rgba(14,15,14,.52); cursor: pointer; white-space: nowrap; }
+.home .qtab:hover { color: var(--ink); }
+.home .qtab[aria-pressed="true"] { color: var(--ink); }
+.home .qtab[aria-pressed="true"]::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: -2px; height: 4px; border-radius: 4px 4px 0 0; background: var(--gold); }
+.home .qtab:focus-visible { outline: 2px solid var(--ink); outline-offset: -6px; border-radius: 12px; }
 @media (min-width: 900px) {
-  .home .hero-in { padding-bottom: 46px; }
-  .home .hero .chip-row { margin-top: 18px; gap: 6px; padding-left: 30px; flex-wrap: nowrap; }
-  .home .hero .chip-row .chip { height: 52px; padding: 0 22px; font-size: 14px; border-radius: 16px 16px 0 0; background: rgba(14,15,14,.58); color: #fff; box-shadow: none; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
-  .home .hero .chip-row .chip:hover { background: rgba(14,15,14,.76); }
-  .home .hero .chip-row .chip[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: inset 0 4px 0 var(--gold); }
+  .home .qbox { margin: -46px var(--pad) 0; border: 0; border-radius: 30px; box-shadow: 0 24px 60px rgba(14,15,14,.22); }
+  .home .qbox .qcard { margin: 0; border-radius: 0 0 30px 30px; }
+  .home .qtabs { padding: 6px 18px 0; gap: 4px; }
+  .home .qtab { height: 54px; padding: 0 16px; font-size: 15px; }
+  .home .qtab[aria-pressed="true"]::after { left: 16px; right: 16px; }
+  .home .qbox:has(.qcard.has-tray) { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
 }
-@media (max-width: 899px) {
-  .home .qmodes { flex-wrap: nowrap; overflow-x: auto; gap: 4px; padding: 16px var(--pad) 0; scrollbar-width: none; }
-  .home .qmodes::-webkit-scrollbar { display: none; }
-  .home .qmodes .chip { flex: none; height: 44px; padding: 0 16px; border-radius: 14px 14px 0 0; background: var(--alt); color: var(--ink); box-shadow: none; }
-  .home .qmodes .chip[aria-pressed="true"] { background: var(--ink); color: #fff; box-shadow: inset 0 3px 0 var(--gold); }
-  .home .qcard { margin-top: 0; border-top-left-radius: 0; }
+
+@media (min-width: 900px) {
+  /* when a mode opens its extra row, the row continues the box at the same width, under the same hairline */
+  .home .qtray { margin: 0 var(--pad); padding-top: 18px; border-top: 2px solid var(--line); border-radius: 0 0 30px 30px; box-shadow: 0 24px 60px rgba(14,15,14,.16); }
+  .home .qbox:has(.qcard.has-tray) { box-shadow: none; }
 }
