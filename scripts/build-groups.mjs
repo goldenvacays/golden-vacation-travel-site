@@ -400,6 +400,9 @@ function copa() {
   /* Where to: the places Copa groups go, and the hotels we sell there (from data/hotels.json, Jamaica left out) */
   const HOTELS = (() => { const raw = JSON.parse(fs.readFileSync(path.join(ROOT, "data/hotels.json"), "utf8")); return (Array.isArray(raw) ? raw : raw.hotels || []).filter((h) => !/jamaica/i.test(h.country || "")); })();
   const tripHotels = G.trips.destinations.flatMap((d) => d.hotels.map((ht) => ht.name.toLowerCase()));
+  /* hotels offered in the hotel step: [name, city, country, stars, from US$ (Panama City group trip only), group trip] */
+  const panTrip = Object.fromEntries(G.trips.destinations.filter((d) => d.id === "panama").flatMap((d) => d.hotels.map((ht) => [ht.name.toLowerCase(), ht.usd])));
+  const HOT = HOTELS.map((h) => { const k = Object.keys(panTrip).find((t) => h.name.toLowerCase().includes(t)); return [h.name, h.city, h.country, /^\d star/.test(h.star_rating || "") ? h.star_rating.slice(0, 6) : "", k ? panTrip[k] : 0, k ? 1 : 0]; });
   const TO = [["d", "Panama City", "Panama"], ["d", "Lima", "Peru"], ["d", "Medellín", "Colombia"], ["d", "Bogotá", "Colombia"], ["d", "San José", "Costa Rica"], ["d", "Punta Cana", "Dominican Republic"], ["d", "Panama + Lima", "Two countries"], ["d", "Panama + Medellín", "Two countries"]]
     .concat(HOTELS.map((h) => ["h", h.name, h.city, h.country, tripHotels.some((t) => h.name.toLowerCase().includes(t)) ? 1 : 0]).sort((a, b) => b[4] - a[4]));
   const tr = G.trips, pan = tr.destinations.find((d) => d.id === "panama");
@@ -521,6 +524,20 @@ function copa() {
 .cp-form-note{grid-column:1/-1;font-size:13px;color:rgba(14,15,14,.55);text-align:center;margin:0}
 .cp-hotel-note{grid-column:1/-1;justify-self:start;font-size:14px;font-weight:800;background:#FBEFCF;color:#8A6D12;border-radius:999px;padding:6px 12px;margin:0}
 .cp-final{padding:76px 0}
+.cp-hpick{display:flex;flex-direction:column;gap:12px;padding-bottom:18px;border-bottom:2px solid var(--line,#E4E4DF)}
+.cp-hopts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.cp-hopt{display:flex;flex-direction:column;gap:3px;text-align:left;padding:14px 16px;border:2px solid var(--line,#E4E4DF);border-radius:16px;background:#fff;cursor:pointer;font:inherit;color:#0E0F0E}
+.cp-hopt b{font-size:15px;font-weight:800}
+.cp-hopt b span{font-size:11px;font-weight:800;background:#FBEFCF;color:#8A6D12;border-radius:999px;padding:2px 8px;margin-left:6px;vertical-align:2px}
+.cp-hopt small{font-size:13px;color:rgba(14,15,14,.6)}
+.cp-hopt:hover{border-color:rgba(14,15,14,.4)}
+.cp-hopt.on{border-color:#0E0F0E;box-shadow:inset 0 0 0 1px #0E0F0E;background:#FFFBF0}
+.cp-hopt:focus-visible,.cp-tier:focus-visible{outline:3px solid var(--gold,#F2B93B);outline-offset:2px}
+.cp-tiers{display:flex;flex-direction:column;gap:8px}
+.cp-tl{font-size:13px;font-weight:800}
+.cp-tier-row{display:flex;flex-wrap:wrap;gap:8px}
+.cp-tier{height:40px;padding:0 16px;border:2px solid #0E0F0E;border-radius:999px;background:#fff;font:inherit;font-weight:700;font-size:14px;cursor:pointer;color:#0E0F0E}
+.cp-tier.on{background:#0E0F0E;color:#fff}
 .cp-from-seg{position:relative}
 .cp-sug{position:absolute;top:calc(100% + 6px);left:0;min-width:380px;max-height:340px;overflow:auto;background:#fff;border:2px solid #0E0F0E;border-radius:16px;box-shadow:0 18px 44px rgba(14,15,14,.2);padding:6px;z-index:30}
 .cp-opt-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:10px 12px;border-radius:10px;cursor:pointer}
@@ -562,10 +579,11 @@ function copa() {
   .cp-seg{border-right:0;border-bottom:2px solid var(--line,#E4E4DF)}
   .cp-go{grid-column:1/-1;margin:10px 0 0;width:100%}
   .cp-contact{grid-template-columns:1fr}
+  .cp-hopts{grid-template-columns:1fr 1fr}
   .cp-barwrap{margin-top:-60px}
   .cp-hero{padding-bottom:92px!important}
 }
-@media (max-width:560px){ .cp-row{grid-template-columns:1fr} .cp-seg{padding:12px 14px} .cp-sug{min-width:0;left:0;right:0} }
+@media (max-width:560px){ .cp-hopts{grid-template-columns:1fr} .cp-row{grid-template-columns:1fr} .cp-seg{padding:12px 14px} .cp-sug{min-width:0;left:0;right:0} }
 @media (max-width:900px){
   .cp-quote{grid-template-columns:1fr;gap:24px}
   .cp-form{grid-template-columns:1fr;padding:20px}
@@ -614,6 +632,12 @@ ${css}
   <p class="cp-hotel-note" id="cp-hotel-note" hidden></p>
   <p class="cp-err" id="cp-err" role="alert" hidden></p>
   <div class="cp-step2" id="cp-step2" hidden>
+    <div class="cp-hpick" id="cp-hpick">
+      <p class="cp-step2-t">Pick your hotel</p>
+      <div class="cp-hopts" id="cp-hopts" role="radiogroup" aria-label="Hotel"></div>
+      <div class="cp-tiers" id="cp-tiers" hidden><span class="cp-tl">What kind of hotel?</span><div class="cp-tier-row">${G.form.tiers.map((t) => `<button type="button" class="cp-tier" data-tier="${esc(t)}">${esc(t)}</button>`).join("")}</div></div>
+      <input type="hidden" name="tier" value="">
+    </div>
     <p class="cp-step2-t">Where should we send your price?</p>
     <div class="cp-contact">
       <label class="cp-f"><span>Your name</span><input name="name" type="text" autocomplete="name"></label>
@@ -712,7 +736,7 @@ ${css}
   var TO = ${JSON.stringify(TO)};
   var toIn = q("#cp-to"), hidPlace = q("[name=place]"), hidHotel = q("[name=hotel]");
   var toList = TO.map(function (x) { var o = { k: x[0], name: x[1], where: x[2], country: x[3], trip: x[4] }; o.score = o.k === "d" ? scorer([o.name, o.where], 5) : scorer([o.name, o.where, o.country], o.trip ? 3 : 0); if (o.k === "h") { var base = o.score; o.score = function (t) { return t ? base(t) : 0; }; } return o; });
-  function setTo(place, hotel, label) { hidPlace.value = place; hidHotel.value = hotel || ""; toIn.value = label || (hotel ? hotel + ", " + place : place); }
+  function setTo(place, hotel, label) { hidPlace.value = place; hidHotel.value = hotel || ""; toIn.value = label || (hotel ? hotel + ", " + place : place); if (typeof paintHotels === "function" && !step2.hidden) paintHotels(); }
   combo(toIn, q("#cp-sug-to"), toList,
     function (o) { return o.k === "d" ? "<b>" + o.name + "</b><small>" + o.where + "</small>" : "<b>" + o.name + (o.trip ? ' <span>Group trip</span>' : "") + "</b><small>Hotel · " + o.where + "</small>"; },
     function (o) { if (o.k === "d") setTo(o.name, ""); else setTo(o.where === "Panama City" || o.where === "Lima" ? o.where : o.where + ", " + o.country, o.name, o.name + ", " + o.where); },
@@ -733,6 +757,33 @@ ${css}
     setFrom,
     "Not on the list? Keep typing, we fly groups from anywhere.");
 
+  /* the hotel step: hotels we sell in that place (group trip first), then Pick one for me (with a style) or Flights only */
+  var HOT = ${JSON.stringify(HOT)}, hopts = document.getElementById("cp-hopts"), tiers = document.getElementById("cp-tiers"), hidTier = q("[name=tier]");
+  function hotelsFor(place) {
+    var pl = norm(place); if (!pl || place.indexOf("+") > -1) return [];
+    return HOT.filter(function (h) { var c = norm(h[1]); return pl.indexOf(c) > -1 || c.indexOf(pl.split(",")[0].trim()) > -1; }).sort(function (a, b) { return b[5] - a[5]; }).slice(0, 6);
+  }
+  function hopt(name, sub, tag) { return '<button type="button" role="radio" class="cp-hopt' + (hidHotel.value === name ? " on" : "") + '" aria-checked="' + (hidHotel.value === name) + '" data-h="' + name.replace(/"/g, "&quot;") + '"><b>' + name + (tag ? " <span>" + tag + "</span>" : "") + "</b><small>" + sub + "</small></button>"; }
+  function paintHotels() {
+    var list = hotelsFor(hidPlace.value), hv = norm(hidHotel.value);
+    if (hv && ["Pick one for me", "Flights only"].indexOf(hidHotel.value) < 0) {
+      var same = list.filter(function (h) { var n = norm(h[0]); return n === hv || n.indexOf(hv) > -1 || hv.indexOf(n) > -1; })[0];
+      if (same) hidHotel.value = same[0]; else list.unshift([hidHotel.value, hidPlace.value, "", "", 0, 0]);
+    }
+    hopts.innerHTML = list.map(function (h) { return hopt(h[0], h[4] ? "From US$" + h[4] + " per person" : (h[3] || "Priced with your dates"), h[5] ? "Group trip" : ""); }).join("")
+      + hopt("Pick one for me", list.length ? "Tell us the style, we suggest the best fit" : "Tell us the style, we suggest hotels for you", "")
+      + hopt("Flights only", "No hotel needed", "");
+    tiers.hidden = hidHotel.value !== "Pick one for me";
+  }
+  hopts.addEventListener("click", function (e) {
+    var b = e.target.closest(".cp-hopt"); if (!b) return;
+    var h = b.dataset.h; hidHotel.value = h;
+    if (h !== "Pick one for me") { hidTier.value = ""; [].forEach.call(tiers.querySelectorAll(".cp-tier"), function (t) { t.classList.remove("on"); }); }
+    if (["Pick one for me", "Flights only"].indexOf(h) < 0) toIn.value = h + ", " + hidPlace.value;
+    paintHotels();
+  });
+  tiers.addEventListener("click", function (e) { var t = e.target.closest(".cp-tier"); if (!t) return; hidTier.value = t.dataset.tier; [].forEach.call(tiers.querySelectorAll(".cp-tier"), function (x) { x.classList.toggle("on", x === t); }); });
+  toIn.addEventListener("change", function () { if (!step2.hidden) paintHotels(); });
   document.querySelectorAll('a[href="#quote"]').forEach(function (a) {
     a.addEventListener("click", function () {
       if (a.dataset.place || a.dataset.hotel) setTo(a.dataset.place || "", a.dataset.hotel || "");
@@ -754,8 +805,8 @@ ${css}
   function say(m) { if (m.length) { err.textContent = "Please add " + m.join(", ") + "."; err.hidden = false; return false; } err.hidden = true; return true; }
   function next() {
     if (!say(tripMissing())) return false;
-    step2.hidden = false; q("#cp-next").classList.add("done");
-    setTimeout(function () { q("[name=name]").focus(); }, 60);
+    paintHotels(); step2.hidden = false; q("#cp-next").classList.add("done");
+    setTimeout(function () { step2.scrollIntoView({ behavior: "smooth", block: "start" }); }, 60);
     return true;
   }
   q("#cp-next").addEventListener("click", next);
@@ -763,6 +814,8 @@ ${css}
     e.preventDefault();
     if (step2.hidden) { next(); return; }
     var m = tripMissing();
+    if (!v("hotel")) m.push("a hotel, or Pick one for me");
+    else if (v("hotel") === "Pick one for me" && !v("tier")) m.push("the kind of hotel");
     if (!v("name")) m.push("your name");
     if (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(v("email"))) m.push("your email");
     if (!say(m)) return;
