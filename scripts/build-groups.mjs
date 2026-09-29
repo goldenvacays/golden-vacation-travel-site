@@ -398,7 +398,7 @@ function copa() {
   const tr = G.trips, pan = tr.destinations.filter((d) => d.id === "panama");
   const gets = [
     ["Everyone on the same flights", "One fare per person for the whole group, agreed before anyone pays."],
-    ["Names later", "The seats are held first. Send the names by the date in your quote."],
+    ["Luggage included", "A personal item, a carry-on and a checked bag for everyone in the group."],
     [`US$${fmt(G.hold.usd)} holds a seat`, `Each traveller holds a place with US$${fmt(G.hold.usd)} (J$${fmt(G.hold.jmd)}), non-refundable, and it comes off their deposit. The group leader pays us in one payment.`],
     ["Flights, hotel and transfers on one quote", "One quote for the whole trip. Organisations can pay by invoice."],
   ];
@@ -434,7 +434,7 @@ ${nav()}
 <section class="hero wrap" id="top">
   <div class="hero-top">
     <div class="hero-head"><span class="kicker">Group fares · Copa Airlines</span><h1 class="h1">Copa group fares from Kingston and Montego Bay.</h1>
-      <p class="lead">${esc(T("Ten or more flying together? Copa doesn't sell group fares on copa.com. Groups go through Copa's call centre, a Copa sales office or a travel agency. We're an IATA-accredited agency in Jamaica: we get your group fare and quote the hotel and transfers with it, within TURNAROUND."))}</p>
+      <p class="lead">${esc(T("Ten or more flying together? Copa doesn't sell group fares on copa.com. Get group benefits like payment plans, extra luggage and seat selection for everyone. We get your group fare and quote the hotel and transfers with it."))}</p>
       <div class="sec-cta"><a class="btn" href="${BASE}/enquire/?branch=trips" data-track="copa-top">Get a group quote</a><a class="btn btn-outline" href="#panama" data-track="copa-panama">See the Panama trip</a></div>
     </div>
     <div class="proof"><span><i></i>IATA-accredited</span><span><i></i>${esc(T("Quote within TURNAROUND"))}</span><span><i></i>US$${fmt(G.hold.usd)} holds a seat</span></div>
@@ -442,7 +442,7 @@ ${nav()}
 </section>
 
 <section class="sec wrap" id="gets">
-  <div class="sec-head"><span class="kicker">What a group fare gets you</span><h2 class="h2">One price, one flight, names later.</h2><span class="accent" aria-hidden="true"></span></div>
+  <div class="sec-head"><span class="kicker">What a group fare gets you</span><h2 class="h2">One price, one flight, bags included.</h2><span class="accent" aria-hidden="true"></span></div>
   <div class="gets">${gets.map(([t, x]) => `<div class="get">${icon("check", 18, 3, "#1F8A4C")}<div><b>${esc(t)}</b><span>${esc(x)}</span></div></div>`).join("")}</div>
   <p class="lead" style="margin-top:28px">Copa flies from Kingston and Montego Bay to Panama City, and on through Panama to Central and South America.</p>
   <div class="chips-row">${["Panama City", "Lima", "Medellín", "Bogotá", "San José"].map((c) => `<span class="chip-static">${esc(c)}</span>`).join("")}<span class="chip-static">Somewhere else? Tell us on the form</span></div>
