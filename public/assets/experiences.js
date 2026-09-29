@@ -706,7 +706,7 @@
     function closeHotelList() { if (el.hotelList) { el.hotelList.hidden = true; el.hotelList.innerHTML = ""; } hCursor = -1; }
     function openHotelList(q) {
       if (!el.hotelList) return;
-      var hits = matchPlaces(HOTELS, q, { portsOnly: portsOnly }); portsOnly = false;
+      var hits = matchPlaces(HOTELS, q, { portsOnly: portsOnly }).filter(function (hh) { return !hh.port || servedKey(hh.slug); }); portsOnly = false; // only the cruise ports this tour picks up from
       var areas = areaRows(q);
       el.hotelList.innerHTML = ""; hCursor = -1;
       if (!hits.length && !areas.length) { var li0 = document.createElement("li"); li0.className = "none"; li0.textContent = "Not on our list. Type your area (Negril, Lucea or Montego Bay) for a villa or Airbnb, or make your own way."; el.hotelList.appendChild(li0); }
