@@ -534,6 +534,26 @@ function copa() {
 .cp-inbound{margin:16px 8px 0;font-size:15px}
 .cp-inbound a{color:#0E0F0E;font-weight:800;text-decoration:underline;text-underline-offset:3px}
 .cp-hhint{font-size:13px;color:rgba(14,15,14,.6);margin:0}
+.cp-who-seg{position:relative}
+.cp-who{font:inherit;font-size:17px;font-weight:700;border:0;padding:0;background:transparent;color:#0E0F0E;text-align:left;cursor:pointer;white-space:nowrap}
+.cp-pop{position:absolute;top:calc(100% + 6px);right:0;width:320px;background:#fff;border:2px solid #0E0F0E;border-radius:18px;box-shadow:0 18px 44px rgba(14,15,14,.2);padding:16px;z-index:30;display:flex;flex-direction:column;gap:12px;cursor:default}
+.cp-srow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.cp-srow b{display:block;font-size:15px;font-weight:800}
+.cp-srow small{font-size:12px;color:rgba(14,15,14,.55)}
+.cp-stp{display:flex;align-items:center;gap:10px}
+.cp-stp button{width:36px;height:36px;border-radius:50%;border:2px solid #0E0F0E;background:#fff;font:inherit;font-size:18px;font-weight:800;line-height:1;cursor:pointer;color:#0E0F0E}
+.cp-stp span{min-width:26px;text-align:center;font-weight:800;font-size:16px}
+.cp-ages{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:800}
+.cp-pop .cp-ages input,.cp-hsearch input{font:inherit;font-size:16px;font-weight:600;padding:11px 14px;border:2px solid var(--line,#E4E4DF);border-radius:12px;width:100%;box-sizing:border-box}
+.cp-pop .cp-ages input:focus,.cp-hsearch input:focus{outline:none;border-color:#0E0F0E}
+.cp-pop-note{font-size:12px;color:rgba(14,15,14,.55);margin:0}
+.cp-pop-done{height:44px;width:100%;border:0;cursor:pointer;font-family:inherit}
+.cp-hsearch{display:flex;flex-direction:column;gap:6px;max-width:520px}
+.cp-rooms{display:flex;flex-direction:column;gap:10px}
+.cp-rgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.cp-rgrid .cp-srow{border:2px solid var(--line,#E4E4DF);border-radius:14px;padding:10px 12px}
+.cp-rsum{font-size:14px;font-weight:700;margin:0;color:#1F8A4C}
+.cp-rsum.warn{color:#8A6D12}
 .cp-hpick{display:flex;flex-direction:column;gap:12px;padding-bottom:18px;border-bottom:2px solid var(--line,#E4E4DF)}
 .cp-hopts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .cp-hopt{display:flex;flex-direction:column;gap:3px;text-align:left;padding:14px 16px;border:2px solid var(--line,#E4E4DF);border-radius:16px;background:#fff;cursor:pointer;font:inherit;color:#0E0F0E}
@@ -590,6 +610,8 @@ function copa() {
   .cp-go{grid-column:1/-1;margin:10px 0 0;width:100%}
   .cp-contact{grid-template-columns:1fr}
   .cp-hopts{grid-template-columns:1fr 1fr}
+  .cp-rgrid{grid-template-columns:1fr 1fr}
+  .cp-pop{left:0;right:auto;width:100%}
   .cp-barwrap{margin-top:-60px}
   .cp-hero{padding-bottom:92px!important}
 }
@@ -636,7 +658,16 @@ ${css}
     <div class="cp-seg cp-from-seg"><label class="cp-l" for="cp-from">Flying from</label><input id="cp-from" type="text" value="Kingston (KIN)" autocomplete="off" spellcheck="false" placeholder="Type your city or airport" role="combobox" aria-expanded="false" aria-controls="cp-sug" aria-autocomplete="list"><div class="cp-sug" id="cp-sug" role="listbox" hidden></div><input type="hidden" name="airport" value="Kingston"><input type="hidden" name="airport_other" value=""></div>
     <label class="cp-seg"><span class="cp-l">Leaving</span><input name="depart" type="date"></label>
     <label class="cp-seg"><span class="cp-l">Coming back</span><input name="return" type="date"></label>
-    <label class="cp-seg cp-last"><span class="cp-l">Group size</span><input name="adults" type="number" min="10" inputmode="numeric" placeholder="10 or more"></label>
+    <div class="cp-seg cp-last cp-who-seg"><span class="cp-l">Who's travelling</span><button type="button" class="cp-who" id="cp-who" aria-expanded="false" aria-controls="cp-pop">10 adults</button>
+      <div class="cp-pop" id="cp-pop" hidden>
+        <div class="cp-srow"><div><b>Adults</b><small>12 and over</small></div><div class="cp-stp"><button type="button" data-k="adults" data-d="-1" aria-label="One adult fewer">&minus;</button><span id="cp-n-adults">10</span><button type="button" data-k="adults" data-d="1" aria-label="One adult more">+</button></div></div>
+        <div class="cp-srow"><div><b>Children</b><small>2 to 11</small></div><div class="cp-stp"><button type="button" data-k="children" data-d="-1" aria-label="One child fewer">&minus;</button><span id="cp-n-children">0</span><button type="button" data-k="children" data-d="1" aria-label="One child more">+</button></div></div>
+        <label class="cp-ages" id="cp-ages" hidden><span>Children's ages</span><input type="text" id="cp-ages-in" inputmode="numeric" placeholder="For example 4, 7, 10"></label>
+        <p class="cp-pop-note">Group fares start at 10 travellers.</p>
+        <button type="button" class="cp-btn cp-dark cp-pop-done" id="cp-pop-done">Done</button>
+      </div>
+      <input type="hidden" name="adults" value="10"><input type="hidden" name="children" value="0"><input type="hidden" name="child_ages" value="">
+    </div>
     <button class="cp-go" type="button" id="cp-next" data-track="copa-next">Get my group price <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
   </div>
   <p class="cp-hotel-note" id="cp-hotel-note" hidden></p>
@@ -645,18 +676,21 @@ ${css}
     <div class="cp-hpick" id="cp-hpick">
       <p class="cp-step2-t">Pick your hotel</p>
       <div class="cp-hopts" id="cp-hopts" role="radiogroup" aria-label="Hotel"></div>
-      <p class="cp-hhint" id="cp-hhint" hidden>Have a resort in mind? Type it under Where to and it will show here.</p>
+      <div class="cp-hsearch cp-from-seg"><label class="cp-tl" for="cp-hs">Have a hotel in mind?</label><input id="cp-hs" type="text" autocomplete="off" spellcheck="false" placeholder="Search hotels and resorts" role="combobox" aria-expanded="false" aria-controls="cp-sug-h" aria-autocomplete="list"><div class="cp-sug" id="cp-sug-h" role="listbox" hidden></div></div>
       <div class="cp-tiers" id="cp-tiers" hidden><span class="cp-tl">What kind of hotel?</span><div class="cp-tier-row">${G.form.tiers.map((t) => `<button type="button" class="cp-tier" data-tier="${esc(t)}">${esc(t)}</button>`).join("")}</div></div>
       <input type="hidden" name="tier" value="">
+      <div class="cp-rooms" id="cp-rooms"><span class="cp-tl">Rooms</span>
+        <div class="cp-rgrid">${[["single", "Single", "1 person"], ["double", "Double", "2 people"], ["triple", "Triple", "3 people"], ["quad", "Quad", "4 people"]].map(([k, l, n]) => `<div class="cp-srow"><div><b>${l}</b><small>${n}</small></div><div class="cp-stp"><button type="button" data-r="${k}" data-d="-1" aria-label="One ${l.toLowerCase()} room fewer">&minus;</button><span id="cp-r-${k}">0</span><button type="button" data-r="${k}" data-d="1" aria-label="One ${l.toLowerCase()} room more">+</button></div><input type="hidden" name="r_${k}" value="0"></div>`).join("")}</div>
+        <p class="cp-rsum" id="cp-rsum"></p>
+      </div>
     </div>
-    <div class="cp-airpref"><span class="cp-tl">Airline</span><div class="cp-tier-row" id="cp-airpref"><button type="button" class="cp-tier on" data-air="Copa, or another airline if it fits better">Copa, or the best fit</button><button type="button" class="cp-tier" data-air="Copa only">Copa only</button></div>
-      <input type="hidden" name="airline" value="Copa, or another airline if it fits better"><p class="cp-hhint">If Copa doesn't fly there, or another airline works better for your group, we'll tell you and quote it.</p></div>
     <p class="cp-step2-t">Where should we send your price?</p>
     <div class="cp-contact">
+      <label class="cp-f cp-wide"><span>Group name</span><input name="org_name" type="text" placeholder="For example Faith Tabernacle Youth Choir, or the Brown family reunion"></label>
       <label class="cp-f"><span>Your name</span><input name="name" type="text" autocomplete="name"></label>
       <label class="cp-f"><span>Email</span><input name="email" type="email" autocomplete="email"></label>
-      <label class="cp-f"><span>Phone <em>optional</em></span><input name="phone" type="tel" autocomplete="tel"></label>
-      <label class="cp-f cp-wide"><span>Anything else? <em>optional</em></span><input name="notes" type="text" placeholder="Hotel wishes, rooms, the occasion"></label>
+      <label class="cp-f"><span>Phone</span><input name="phone" type="tel" autocomplete="tel"></label>
+      <label class="cp-f cp-wide"><span>Anything else? <em>optional</em></span><input name="notes" type="text" placeholder="The occasion, hotel wishes, anything we should know"></label>
     </div>
     <button class="cp-btn cp-gold cp-send" type="submit" data-track="copa-send">Send my request</button>
     <p class="cp-form-note">We reply by email within ${esc(G.turnaround)}. Your details are only used for your quote.</p>
@@ -806,7 +840,7 @@ ${css}
       + hopt("Pick one for me", list.length ? "Tell us the style, we suggest the best fit" : "Tell us the style, we suggest hotels for you", "")
       + hopt("Flights only", "No hotel needed", "");
     tiers.hidden = hidHotel.value !== "Pick one for me";
-    document.getElementById("cp-hhint").hidden = !(norm(hidPlace.value).indexOf("jamaica") > -1 && !list.length);
+    document.getElementById("cp-rooms").hidden = hidHotel.value === "Flights only";
   }
   hopts.addEventListener("click", function (e) {
     var b = e.target.closest(".cp-hopt"); if (!b) return;
@@ -815,9 +849,46 @@ ${css}
     if (["Pick one for me", "Flights only"].indexOf(h) < 0) toIn.value = h + ", " + hidPlace.value;
     paintHotels();
   });
-  document.getElementById("cp-airpref").addEventListener("click", function (e) { var t = e.target.closest(".cp-tier"); if (!t) return; q("[name=airline]").value = t.dataset.air; [].forEach.call(this.querySelectorAll(".cp-tier"), function (x) { x.classList.toggle("on", x === t); }); });
   tiers.addEventListener("click", function (e) { var t = e.target.closest(".cp-tier"); if (!t) return; hidTier.value = t.dataset.tier; [].forEach.call(tiers.querySelectorAll(".cp-tier"), function (x) { x.classList.toggle("on", x === t); }); });
   toIn.addEventListener("change", function () { if (!step2.hidden) paintHotels(); });
+
+  /* a hotel search inside the hotel step: every hotel we list, here and in Jamaica */
+  var hs = document.getElementById("cp-hs");
+  combo(hs, document.getElementById("cp-sug-h"), toList.filter(function (o) { return o.k === "h"; }).concat([]),
+    function (o) { return "<b>" + o.name + (o.trip ? ' <span>Group trip</span>' : "") + "</b><small>" + o.where + "</small>"; },
+    function (o) { setTo(o.where === "Panama City" || o.where === "Lima" ? o.where : o.where + ", " + o.country, o.name, o.name + ", " + o.where); hs.value = ""; paintHotels(); },
+    function () {}, "Not on our list? Tell us under Anything else and we'll price it.");
+  hs.addEventListener("focus", function () { loadJM(); });
+
+  /* who's travelling: adults, children and their ages */
+  var who = document.getElementById("cp-who"), pop = document.getElementById("cp-pop"), ages = document.getElementById("cp-ages"), agesIn = document.getElementById("cp-ages-in");
+  var N = { adults: 10, children: 0 };
+  function paintWho() {
+    document.getElementById("cp-n-adults").textContent = N.adults; document.getElementById("cp-n-children").textContent = N.children;
+    q("[name=adults]").value = N.adults; q("[name=children]").value = N.children;
+    ages.hidden = !N.children; q("[name=child_ages]").value = N.children ? agesIn.value.trim() : "";
+    who.textContent = N.adults + " adult" + (N.adults === 1 ? "" : "s") + (N.children ? ", " + N.children + " child" + (N.children === 1 ? "" : "ren") : "");
+    paintRooms();
+  }
+  function openPop(on) { pop.hidden = !on; who.setAttribute("aria-expanded", on ? "true" : "false"); }
+  who.addEventListener("click", function () { openPop(pop.hidden); });
+  document.getElementById("cp-pop-done").addEventListener("click", function () { openPop(false); });
+  pop.addEventListener("click", function (e) { var b = e.target.closest("[data-k]"); if (!b) return; var k = b.dataset.k; N[k] = Math.max(k === "adults" ? 1 : 0, Math.min(200, N[k] + Number(b.dataset.d))); paintWho(); });
+  agesIn.addEventListener("input", paintWho);
+  document.addEventListener("click", function (e) { if (!pop.hidden && !e.target.closest(".cp-who-seg")) openPop(false); });
+
+  /* rooms by type, with a count of how many people they sleep */
+  var R = { single: 0, double: 0, triple: 0, quad: 0 }, SLEEPS = { single: 1, double: 2, triple: 3, quad: 4 }, roomsTouched = false;
+  function paintRooms() {
+    var total = N.adults + N.children, beds = 0;
+    Object.keys(R).forEach(function (k) { document.getElementById("cp-r-" + k).textContent = R[k]; q("[name=r_" + k + "]").value = R[k]; beds += R[k] * SLEEPS[k]; });
+    var sum = document.getElementById("cp-rsum");
+    sum.textContent = beds ? "These rooms sleep " + beds + " of your " + total + " travellers." : "Add the rooms you need.";
+    sum.classList.toggle("warn", beds > 0 && beds < total);
+  }
+  function suggestRooms() { if (roomsTouched) return; var total = N.adults + N.children; R = { single: total % 2, double: Math.floor(total / 2), triple: 0, quad: 0 }; paintRooms(); }
+  document.getElementById("cp-rooms").addEventListener("click", function (e) { var b = e.target.closest("[data-r]"); if (!b) return; roomsTouched = true; var k = b.dataset.r; R[k] = Math.max(0, Math.min(200, R[k] + Number(b.dataset.d))); paintRooms(); });
+  paintWho();
   document.querySelectorAll('a[href="#quote"]').forEach(function (a) {
     a.addEventListener("click", function () {
       if (a.dataset.place || a.dataset.hotel) setTo(a.dataset.place || "", a.dataset.hotel || "");
@@ -834,13 +905,14 @@ ${css}
     if (!from.value.trim()) m.push("where you are flying from");
     if (!v("depart")) m.push("the date you leave");
     if (!v("return") || v("return") <= v("depart")) m.push("a return date after you leave");
-    if (!(Number(v("adults")) >= 10)) m.push("a group of 10 or more");
+    if (N.adults + N.children < 10) m.push("a group of 10 or more");
+    if (N.children && !agesIn.value.trim()) m.push("the children's ages");
     return m;
   }
   function say(m) { if (m.length) { err.textContent = "Please add " + m.join(", ") + "."; err.hidden = false; return false; } err.hidden = true; return true; }
   function next() {
     if (!say(tripMissing())) return false;
-    paintHotels(); step2.hidden = false; q("#cp-next").classList.add("done");
+    openPop(false); suggestRooms(); paintHotels(); step2.hidden = false; q("#cp-next").classList.add("done");
     setTimeout(function () { step2.scrollIntoView({ behavior: "smooth", block: "start" }); }, 60);
     return true;
   }
@@ -851,8 +923,11 @@ ${css}
     var m = tripMissing();
     if (!v("hotel")) m.push("a hotel, or Pick one for me");
     else if (v("hotel") === "Pick one for me" && !v("tier")) m.push("the kind of hotel");
+    if (v("hotel") && v("hotel") !== "Flights only" && !(R.single + R.double + R.triple + R.quad)) m.push("the rooms you need");
+    if (!v("org_name")) m.push("your group's name");
     if (!v("name")) m.push("your name");
     if (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(v("email"))) m.push("your email");
+    if (v("phone").replace(/[^0-9]/g, "").length < 7) m.push("your phone number");
     if (!say(m)) return;
     var cs = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", r = ""; for (var i = 0; i < 4; i++) r += cs[Math.floor(Math.random() * cs.length)];
     var ref = "GV-GRP-" + r; q("[name=ref]").value = ref;
