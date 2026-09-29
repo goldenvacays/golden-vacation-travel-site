@@ -457,6 +457,7 @@ function copa() {
 .cp-trip{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;background:#fff;border:2px solid var(--ink,#0E0F0E);border-radius:var(--cp-r);overflow:hidden;margin-top:30px}
 .cp-trip-img img{width:100%;height:100%;object-fit:cover;display:block;min-height:320px}
 .cp-trip-body{padding:28px;display:flex;flex-direction:column;gap:14px}
+.cp-dep{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;background:#FBEFCF;color:#8A6D12;font-weight:800;font-size:13px;padding:6px 12px;border-radius:999px;margin-bottom:-4px}
 .cp-trip-body h3{font-size:28px;font-weight:900;font-stretch:112%;letter-spacing:-.01em;line-height:1.05}
 .cp-trip-price b{font-size:34px;font-weight:900;font-stretch:112%}
 .cp-trip-price span{font-weight:700;color:rgba(14,15,14,.6);margin-left:6px}
@@ -519,7 +520,7 @@ ${css}
     <h1 class="h1">Copa Airlines <em>group fares</em></h1>
     <p class="cp-sub">Access group benefits such as payment plans, included luggage and seat selection for your groups. We get your group fare and hotel and transfers in one rate.</p>
     <div class="cp-price"><b>From US$${fmt(from)}</b><span>per person, Panama City group trip</span></div>
-    <p class="cp-inc">Flights from Kingston or Montego Bay, bags, seat selection, 4 nights' hotel, breakfast and private transfers.</p>
+    <p class="cp-inc">Flights from Kingston (KIN), bags, seat selection, 4 nights' hotel, breakfast and private transfers.</p>
     <div class="cp-ctas"><a class="cp-btn cp-gold" href="${Q}" data-track="copa-top">Get my group quote</a><a class="cp-btn cp-ghost" href="#trip" data-track="copa-trips">See trips</a></div>
     <div class="cp-trust"><span>IATA-accredited</span><span>${esc(T("Quote within TURNAROUND"))}</span><span>US$${fmt(G.hold.usd)} holds a seat</span></div>
   </div>
@@ -540,11 +541,12 @@ ${css}
   <div class="cp-trip">
     <div class="cp-trip-img">${pic(pan.img, pan.alt, [720, 1440], "(min-width: 900px) 46vw, 90vw")}</div>
     <div class="cp-trip-body">
+      <span class="cp-dep">Flights from Kingston (KIN)</span>
       <h3>${esc(pan.name)} group trip</h3>
       <div class="cp-trip-price"><b>From US$${fmt(from)}</b><span>per person · ${esc(pan.meta)}</span></div>
       <div class="cp-chips">${pan.includes.map((x) => `<span>${esc(x)}</span>`).join("")}</div>
       <div>${pan.hotels.map((ht) => `<div class="cp-hotel"><div><b>${esc(ht.name)}</b><small>From US$${fmt(ht.usd)} per person</small></div><a class="cp-btn cp-dark" href="${Q}&amp;dest=${encodeURIComponent(pan.name)}&amp;hotel=${encodeURIComponent(ht.name)}" data-track="copa-hotel">Hold seats</a></div>`).join("")}</div>
-      <p class="cp-fine">Starting prices per person for ten adults flying from Kingston or Montego Bay, based on double occupancy, taxes included. Your airport and dates set the final price.</p>
+      <p class="cp-fine">Starting prices per person for ten adults flying from Kingston (KIN), based on double occupancy, taxes included. Your dates set the final price, and other airports are priced on request.</p>
     </div>
   </div>
 </div></section>
