@@ -19,47 +19,47 @@
 <meta name="twitter:title" content="Jamaica Resort Map 2026 — Open & Reopening">
 <meta name="twitter:description" content="See every Jamaica all-inclusive on a map — open, reopening, or closed by coast.">
 <meta name="twitter:image" content="https://goldenvacays.com/map/photos/riu-ocho-rios.jpg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0E0F0E">
+<link rel="preload" href="/assets/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<style>@font-face{font-family:'Archivo';font-style:normal;font-display:swap;font-weight:100 900;font-stretch:62% 125%;src:url(/assets/fonts/archivo.woff2) format('woff2-variations')}</style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
 <style>
 :root{
-  --sea:#0FB6C7; --sea-deep:#0A7E93; --sand:#FBF4E4; --sand2:#F2E6CC; --paper:#FFFDF8;
-  --royal:#0057D9; --deep:#0047B5; --gold:#F5A623; --gold2:#FFC300; --coral:#FF6B5C; --palm:#17B978;
-  --ink:#12384A; --muted:#5c7182; --faint:#94a4b2; --line:rgba(18,56,74,.12); --line2:rgba(18,56,74,.22);
-  --st-open:#17B978; --st-reopen:#F5A623; --st-new:#7C6FF0; --st-soon:#0FB6C7; --st-closed:#FF6B5C; --st-perm:#E23D5B;
-  --shadow:0 18px 44px rgba(18,56,74,.14);
+  --sea:#0E0F0E; --sea-deep:#0E0F0E; --sand:#FBF4E4; --sand2:#F2E6CC; --paper:#FFFDF8;
+  --royal:#0E0F0E; --deep:#0E0F0E; --gold:#F5A623; --gold2:#FFC300; --coral:#FF6B5C; --palm:#17B978;
+  --ink:#0E0F0E; --muted:#5c7182; --faint:#94a4b2; --line:rgba(14,15,14,.12); --line2:rgba(14,15,14,.22);
+  --st-open:#17B978; --st-reopen:#F5A623; --st-new:#7C6FF0; --st-soon:#0E0F0E; --st-closed:#FF6B5C; --st-perm:#E23D5B;
+  --shadow:0 18px 44px rgba(14,15,14,.14);
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{
   background:
-    radial-gradient(1100px 520px at 82% -10%, rgba(15,182,199,.28), transparent 60%),
+    radial-gradient(1100px 520px at 82% -10%, rgba(242,185,59,.28), transparent 60%),
     radial-gradient(900px 500px at 6% 4%, rgba(245,166,35,.14), transparent 55%),
     linear-gradient(180deg,#eaf7f6 0%, var(--sand) 30%, var(--sand) 100%);
   background-attachment:fixed;
-  color:var(--ink);font-family:"Manrope",system-ui,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;
+  color:var(--ink);font-family:"Archivo","Helvetica Neue",Helvetica,Arial,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;
 }
 a{color:var(--sea-deep);text-decoration:none}
 a:hover{color:var(--gold)}
 .wrap{max-width:1360px;margin:0 auto;padding:22px clamp(14px,3vw,34px) 60px}
-.lbl{font:700 11px/1 "Manrope";letter-spacing:.22em;text-transform:uppercase}
+.lbl{font:700 11px/1 "Archivo";letter-spacing:.22em;text-transform:uppercase}
 
 /* topbar */
 .topbar{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:24px}
 .brand{display:flex;align-items:center;gap:12px}
 .brand .mark{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;
-  background:linear-gradient(140deg,var(--sea),var(--royal));box-shadow:0 8px 22px rgba(15,182,199,.4);
-  font-family:"DM Serif Display";color:#fff;font-size:24px}
-.brand .bt{font:700 11px/1 "Manrope";letter-spacing:.24em;color:var(--sea-deep);text-transform:uppercase}
-.brand .bn{font:400 20px/1 "DM Serif Display";color:var(--ink);margin-top:4px}
+  background:linear-gradient(140deg,var(--sea),var(--royal));box-shadow:0 8px 22px rgba(242,185,59,.4);
+  font-family:"Archivo",system-ui,sans-serif;font-weight:900;font-stretch:112%;letter-spacing:-.02em;color:#fff;font-size:24px}
+.brand .bt{font:700 11px/1 "Archivo";letter-spacing:.24em;color:var(--sea-deep);text-transform:uppercase}
+.brand .bn{font:400 20px/1 "Archivo";color:var(--ink);margin-top:4px}
 .search{margin-left:auto;position:relative;flex:1;min-width:240px;max-width:440px}
 .search input{width:100%;padding:14px 16px 14px 46px;border-radius:14px;border:1px solid var(--line2);
-  background:var(--paper);color:var(--ink);font:500 15px "Manrope";outline:none;transition:.2s;box-shadow:0 4px 14px rgba(18,56,74,.06)}
+  background:var(--paper);color:var(--ink);font:500 15px "Archivo";outline:none;transition:.2s;box-shadow:0 4px 14px rgba(14,15,14,.06)}
 .search input::placeholder{color:var(--faint)}
-.search input:focus{border-color:var(--sea);box-shadow:0 0 0 4px rgba(15,182,199,.18)}
+.search input:focus{border-color:var(--sea);box-shadow:0 0 0 4px rgba(242,185,59,.18)}
 .search svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);width:19px;height:19px;stroke:var(--muted)}
 
 /* hero */
@@ -73,8 +73,8 @@ a:hover{color:var(--gold)}
 .hero .kick{display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.16);
   padding:7px 14px;border-radius:999px;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.28)}
 .hero .kick .dot{width:8px;height:8px;border-radius:50%;background:#bfffd9;box-shadow:0 0 12px #7cffb0;animation:pulse 2.2s infinite}
-.hero .kick span{font:700 11px/1 "Manrope";letter-spacing:.18em;text-transform:uppercase}
-.hero h1{font:400 clamp(34px,5.6vw,66px)/1.02 "DM Serif Display";margin:18px 0 12px;letter-spacing:-.5px;text-shadow:0 4px 24px rgba(0,60,70,.3)}
+.hero .kick span{font:700 11px/1 "Archivo";letter-spacing:.18em;text-transform:uppercase}
+.hero h1{font:400 clamp(34px,5.6vw,66px)/1.02 "Archivo";margin:18px 0 12px;letter-spacing:-.5px;text-shadow:0 4px 24px rgba(0,60,70,.3)}
 .hero p{margin:0;font-size:16.5px;line-height:1.55;max-width:600px;color:rgba(255,255,255,.94)}
 
 /* stats */
@@ -83,13 +83,13 @@ a:hover{color:var(--gold)}
   background:var(--paper);box-shadow:var(--shadow);cursor:pointer;transition:.22s;overflow:hidden}
 .tile:hover{transform:translateY(-3px)}
 .tile.on{box-shadow:0 0 0 2px var(--tc),var(--shadow)}
-.tile .n{font:400 46px/1 "DM Serif Display";letter-spacing:-1px;color:var(--ink)}
-.tile .l{margin-top:4px;font:700 12px/1.3 "Manrope";letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tile .n{font:400 46px/1 "Archivo";letter-spacing:-1px;color:var(--ink)}
+.tile .l{margin-top:4px;font:700 12px/1.3 "Archivo";letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .tile .spark{position:absolute;right:16px;top:18px;width:12px;height:12px;border-radius:50%;background:var(--tc);box-shadow:0 0 12px var(--tc)}
 .tile::after{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--tc)}
 .statusbar{display:flex;height:12px;border-radius:8px;overflow:hidden;margin:16px 0 8px;border:1px solid var(--line);background:var(--paper)}
 .statusbar span{height:100%;transition:width .5s}
-.legend{display:flex;flex-wrap:wrap;gap:12px 20px;font:500 12.5px "Manrope";color:var(--muted);margin-bottom:6px}
+.legend{display:flex;flex-wrap:wrap;gap:12px 20px;font:500 12.5px "Archivo";color:var(--muted);margin-bottom:6px}
 .legend b{display:inline-flex;align-items:center;gap:7px;font-weight:700;color:var(--ink)}
 .legend i{width:11px;height:11px;border-radius:4px;display:inline-block}
 .legend b span{color:var(--muted);font-weight:600}
@@ -97,12 +97,12 @@ a:hover{color:var(--gold)}
 /* chips */
 .filters{display:flex;flex-direction:column;gap:11px;margin:20px 0 4px}
 .chiprow{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
-.chiprow .cl{font:700 11px/1 "Manrope";letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-right:6px;min-width:52px}
+.chiprow .cl{font:700 11px/1 "Archivo";letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-right:6px;min-width:52px}
 .chip{padding:9px 15px;border-radius:999px;border:1px solid var(--line2);background:var(--paper);
-  color:var(--muted);font:600 13.5px "Manrope";cursor:pointer;transition:.18s;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+  color:var(--muted);font:600 13.5px "Archivo";cursor:pointer;transition:.18s;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
 .chip:hover{color:var(--ink);border-color:var(--sea)}
 .chip .c{width:9px;height:9px;border-radius:50%;background:var(--cc,var(--sea))}
-.chip .k{font:700 11px "Manrope";color:var(--faint)}
+.chip .k{font:700 11px "Archivo";color:var(--faint)}
 .chip.on{background:color-mix(in oklab,var(--cc,var(--sea)) 16%,#fff);border-color:var(--cc,var(--sea));color:var(--ink)}
 .chip.on .k{color:var(--ink)}
 
@@ -113,23 +113,23 @@ a:hover{color:var(--gold)}
 /* map */
 .mappanel{border:1px solid var(--line);border-radius:22px;background:var(--paper);overflow:hidden;box-shadow:var(--shadow)}
 .maphead{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}
-.maphead .t{font:400 20px "DM Serif Display";color:var(--ink)}
-.maphead .sub{font:600 12.5px "Manrope";color:var(--muted);margin-left:auto;display:flex;align-items:center;gap:7px}
+.maphead .t{font:400 20px "Archivo";color:var(--ink)}
+.maphead .sub{font:600 12.5px "Archivo";color:var(--muted);margin-left:auto;display:flex;align-items:center;gap:7px}
 .maphead .sub .pin{width:8px;height:8px;border-radius:50%;background:var(--sea);box-shadow:0 0 8px var(--sea)}
 #map{width:100%;height:clamp(440px,60vh,660px);background:#a9d5df}
 .leaflet-tile-pane{filter:saturate(1.16) brightness(1.03) contrast(.97)}
-.leaflet-container{font-family:"Manrope",sans-serif;background:#a9d5df}
+.leaflet-container{font-family:"Archivo","Helvetica Neue",Helvetica,Arial,sans-serif;background:#a9d5df}
 .leaflet-control-zoom a{border-radius:8px!important;color:var(--sea-deep)!important;font-weight:700}
-.leaflet-popup-content-wrapper{border-radius:14px;box-shadow:0 16px 40px rgba(18,56,74,.28)}
+.leaflet-popup-content-wrapper{border-radius:14px;box-shadow:0 16px 40px rgba(14,15,14,.28)}
 .leaflet-popup-content{margin:14px 16px;min-width:190px}
-.pp .pimg{width:calc(100% + 32px);margin:-14px -16px 10px;height:120px;object-fit:cover;display:block;background:linear-gradient(150deg,#37C9B0,#0FB6C7 55%,#0A7E93)}
-.pp .pn{font:400 18px/1.1 "DM Serif Display";color:var(--ink)}
-.pp .pf{font:500 11.5px "Manrope";color:var(--faint);margin-top:2px}
+.pp .pimg{width:calc(100% + 32px);margin:-14px -16px 10px;height:120px;object-fit:cover;display:block;background:linear-gradient(150deg,#37C9B0,#0E0F0E 55%,#0E0F0E)}
+.pp .pn{font:400 18px/1.1 "Archivo";color:var(--ink)}
+.pp .pf{font:500 11.5px "Archivo";color:var(--faint);margin-top:2px}
 .pp .prow{display:flex;align-items:center;gap:8px;margin-top:9px}
-.pp .pill{font:700 11px "Manrope";letter-spacing:.04em;text-transform:uppercase;color:#fff;padding:3px 9px;border-radius:999px}
-.pp .pwhen{font:600 12px "Manrope";color:var(--muted)}
+.pp .pill{font:700 11px "Archivo";letter-spacing:.04em;text-transform:uppercase;color:#fff;padding:3px 9px;border-radius:999px}
+.pp .pwhen{font:600 12px "Archivo";color:var(--muted)}
 .pp .pbtn{display:block;margin-top:11px;text-align:center;background:linear-gradient(120deg,var(--sea),var(--royal));
-  color:#fff;font:700 12.5px "Manrope";padding:9px;border-radius:10px;cursor:pointer}
+  color:#fff;font:700 12.5px "Archivo";padding:9px;border-radius:10px;cursor:pointer}
 .pp .pbtn:hover{color:#fff;opacity:.92}
 /* leaflet marker icons */
 .rmark{position:relative;width:20px;height:20px}
@@ -137,25 +137,25 @@ a:hover{color:var(--gold)}
   border:2.5px solid #fff;box-shadow:0 2px 7px rgba(0,0,0,.45),0 0 0 1px rgba(0,0,0,.06)}
 .rmark.match .d{animation:pulseDot 1s ease-in-out infinite;box-shadow:0 0 0 5px color-mix(in oklab,var(--dc) 35%,transparent),0 2px 7px rgba(0,0,0,.45)}
 .rmark .rlabel{position:absolute;left:16px;top:1px;white-space:nowrap;pointer-events:none;
-  font:700 11px "Manrope";color:var(--ink);background:rgba(255,253,248,.94);padding:2px 8px;border-radius:7px;
-  box-shadow:0 3px 10px rgba(18,56,74,.22);border:1px solid var(--line);opacity:0;transform:translateX(-4px);transition:.2s}
+  font:700 11px "Archivo";color:var(--ink);background:rgba(255,253,248,.94);padding:2px 8px;border-radius:7px;
+  box-shadow:0 3px 10px rgba(14,15,14,.22);border:1px solid var(--line);opacity:0;transform:translateX(-4px);transition:.2s}
 #map.lz .rmark .rlabel{opacity:1;transform:translateX(0)}
 .rmark.match .rlabel,#map.lz .rmark.match .rlabel{opacity:1;transform:translateX(0)}
 .cmark{transform:translate(-50%,-50%)}
-.cmark .b{border-radius:50%;display:grid;place-items:center;color:#fff;font:400 var(--fs) "DM Serif Display";
+.cmark .b{border-radius:50%;display:grid;place-items:center;color:#fff;font:400 var(--fs) "Archivo";
   background:radial-gradient(circle at 35% 30%, #16c3d4, var(--sea-deep));border:3px solid #fff;
-  box-shadow:0 0 0 6px rgba(15,182,199,.28),0 10px 24px rgba(0,0,0,.32);width:var(--sz);height:var(--sz);cursor:pointer;transition:.18s}
+  box-shadow:0 0 0 6px rgba(242,185,59,.28),0 10px 24px rgba(0,0,0,.32);width:var(--sz);height:var(--sz);cursor:pointer;transition:.18s}
 .cmark:hover .b{transform:scale(1.07)}
 .cmark .cl{position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);white-space:nowrap;
-  font:700 11.5px "Manrope";color:var(--ink);background:var(--paper);padding:3px 9px;border-radius:8px;box-shadow:var(--shadow)}
-.cmark .rg{position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(15,182,199,.6);animation:scan 2.8s ease-out infinite}
+  font:700 11.5px "Archivo";color:var(--ink);background:var(--paper);padding:3px 9px;border-radius:8px;box-shadow:var(--shadow)}
+.cmark .rg{position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(242,185,59,.6);animation:scan 2.8s ease-out infinite}
 .maptools{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--line);align-items:center;flex-wrap:wrap}
 .maptools .back{display:none;align-items:center;gap:6px;background:var(--sand2);border:1px solid var(--line2);
-  color:var(--ink);font:700 12.5px "Manrope";padding:8px 14px;border-radius:10px;cursor:pointer}
+  color:var(--ink);font:700 12.5px "Archivo";padding:8px 14px;border-radius:10px;cursor:pointer}
 .maptools .back:hover{border-color:var(--sea)}
-.maptools .hint{font:600 12px "Manrope";color:var(--muted);margin-left:auto}
+.maptools .hint{font:600 12px "Archivo";color:var(--muted);margin-left:auto}
 .maptools .tbtn{display:inline-flex;align-items:center;gap:6px;background:var(--paper);border:1px solid var(--line2);
-  color:var(--ink);font:700 12.5px "Manrope";padding:8px 13px;border-radius:10px;cursor:pointer;transition:.16s}
+  color:var(--ink);font:700 12.5px "Archivo";padding:8px 13px;border-radius:10px;cursor:pointer;transition:.16s}
 .maptools .tbtn:hover{border-color:var(--sea)}
 .maptools .tbtn.on{background:linear-gradient(120deg,var(--sea),var(--royal));color:#fff;border-color:transparent}
 .maptools .tbtn.exp{display:none}
@@ -164,7 +164,7 @@ body.editing .rmark .rlabel{opacity:1;transform:translateX(0)}
 body.editing .rmark{cursor:grab}
 body.editing .leaflet-marker-draggable{cursor:grab}
 .editbar{display:none;padding:9px 16px;border-top:1px solid var(--line);background:color-mix(in oklab,var(--sea) 10%,var(--paper));
-  font:600 12px "Manrope";color:var(--sea-deep);align-items:center;gap:8px}
+  font:600 12px "Archivo";color:var(--sea-deep);align-items:center;gap:8px}
 body.editing .editbar{display:flex}
 .editbar b{color:var(--ink)}
 
@@ -175,52 +175,52 @@ body.editing .editbar{display:flex}
 .grouphd{position:sticky;top:0;z-index:12;display:flex;align-items:center;gap:11px;padding:12px 4px;margin-top:6px;
   background:var(--sand)}
 .grouphd .gi{width:13px;height:13px;border-radius:5px}
-.grouphd .gt{font:400 21px "DM Serif Display";color:var(--ink)}
-.grouphd .gc{font:700 11px "Manrope";color:var(--muted);border:1px solid var(--line2);border-radius:999px;padding:3px 10px}
+.grouphd .gt{font:400 21px "Archivo";color:var(--ink)}
+.grouphd .gc{font:700 11px "Archivo";color:var(--muted);border:1px solid var(--line2);border-radius:999px;padding:3px 10px}
 .grouphd .gl{flex:1;height:1px;background:var(--line)}
-.subhd{font:700 11px "Manrope";letter-spacing:.14em;text-transform:uppercase;color:var(--sea-deep);margin:14px 4px 7px}
+.subhd{font:700 11px "Archivo";letter-spacing:.14em;text-transform:uppercase;color:var(--sea-deep);margin:14px 4px 7px}
 
 .card{display:block;border:1px solid var(--line);border-radius:18px;background:var(--paper);margin-bottom:11px;
-  overflow:hidden;transition:.2s;box-shadow:0 6px 18px rgba(18,56,74,.06);--dc:var(--sea)}
+  overflow:hidden;transition:.2s;box-shadow:0 6px 18px rgba(14,15,14,.06);--dc:var(--sea)}
 .card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
 .card.flash{animation:flash 1.3s ease-out}
 .card.open{box-shadow:0 0 0 2px color-mix(in oklab,var(--dc) 55%,transparent),var(--shadow)}
 .chead{display:flex;gap:14px;padding:13px;cursor:pointer;align-items:flex-start}
 .thumb{width:96px;height:90px;flex:none;border-radius:12px;overflow:hidden;position:relative;
-  background:linear-gradient(150deg,#37C9B0,#0FB6C7 55%,#0A7E93);display:grid;place-items:center;min-height:82px}
+  background:linear-gradient(150deg,#37C9B0,#0E0F0E 55%,#0E0F0E);display:grid;place-items:center;min-height:82px}
 .thumb::after{content:"";position:absolute;right:-14px;top:-14px;width:52px;height:52px;border-radius:50%;
   background:radial-gradient(circle,rgba(255,214,120,.95),transparent 68%)}
-.thumb span{position:relative;z-index:2;font:700 8.5px/1.3 "Manrope";letter-spacing:.08em;color:rgba(255,255,255,.9);text-align:center;padding:4px}
+.thumb span{position:relative;z-index:2;font:700 8.5px/1.3 "Archivo";letter-spacing:.08em;color:rgba(255,255,255,.9);text-align:center;padding:4px}
 .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:3}
-.thumb .ph{position:absolute;left:8px;top:7px;z-index:2;font:700 8px "Manrope";letter-spacing:.14em;color:rgba(255,255,255,.75)}
+.thumb .ph{position:absolute;left:8px;top:7px;z-index:2;font:700 8px "Archivo";letter-spacing:.14em;color:rgba(255,255,255,.75)}
 .info{min-width:0;flex:1;display:flex;flex-direction:column;justify-content:center}
-.nm{font:400 19px/1.08 "DM Serif Display";color:var(--ink);display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
-.nm .cat{font:600 10.5px "Manrope";letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line2);padding:2px 7px;border-radius:6px}
-.fmr{font:500 12px "Manrope";color:var(--faint);margin-top:3px}
+.nm{font:400 19px/1.08 "Archivo";color:var(--ink);display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.nm .cat{font:600 10.5px "Archivo";letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line2);padding:2px 7px;border-radius:6px}
+.fmr{font:500 12px "Archivo";color:var(--faint);margin-top:3px}
 .fmr b{color:var(--muted);font-weight:600}
 .meta{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
-.pill{font:700 10.5px "Manrope";letter-spacing:.05em;text-transform:uppercase;color:#fff;padding:4px 10px;border-radius:999px;background:var(--dc);white-space:nowrap}
-.note{font:500 12px "Manrope";color:var(--muted)}
+.pill{font:700 10.5px "Archivo";letter-spacing:.05em;text-transform:uppercase;color:#fff;padding:4px 10px;border-radius:999px;background:var(--dc);white-space:nowrap}
+.note{font:500 12px "Archivo";color:var(--muted)}
 .right{flex:none;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:8px;padding-left:4px}
-.when .w{font:700 14.5px "Manrope";color:var(--ink);text-align:right;white-space:nowrap}
-.when .wl{font:700 9.5px "Manrope";letter-spacing:.1em;text-transform:uppercase;color:var(--faint);text-align:right}
+.when .w{font:700 14.5px "Archivo";color:var(--ink);text-align:right;white-space:nowrap}
+.when .wl{font:700 9.5px "Archivo";letter-spacing:.1em;text-transform:uppercase;color:var(--faint);text-align:right}
 .exp{width:28px;height:28px;border-radius:9px;border:1px solid var(--line2);display:grid;place-items:center;color:var(--muted);transition:.25s}
 .card.open .exp{transform:rotate(180deg);color:var(--dc);border-color:var(--dc)}
 .body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
 .card.open .body{max-height:520px}
 .bodyin{padding:4px 16px 18px;border-top:1px solid var(--line);margin-top:2px}
-.det h4{font:700 10.5px "Manrope";letter-spacing:.14em;text-transform:uppercase;color:var(--sea-deep);margin:14px 0 5px}
-.det p{margin:0;font:500 14px/1.55 "Manrope";color:var(--ink)}
+.det h4{font:700 10.5px "Archivo";letter-spacing:.14em;text-transform:uppercase;color:var(--sea-deep);margin:14px 0 5px}
+.det p{margin:0;font:500 14px/1.55 "Archivo";color:var(--ink)}
 .det p.book{color:var(--gold)}
-.det .vr{font:600 12px "Manrope";color:var(--faint);margin-top:12px}
+.det .vr{font:600 12px "Archivo";color:var(--faint);margin-top:12px}
 .wa{display:inline-flex;align-items:center;gap:9px;margin-top:14px;background:linear-gradient(120deg,#25D366,#128C7E);
-  color:#fff;font:700 13.5px "Manrope";padding:11px 18px;border-radius:12px;box-shadow:0 8px 22px rgba(37,211,102,.32);transition:.18s}
+  color:#fff;font:700 13.5px "Archivo";padding:11px 18px;border-radius:12px;box-shadow:0 8px 22px rgba(37,211,102,.32);transition:.18s}
 .wa:hover{transform:translateY(-2px);color:#fff}
 .wa svg{width:17px;height:17px;fill:#fff}
 .empty{text-align:center;padding:60px 20px;color:var(--muted);font-size:15px}
 
 .foot{margin-top:34px;padding:24px 22px;border:1px solid var(--line);border-radius:18px;background:var(--paper);
-  box-shadow:var(--shadow);font:500 13.5px/1.6 "Manrope";color:var(--muted);text-align:center}
+  box-shadow:var(--shadow);font:500 13.5px/1.6 "Archivo";color:var(--muted);text-align:center}
 .foot b{color:var(--ink);font-weight:700}
 
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
@@ -274,6 +274,107 @@ body.editing .editbar{display:flex}
   .chiprow .cl{position:sticky;left:0;background:var(--sand);min-width:0;margin:0;padding-right:6px;z-index:2;flex:none}
   .chip{flex:none;justify-content:center;padding:7px 13px;font-size:12px;white-space:nowrap;line-height:1.2}
 }
+
+/* Golden Vacation Bold: the site's ink, gold and Archivo over the map's own layout */
+:root{ --sea:#0E0F0E; --sea-deep:#0E0F0E; --sand:#F3F3EF; --sand2:#E4E4DF; --paper:#FFFFFF; --royal:#0E0F0E; --deep:#0E0F0E; --gold:#F2B93B; --gold2:#F2B93B; --coral:#B42318; --palm:#1F8A4C;
+  --ink:#0E0F0E; --muted:#5A5F57; --faint:#8A8F87; --line:#E4E4DF; --line2:#CFCFC8;
+  --st-open:#1F8A4C; --st-reopen:#E0A21B; --st-new:#0E0F0E; --st-soon:#A87A12; --st-closed:#8A8F87; --st-perm:#B42318; --shadow:none; }
+body{ background:#fff !important; color:var(--ink); }
+.hero{ background:none !important; box-shadow:none !important; border:0 !important; }
+.hero h1{ font-size:clamp(36px,5.4vw,64px) !important; line-height:.98 !important; color:var(--ink) !important; }
+.hero p{ color:rgba(14,15,14,.74) !important; font-size:17px; line-height:1.55; max-width:760px; }
+.hero .kick{ color:#A87A12 !important; background:none !important; border:0 !important; padding-left:0 !important; font-weight:800; letter-spacing:.14em; text-transform:uppercase; font-size:12px; }
+.hero .search{ max-width:620px; margin-top:18px; border:2px solid var(--ink) !important; border-radius:999px !important; background:#fff !important; box-shadow:none !important; }
+.hero .search input{ font-weight:600; }
+.mp-actions{ display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+.mp-btn{ display:inline-flex; align-items:center; gap:8px; height:44px; padding:0 20px; border-radius:999px; font-weight:800; font-size:14px; text-decoration:none; border:2px solid var(--ink); color:var(--ink); background:#fff; }
+.mp-btn.dark{ background:var(--ink); color:#fff; }
+.mappanel, .card{ box-shadow:none !important; }
+.mappanel{ border:2px solid var(--ink) !important; border-radius:24px !important; }
+.chip{ border:2px solid var(--ink) !important; font-weight:700 !important; }
+.chip.on{ background:var(--ink) !important; color:#fff !important; border-color:var(--ink) !important; }
+.tbtn{ display:none !important; } body.can-edit .tbtn{ display:inline-flex !important; }
+.mp-note{ font-size:13px; line-height:1.55; color:rgba(14,15,14,.55); max-width:860px; margin:28px 0 40px; }
+.gvc .nav-links a[aria-current="page"]{ color:#A87A12; }
+
+.gvc{ color:#0E0F0E; font-family:"Archivo","Helvetica Neue",Helvetica,Arial,sans-serif; }
+.gvc a{ color:inherit; }
+.gvc .btn-black, .gvc .icon-btn-black{ background:#0E0F0E !important; color:#fff !important; }
+body, button, input{ font-family:"Archivo","Helvetica Neue",Helvetica,Arial,sans-serif !important; }
+.hero h1, .stats .n{ font-weight:900 !important; font-stretch:112%; letter-spacing:-.02em; }
+.maphead .t, .grouphd, .card .nm, .card .n{ font-weight:800 !important; }
+
+:root{
+  --ink: #0E0F0E; --gold: #F2B93B; --gold-txt: #A87A12; --alt: #F3F3EF; --line: #E4E4DF;
+  --muted: #63685F; --ph: #E6E6E1; --ph-d: #2A2C29; --white: #FFFFFF;
+  --pad: 20px; --radius: 20px;
+  --font: Archivo, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+:root{ --ok: #1F8A4C; --new: #2F5BEA; }
+:root{ --ink-2: rgba(14,15,14,.74); --ink-3: rgba(14,15,14,.55); --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .5 0'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='.55'/></svg>"); }
+@media (min-width: 900px) {:root{ --pad: 56px; }}
+.gvc .hh{ font-weight: 900; font-stretch: 110%; letter-spacing: -0.04em; line-height: 0.92; }
+.gvc .gvc-wrap{ max-width: 1440px; width: 100%; margin: 0 auto; }
+@media (max-width: 899px) {.gvc .desk{ display: none !important; }}
+@media (min-width: 900px) {.gvc .mob{ display: none !important; }}
+.gvc .wordmark{ font-weight: 900; font-stretch: 110%; letter-spacing: -0.03em; line-height: 1; white-space: nowrap; }
+.gvc .btn{ display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 52px; padding: 0 24px; border-radius: 999px;
+  font-size: 15px; font-weight: 700; white-space: nowrap; transition: transform .12s ease, background .12s ease; }
+.gvc .btn:active{ transform: scale(.98); }
+.gvc .btn svg{ flex: none; }
+.gvc .btn-black{ background: var(--ink); color: #fff; }
+.gvc .btn-black:hover{ color: var(--gold); }
+.gvc .btn-gold{ background: var(--gold); color: var(--ink); }
+.gvc .btn-outline{ background: transparent; color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink); }
+.gvc .btn-sm{ height: 42px; padding: 0 18px; font-size: 14px; }
+.gvc .nav{ display: flex; align-items: center; justify-content: space-between; height: 64px; padding: 0 12px 0 8px; background: #fff; position: relative; z-index: 5; }
+.gvc .nav-l{ display: flex; align-items: center; gap: 8px; min-width: 0; }
+.gvc .nav-r{ display: flex; align-items: center; gap: 4px; }
+.gvc .icon-btn{ display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 999px; color: var(--ink); }
+.gvc .icon-btn-black{ background: var(--ink); color: #fff; }
+.gvc .nav-links{ display: none; }
+.gvc .nav .curr{ display: none; }
+.gvc .nav .wordmark{ font-size: 16px; }
+.gvc .tile-in .hh{ font-size: 20px; }
+.gvc .combo-big .in .hh{ font-size: 26px; }
+.gvc .price-blk .hh{ font-size: 30px; }
+.gvc .faq-side .btn{ display: none; }
+.gvc .stay .hh{ font-size: 24px; }
+.gvc .gvc-foot{ padding: 40px var(--pad) 32px; background: var(--ink); color: #fff; display: flex; flex-direction: column; gap: 24px; }
+.gvc .foot-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.gvc .foot-brand{ grid-column: span 2; display: flex; flex-direction: column; gap: 12px; max-width: 360px; }
+.gvc .foot-brand p{ font-size: 14px; line-height: 1.6; color: rgba(255,255,255,.7); }
+.gvc .foot-col{ display: flex; flex-direction: column; gap: 10px; }
+.gvc .foot-col span{ font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--gold); }
+.gvc .foot-col a{ font-size: 14px; color: rgba(255,255,255,.8); }
+.gvc .foot-col a:hover{ color: var(--gold); }
+.gvc .foot-bot{ display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.15); font-size: 13px; color: rgba(255,255,255,.55); }
+.gvc .foot-bot a{ color: rgba(255,255,255,.7); }
+.gvc .lead-price .hh{ font-size: 28px; }
+.gvc .hotel-p .hh{ font-size: 18px; }
+.gvc .tour .hh{ font-size: 16px; flex: none; }
+.gvc .combo-price .hh{ font-size: 32px; }
+@media (min-width: 900px) {.gvc .nav{ height: 80px; padding: 0 var(--pad); }.gvc .nav .wordmark{ font-size: 20px; }.gvc .nav-links{ display: flex; align-items: center; gap: 20px; }.gvc .nav-links a{ font-size: 15px; font-weight: 700; white-space: nowrap; }.gvc .nav .curr{ display: inline-flex; }.gvc .nav-r{ gap: 12px; }.gvc .nav .icon-btn{ display: none; }.gvc .nav .btn{ display: inline-flex; }.gvc .how-t .hh{ font-size: 34px; }.gvc .tile-in .hh{ font-size: 30px; }.gvc .combo-big .in .hh{ font-size: 40px; }.gvc .faq-side .btn{ display: inline-flex; align-self: flex-start; margin-top: 8px; }.gvc .custom .btn{ align-self: flex-start; width: auto; }.gvc .stay .hh{ font-size: 32px; }.gvc .gvc-foot{ padding: 72px var(--pad) 40px; gap: 56px; }.gvc .foot-grid{ grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 40px; }.gvc .foot-brand{ grid-column: auto; }.gvc .foot-brand .wordmark{ font-size: 22px; }.gvc .foot-brand p{ font-size: 15px; }.gvc .foot-col span{ font-size: 13px; }.gvc .foot-col a{ font-size: 15px; }.gvc .lead-price .hh{ font-size: 34px; }.gvc .hotel-p .hh{ font-size: 22px; }}
+@media (min-width: 900px) and (max-width: 1279px) {.gvc .home .nav-links, .gvc .exp .nav-links, .gvc .legal-page .nav-links{ display: none; }.gvc .home .nav .menu-btn.mob, .gvc .exp .nav .menu-btn.mob, .gvc .legal-page .nav .menu-btn.mob{ display: inline-flex !important; }.gvc .home .menu.mob.open, .gvc .exp .menu.mob.open, .gvc .legal-page .menu.mob.open{ display: flex !important; }.gvc .menu .curr{ display: none; }}
+@media (min-width: 900px) and (max-width: 1199px) {.gvc .ga-page .nav{ flex-wrap: wrap; height: auto; padding-top: 12px; padding-bottom: 12px; row-gap: 10px; }.gvc .ga-page .nav-l{ flex: none; }.gvc .ga-page .nav-links{ order: 3; flex-basis: 100%; }}
+@media (min-width: 1340px) {.gvc .nav-links{ gap: 30px; }}
+.gvc .menu-btn{ display: inline-flex; }
+.gvc .menu{ display: none; padding: 8px var(--pad) 18px; background: #fff; border-bottom: 2px solid var(--line); }
+.gvc .menu.open{ display: flex; flex-direction: column; }
+.gvc .menu a{ padding: 12px 0; font-size: 17px; font-weight: 800; border-bottom: 2px solid var(--line); }
+.gvc .menu a:last-child{ border-bottom: 0; }
+.gvc .menu .curr{ align-self: flex-start; margin-top: 12px; }
+.gvc .feature .hh{ font-size: 24px; }
+.gvc .pdoor-in .hh{ font-size: 20px; }
+.gvc .status-btns .btn-outline{ display: none; }
+.gvc .status-btns .btn{ width: 100%; }
+.gvc .foot-links{ display: flex; flex-wrap: wrap; gap: 10px 18px; }
+.gvc .foot-links a{ font-size: 14px; font-weight: 800; }
+@media (min-width: 900px) {.gvc .menu-btn, .gvc .menu{ display: none !important; }.gvc .feature .hh{ font-size: 30px; }.gvc .coming-sec .mob{ display: none !important; }.gvc .pdoor-in .hh{ font-size: 28px; }.gvc .status-btns .btn{ width: auto; }.gvc .status-btns .btn-outline{ display: inline-flex; }.gvc .status-btns .mob{ display: none !important; }.gvc .foot-links{ display: none; }}
+@media (max-width: 899px) {.gvc .foot-grid .foot-col{ display: none; }}
+
+.hero h1{ text-shadow:none !important; }
+.hero .search{ margin-left:0 !important; }
 </style>
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://goldenvacays.com/"}, {"@type": "ListItem", "position": 2, "name": "Jamaica Resort Map", "item": "https://goldenvacays.com/hotel-status-map"}]}
@@ -290,24 +391,29 @@ body.editing .editbar{display:flex}
     <circle cx="50" cy="40" r="8" fill="#0FB6C7"/>
   </svg>
 </template>
-<div class="wrap">
-  <div class="topbar">
-    <a class="brand" href="/" title="Back to Golden Vacays home" style="text-decoration:none;color:inherit">
-      <div class="mark">G</div>
-      <div><div class="bt">Golden Vacays</div><div class="bn">Jamaica Resorts</div></div>
-    </a>
-    <a href="/hotel-status" style="display:inline-flex;align-items:center;gap:7px;font:600 14px/1 'Manrope',sans-serif;text-decoration:none;padding:9px 16px;border-radius:999px;color:#fff;background:linear-gradient(140deg,#0FB6C7,#0057D9);box-shadow:0 4px 14px rgba(15,182,199,.35)">📋 Status list</a><a href="/" style="display:inline-flex;align-items:center;gap:7px;font:600 14px/1 'Manrope',sans-serif;color:#0F7C8A;text-decoration:none;padding:9px 16px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid rgba(15,124,138,.28);box-shadow:0 4px 14px rgba(18,56,74,.06)">&larr; Home</a>
-    <div class="search">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-      <input id="q" type="text" placeholder="Search resort or former name…" autocomplete="off">
-    </div>
+<div class="gvc"><header class="nav gvc-wrap" role="banner">
+  <div class="nav-l"><a class="wordmark hh" href="/" aria-label="Golden Vacation, home">GOLDEN VACATION</a></div>
+  <nav class="nav-links" aria-label="Main"><a href="/getaways/">Getaways</a><a href="/#staycations">Staycations</a><a href="/#coming">Jamaica</a><a href="/experiences/">Experiences</a><a href="/transfers/">Transfers</a><a href="/groups/">Groups</a><a href="/hotel-status" aria-current="page">Resort status</a></nav>
+  <div class="nav-r">
+    <a class="icon-btn icon-btn-black mob" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%27m%20looking%20at%20the%20resort%20map%20and%20I%27d%20like%20help%20finding%20an%20open%20resort%20for%20my%20dates.%20Ref%20GV-MAP" aria-label="WhatsApp us" data-where="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></a>
+    <button class="icon-btn menu-btn mob" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block"><path d="M3 12h18M3 6h18M3 18h18"></path></svg></button>
+    <a class="desk btn btn-black btn-sm" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%27m%20looking%20at%20the%20resort%20map%20and%20I%27d%20like%20help%20finding%20an%20open%20resort%20for%20my%20dates.%20Ref%20GV-MAP" data-where="nav">WhatsApp<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></a>
   </div>
+</header>
+<nav id="menu" class="menu mob" aria-label="Menu"><a href="/getaways/">Getaways</a><a href="/#staycations">Staycations</a><a href="/#coming">Jamaica</a><a href="/experiences/">Experiences</a><a href="/transfers/">Transfers</a><a href="/groups/">Groups</a><a href="/hotel-status" aria-current="page">Resort status</a></nav></div>
+<div class="wrap">
+  
 
   <div class="hero">
     <div class="in">
       <div class="kick"><span class="dot"></span><span>Live status · Verified by Golden Vacation &amp; Travel</span></div>
       <h1>Jamaica All-Inclusive Resort Status</h1>
       <p>Tired of inconsistent information? Every major all-inclusive on the island, whether open, reopening, brand-new or closed. Explore the real map, zoom into a coast, and tap a resort for what&rsquo;s happening.</p>
+      <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="q" type="text" placeholder="Search resort or former name…" autocomplete="off">
+    </div>
+      <div class="mp-actions"><a class="mp-btn" href="/hotel-status">See the full list</a><a class="mp-btn dark" data-where="map-hero" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%27m%20looking%20at%20the%20resort%20map%20and%20I%27d%20like%20help%20finding%20an%20open%20resort%20for%20my%20dates.%20Ref%20GV-MAP">Ask us on WhatsApp</a></div>
     </div>
   </div>
 
@@ -340,10 +446,20 @@ body.editing .editbar{display:flex}
     <div class="listcol" id="list"></div>
   </div>
 
-  <div class="foot">
+  <p class="mp-note">
     Information maintained by <b>Golden Vacation &amp; Travel</b>. Dates can change — always cross-check with your hotel or booking agent/agency (hopefully, that&rsquo;s us).
-  </div>
+  </p>
 </div>
+<div class="gvc"><footer class="gvc-foot" role="contentinfo"><div class="gvc-wrap" style="display:flex;flex-direction:column;gap:32px">
+  <div class="foot-grid">
+    <div class="foot-brand"><a class="wordmark hh" href="/">GOLDEN VACATION</a><p>Shop 3, Enfield Plaza, Brown's Town, St Ann, Jamaica<br>WhatsApp +1 876 360 1567 · Call 876-817-3467<br>IATA-accredited · 85500310</p></div>
+    <div class="foot-col"><span>Book</span><a href="/getaways/">Getaways from Jamaica</a><a href="/#staycations">Staycations</a><a href="/hotel-status">Jamaica resorts, what's open</a><a href="/experiences/">Golden Experiences</a><a href="/transfers/">Airport transfers</a><a href="/groups/">Group travel</a></div>
+    <div class="foot-col"><span>Coming to Jamaica</span><a href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation!%20I'm%20coming%20to%20Jamaica%20from%20the%20USA%20and%20I'd%20like%20a%20quote%20for%20a%20hotel%20or%20land%20package.%20Ref%20GV-JAM-USA">From the USA</a><a href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation!%20I'm%20coming%20home%20to%20Jamaica%20for%20a%20visit%20and%20I'd%20like%20a%20quote%20for%20a%20hotel%20or%20package.%20Ref%20GV-JAM-HOME">Coming home</a><a href="https://wa.me/18763601567?text=%C2%A1Hola%20Golden%20Vacation!%20Quiero%20cotizar%20un%20viaje%20a%20Jamaica.%20Ref%20GV-JAM-ES">En español</a><a href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation!%20I'm%20coming%20to%20Jamaica%20from%20the%20UK%20or%20Canada%20and%20I'd%20like%20a%20land-only%20quote%20(hotel%20and%20transfers).%20Ref%20GV-JAM-UKCA">From the UK</a><a href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation!%20I'm%20coming%20to%20Jamaica%20from%20the%20UK%20or%20Canada%20and%20I'd%20like%20a%20land-only%20quote%20(hotel%20and%20transfers).%20Ref%20GV-JAM-UKCA">From Canada</a></div>
+    <div class="foot-col"><span>Help</span><a href="/hotel-status">Resort status</a><a href="/hotel-status-map">Resort map</a><a href="/getaways/#questions">Deposits &amp; payments</a><a href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%27m%20looking%20at%20the%20resort%20map%20and%20I%27d%20like%20help%20finding%20an%20open%20resort%20for%20my%20dates.%20Ref%20GV-MAP">Contact us</a></div>
+  </div>
+  <div class="foot-links mob"><a href="/getaways/">Getaways</a><a href="/#staycations">Staycations</a><a href="/#coming">Jamaica</a><a href="/experiences/">Experiences</a><a href="/transfers/">Transfers</a><a href="/groups/">Groups</a><a href="/hotel-status">Resort status</a><a href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%27m%20looking%20at%20the%20resort%20map%20and%20I%27d%20like%20help%20finding%20an%20open%20resort%20for%20my%20dates.%20Ref%20GV-MAP">Contact</a></div>
+  <div class="foot-bot"><span>© 2026 Golden Vacation &amp; Travel Limited · St Ann, Jamaica · <a href="/terms/">Terms</a> · <a href="/privacy/">Privacy</a></span><span><a href="https://www.instagram.com/goldenvacays/" rel="noopener">Instagram</a> · <a href="https://www.facebook.com/goldenvacays/" rel="noopener">Facebook</a></span></div>
+</div></footer></div>
 
 <script src="resorts.js"></script>
 <script>
@@ -607,5 +723,7 @@ renderStats(); renderChips(); renderList();
 if(window.L) initMap(); else window.addEventListener("load",initMap);
 window.addEventListener("resize",()=>{ if(map) map.invalidateSize(); });
 </script>
+<script src="/assets/chrome.js?v=4ecb7cde" defer></script>
+<script>if(/[?&]edit(=|&|$)/.test(location.search))document.body.classList.add("can-edit");</script>
 </body>
 </html>
