@@ -397,6 +397,11 @@ ${scripts()}
 /* ---------- /groups/copa/: Copa Airlines group fares. One look from top to bottom (black bands at each end, one card style,
    gold for numbers and icons) and a hard sell: the price hook up top, what the group gets, the trip, where Copa goes, how, proof, ask. ---------- */
 function copa() {
+  /* Where to: the places Copa groups go, and the hotels we sell there (from data/hotels.json, Jamaica left out) */
+  const HOTELS = (() => { const raw = JSON.parse(fs.readFileSync(path.join(ROOT, "data/hotels.json"), "utf8")); return (Array.isArray(raw) ? raw : raw.hotels || []).filter((h) => !/jamaica/i.test(h.country || "")); })();
+  const tripHotels = G.trips.destinations.flatMap((d) => d.hotels.map((ht) => ht.name.toLowerCase()));
+  const TO = [["d", "Panama City", "Panama"], ["d", "Lima", "Peru"], ["d", "Medellín", "Colombia"], ["d", "Bogotá", "Colombia"], ["d", "San José", "Costa Rica"], ["d", "Punta Cana", "Dominican Republic"], ["d", "Panama + Lima", "Two countries"], ["d", "Panama + Medellín", "Two countries"]]
+    .concat(HOTELS.map((h) => ["h", h.name, h.city, h.country, tripHotels.some((t) => h.name.toLowerCase().includes(t)) ? 1 : 0]).sort((a, b) => b[4] - a[4]));
   const tr = G.trips, pan = tr.destinations.find((d) => d.id === "panama");
   const from = Math.min(...pan.hotels.map((h) => h.usd));
   const Q = `${BASE}/enquire/?branch=trips`;
@@ -599,7 +604,7 @@ ${css}
   <input type="hidden" name="form-name" value="groups"><input type="hidden" name="subject" value="Group quote · Copa page"><input type="hidden" name="branch" value="trips"><input type="hidden" name="ref" value=""><input type="hidden" name="currency" value="US$"><input type="hidden" name="hotel" value="">
   <p hidden><label>Leave this empty <input name="bot-field"></label></p>
   <div class="cp-row">
-    <label class="cp-seg"><span class="cp-l">Where to</span><select name="place">${["Panama City", "Lima", "Medellín", "Bogotá", "San José", "Panama + Lima", "Somewhere else"].map((x) => `<option>${esc(x)}</option>`).join("")}</select></label>
+    <div class="cp-seg cp-from-seg"><label class="cp-l" for="cp-to">Where to</label><input id="cp-to" type="text" value="Panama City" autocomplete="off" spellcheck="false" placeholder="City or hotel" role="combobox" aria-expanded="false" aria-controls="cp-sug-to" aria-autocomplete="list"><div class="cp-sug" id="cp-sug-to" role="listbox" hidden></div><input type="hidden" name="place" value="Panama City"></div>
     <div class="cp-seg cp-from-seg"><label class="cp-l" for="cp-from">Flying from</label><input id="cp-from" type="text" value="Kingston (KIN)" autocomplete="off" spellcheck="false" placeholder="Type your city or airport" role="combobox" aria-expanded="false" aria-controls="cp-sug" aria-autocomplete="list"><div class="cp-sug" id="cp-sug" role="listbox" hidden></div><input type="hidden" name="airport" value="Kingston"><input type="hidden" name="airport_other" value=""></div>
     <label class="cp-seg"><span class="cp-l">Leaving</span><input name="depart" type="date"></label>
     <label class="cp-seg"><span class="cp-l">Coming back</span><input name="return" type="date"></label>
@@ -676,44 +681,61 @@ ${css}
   var f = document.getElementById("cp-form"); if (!f) return;
   var q = function (s) { return f.querySelector(s); }, step2 = document.getElementById("cp-step2"), err = document.getElementById("cp-err");
   var v = function (n) { return (q("[name=" + n + "]").value || "").trim(); };
-  /* flying from: type a city, airport code or country; Kingston and Montego Bay are sent as themselves, anything else as "Another airport" plus what they chose or typed */
+  function norm(x) { return String(x || "").normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase(); }
+  /* a type-ahead box: shows a starting list on focus, filters as they type, arrow keys and Enter or a tap to pick, and whatever they type stands if nothing fits */
+  function combo(input, box, list, rowHtml, pick, typed, emptyNote) {
+    var shown = [], act = -1;
+    function close() { box.hidden = true; input.setAttribute("aria-expanded", "false"); act = -1; }
+    function render() {
+      var t = input.dataset.typed === "1" ? norm(input.value.trim()) : "";
+      shown = list.map(function (x, i) { return { x: x, s: x.score(t), i: i }; }).filter(function (o) { return o.s > 0; }).sort(function (a, b) { return b.s - a.s || a.i - b.i; }).slice(0, 8).map(function (o) { return o.x; });
+      box.innerHTML = shown.map(function (x, i) { return '<div class="cp-opt-row" role="option" id="' + box.id + '-' + i + '" data-i="' + i + '">' + rowHtml(x) + "</div>"; }).join("") + (t && !shown.length ? '<div class="cp-opt-none">' + emptyNote + "</div>" : "");
+      box.hidden = !box.innerHTML; input.setAttribute("aria-expanded", box.hidden ? "false" : "true"); act = -1;
+    }
+    function mark() { [].forEach.call(box.querySelectorAll(".cp-opt-row"), function (r, i) { r.classList.toggle("on", i === act); }); input.setAttribute("aria-activedescendant", act > -1 ? box.id + "-" + act : ""); }
+    function choose(i) { var x = shown[i]; if (!x) return; pick(x); input.dataset.typed = "0"; close(); }
+    input.addEventListener("focus", function () { input.dataset.typed = "0"; input.select(); render(); });
+    input.addEventListener("input", function () { input.dataset.typed = "1"; typed(input.value); render(); });
+    input.addEventListener("blur", function () { setTimeout(close, 150); });
+    input.addEventListener("keydown", function (e) {
+      if (box.hidden) return;
+      if (e.key === "ArrowDown") { act = Math.min(act + 1, shown.length - 1); mark(); e.preventDefault(); }
+      else if (e.key === "ArrowUp") { act = Math.max(act - 1, 0); mark(); e.preventDefault(); }
+      else if (e.key === "Enter" && act > -1) { choose(act); e.preventDefault(); }
+      else if (e.key === "Escape") { close(); }
+    });
+    box.addEventListener("mousedown", function (e) { var r = e.target.closest(".cp-opt-row"); if (r) { e.preventDefault(); choose(Number(r.dataset.i)); } });
+  }
+  function scorer(fields, bonus) { return function (t) { if (!t) return 1 + (bonus || 0); var best = 0; fields.forEach(function (f, k) { var n = norm(f); if (!n) return; if (n === t) best = Math.max(best, 100 - k); else if (n.indexOf(t) === 0) best = Math.max(best, 90 - k * 10); else if ((" " + n).indexOf(" " + t) > -1) best = Math.max(best, 70 - k * 10); else if (n.indexOf(t) > -1) best = Math.max(best, 50 - k * 10); }); return best ? best + (bonus || 0) : 0; }; }
+
+  /* Where to: a place or a hotel; a hotel fills the place with its city */
+  var TO = ${JSON.stringify(TO)};
+  var toIn = q("#cp-to"), hidPlace = q("[name=place]"), hidHotel = q("[name=hotel]");
+  var toList = TO.map(function (x) { var o = { k: x[0], name: x[1], where: x[2], country: x[3], trip: x[4] }; o.score = o.k === "d" ? scorer([o.name, o.where], 5) : scorer([o.name, o.where, o.country], o.trip ? 3 : 0); if (o.k === "h") { var base = o.score; o.score = function (t) { return t ? base(t) : 0; }; } return o; });
+  function setTo(place, hotel, label) { hidPlace.value = place; hidHotel.value = hotel || ""; toIn.value = label || (hotel ? hotel + ", " + place : place); }
+  combo(toIn, q("#cp-sug-to"), toList,
+    function (o) { return o.k === "d" ? "<b>" + o.name + "</b><small>" + o.where + "</small>" : "<b>" + o.name + (o.trip ? ' <span>Group trip</span>' : "") + "</b><small>Hotel · " + o.where + "</small>"; },
+    function (o) { if (o.k === "d") setTo(o.name, ""); else setTo(o.where === "Panama City" || o.where === "Lima" ? o.where : o.where + ", " + o.country, o.name, o.name + ", " + o.where); },
+    function (text) { hidPlace.value = text.trim(); hidHotel.value = ""; },
+    "Not on the list? Keep typing, we'll price anywhere Copa flies.");
+
+  /* Flying from: Kingston and Montego Bay are sent as themselves, anything else as "Another airport" plus what they chose or typed */
   var AIR = [["Kingston","KIN","Jamaica"],["Montego Bay","MBJ","Jamaica"],["Nassau","NAS","Bahamas"],["Freeport","FPO","Bahamas"],["Grand Cayman","GCM","Cayman Islands"],["Providenciales","PLS","Turks and Caicos"],["Havana","HAV","Cuba"],["Port-au-Prince","PAP","Haiti"],["Santo Domingo","SDQ","Dominican Republic"],["Punta Cana","PUJ","Dominican Republic"],["Santiago","STI","Dominican Republic"],["San Juan","SJU","Puerto Rico"],["St Maarten","SXM","Sint Maarten"],["Antigua","ANU","Antigua and Barbuda"],["St Kitts","SKB","St Kitts and Nevis"],["Dominica","DOM","Dominica"],["Guadeloupe","PTP","Guadeloupe"],["Martinique","FDF","Martinique"],["St Lucia","UVF","St Lucia"],["Barbados","BGI","Barbados"],["St Vincent","SVD","St Vincent and the Grenadines"],["Grenada","GND","Grenada"],["Port of Spain","POS","Trinidad and Tobago"],["Tobago","TAB","Trinidad and Tobago"],["Aruba","AUA","Aruba"],["Curaçao","CUR","Curaçao"],["Bonaire","BON","Bonaire"],["Georgetown","GEO","Guyana"],["Paramaribo","PBM","Suriname"],["Belize City","BZE","Belize"],["Miami","MIA","USA"],["Fort Lauderdale","FLL","USA"],["Orlando","MCO","USA"],["Tampa","TPA","USA"],["New York","JFK","USA"],["Newark","EWR","USA"],["Atlanta","ATL","USA"],["Houston","IAH","USA"],["Washington","IAD","USA"],["Boston","BOS","USA"],["Chicago","ORD","USA"],["Los Angeles","LAX","USA"],["Toronto","YYZ","Canada"],["Montreal","YUL","Canada"]];
-  var from = q("#cp-from"), sug = document.getElementById("cp-sug"), hidA = q("[name=airport]"), hidO = q("[name=airport_other]"), shown = [], act = -1;
-  function norm(x) { return String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); }
+  var from = q("#cp-from"), hidA = q("[name=airport]"), hidO = q("[name=airport_other]");
   function setFrom(text) {
-    var t = norm(text), k = /kingston|\bkin\b/.test(t) ? "Kingston" : /montego|\bmbj\b/.test(t) ? "Montego Bay" : "";
+    var t = norm(text), k = /kingston|\\bkin\\b/.test(t) ? "Kingston" : /montego|\\bmbj\\b/.test(t) ? "Montego Bay" : "";
     if (k) { hidA.value = k; hidO.value = ""; } else { hidA.value = text.trim() ? "Another airport" : ""; hidO.value = text.trim(); }
   }
-  function score(a, t) {
-    if (!t) return 1;
-    var c = norm(a[0]), code = a[1].toLowerCase(), ctry = norm(a[2]);
-    if (code === t) return 100; if (c.indexOf(t) === 0) return 90; if (ctry.indexOf(t) === 0) return 70; if (c.indexOf(t) > -1) return 60; if (ctry.indexOf(t) > -1) return 40; return 0;
-  }
-  function close() { sug.hidden = true; from.setAttribute("aria-expanded", "false"); act = -1; }
-  function render() {
-    var t = norm(from.value.trim());
-    if (/\(kin\)|\(mbj\)/.test(t) && t.indexOf(",") < 0) t = "";
-    shown = AIR.map(function (a, i) { return { a: a, s: score(a, t), i: i }; }).filter(function (x) { return x.s > 0; }).sort(function (x, y) { return y.s - x.s || x.i - y.i; }).slice(0, 8).map(function (x) { return x.a; });
-    sug.innerHTML = shown.map(function (a, i) { return '<div class="cp-opt-row" role="option" id="cp-o' + i + '" data-i="' + i + '"><b>' + a[0] + ' <span>' + a[1] + '</span></b><small>' + a[2] + '</small></div>'; }).join("") + (t && !shown.length ? '<div class="cp-opt-none">Not on the list? Keep typing, we fly groups from anywhere.</div>' : "");
-    sug.hidden = !sug.innerHTML; from.setAttribute("aria-expanded", sug.hidden ? "false" : "true"); act = -1;
-  }
-  function choose(i) { var a = shown[i]; if (!a) return; from.value = a[0] + " (" + a[1] + ")" + (a[2] === "Jamaica" ? "" : ", " + a[2]); setFrom(from.value); close(); }
-  function mark() { [].forEach.call(sug.querySelectorAll(".cp-opt-row"), function (r, i) { r.classList.toggle("on", i === act); }); from.setAttribute("aria-activedescendant", act > -1 ? "cp-o" + act : ""); }
-  from.addEventListener("focus", function () { from.select(); render(); });
-  from.addEventListener("input", function () { setFrom(from.value); render(); });
-  from.addEventListener("blur", function () { setTimeout(close, 150); });
-  from.addEventListener("keydown", function (e) {
-    if (sug.hidden) return;
-    if (e.key === "ArrowDown") { act = Math.min(act + 1, shown.length - 1); mark(); e.preventDefault(); }
-    else if (e.key === "ArrowUp") { act = Math.max(act - 1, 0); mark(); e.preventDefault(); }
-    else if (e.key === "Enter" && act > -1) { choose(act); e.preventDefault(); }
-    else if (e.key === "Escape") { close(); }
-  });
-  sug.addEventListener("mousedown", function (e) { var r = e.target.closest(".cp-opt-row"); if (r) { e.preventDefault(); choose(Number(r.dataset.i)); } });
+  var airList = AIR.map(function (a) { return { city: a[0], code: a[1], country: a[2], score: scorer([a[1], a[0], a[2]]) }; });
+  combo(from, document.getElementById("cp-sug"), airList,
+    function (a) { return "<b>" + a.city + " <span>" + a.code + "</span></b><small>" + a.country + "</small>"; },
+    function (a) { from.value = a.city + " (" + a.code + ")" + (a.country === "Jamaica" ? "" : ", " + a.country); setFrom(from.value); },
+    setFrom,
+    "Not on the list? Keep typing, we fly groups from anywhere.");
+
   document.querySelectorAll('a[href="#quote"]').forEach(function (a) {
     a.addEventListener("click", function () {
-      if (a.dataset.place) { var sel = q("[name=place]"); if ([].some.call(sel.options, function (o) { return o.value === a.dataset.place; })) sel.value = a.dataset.place; }
-      if (a.dataset.hotel) { q("[name=hotel]").value = a.dataset.hotel; var n = document.getElementById("cp-hotel-note"); n.textContent = "Hotel: " + a.dataset.hotel; n.hidden = false; }
+      if (a.dataset.place || a.dataset.hotel) setTo(a.dataset.place || "", a.dataset.hotel || "");
       if (a.dataset.airport) { setTimeout(function () { from.value = ""; setFrom(""); from.focus(); }, 450); }
     });
   });
@@ -722,6 +744,7 @@ ${css}
   q("[name=depart]").addEventListener("change", function () { q("[name=return]").min = v("depart") || today; });
   function tripMissing() {
     var m = [];
+    if (!hidPlace.value.trim()) m.push("where you are going");
     if (!from.value.trim()) m.push("where you are flying from");
     if (!v("depart")) m.push("the date you leave");
     if (!v("return") || v("return") <= v("depart")) m.push("a return date after you leave");
@@ -741,7 +764,7 @@ ${css}
     if (step2.hidden) { next(); return; }
     var m = tripMissing();
     if (!v("name")) m.push("your name");
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v("email"))) m.push("your email");
+    if (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(v("email"))) m.push("your email");
     if (!say(m)) return;
     var cs = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", r = ""; for (var i = 0; i < 4; i++) r += cs[Math.floor(Math.random() * cs.length)];
     var ref = "GV-GRP-" + r; q("[name=ref]").value = ref;
