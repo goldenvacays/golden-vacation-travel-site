@@ -5,6 +5,10 @@
 
 const GOLD = "#F2B93B", INK = "#0E0F0E", ALT = "#F3F3EF", MUTED = "#5A5F57", LINE = "#E4E4DF", GOLD_TXT = "#A87A12";
 
+/* where team emails go: FORMS_NOTIFY (comma separated), else GROUPS_NOTIFY, else the team inbox already public on the site */
+export const DEFAULT_NOTIFY = "goldentravellers@outlook.com";
+export const notifyList = () => (process.env.FORMS_NOTIFY || process.env.GROUPS_NOTIFY || DEFAULT_NOTIFY).split(",").map((s) => s.trim()).filter(Boolean);
+
 export const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 export const nice = (d) => { if (!d) return ""; const t = new Date(d + "T00:00:00"); return isNaN(t) ? d : t.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); };

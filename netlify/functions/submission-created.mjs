@@ -5,18 +5,18 @@
 
    Needs, in Netlify env:
      RESEND_API_KEY   an API key from resend.com (the sending domain goldenvacays.com is verified there)
-     FORMS_NOTIFY     where team emails go; several addresses allowed, comma separated (falls back to GROUPS_NOTIFY)
+     FORMS_NOTIFY     where team emails go; several addresses allowed, comma separated (falls back to GROUPS_NOTIFY, then goldentravellers@outlook.com)
      FORMS_FROM       optional sender for team emails (default below)
      GROUPS_FROM      optional sender for the group confirmation (default below)
      GROUPS_REPLY_TO  where guest replies go (default below)
    Without RESEND_API_KEY the function logs and does nothing, so the forms keep working. */
 
-import { teamEmail, isDuplicateTap, briefLines, nice, esc } from "./_notify.mjs";
+import { teamEmail, isDuplicateTap, briefLines, nice, esc, notifyList } from "./_notify.mjs";
 
 const FROM = process.env.GROUPS_FROM || "Golden Vacation & Travel <groups@goldenvacays.com>";
 const TEAM_FROM = process.env.FORMS_FROM || "Golden Vacation website <website@goldenvacays.com>";
 const REPLY_TO = process.env.GROUPS_REPLY_TO || "goldentravellers@outlook.com";
-const NOTIFY = (process.env.FORMS_NOTIFY || process.env.GROUPS_NOTIFY || "").split(",").map((s) => s.trim()).filter(Boolean);
+const NOTIFY = notifyList();
 const TURNAROUND = process.env.GROUPS_TURNAROUND || "one working day";
 const SITE = process.env.URL || "https://goldenvacays.com";
 
