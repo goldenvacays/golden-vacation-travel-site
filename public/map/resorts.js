@@ -278,7 +278,7 @@ window.RESORTS = [
   "when": "12 Dec 2026",
   "note": "Closed for refurbishment · reopens 12 Dec 2026",
   "happening": "Closed 31 August–11 December 2026 for refurbishment. Reopens 12 December 2026.",
-  "bookInstead": "",
+  "bookInstead": "For a Sep–Nov 2026 stay, ask us for an open Montego Bay alternative.",
   "verifiedOn": "",
   "photo": "photos/riu-palace-jamaica.jpg",
   "show": "Yes",

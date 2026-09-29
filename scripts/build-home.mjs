@@ -39,7 +39,7 @@ try { resortsUpdated = execSync("git log -1 --format=%cs -- public/map/resorts.j
 const counts = {
   tracked: RESORTS.length,
   open: RESORTS.filter((r) => r.status === "Open").length,
-  reopening: RESORTS.filter((r) => ["Reopening", "Coming soon", "New"].includes(r.status)).length,
+  reopening: RESORTS.filter((r) => r.status === "Reopening").length, // the same count the status page shows (new and coming-soon resorts are counted apart there)
 };
 const findResort = (name) => RESORTS.find((r) => r.name === name) || RESORTS.find((r) => r.name.toLowerCase().startsWith(name.toLowerCase()));
 
