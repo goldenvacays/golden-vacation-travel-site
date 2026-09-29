@@ -434,6 +434,8 @@ ${nav()}
 <section class="hero wrap" id="top">
   <div class="hero-top">
     <div class="hero-head"><span class="kicker">Group fares · Copa Airlines</span><h1 class="h1">Copa group fares from Kingston and Montego Bay.</h1>
+      <p class="lead">Copa flies from Kingston and Montego Bay to Panama City, and over 80 other destinations across the Americas.</p>
+      <div class="chips-row">${["Panama City", "Lima", "Medellín", "Bogotá", "San José", "Panama + Lima", "and more"].map((c) => `<span class="chip-static">${esc(c)}</span>`).join("")}</div>
       <p class="lead">${esc(T("Access group benefits such as payment plans, additional luggage and seat selection for your groups. We get your group fare and quote the hotel and transfers."))}</p>
       <div class="sec-cta"><a class="btn" href="${BASE}/enquire/?branch=trips" data-track="copa-top">Get a group quote</a><a class="btn btn-outline" href="#trip" data-track="copa-trips">See trips</a></div>
     </div>
@@ -444,8 +446,6 @@ ${nav()}
 <section class="sec wrap" id="gets">
   <div class="sec-head"><span class="kicker">What a group fare gets you</span><h2 class="h2">One price, one flight, bags included.</h2><span class="accent" aria-hidden="true"></span></div>
   <div class="gets">${gets.map(([t, x]) => `<div class="get">${icon("check", 18, 3, "#1F8A4C")}<div><b>${esc(t)}</b><span>${esc(x)}</span></div></div>`).join("")}</div>
-  <p class="lead" style="margin-top:28px">Copa flies from Kingston and Montego Bay to Panama City, and on through Panama to Central and South America.</p>
-  <div class="chips-row">${["Panama City", "Lima", "Medellín", "Bogotá", "San José"].map((c) => `<span class="chip-static">${esc(c)}</span>`).join("")}<span class="chip-static">Somewhere else? Tell us on the form</span></div>
 </section>
 
 <section class="sec wrap" id="trip">
