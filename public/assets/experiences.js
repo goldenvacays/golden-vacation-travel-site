@@ -54,13 +54,18 @@
     return SD.arrive + d + stay + d <= backBy;
   }
   function placeLabel(hh, regions) { return hh.port ? "Cruise port" : (regions && regions[hh.region] ? regions[hh.region].label : hh.region); }
-  /* type-ahead over hotels and cruise ports: ports also answer to "cruise", "ship", "terminal", "pier", "dock" and the short town names; an empty box lists the ports first so cruise guests see them without typing */
+  /* type-ahead over hotels and cruise ports: ports also answer to "cruise", "ship", "terminal", "pier", "dock" and the short town names; an empty box lists the ports first so cruise guests see them without typing.
+     Each word typed only has to start a word of the name, in any order, so "riu a" finds RIU Palace Aquarelle; case, accents and punctuation are ignored ("dunns", "st james", "t bird").
+     Names that hold the words as typed, side by side, stay first, in list order. */
   var PORT_WORDS = " cruise ship terminal pier dock port ", TOWN_ALIASES = { "montego bay": " mobay ", "ocho rios": " ochi " };
-  function searchText(hh) { var s = " " + hh.name.toLowerCase() + " "; Object.keys(TOWN_ALIASES).forEach(function (k) { if (s.indexOf(k) >= 0) s += TOWN_ALIASES[k]; }); if (hh.port) s += PORT_WORDS; return s; }
+  function normText(s) { s = String(s || "").toLowerCase(); if (s.normalize) s = s.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); return s.replace(/['\u2018\u2019`]/g, "").replace(/&/g, " and ").replace(/[^a-z0-9]+/g, " ").trim(); }
+  function textMatches(text, q) { var t = " " + normText(text) + " ", qq = normText(q); if (!qq || t.indexOf(qq) >= 0) return true; return qq.split(" ").every(function (w) { return t.indexOf(" " + w) >= 0; }); }
+  function searchText(hh) { var s = " " + normText(hh.name) + " "; Object.keys(TOWN_ALIASES).forEach(function (k) { if (s.indexOf(k) >= 0) s += TOWN_ALIASES[k]; }); if (hh.port) s += PORT_WORDS; return s; }
   function matchPlaces(list, q, opts) {
-    var qq = (q || "").toLowerCase().trim(), portsOnly = !!(opts && opts.portsOnly), limit = (opts && opts.limit) || 8;
-    var hits = list.filter(function (hh) { if (portsOnly && !hh.port) return false; return !qq || searchText(hh).indexOf(qq) >= 0; });
+    var qq = normText(q), portsOnly = !!(opts && opts.portsOnly), limit = (opts && opts.limit) || 8;
+    var hits = list.filter(function (hh) { if (portsOnly && !hh.port) return false; return !qq || textMatches(searchText(hh), qq); });
     if (!qq) hits = hits.filter(function (hh) { return hh.port; }).concat(hits.filter(function (hh) { return !hh.port; }));
+    else hits = hits.filter(function (hh) { return searchText(hh).indexOf(qq) >= 0; }).concat(hits.filter(function (hh) { return searchText(hh).indexOf(qq) < 0; }));
     return hits.slice(0, limit);
   }
   function savedHotel(X) { var slug = store("gv_hotel"); if (!slug) return null; return hotelsOf(X).filter(function (h) { return h.slug === slug; })[0] || null; }
@@ -719,11 +724,11 @@
     /* the areas this tour picks up from, offered in the same list as the hotels for villas and Airbnbs (ports and "own" are not areas) */
     function areaRows(q) {
       if (!V.pickups) return [];
-      var qq = (q || "").toLowerCase().trim();
+      var qq = normText(q);
       return V.pickups.filter(function (pk) { return pk.key !== "own" && !pk.request && !pk.resortsOnly && !HOTELS.some(function (hh) { return hh.port && hh.slug === pk.key; }); }).map(function (pk) {
         var reg = REGIONS[pk.key], label = (reg ? reg.label : pk.label.replace(/ (area )?hotel$/i, "")) + ", villa or Airbnb";
         return { area: true, key: pk.key, name: label, sub: pk.add ? "+" + usd(pk.add) + " each" : "pickup included", text: " " + label.toLowerCase() + " " + pk.label.toLowerCase() + " airbnb villa apartment guesthouse area " };
-      }).filter(function (a) { return !qq || a.text.indexOf(qq) >= 0; });
+      }).filter(function (a) { return !qq || textMatches(a.text, qq); });
     }
     function pickArea(a) {
       state.pickupMode = "other"; state.pickupPlace = null; state.pickup = a.key; state.pickupHotel = el.pickupHotel ? el.pickupHotel.value.trim() : "";
