@@ -18,7 +18,8 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
-import { roundRing, ringPath } from "./lib-island.mjs";
+import { roundRing, ringPath, jpegSize } from "./lib-island.mjs";
+import { nearMap } from "./lib-nearmap.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const X = JSON.parse(fs.readFileSync(path.join(ROOT, "data/experiences.json"), "utf8"));
@@ -36,6 +37,8 @@ const ARTIFACT = args.includes("--artifact");
 const NOINDEX = args.includes("--noindex");
 const TODAY = new Date().toISOString().slice(0, 10);
 /* a short fingerprint of the section's CSS and JS goes on their URLs, so a browser never keeps an old copy after a deploy */
+/* near.css (the near-hotel and area pages, the hub's hotel list, the tour pages' "Staying nearby?") carries its own fingerprint */
+const NEAR_STAMP = crypto.createHash("md5").update(fs.readFileSync(path.join(ROOT, "public/assets/near.css"), "utf8")).digest("hex").slice(0, 8);
 const STAMP = crypto.createHash("md5").update(["public/assets/experiences.css", "public/assets/experiences.js"].map((f) => fs.readFileSync(path.join(ROOT, f), "utf8")).join("\n")).digest("hex").slice(0, 8);
 
 /* ---------- helpers ---------- */
@@ -70,6 +73,14 @@ const ICONS = {
   bolt: '<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>',
   ship: '<path d="M2 20c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0"></path><path d="M4 16l-1-5 9-3 9 3-1 5"></path><path d="M12 8V3M9 5h6"></path>',
   id: '<rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="12" r="2.2"></circle><path d="M14 10h4M14 14h4M6 17c0-1.7 1.3-3 3-3s3 1.3 3 3"></path>',
+  star: '<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"></path>',
+  home: '<path d="M4 11l8-6 8 6"></path><path d="M6 10v9h12v-9"></path>',
+  grid: '<rect x="4" y="4" width="6.5" height="6.5" rx="1.5"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"></rect>',
+  ticket: '<path d="M4 7.5h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4z"></path><path d="M14.5 7.5v10"></path>',
+  wave: '<path d="M2 15c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0"></path><path d="M2 9.5c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0"></path>',
+  moon: '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"></path>',
+  back: '<path d="M19 12H5"></path><path d="M11 6l-6 6 6 6"></path>',
+  chev: '<path d="M6 9l6 6 6-6"></path>',
   photo: '<rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="8.5" cy="10" r="1.5"></circle><path d="M21 16l-5-5-8 8"></path>',
 };
 const icon = (name, size = 20, sw = 2.2) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block">${ICONS[name]}</svg>`;
@@ -82,7 +93,7 @@ const ticker = (items) => { const one = items.map((it) => `<span class="t hh">${
 const longShort = (long, short) => `<span class="long">${esc(long)}</span><span class="short">${esc(short || long)}</span>`;
 const dual = (n) => `<span class="usd-v">${usd(n)}</span><span class="jmd-v">${jmdOf(n)}</span>`;
 
-const NAV = [["Getaways", "/getaways/"], ["Staycations", "/#staycations"], ["Jamaica", "/#coming"], ["Experiences", `${BASE}/`], ["Transfers", "/transfers/"], ["Groups", "/groups/"], ["Resort status", "/hotel-status"]];
+const NAV = [["Getaways", "/getaways/"], ["Staycations", "/#staycations"], ["Jamaica", "/#coming"], ["Experiences", `${BASE}/`], ["Transfers", "/transfers/"], ["Groups", "/groups/"], ["Resort status", "/hotel-status/"]];
 const CATS = Object.fromEntries(X.hub.categories);
 const AREAS = Object.fromEntries(X.hub.areas);
 const venueBySlug = Object.fromEntries(X.venues.map((v) => [v.slug, v]));
@@ -122,7 +133,10 @@ function driveMin(hotel, venue) {
   return Math.max(5, Math.round((anchor + nudge) / 5) * 5);
 }
 const driveLabel = (m) => m == null ? "" : m < 60 ? `about ${m} min` : `about ${Math.floor(m / 60)} h${m % 60 ? ` ${String(m % 60).padStart(2, "0")}` : ""}`;
-const venueDriveData = X.venues.map((v) => ({ slug: v.slug, lat: v.lat, lng: v.lng, drive: v.drive || {}, sd: v.shipDay === false ? 0 : 1 }));
+/* what the browser needs per tour: where it is, its drive anchors, ship days, and its pickups (key, extra per adult and child,
+   the edge and exceptions, resorts only, by request), so a card can say what pickup from the guest's own hotel costs */
+const venueDriveData = X.venues.map((v) => ({ slug: v.slug, lat: v.lat, lng: v.lng, drive: v.drive || {}, sd: v.shipDay === false ? 0 : 1,
+  pk: (v.pickups || []).filter((p) => p.key !== "own").map((p) => ({ k: p.key, a: p.add || 0, ...(p.addChild != null ? { c: p.addChild } : {}), ...(p.except ? { x: p.except } : {}), ...(p.lngMax != null ? { lx: p.lngMax } : {}), ...(p.lngMin != null ? { ln: p.lngMin } : {}), ...(p.resortsOnly ? { r: 1 } : {}), ...(p.request ? { q: 1 } : {}) })) }));
 
 /* ---------- ship days ----------
    Cruise guests get every tour checked against their port: the drive there and back, and whether a start time
@@ -197,7 +211,7 @@ const bookingWord = (v) => v.booking === "instant" ? "Book on the spot" : v.book
 const bookingTone = (v) => v.booking === "instant" ? "gold" : "white";
 
 /* ---------- chrome ---------- */
-function head({ title, description, pathname, image, jsonld = [], noindex = false, bodyClass = "" }) {
+function head({ title, description, pathname, image, jsonld = [], noindex = false, bodyClass = "", near = false }) {
   const url = `${S.origin}${pathname}`;
   const og = `${S.origin}${image ? img(image) : `${ASSETS}/img/${H.meta.ogImage}`}`;
   const ld = jsonld.map((o) => `<script type="application/ld+json">${JSON.stringify(o)}</script>`).join("\n");
@@ -233,7 +247,7 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
 <style>@font-face{font-family:'Archivo';font-style:normal;font-display:swap;font-weight:100 900;font-stretch:62% 125%;src:url(/assets/fonts/archivo.woff2) format('woff2-variations')}</style>
 <link rel="stylesheet" href="/getaways/assets/getaways.css">
 <link rel="stylesheet" href="/assets/home.css">
-<link rel="stylesheet" href="${ASSETS}/experiences.css?v=${STAMP}">
+<link rel="stylesheet" href="${ASSETS}/experiences.css?v=${STAMP}">${near ? `\n<link rel="stylesheet" href="${ASSETS}/near.css?v=${NEAR_STAMP}">` : ""}
 ${ld}
 ${ga}
 <script>window.GV_CONFIG=${JSON.stringify({ base: BASE, whatsapp: S.whatsapp, jmdRate: S.jmdRate })};</script>
@@ -353,73 +367,114 @@ function venueCard(v) {
   </a>`;
 }
 
-/* ---------- hub ---------- */
+/* ---------- hub ----------
+   One question first ("Where are you staying?"), then the days out by area, west to east. Pick a hotel or a cruise
+   port and the same cards line up nearest first, each saying whether pickup from that hotel is included. Every card
+   says how booking works, and its Tripadvisor rating loads when it scrolls into view (Tripadvisor's terms say the
+   numbers are fetched live, never stored). The airport lounges have their own strip; the resort list folds by area. */
+const TA_MAP = JSON.parse(fs.readFileSync(path.join(ROOT, "data/tripadvisor-map.json"), "utf8"));
+const taKey = (v) => { const t = TA_MAP[v.slug]; return t && !t.skip ? String(t.locationId || v.slug) : ""; };
+const HUB_GROUPS = [
+  ["negril", "Negril", "JamWest's home park, its water park and the sunset catamaran.", "negril"],
+  ["ocho", "Ocho Rios", "Mystic Mountain and Poko Loko, minutes from the cruise pier.", "ocho"],
+  ["trelawny", "Falmouth and Trelawny", "The two Ocean resorts and JamWest's park at Braco.", "falmouth"],
+  ["mobay", "Montego Bay and Rose Hall", "Day passes at the three Rose Hall resorts, fifteen minutes from Montego Bay.", "mobay"],
+];
+const HUB_TABS = [["all", "All", "grid"], ["passes", "Day passes", "ticket"], ["tours", "Tours and adventure", "bolt"], ["water", "On the water", "wave"], ["night", "Evenings", "moon"], ["family", "Family days", "users"]];
+const BOOK_LINE = { instant: ["bolt", "Book now, confirmed straight away"], request: ["clock", "We confirm the date first"], enquiry: ["chat", "We reply first, then you book"] };
+const isDayOut = (v) => v.panel !== "flight";
+function pickDefault(v) {
+  const pk = (v.pickups || []).filter((p) => p.key !== "own");
+  if (!pk.length) return ["no", "No pickup, ask us for a ride"];
+  return [pk.some((p) => !p.add && !p.request) ? "yes" : "add", v.pickupShort || "Pickup on request"];
+}
+function hubCard(v, more = false) {
+  const fp = fromPrice(v), href = `${BASE}/${v.slug}`, [bi, bt] = BOOK_LINE[v.booking] || BOOK_LINE.request, [pk, pt] = pickDefault(v), ta = taKey(v);
+  const price = fp ? `<span class="ecard-p"><small>${fp.same ? "Per person" : "From"}</small><b>${fp.usd != null ? dual(fp.usd) : jmd(fp.jmd)}</b></span>` : `<span class="ecard-p"><b>On request</b></span>`;
+  return `<article class="ecard${more ? " eh-more" : ""}" data-slug="${v.slug}" data-cats="${esc(v.categories.join(" "))}" data-area="${v.area}" data-doors="${esc((v.doors || []).join(" "))}" data-booking="${v.booking}">
+      <a class="ecard-ph" href="${href}" tabindex="-1" aria-hidden="true">${pic(small(v.photos[0].file), v.photos[0].alt)}${featured(v) ? `<span class="tag tag-gold ecard-top">Most booked</span>` : ""}<span class="tag drive-tag ecard-drive" hidden></span></a>
+      <h3 class="hh"><a href="${href}">${esc(v.name)}</a></h3>
+      <p class="ecard-b">${esc(noDash(v.card))}</p>
+      <ul class="ecard-sell">
+        ${ta ? `<li class="ecard-rate" data-ta="${ta}" hidden>${icon("star", 16, 2.2)}<span>Tripadvisor <b></b> <small></small></span></li>` : ""}
+        <li class="ecard-pick ${pk}" data-def="${esc(pt)}" data-def-kind="${pk}"><span class="i-yes">${icon("check", 16, 2.6)}</span><span class="i-car">${icon("car", 16, 2.2)}</span><span class="t">${esc(pt)}</span></li>
+        <li class="ecard-book">${icon(bi, 16, 2.2)}<span>${bt}</span></li>
+      </ul>
+      <div class="ecard-foot">${price}<span class="ecard-f">${v.facts && v.facts.length ? esc(noDash(v.facts[0])) : ""}</span>${btn(v.booking === "instant" ? "Book now" : "See the options", href, "gold", "sm", "arrow")}</div>
+    </article>`;
+}
 function hubPage() {
   const hb = X.hub;
   const heroImg = "jamwest-zipline-rider.jpg";
-  /* the three doors are photo tickets in the hero band: each one is an audience (stay, port, locals), carries that audience's star tour with its printed price, and filters the list below */
-  const tickets = hb.doors.map((d, i) => {
-    const s = d.star || {};
-    const tagText = s.slug ? mosaicTag(s.slug, s.product || null, s.label || "", !!s.resident) : "";
-    const srcset = ` srcset="${img(small(d.img))} 800w, ${img(d.img)} 1600w" sizes="(min-width: 900px) 30vw, 92vw"`;
-    return `<button class="ticket edoor" type="button" data-door="${d.key}" aria-pressed="false">
-      <span class="ticket-img">${pic(d.img, d.alt, ` loading="eager"${i === 0 ? ' fetchpriority="high"' : ""}${srcset}`)}</span>
-      ${tagText ? `<span class="tag ${i === 0 ? "tag-gold" : "tag-white"} ticket-tag">${esc(tagText)}</span>` : ""}
-      <span class="ticket-t">${d.q ? `<small class="ticket-q">${esc(d.q)}</small>` : ""}<b class="hh">${esc(d.title)}</b><span class="ticket-sub">${longShort(d.sub, d.subMobile)}</span></span>
-    </button>`;
-  }).join("");
-  const chips = hb.categories.map(([k, l], i) => `<button class="chip" type="button" data-cat="${k}" aria-pressed="${i === 0 ? "true" : "false"}">${esc(l)}</button>`).join("");
-  const areaOpts = hb.areas.map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join("");
-  const cards = gridOrder().map(venueCard).join("\n");
-  const why = hb.why.points.map(([t, p], i) => `<div class="hstep"><span class="n">0${i + 1}</span><div><b>${esc(t)}</b><p>${esc(p)}</p></div></div>`).join("");
+  const days = gridOrder().filter(isDayOut), lounges = X.venues.filter((v) => !isDayOut(v));
+  const vb = (s) => venueBySlug[s];
+  const zip = (vb("jamwest") && vb("jamwest").products.find((p) => p.id === "zipline")) || null;
+  const fig = (file, alt, cap, extra, eager) => `<figure class="eh-fig${extra}">${pic(file, alt, `${eager ? ' loading="eager"' : ""} srcset="${img(small(file))} 800w, ${img(file)} 1280w" sizes="(min-width: 900px) 26vw, 46vw"`)}<figcaption>${cap}</figcaption></figure>`;
+  const priceOf = (s) => { const f = vb(s) && fromPrice(vb(s)); return f && f.usd != null ? dual(f.usd) : ""; };
+  const mosaic = `<div class="eh-mosaic">
+      ${fig("jamwest-zipline-rider.jpg", "A rider on the JamWest zipline", `JamWest zipline · from ${zip ? dual(zip.visitor.usd) : priceOf("jamwest")}`, " eh-fig-tall", true)}
+      ${vb("poko-loko") ? fig(vb("poko-loko").photos[0].file, vb("poko-loko").photos[0].alt, `Poko Loko · ${priceOf("poko-loko")}`, "", false) : ""}
+      ${vb("jamwest-catamaran") ? fig(vb("jamwest-catamaran").photos[0].file, vb("jamwest-catamaran").photos[0].alt, `Sunset catamaran · ${priceOf("jamwest-catamaran")}`, "", false) : ""}
+    </div>`;
+  const shortcuts = [...HUB_GROUPS.map(([k, name]) => `<button type="button" data-jump="${k}">${icon("pin", 16)}${esc(name === "Falmouth and Trelawny" ? "Falmouth" : name === "Montego Bay and Rose Hall" ? "Montego Bay" : name)}</button>`),
+    `<button type="button" data-ports>${icon("ship", 16)}Off a cruise ship</button>`, `<button type="button" data-local aria-pressed="false">${icon("home", 16)}I live in Jamaica</button>`].join("");
+  const trust = [["star", "Published prices, in US$ and J$"], ["car", "Pickup shown for your hotel"], ["chat", "Booked by people in Jamaica"], ["check", S.iata && /IATA/.test(S.iata) ? S.iata.replace(/\s*·\s*/, ", ") : "IATA-accredited, 85500310"]].map(([i, t]) => `<li>${icon(i, 18, 2.2)}${esc(t)}</li>`).join("");
+  const tabs = HUB_TABS.map(([k, l, i], n) => `<button type="button" data-cat="${k}" aria-pressed="${n === 0}">${icon(i, 24, 2.2)}${esc(l)}</button>`).join("");
+  /* the groups: a group gets the port card when it has room for it and a cruise port in its area */
+  const groups = HUB_GROUPS.concat(days.filter((v) => !HUB_GROUPS.some(([k]) => k === v.area)).map((v) => [v.area, AREAS[v.area] || v.area, "", v.area]).filter((g, i, a) => a.findIndex((x) => x[0] === g[0]) === i)).map(([k, name, sub, region]) => {
+    const vs = days.filter((v) => v.area === k);
+    if (!vs.length) return "";
+    const area = AREA_BY_REGION[region], port = (X.ports || []).find((p) => p.region === region);
+    const portCard = vs.length === 2 && port ? `<a class="eh-port" href="${BASE}/near/${port.slug}"><span class="eh-port-i">${icon("ship", 26)}</span><span class="eh-port-t"><b class="hh">In port at ${esc(port.name.replace(/ cruise port$/, ""))} for the day?</b><span>Both fit a ship day. We plan to have you back at the pier by ${esc(SHIP.backBy)}, or an hour before your all-aboard.</span></span><span class="eh-port-a">Days out from the pier${icon("arrow", 16, 2.4)}</span></a>` : "";
+    return `<section class="eh-group" data-group="${k}" aria-labelledby="g-${k}">
+    <div class="eh-group-h"><h3 class="hh" id="g-${k}">${esc(name)}</h3>${sub ? `<span class="eh-group-s">${esc(sub)}</span>` : ""}${area ? `<a class="eh-group-a" href="${BASE}/area/${area.slug}">${esc(cap(area.name))}${icon("arrow", 16, 2.4)}</a>` : ""}${vs.length > 2 ? `<button type="button" class="eh-all" aria-expanded="false" data-n="${vs.length}">See all ${vs.length}</button>` : ""}</div>
+    <div class="eh-grid">${vs.map((v, i) => hubCard(v, i >= 2)).join("\n")}${portCard}</div>
+  </section>`;
+  }).join("\n");
+  const loungeCards = lounges.map((v) => { const fp = fromPrice(v); return `<a class="eh-lcard" href="${BASE}/${v.slug}">${pic(small(v.photos[0].file), v.photos[0].alt)}<span><b>${esc(v.name)}</b><small>${v.area === "kingston" ? "Kingston airport" : "Montego Bay airport"}${fp && fp.usd != null ? ` · from ${dual(fp.usd)}` : ""}</small></span>${icon("arrow", 18, 2.4)}</a>`; }).join("");
+  const why = [["Published prices", "The rate the tour publishes, in US$ or J$, with nothing added at the gate."], ["Pickup you can see", "Every card says whether pickup from your hotel is included, costs extra or isn't offered."], ["People in Jamaica", `Real people on WhatsApp. ${S.hours}`]].map(([t, p]) => `<div class="eh-why-i"><b>${esc(t)}</b><p>${esc(p)}</p></div>`).join("");
   const faqs = hb.questions.map(([q, a]) => `<div class="faq-i"><b>${esc(q)}</b><p>${esc(a)}</p></div>`).join("");
   const jsonld = [
     { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Golden Vacation & Travel", item: S.origin }, { "@type": "ListItem", position: 2, name: "Golden Experiences", item: `${S.origin}${BASE}/` }] },
     { "@context": "https://schema.org", "@type": "ItemList", name: "Golden Experiences in Jamaica", itemListElement: gridOrder().map((v, i) => ({ "@type": "ListItem", position: i + 1, name: v.name, url: `${S.origin}${BASE}/${v.slug}` })) },
     { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: hb.questions.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) },
   ];
-  return `${head({ title: "Golden Experiences | Jamaica tours, day passes and airport lounges", description: "Day passes at Ocean and the Rose Hall resorts, JamWest and Mystic Mountain tours, the JamWest catamaran, Poko Loko floating bar and Club MoBay and Club Kingston lounges. Published prices in US$ and J$, resident rates where they exist, booked by people in Jamaica.", pathname: `${BASE}/`, image: heroImg, jsonld, bodyClass: "exp exp-hub" })}
+  return `${head({ title: "Golden Experiences | Jamaica tours, day passes and airport lounges", description: "Day passes at Ocean and the Rose Hall resorts, JamWest and Mystic Mountain tours, the JamWest catamaran, Poko Loko floating bar and Club MoBay and Club Kingston lounges. Published prices in US$ and J$, resident rates where they exist, booked by people in Jamaica.", pathname: `${BASE}/`, image: heroImg, jsonld, bodyClass: "exp exp-hub", near: true })}
 ${nav()}
 <main>
-<section class="hub-hero poster" aria-label="Golden Experiences">
-  <div class="wrap hub-hero-in">
-    <div class="hub-hero-t">
-      ${kicker(hb.kicker, true)}
-      <h1 class="hh">${esc(hb.title)}</h1>
-      <p>${longShort(hb.sub, hb.subMobile)}</p>
+<section class="eh-hero" aria-labelledby="eh-h1">
+  <div class="wrap eh-hero-in">
+    <div class="eh-hero-t">
+      ${kicker("Golden Experiences · Jamaica")}
+      <h1 class="hh" id="eh-h1">See the island, not just the resort.</h1>
+      <p class="eh-sub"><span class="eh-sub-1">Ziplines, ATV trails, resort day passes and Jamaica's floating bar. </span>Tell us where you're staying and we'll show you what's closest, what it costs and whether pickup is included.</p>
+      <div class="eh-q">
+        <label class="eh-q-l" for="hotel-in">Where are you staying?</label>
+        <div class="eh-q-row">
+          <span class="eh-q-in">${icon("pin", 20)}<input type="search" id="hotel-in" placeholder="Type your hotel or cruise port" autocomplete="off" aria-autocomplete="list" aria-controls="hotel-list"><button type="button" id="hotel-clear" class="eh-q-x" aria-label="Clear hotel" hidden>${icon("x", 16, 2.6)}</button><button type="button" class="eh-q-go" data-go aria-label="Show my days out">${icon("arrow", 20, 2.6)}</button></span>
+          <button type="button" class="btn btn-gold eh-q-btn" data-go>Show my days out${icon("arrow", 18)}</button>
+          <ul class="hotel-list" id="hotel-list" role="listbox" hidden></ul>
+        </div>
+        <div class="eh-short" role="group" aria-label="Or start with">${shortcuts}</div>
+      </div>
     </div>
-    ${islandSvgHub()}
-    <div class="tickets" role="group" aria-label="Start here">${tickets}</div>
+    ${mosaic}
+    <ul class="eh-trust">${trust}</ul>
   </div>
 </section>
-${ticker(hb.trust)}
 
-<section class="sec wrap cat-sec" id="all">
-  <div class="sec-head cat-head">
-    <div>${kicker("Jamaica · 12 tours")}<h2 class="hh">Pick a day out.</h2></div>
-    <p class="sec-sub cat-note" id="cat-note">Every price is the published rate, in both currencies. Tap a tour for the options, what's included and what to know before you book.</p>
+<section class="eh-cat wrap" id="all" aria-labelledby="eh-cat-h">
+  <div class="eh-cat-head">${kicker(`Jamaica · ${days.length} days out`)}<h2 class="hh" id="eh-cat-h">Choose your style.</h2></div>
+  <div class="eh-tabs" role="group" aria-label="What kind of day">${tabs}</div>
+  <div class="eh-mode" id="hotel-note" hidden><span class="eh-mode-t"></span><button type="button" class="eh-mode-x" id="hotel-change">Change hotel</button></div>
+  <div id="eh-groups">
+  ${groups}
   </div>
-  <div class="hotel-box" id="hotel-box">
-    <div class="hotel-q">
-      <label class="pf-f hotel-f"><span class="pf-l">Where are you staying?</span><span class="pf-in">${icon("pin", 18)}<input type="search" id="hotel-in" placeholder="Type your hotel or cruise port" autocomplete="off" aria-autocomplete="list" aria-controls="hotel-list"><button type="button" id="hotel-clear" aria-label="Clear hotel" hidden>${icon("x", 16, 2.6)}</button></span></label>
-      <ul class="hotel-list" id="hotel-list" role="listbox" hidden></ul>
-    </div>
-    <div class="chip-row port-chips" id="port-chips" role="group" aria-label="Cruise ports"><span class="chips-l">Off a cruise ship?</span>${(X.ports || []).map((p) => `<button class="chip chip-sm" type="button" data-port="${p.slug}" aria-pressed="false">${esc(p.name.replace(" cruise port", " port"))}</button>`).join("")}</div>
-    <div class="chip-row dist-chips" id="dist-chips" role="group" aria-label="How far" hidden>
-      <button class="chip" type="button" data-max="30">Under 30 min</button>
-      <button class="chip" type="button" data-max="60">Under 1 hour</button>
-      <button class="chip" type="button" data-max="120">Under 2 hours</button>
-      <button class="chip" type="button" data-max="0" aria-pressed="true">Anywhere</button>
-    </div>
-    <label class="area-pick"><span>Or pick an area</span><select id="area-pick" aria-label="Area">${areaOpts}</select></label>
-    <p class="pf-hint" id="hotel-note">Pick your hotel and every card shows the drive time from it, nearest first. Not staying yet? <a href="/hotel-status">See which resorts are open</a>.</p>
-  </div>
-  <!-- one panel answers "where", this row answers "what": the area select used to sit down here competing with it -->
-  <div class="filters">
-    <div class="chip-row cat-chips" role="group" aria-label="Category">${chips}</div>
-  </div>
-  <div class="vgrid" id="vgrid">
-${cards}
+  <div id="eh-near" hidden>
+    <section class="eh-band" data-band="30"><div class="eh-group-h"><h3 class="hh">30 min or less</h3><span class="eh-group-s">Easy for a morning or an afternoon.</span></div><div class="eh-grid eh-grid-2"></div></section>
+    <section class="eh-band" data-band="60"><div class="eh-group-h"><h3 class="hh">Within the hour</h3><span class="eh-group-s">A short drive, then the whole day or evening there.</span></div><div class="eh-grid"></div></section>
+    <section class="eh-band" data-band="far"><details class="eh-far"><summary><span class="eh-far-t"></span><span class="eh-far-s">Show${icon("chev", 18, 2.6)}</span></summary><div class="eh-grid"></div></details></section>
+    <a class="eh-near-link" id="eh-near-link" href="${BASE}/"><span class="eh-near-i">${icon("pin", 22)}</span><span class="eh-near-t"><b></b><small>The map, airport pickup prices and the resorts next door</small></span>${icon("arrow", 20, 2.4)}</a>
   </div>
   <div class="empty" id="vempty" hidden>
     <b>Nothing here fits that yet.</b>
@@ -428,10 +483,11 @@ ${cards}
   </div>
 </section>
 
-<section class="how-sec wrap" id="why">
-  <div class="sec-head why-head"><div>${kicker(hb.why.kicker)}<h2 class="hh">${esc(hb.why.title)}</h2></div></div>
-  <div class="hsteps four">${why}</div>
-</section>
+${loungeCards ? `<section class="eh-lounge" aria-labelledby="eh-lounge-h"><div class="wrap eh-lounge-in"><div class="eh-lounge-t"><h2 class="hh" id="eh-lounge-h">Flying home?</h2><p>Fast track through the airport and a lounge before your flight.</p></div><div class="eh-lounge-c">${loungeCards}</div></div></section>` : ""}
+
+${hubDirectory()}
+
+<section class="eh-why wrap" aria-label="Why book with us">${why}</section>
 
 <section class="faqs wrap" id="questions">
   <div class="faq-grid">
@@ -445,15 +501,15 @@ ${cards}
   ${btn("List your tours", `${BASE}/partners`, "outline", "", "arrow")}
 </section>
 
-<section class="cta-band">
-  <div class="wrap cta-in">
-    <div>${kicker("Not sure which one", true)}<h2 class="hh">Tell us the date, the group and the budget.</h2><p>We'll say which pass is worth it and which one isn't. ${esc(S.hours)}</p></div>
-    <div class="cta-btns">${btn("WhatsApp us", waHome, "gold", "lg", "chat")}<a class="cta-call" href="tel:+1${S.phone.replace(/\D/g, "")}">Or call ${esc(S.phone)}</a></div>
+<section class="eh-cta">
+  <div class="wrap eh-cta-in">
+    <div>${kicker("Not sure which one")}<h2 class="hh">Tell us the date, the group and the budget.</h2><p>We'll say which one is worth it and which one isn't. ${esc(S.hours)}</p></div>
+    <div class="eh-cta-btns">${btn("WhatsApp us", waHome, "white", "lg", "chat")}<a class="cta-call" href="tel:+1${S.phone.replace(/\D/g, "")}">Or call ${esc(S.phone)}</a></div>
   </div>
 </section>
 </main>
 ${footer()}
-${scripts({ page: "hub", whatsapp: S.whatsapp, hotels: HOTELS.map((h) => [h.name, h.slug, h.region, h.lat, h.lng, h.port ? 1 : 0]), venues: venueDriveData, regions: X.regions, base: BASE, shipDay: SHIP_CFG })}
+${scripts({ page: "hub", whatsapp: S.whatsapp, hotels: HOTELS.map((h) => [h.name, h.slug, h.region, h.lat, h.lng, h.port ? 1 : 0, h.small ? 0 : 1]), venues: venueDriveData, regions: X.regions, base: BASE, shipDay: SHIP_CFG, areaPages: Object.fromEntries(AREA_PAGES.map((a) => [a.region, a.slug])) })}
 </body></html>`;
 }
 
@@ -494,7 +550,9 @@ function panel(v) {
       <label class="rate-opt"><input type="radio" name="rate" value="resident"><span><b>${esc(v.rates.resident.label)}</b><small>${esc(v.rates.resident.who)}</small></span></label>
     </div><p class="rate-note" id="rate-note">${esc(noDash(v.rates.visitor.note))}</p></div>` : "";
   /* cruise guests: the question only opens when the guest asks for it (or the site already knows their port); residents never see it */
-  const cruiseLink = isFlight || v.pickups || v.shipDay === false ? "" : `<button type="button" class="link-btn" id="cruise-link" hidden>Off a cruise ship?</button>`;
+  /* a tour that picks up from the cruise ports takes the port in its pickup box; any other tour keeps the cruise question */
+  const portPickups = (v.pickups || []).some((p) => (X.ports || []).some((pt) => pt.slug === p.key));
+  const cruiseLink = isFlight || portPickups || v.shipDay === false ? "" : `<button type="button" class="link-btn" id="cruise-link" hidden>Off a cruise ship?</button>`;
   const date = isFlight
     ? `<div class="pf two"><label class="pf-f"><span class="pf-l" id="pf-date-l">Arrival date</span><span class="pf-in">${icon("calendar", 18)}<input type="date" id="pf-date" required></span></label><label class="pf-f" id="pf-date2-wrap"><span class="pf-l" id="pf-date2-l">Departure date</span><span class="pf-in">${icon("calendar", 18)}<input type="date" id="pf-date2"></span></label></div>
        <div class="pf two"><label class="pf-f" id="pf-flight-in-wrap"><span class="pf-l">Flight in</span><span class="pf-in">${icon("plane", 18)}<input type="text" id="pf-flight-in" placeholder="e.g. BA2263" autocapitalize="characters"></span></label><label class="pf-f" id="pf-flight-out-wrap"><span class="pf-l">Flight out</span><span class="pf-in">${icon("plane", 18)}<input type="text" id="pf-flight-out" placeholder="e.g. BA2262" autocapitalize="characters"></span></label></div>
@@ -510,7 +568,7 @@ function panel(v) {
       <p class="pf-hint" id="guests-note" hidden>Up to 16 guests here. More than 16? <a href="mailto:${esc(S.email)}?subject=${encodeURIComponent(`Group booking: ${v.name}`)}">Email us</a> and we'll price it.</p>
     </div>`;
   /* tours without a bookable pickup say so where the pickup picker would sit, so nobody goes looking for it */
-  const noPickup = isTour && !v.pickups ? `<p class="pf-hint" id="no-pickup-note">No hotel pickup on this one. Ask us on WhatsApp if you need a ride.</p>` : "";
+  const noPickup = isTour && !v.pickups ? `<p class="pf-hint" id="no-pickup-note">${v.pickupPriced ? `Hotel pickup from ${esc(v.pickupPriced.where)} is priced by hotel. Ask us on WhatsApp and we add it to your booking.` : "No hotel pickup on this one. Ask us on WhatsApp if you need a ride."}</p>` : "";
   /* pickup: the guest picks their hotel from the resort list (the area, and any transfer charge, follow from it);
      "somewhere else" opens a free-text line plus the area list; "my own way" skips pickup */
   const pickup = v.pickups ? `<div class="pf" id="pf-pickup-wrap">
@@ -518,11 +576,11 @@ function panel(v) {
         <label class="pf-f hotel-f"><span class="pf-in">${icon("pin", 18)}<input type="search" id="pf-hotel-in" placeholder="Type your hotel, area or cruise port" autocomplete="off" autocapitalize="words" aria-label="Pickup hotel, area or cruise port"></span></label><ul class="hotel-list" id="pf-hotel-list" role="listbox" hidden></ul></div>
       <label class="pf-f" id="pf-pickup-other-wrap" hidden><span class="pf-in">${icon("pin", 18)}<input type="text" id="pf-pickup-hotel" placeholder="Villa or hotel name, for the driver" autocomplete="off"></span></label>
       <div class="chip-row pickup-alts"><button type="button" class="chip chip-sm" data-pick="own" aria-pressed="false">I'll make my own way</button></div>
-      <p class="pf-hint" id="pickup-note">${v.pickups.some((p) => p.add) ? "Pickup from Negril hotels is included. Lucea and Montego Bay pickups are priced per person." : "Hotel pickup from Negril and Montego Bay is included."}</p>
+      <p class="pf-hint" id="pickup-note">${v.pickupNote ? esc(v.pickupNote) : v.pickups.some((p) => p.add) ? "Pickup from Negril hotels is included. Lucea and Montego Bay pickups are priced per person." : "Hotel pickup from Negril and Montego Bay is included."}</p>
     </div>` : "";
   /* ship day: the port chips open from the "Off a cruise ship?" link under the date, or on their own when the site already knows the port
      (picked on the hub, or arrived from a port page). Tours with a pickup picker take the port through that picker instead. */
-  const cruisePick = isFlight || v.pickups ? "" : `<div class="pf" id="pf-cruise-wrap" hidden><span class="pf-l">Off a cruise ship?</span><div class="chip-row port-chips" id="pf-ports">${(X.ports || []).map((pt) => `<button type="button" class="chip chip-sm" data-port="${pt.slug}" aria-pressed="false">${esc(pt.name.replace(" cruise port", " port"))}</button>`).join("")}</div><p class="pf-hint">Tell us your port and we only show what gets you back to the pier in time.</p></div>`;
+  const cruisePick = isFlight || portPickups ? "" : `<div class="pf" id="pf-cruise-wrap" hidden><span class="pf-l">Off a cruise ship?</span><div class="chip-row port-chips" id="pf-ports">${(X.ports || []).map((pt) => `<button type="button" class="chip chip-sm" data-port="${pt.slug}" aria-pressed="false">${esc(pt.name.replace(" cruise port", " port"))}</button>`).join("")}</div><p class="pf-hint">Tell us your port and we only show what gets you back to the pier in time.</p></div>`;
   const aboard = v.panel === "flight" ? "" : `${cruisePick}<div class="pf" id="pf-aboard-wrap" hidden><span class="pf-l">All-aboard time</span><div class="chip-row aboard-chips" id="pf-aboard">${[["", "Not sure"], ["960", "4:00pm"], ["1020", "5:00pm"], ["1080", "6:00pm"], ["1140", "7:00pm or later"]].map(([m, l]) => `<button type="button" class="chip chip-sm" data-aboard="${m}" aria-pressed="${m === "" ? "true" : "false"}">${l}</button>`).join("")}</div><p class="pf-hint" id="ship-note"></p><button type="button" class="link-btn" id="ship-clear">Not off a ship today? Clear this</button></div>`;
   const contact = `<div class="pf pf-contact" id="pf-contact"${instant ? "" : " hidden"}><span class="pf-l">Who's booking</span>
       <div class="pf two"><label class="pf-f"><span class="pf-in"><input type="text" id="pf-first" placeholder="First name" autocomplete="given-name"></span></label><label class="pf-f"><span class="pf-in"><input type="text" id="pf-last" placeholder="Last name" autocomplete="family-name"></span></label></div>
@@ -590,13 +648,13 @@ function venuePage(v) {
   ];
   const cfg = {
     page: "venue", whatsapp: S.whatsapp, origin: S.origin, jmdRate: S.jmdRate, today: TODAY,
-    hotels: HOTELS.map((h) => [h.name, h.slug, h.region, h.lat, h.lng, h.port ? 1 : 0]), regions: X.regions, shipDay: SHIP_CFG,
-    venue: { slug: v.slug, name: v.name, panel: v.panel, booking: v.booking, calendar: v.calendar || null, area: AREAS[v.area], adultsOnly: !!v.adultsOnly, blackout: v.blackout || [], closedWeekdays: v.closedWeekdays || [], ...(v.childDays ? { childDays: v.childDays, childDaysText: v.childDaysText || "" } : {}), rates: v.rates || null, pickups: v.pickups || null, lat: v.lat, lng: v.lng, drive: v.drive || {}, sd: v.shipDay === false ? 0 : 1,
+    hotels: HOTELS.map((h) => [h.name, h.slug, h.region, h.lat, h.lng, h.port ? 1 : 0, h.small ? 0 : 1]), regions: X.regions, shipDay: SHIP_CFG,
+    venue: { slug: v.slug, name: v.name, panel: v.panel, booking: v.booking, calendar: v.calendar || null, area: AREAS[v.area], adultsOnly: !!v.adultsOnly, blackout: v.blackout || [], closedWeekdays: v.closedWeekdays || [], ...(v.childDays ? { childDays: v.childDays, childDaysText: v.childDaysText || "" } : {}), rates: v.rates || null, pickups: v.pickups || null, pickupNote: v.pickupNote || "", pickupAreas: v.pickupAreas || "", pickupNotListed: v.pickupNotListed || "", lat: v.lat, lng: v.lng, drive: v.drive || {}, sd: v.shipDay === false ? 0 : 1,
       photos: v.photos.map((p) => [img(p.file), p.alt]), // the photo viewer: full-size file and caption, hero first
       products: v.products.filter(live).map((p) => ({ id: p.id, name: p.name, hours: p.hours, times: p.times || [], audience: p.audience, visitor: p.visitor || null, resident: p.resident || null, perParty: p.perParty || 0, choose: p.choose || null, legs: p.legs || null, request: !!p.request, until: p.until || null, sd: shipDayOf(p, v) })) },
   };
   const title = `${v.name} | ${v.categories.map((c) => CATS[c]).join(", ")} in ${AREAS[v.area]}, Jamaica`;
-  return `${head({ title, description: `${v.blurb} ${fromPrice(v) && fromPrice(v).usd != null ? `From ${usd(fromPrice(v).usd)} per person.` : ""} Published prices in US$ and J$, booked by Golden Vacation & Travel, St Ann, Jamaica.`, pathname: `${BASE}/${v.slug}`, image: hero.file, jsonld, bodyClass: "exp exp-venue" })}
+  return `${head({ title, description: `${v.blurb} ${fromPrice(v) && fromPrice(v).usd != null ? `From ${usd(fromPrice(v).usd)} per person.` : ""} Published prices in US$ and J$, booked by Golden Vacation & Travel, St Ann, Jamaica.`, pathname: `${BASE}/${v.slug}`, image: hero.file, jsonld, bodyClass: "exp exp-venue", near: true })}
 ${nav()}
 <main class="venue" data-venue="${v.slug}">
 <nav class="crumbs wrap" aria-label="Breadcrumb"><a href="${BASE}/">Golden Experiences</a><span>/</span><span>${esc(v.short)}</span></nav>
@@ -627,6 +685,7 @@ ${options}
       ${listBlock("Before you book", v.before, "alert", "warn")}
     </div>
     ${often ? `<div class="often"><div class="sec-head"><b class="hh">Often booked with this</b><small>Only if it helps</small></div><div class="pairs">${often}</div></div>` : ""}
+    ${stayingNearby(v)}
   </div>
   ${panel(v)}
 </section>
@@ -655,65 +714,438 @@ ${scripts(cfg)}
 </body></html>`;
 }
 
-/* ---------- near-hotel pages ---------- */
-function nearPage(h) {
-  const rows = X.venues.map((v) => ({ v, min: driveMin(h, v) })).filter((r) => r.min != null && r.v.slug !== "club-kingston" && !(h.port && r.v.shipDay === false)).sort((a, b) => a.min - b.min);
-  const nearest = rows[0];
-  /* on a port page every tour is sorted into a ship-day tier: fits, a long day (we check it first), or not on a ship day */
-  const tierOf = (v, min) => !h.port ? "ok" : (shipTier(v, min) === "no" ? "no" : !venueShipOk(v, min) ? "no" : shipTier(v, min));
-  const hero = (h.port ? (rows.find((r) => tierOf(r.v, r.min) === "ok") || nearest) : nearest).v.photos[0];
-  const region = X.regions[h.region];
-  const row = ({ v, min }) => {
-    const fp = fromPrice(v);
-    const price = fp ? (fp.usd != null ? `<b>${dual(fp.usd)}</b><small>${fp.same ? "per person" : "from"}</small>` : `<b>${jmd(fp.jmd)}</b><small>${fp.same ? "per person" : "from"}</small>`) : "<b>Price on request</b>";
-    const n = v.products.filter(live).length;
-    const tier = tierOf(v, min);
-    const works = tier === "no" && h.port ? portsThatWork(v)[0] : null;
-    const driveLine = tier === "no" ? (shipTier(v, min) !== "no" ? `Not on a ship day: ${v.shipDayNote || "runs in the evening"}` : `Not on a ship day: ${driveLabel(min)} each way${works ? `. Works from ${works.pt.name}, ${driveLabel(works.min)}` : ""}`) : tier === "ask" ? `A long day from the pier, ${driveLabel(min)} each way. Ask us first` : `${driveLabel(min)} from ${h.name}`;
-    return `<a class="nrow${tier === "no" ? " nrow-off" : ""}" href="${BASE}/${v.slug}${h.port ? `?hotel=${h.slug}` : ""}">
-      <span class="nrow-img">${pic(small(v.photos[0].file), v.photos[0].alt)}</span>
-      <span class="nrow-t"><span class="nrow-drive${tier === "no" ? " off" : tier === "ask" ? " ask" : ""}">${esc(driveLine)}</span><b>${esc(v.name)}</b><small>${esc(v.card)}</small><span class="vcard-meta">${n} ${n === 1 ? "option" : "options"} · ${v.categories.map((c) => esc(CATS[c])).join(" · ")}</span></span>
-      <span class="nrow-p">${price}</span>${icon("arrow", 18, 2.4)}</a>`;
+/* ---------- near-hotel, port and area pages ----------
+   One page per resort on the status list and per cruise port. It leads with what only that place has: the map around
+   it, the days out grouped by how far they are, pickup from that hotel or not, the airport rides to it, the resorts
+   next to it and questions about it. The smaller hotels, villas and guesthouses on the transfers list carry their
+   area's middle point instead of their own pin, so their pages were the same page under different names: they fold
+   into six area pages (301s in public/_redirects, written below). */
+const T = JSON.parse(fs.readFileSync(path.join(ROOT, "data/transfers.json"), "utf8"));
+const TR = JSON.parse(fs.readFileSync(path.join(ROOT, "data/transfer-rates.json"), "utf8"));
+const RES_BY_NAME = Object.fromEntries(RESORTS.map((r) => [r.name, r]));
+const NEAR_HOTELS = HOTELS.filter((h) => !h.small);
+const AREA_PAGES = [
+  { region: "ocho", slug: "ocho-rios", name: "Ocho Rios and Runaway Bay", prep: "in" },
+  { region: "mobay", slug: "montego-bay", name: "Montego Bay and Rose Hall", prep: "in" },
+  { region: "negril", slug: "negril", name: "Negril", prep: "in" },
+  { region: "falmouth", slug: "falmouth", name: "Falmouth and Trelawny", prep: "in" },
+  { region: "lucea", slug: "lucea", name: "Lucea and Green Island", prep: "in" },
+  { region: "south", slug: "south-coast", name: "the South Coast", prep: "on" },
+];
+const AREA_BY_REGION = Object.fromEntries(AREA_PAGES.map((a) => [a.region, a]));
+const cap = (s) => String(s).charAt(0).toUpperCase() + String(s).slice(1);
+const shortTime = (m) => driveLabel(m).replace(/^about /, "");
+const placeOf = (v) => (/Rose Hall/.test(v.name) ? "Rose Hall" : String(AREAS[v.area] || "").replace(/\s*\(.*\)$/, ""));
+/* sites several tours share: map = the pin's label (a newline breaks it over two lines), full = in a sentence, desc = in the meta description */
+const GROUP_NAMES = {
+  "iberostar-selection-rose-hall iberostar-waves-rose-hall joia-rose-hall": { map: "Iberostar and JOIA\nRose Hall", full: "Day passes at Iberostar and JOIA Rose Hall", desc: "Iberostar and JOIA Rose Hall day passes" },
+  "ocean-coral-spring ocean-eden-bay": { map: "Ocean Eden Bay and\nOcean Coral Spring", full: "Day passes at Ocean Eden Bay and Ocean Coral Spring", desc: "Ocean Eden Bay and Ocean Coral Spring day passes" },
+  "jamwest jamwest-water-park": { map: "JamWest and the Water Park", full: "JamWest and the Water Park", desc: "JamWest and the Water Park" },
+};
+const andList = (a) => (a.length <= 1 ? a.join("") : `${a.slice(0, -1).join(", ")} and ${a[a.length - 1]}`);
+const normName = (s) => String(s).toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+/* a day pass at the resort the guest is already staying at is not a day out */
+const samePlace = (h, v) => { const a = normName(h.name), b = normName(v.name); return a.startsWith(b) || b.startsWith(a); };
+const isLounge = (v) => v.panel === "flight";
+const disp = (n) => String(n).replace(/\s*—\s*/g, ", ");
+const cleanNote = (n) => noDash(String(n || "").split(" · ")[0]).replace(/\s*,\s*/g, ", ").trim();
+function statusLine(r) {
+  const s = (r && r.status) || "Open", w = String((r && r.when) || "").trim(), cat = String((r && r.category) || "All-inclusive").toLowerCase();
+  if (s === "Open") return ["o", `Open now, ${cat}`];
+  if (s === "New") return ["o", /\d/.test(w) ? `New, opening ${w}` : "New and open"];
+  if (s === "Reopening") return ["s", /\d/.test(w) ? `Reopening ${w}` : "Reopening, date to be confirmed"];
+  if (s === "Closing soon") return ["s", /\d/.test(w) ? `Open now, closing ${w}` : "Open now, closing soon"];
+  if (s === "Coming soon") return ["s", /\d/.test(w) ? `Opening ${w}` : "Coming soon"];
+  return ["c", "Closed for now"];
+}
+function pill(r) {
+  const s = (r && r.status) || "Open", w = String((r && r.when) || "").trim();
+  const cls = s === "Open" || s === "New" ? "" : /^(Reopening|Closing soon|Coming soon)$/.test(s) ? " s" : " c";
+  return `<span class="nr-pill${cls}">${esc(s === "Reopening" && /\d/.test(w) ? `Reopens ${w}` : s)}</span>`;
+}
+const thumbOf = (h) => { const f = `near/${h.slug}.jpg`; return fs.existsSync(path.join(IMG_DIR, f)) ? f : null; };
+function photoTag(ph, sizes, extra = "") {
+  const f = ph.file, sf = small(f), hasS = fs.existsSync(path.join(IMG_DIR, sf));
+  if (!hasS) return pic(f, ph.alt, extra);
+  const [w] = jpegSize(path.join(IMG_DIR, f)), [ws] = jpegSize(path.join(IMG_DIR, sf));
+  return pic(sf, ph.alt, `${extra} srcset="${img(sf)} ${ws}w, ${img(f)} ${w}w" sizes="${sizes}"`);
+}
+function priceBlock(v) {
+  const fp = fromPrice(v);
+  if (!fp) return `<span class="nr-price"><small>Price</small><b>On request</b></span>`;
+  return `<span class="nr-price"><small>${fp.same ? "Per person" : "From"}</small><b>${fp.usd != null ? dual(fp.usd) : jmd(fp.jmd)}</b></span>`;
+}
+const ctaOf = (v) => (v.panel === "tour" ? "See times and book" : v.panel === "pass" ? "See the passes" : "See the options");
+const cardFacts = (v, n) => (v.facts || []).filter((f) => !/pickup|\bmin from\b/i.test(f)).slice(0, n);
+const factsHtml = (list) => (list.length ? `<div class="nr-facts">${list.map((f) => `<span>${esc(noDash(f))}</span>`).join("")}</div>` : "");
+/* pickup from this hotel: a tour's pickups are keyed by the region they run from */
+function pickupOf(v, h) {
+  const p = (v.pickups || []).find((x) => x.key === (h.port ? h.slug : h.region));
+  if (!p || p.key === "own" || p.request) return null;
+  if ((p.except || []).includes(h.slug) || (p.resortsOnly && h.small)) return null;
+  if ((p.lngMax != null && h.lng > p.lngMax) || (p.lngMin != null && h.lng < p.lngMin)) return null;
+  return p;
+}
+const pricedPickup = (v, h) => !h.port && !!v.pickupPriced && v.pickupPriced.regions.includes(h.region);
+const perWho = (v, p) => (v.adultsOnly || p.addChild == null ? "per person" : "per adult");
+function pickupText(v, h, who) {
+  const p = pickupOf(v, h), from = h.port ? "the pier" : p && p.resortsOnly && h.isArea ? who.replace(/ hotels$/, " resorts") : who;
+  if (p) return [true, p.add ? `Pickup from ${from}, ${usd(p.add)} more ${perWho(v, p)}.` : `Pickup from ${from} included.`];
+  if (pricedPickup(v, h)) return [false, `Pickup from ${who} available, priced by hotel.`, "priced"];
+  return [false, h.port ? "No pickup from the pier." : h.isArea ? `No hotel pickup in ${h.areaName}.` : `No hotel pickup from ${who}.`];
+}
+
+/* the transfer zone a hotel prices in, the same way the transfers page decides it */
+function zoneFor(h) {
+  const ovr = (T.site.hotelZones || {})[h.name];
+  if (ovr) return ovr;
+  for (const z of T.zones) {
+    const rule = z.rule;
+    if (!rule || rule.region !== h.region) continue;
+    if (rule.lngMax != null && !(h.lng < rule.lngMax)) continue;
+    if (rule.lngMin != null && !(h.lng >= rule.lngMin)) continue;
+    return z.key;
+  }
+  for (const z of T.zones) if (z.regions && z.regions.includes(h.region)) return z.key;
+  return null;
+}
+const AIRPORT_NAMES = { MBJ: "Montego Bay", OCJ: "Ian Fleming, Ocho Rios", KIN: "Kingston" };
+const minsOf = (s) => { const m = String(s).match(/(\d+)\s*h(?:\s*(\d+))?/); if (m) return +m[1] * 60 + (+m[2] || 0); const n = String(s).match(/(\d+)\s*min/); return n ? +n[1] : 999; };
+function airportRows(h) {
+  const z = zoneFor(h), rates = z && TR.zones && TR.zones[z];
+  if (!rates) return [];
+  const rows = ["MBJ", "OCJ", "KIN"].map((ap) => {
+    const car = rates[ap] && rates[ap].in && rates[ap].in[0], drive = ((T.drive || {})[ap] || {})[z];
+    return car && drive ? { ap, name: AIRPORT_NAMES[ap], seats: car[2], price: car[3], drive, mins: minsOf(drive) } : null;
+  }).filter(Boolean).sort((a, b) => a.mins - b.mins);
+  return rows.filter((r, i) => i === 0 || r.mins <= 150);
+}
+const onTransfers = (h) => !!zoneFor(h) && !(T.site.hide || []).includes(h.name);
+
+/* the days out from a place, nearest first, lounges and the place itself left out */
+const daysOut = (h) => X.venues.filter((v) => !isLounge(v) && !samePlace(h, v)).map((v) => ({ v, min: driveMin(h, v) })).filter((r) => r.min != null).sort((a, b) => a.min - b.min || a.v.name.localeCompare(b.v.name));
+/* one pin per site: the three Rose Hall resorts, the two Ocean resorts and the two JamWest parks share one each */
+function mapGroups(rows) {
+  const at = new Map();
+  for (const r of rows) { const k = `${r.v.lat},${r.v.lng}`; if (!at.has(k)) at.set(k, []); at.get(k).push(r); }
+  return [...at.values()].map((rs) => {
+    const key = rs.map((r) => r.v.slug).sort().join(" "), min = Math.min(...rs.map((r) => r.min));
+    return { lat: rs[0].v.lat, lng: rs[0].v.lng, label: GROUP_NAMES[key] ? GROUP_NAMES[key].map : andList(rs.map((r) => r.v.short)), full: GROUP_NAMES[key] ? GROUP_NAMES[key].full : andList(rs.map((r) => r.v.name)), desc: GROUP_NAMES[key] ? GROUP_NAMES[key].desc : andList(rs.map((r) => r.v.name)), time: driveLabel(min), timeShort: shortTime(min), min, place: placeOf(rs[0].v) };
+  }).sort((a, b) => a.min - b.min);
+}
+const groupIsMany = (g) => /^Day passes | and /.test(g.full);
+const lowerThe = (s) => s.replace(/^(The|Day) /, (m, w) => `${w.toLowerCase()} `);
+/* the lead's first sentence, from the map's sites: "Mystic Mountain is about 15 min away and Poko Loko about 25 min." */
+function leadFrom(groups, fromText) {
+  const [g1, g2] = groups;
+  if (!g1) return "";
+  if (g1.min > 60) return `The closest day out is ${lowerThe(g1.full)}, ${g1.time} ${fromText}.`;
+  return `${g1.full} ${groupIsMany(g1) ? "are" : "is"} ${g1.time} ${fromText}${g2 && g2.min <= 90 ? `, and ${lowerThe(g2.full)} ${g2.time}` : ""}.`;
+}
+const descFrom = (groups, n = 3) => groups.slice(0, n).map((g) => `${g.desc} ${g.time}`);
+const arrowIcon = (dir) => icon(dir === "l" ? "back" : "arrow", 15, 2.6);
+
+/* the sections: under half an hour, within the hour, then one per place further out (a day trip under 2 hours, a long
+   day from 2 hours). A cruise port groups by what fits a ship day instead. */
+function bandsFor(h, rows, fromWhat) {
+  if (h.port) {
+    const tierOf = (v, min) => (shipTier(v, min) === "no" ? "no" : !venueShipOk(v, min) ? "no" : shipTier(v, min));
+    const fits = rows.filter((r) => tierOf(r.v, r.min) === "ok"), longDay = rows.filter((r) => tierOf(r.v, r.min) === "ask"), no = rows.filter((r) => tierOf(r.v, r.min) === "no");
+    const out = [];
+    const f1 = fits.filter((r) => r.min <= 30), f2 = fits.filter((r) => r.min > 30 && r.min <= 60), f3 = fits.filter((r) => r.min > 60);
+    if (f1.length) out.push({ id: "near-30", chip: "30 min or less", big: "30 min", sub: `or less from the pier. Plenty of time before all-aboard.`, kind: "big", rows: f1 });
+    if (f2.length) out.push({ id: "near-60", chip: "Within the hour", big: "1 hour", sub: `or less from the pier. Still an easy ship day.`, kind: "mid", rows: f2 });
+    if (f3.length) out.push({ id: "near-ship", chip: `Up to ${shortTime(Math.max(...f3.map((r) => r.min)))}`, big: shortTime(Math.max(...f3.map((r) => r.min))), sub: `or less each way. It fits, with less time there.`, kind: "small", rows: f3 });
+    if (longDay.length) out.push({ id: "long-day", chip: "A long day", big: "Long day", sub: `${cap(driveLabel(SHIP.okDrive))} to ${shortTime(SHIP.askDrive)} each way. Send the request and we check it against your all-aboard time before anything is charged.`, kind: "rows", rows: longDay });
+    if (no.length) out.push({
+      id: "not-today", chip: "Not on a ship day", big: "Not today", sub: "Too far for the hours in port, or an evening thing. Each one says which port it works from.", kind: "rows", off: true, rows: no.map((r) => {
+        const works = portsThatWork(r.v)[0];
+        return { ...r, note: shipTier(r.v, r.min) !== "no" ? cap(noDash(r.v.shipDayNote || "runs in the evening")) : `${cap(driveLabel(r.min))} each way${works ? `, works from ${works.pt.name}` : ""}` };
+      }),
+    });
+    return out;
+  }
+  const out = [], b1 = rows.filter((r) => r.min <= 30), b2 = rows.filter((r) => r.min > 30 && r.min <= 60), rest = rows.filter((r) => r.min > 60);
+  if (b1.length) out.push({ id: "near-30", chip: "30 min or less", big: "30 min", sub: `or less from ${fromWhat}. Easy for a morning or an afternoon.`, kind: "big", rows: b1 });
+  if (b2.length) out.push({ id: "near-60", chip: "Within the hour", big: "1 hour", sub: `or less from ${fromWhat}. A short drive, then the whole day or evening there.`, kind: "mid", rows: b2 });
+  const byPlace = new Map();
+  for (const r of rest) { const p = placeOf(r.v); if (!byPlace.has(p)) byPlace.set(p, []); byPlace.get(p).push(r); }
+  for (const [place, rs] of byPlace) {
+    const m = Math.min(...rs.map((r) => r.min)), far = m >= 120;
+    out.push({ id: `near-${slugify(place)}`, chip: place, big: shortTime(m), sub: far ? `${place}, a long day each way from here. Easier with a night or two in ${place}.` : `${place}, a full day out from here.`, kind: far ? "rows" : "small", rows: rs, place });
+  }
+  return out;
+}
+
+function bandHtml(b, h, who, ask) {
+  const href = (v) => `${BASE}/${v.slug}${h.port ? `?hotel=${h.slug}` : ""}`;
+  const timeTag = (r) => `<span class="nr-time">${icon("clock", 15, 2.6)}${esc(cap(driveLabel(r.min)))}</span>`;
+  const pick = (v, links) => {
+    const [yes, text, priced] = pickupText(v, h, who);
+    return `<p class="nr-pick${yes ? " yes" : ""}">${icon(yes ? "check" : "car", 18, yes ? 2.6 : 2.2)}<span>${esc(text)}</span>${!yes && links ? `<a href="${ask}">${priced ? "Ask for the price" : "Ask us for a ride"}</a>` : ""}</p>`;
   };
-  const fits = rows.filter((r) => tierOf(r.v, r.min) === "ok"), longDay = rows.filter((r) => tierOf(r.v, r.min) === "ask"), notShip = rows.filter((r) => tierOf(r.v, r.min) === "no");
-  const list = h.port
-    ? `${fits.map(row).join("\n")}${longDay.length ? `<div class="near-group"><b>A long day from the pier</b><small>${longDay.length === 1 ? "This one is" : "These are"} ${driveLabel(SHIP.okDrive)} to ${driveLabel(SHIP.askDrive)} each way. Send the request and we check it against your all-aboard time before anything is charged.</small></div>${longDay.map(row).join("\n")}` : ""}${notShip.length ? `<div class="near-group"><b>Not on a ship day from ${esc(h.name)}</b><small>Too far for the hours in port, or an evening thing. Each one says which port it works from.</small></div>${notShip.map(row).join("\n")}` : ""}`
-    : rows.map(row).join("\n");
-  const waText = h.port ? `Hi Golden Vacation! We're in port at ${h.name} for the day and we'd like a day out. Ref GV-EXP-PORT` : `Hi Golden Vacation! We're staying at ${h.name} and we'd like to add a day out. Ref GV-EXP-NEAR`;
-  const under = (m) => rows.filter((r) => r.min <= m).length;
+  let body = "";
+  if (b.kind === "big" || b.kind === "mid") {
+    body = `<div class="nr-cards${b.kind === "mid" ? " mid" : ""}">${b.rows.map((r) => { const v = r.v; return `<article class="nr-card">
+      <a class="nr-ph" href="${href(v)}" tabindex="-1" aria-hidden="true">${photoTag(v.photos[0], "(min-width: 900px) 36vw, 92vw")}${timeTag(r)}</a>
+      <h3 class="hh"><a href="${href(v)}">${esc(v.name)}</a></h3>
+      <p class="nr-blurb">${esc(noDash(v.card))}</p>
+      ${factsHtml(cardFacts(v, 2))}
+      ${pick(v, true)}
+      <div class="nr-foot">${priceBlock(v)}${btn(ctaOf(v), href(v), "black", "sm", "arrow")}</div>
+    </article>`; }).join("\n")}</div>`;
+  } else if (b.kind === "small") {
+    body = `<div class="nr-smalls">${b.rows.map((r) => { const v = r.v; return `<a class="nr-small" href="${href(v)}">
+      <span class="nr-ph">${photoTag(v.photos[0], "(min-width: 900px) 24vw, 92vw")}${timeTag(r)}</span>
+      <b class="hh">${esc(v.name)}</b>
+      <span class="nr-blurb">${esc(noDash(v.card))}</span>
+      ${pick(v, false).replace(/^<p/, "<span").replace(/<\/p>$/, "</span>")}
+      <span class="nr-small-f">${priceBlock(v)}<span class="nr-go">${esc(v.panel === "tour" ? "See times" : "See the passes")}${icon("arrow", 16, 2.4)}</span></span>
+    </a>`; }).join("\n")}</div>`;
+  } else {
+    const pickNote = !h.port && b.rows.some((r) => (r.v.pickups || []).some((p) => X.regions[p.key])) && !b.rows.some((r) => pickupOf(r.v, h))
+      ? `Pickup runs from ${andList([...new Set(b.rows.flatMap((r) => (r.v.pickups || []).filter((p) => X.regions[p.key]).map((p) => X.regions[p.key].label.replace(/\s*\(.*\)$/, ""))))])} hotels, not from ${esc(who)}.` : "";
+    body = `<div class="nr-panel">${b.place || pickNote ? `<div class="nr-panel-h">${b.place ? `<h3>${esc(b.place)}</h3>` : ""}${pickNote ? `<p>${pickNote}</p>` : ""}</div>` : ""}${b.rows.map((r) => { const v = r.v, fp = fromPrice(v); return `<a class="nr-row${b.off ? " off" : ""}" href="${href(v)}">
+      <span class="nr-row-t"><b>${esc(v.name)}</b><small>${esc(noDash(v.card))}</small></span>
+      <span class="nr-row-d">${icon("clock", 15)}${esc(r.note || cap(driveLabel(r.min)))}</span>
+      <span class="nr-row-p"><span><small>${fp && !fp.same ? "From" : "Per person"}</small><b>${fp ? (fp.usd != null ? dual(fp.usd) : jmd(fp.jmd)) : "On request"}</b></span>${icon("arrow", 18, 2.4)}</span>
+    </a>`; }).join("\n")}</div>`;
+  }
+  return `<section class="nr-band" id="${b.id}" aria-labelledby="${b.id}-h">
+  <div class="nr-rail"><span class="hh" aria-hidden="true">${esc(b.big)}</span><p>${esc(b.sub)}</p></div>
+  <div class="nr-body"><h2 class="sr" id="${b.id}-h">${esc(b.chip)}</h2>${body}</div>
+</section>`;
+}
+
+function jumpBar(bands, extra, change) {
+  return `<div class="nr-jump"><div class="wrap nr-jump-in" role="navigation" aria-label="On this page"><span class="nr-jump-l">By drive time</span>${bands.map((b) => `<a class="nr-chip" href="#${b.id}">${esc(b.chip)}<small>${b.rows.length}</small></a>`).join("")}${extra}${change}</div></div>`;
+}
+
+function airportHtml(h, who, rows, transfersHref) {
+  if (!rows.length) return "";
+  const tr = rows.map((r) => `<tr><th scope="row"><span class="ap">${icon("plane", 18, 2)}${esc(r.name)}<span class="code">${r.ap}</span></span></th><td>${esc(r.drive)}</td><td class="p"><b>${dual(r.price)}</b></td></tr>`).join("");
+  const nearestAp = rows[0].ap, lounge = nearestAp === "KIN" ? venueBySlug["club-kingston"] : rows.some((r) => r.ap === "MBJ") ? venueBySlug["club-mobay"] : null;
+  const lfp = lounge ? fromPrice(lounge) : null;
+  return `<section class="nr-air" id="getting-here" aria-labelledby="getting-here-h">
+  <div class="wrap nr-air-in">
+    <div class="nr-air-t">
+      <h2 class="hh" id="getting-here-h">Getting to ${esc(who)}.</h2>
+      <p>A private ride from the airport, one price per vehicle with taxes included. Your driver waits at arrivals with your name on a board.</p>
+      ${btn("Price my ride", transfersHref, "black", "", "arrow")}
+    </div>
+    <div class="nr-air-r">
+      <div class="nr-tab"><table>
+        <caption>One way, private car for up to ${rows[0].seats} people. Minivans and return trips are priced on the transfers page.</caption>
+        <thead><tr><th scope="col">Airport</th><th scope="col">Drive</th><th scope="col" class="p">Car, from</th></tr></thead>
+        <tbody>${tr}</tbody>
+      </table></div>
+      ${lounge ? `<a class="nr-lounge" href="${BASE}/${lounge.slug}">${pic(small(lounge.photos[0].file), lounge.photos[0].alt)}<span><b>Flying home from ${lounge.slug === "club-kingston" ? "Kingston" : "Montego Bay"}?</b><small>${esc(lounge.name)}: ${esc(noDash(lounge.card))}${lfp && lfp.usd != null ? ` From ${usd(lfp.usd)}.` : ""}</small></span>${icon("arrow", 20, 2.4)}</a>` : ""}
+    </div>
+  </div>
+</section>`;
+}
+
+function questionsHtml(title, qs) {
+  return `<section class="nr-qs" aria-labelledby="nr-qs-h"><div class="wrap nr-qs-in">
+  <h2 class="hh" id="nr-qs-h">${esc(title)}</h2>
+  <div class="nr-q">${qs.map(([q, a], i) => `<details${i === 0 ? " open" : ""}><summary>${esc(q)}${icon("chev", 20, 2.6)}</summary><p>${esc(a)}</p></details>`).join("\n")}</div>
+</div></section>`;
+}
+const faqLd = (qs) => ({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: qs.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) });
+/* "JamWest Adventure Park includes pickup from Royalton Negril. JamWest Catamaran picks up for US$30 more per adult." */
+function pickupSentence(withPick, h) {
+  const incl = withPick.filter((x) => !pickupOf(x.v, h).add), extra = withPick.filter((x) => pickupOf(x.v, h).add);
+  const where = h.isArea ? `${h.areaName} hotels` : h.name;
+  return [incl.length ? `${andList(incl.map((x) => x.v.name))} ${incl.length === 1 ? "includes" : "include"} pickup from ${where}.` : "", ...extra.map((x) => `${x.v.name} picks up for ${usd(pickupOf(x.v, h).add)} more ${perWho(x.v, pickupOf(x.v, h))}.`)].filter(Boolean).join(" ");
+}
+/* "Mystic Mountain picks up from RIU Ocho Rios too, at a price that depends on the hotel, so ask us on WhatsApp for it." */
+const pricedSentence = (rows, where) => (rows.length ? `${andList(rows.map((x) => x.v.name))} ${rows.length === 1 ? "picks" : "pick"} up from ${where} too, at a price that depends on the hotel, so ask us on WhatsApp for it.` : "");
+function closestAnswer(A, fromText) {
+  if (!A) return "";
+  const fp = fromPrice(A.v), closed = (A.v.facts || []).map((f) => f.match(/^Closed (\w+)$/)).filter(Boolean)[0];
+  const price = fp && fp.usd != null ? (fp.same ? ` It's ${usd(fp.usd)} per person.` : ` Prices start at ${usd(fp.usd)}.`) : "";
+  return `${A.v.name}, ${driveLabel(A.min)} ${fromText}. ${noDash(A.v.card)}${price}${closed ? ` It's closed on ${closed[1]}.` : ""}`;
+}
+function airportAnswer(rows) {
+  if (!rows.length) return "";
+  const dist = rows.map((r) => `${r.drive} from ${r.name} (${r.ap})`);
+  const cheap = rows.slice(0, 2).map((r) => `${usd(r.price)} one way from ${r.name.split(",")[0]}`);
+  return `${cap(andList(dist))}. A private car for up to ${rows[0].seats} starts at ${andList(cheap)}.`;
+}
+const clip = (parts, tail, max = 155) => { const p = [...parts]; let s = `${p.join(", ")}. ${tail}`; while (s.length > max && p.length > 1) { p.pop(); s = `${p.join(", ")}. ${tail}`; } return s.length > max ? s.slice(0, max - 1).replace(/\s+\S*$/, "") + "." : s; };
+
+function nearPage(h0) {
+  const r = RES_BY_NAME[h0.name], h = { ...h0, name: disp(h0.name) };
+  const rows = daysOut(h);
+  const area = AREA_BY_REGION[h.region];
+  const who = h.name;
+  const ask = wa(h.port ? `Hi Golden Vacation! We're in port at ${h.name} for the day and we need a ride. Ref GV-EXP-PORT` : `Hi Golden Vacation! We're staying at ${h.name} and we need a ride to a day out. Ref GV-EXP-NEAR`);
+  const waPlan = wa(h.port ? `Hi Golden Vacation! We're in port at ${h.name} for the day and we'd like a day out. Ref GV-EXP-PORT` : `Hi Golden Vacation! We're staying at ${h.name} and we'd like to add a day out. Ref GV-EXP-NEAR`);
+  const bands = bandsFor(h, rows, h.name);
+  const air = h.port ? [] : airportRows(h);
+  const transfersHref = onTransfers(h) ? `/transfers/?hotel=${h.slug}` : "/transfers/";
+  const hasPick = rows.some((x) => pickupOf(x.v, h));
+  const [A, B] = rows;
+  const fits = h.port ? (bands.filter((b) => !["long-day", "not-today"].includes(b.id)).flatMap((b) => b.rows)) : rows;
+  const lead = h.port
+    ? `${fits.length} ${fits.length === 1 ? "fits" : "fit"} a ship day. ${noDash(h.note || "")} We plan to have you back at the pier by ${SHIP.backBy}, or an hour before the all-aboard time you give us.`.replace(/\s+/g, " ")
+    : `${leadFrom(mapGroups(rows), "away")} Every price here is the published rate, in US$ and J$, ${hasPick ? "and each one says whether pickup from the hotel is included." : "and we say straight when there's no pickup from the hotel."}`.trim();
+  const groups = mapGroups(rows);
+  const [stCls, stText] = h.port ? ["o", "Cruise port, ship days"] : statusLine(r);
+  const thumb = h.port ? null : thumbOf(h);
+  const chip = `${thumb ? pic(thumb, `${h.name}`, ' loading="eager" width="46" height="46"') : `<span class="nr-noimg">${icon(h.port ? "ship" : "pin", 20)}</span>`}<span><b>${esc(h.name)}</b><span class="nr-st ${stCls}"><i></i>${esc(stText)}</span></span>`;
+  const map = nearMap({ ring: JM.ring, anchor: { lat: h.lat, lng: h.lng, name: h.name, sub: h.port ? "Your ship" : "You're here" }, groups, esc, arrow: arrowIcon, title: `Map of the coast around ${h.name} with the days out near it` });
+  /* neighbours: the six closest resorts, each with its own page */
+  const nb = RESORT_HOTELS.filter((o) => o.slug !== h.slug).map((o) => ({ o, d: km(h, o) })).sort((a, b) => a.d - b.d).slice(0, 6);
+  const nbHtml = nb.map(({ o, d }) => { const ro = RES_BY_NAME[o.name], note = cleanNote(ro && ro.note); return `<a href="${BASE}/near/${o.slug}"><span class="nr-nb-t"><b>${esc(disp(o.name))}</b><small>${esc(d < 1 ? (note ? `Next door. ${note}` : "Next door") : note || o.area)}</small></span>${pill(ro)}${icon("arrow", 18, 2.4)}</a>`; }).join("\n");
+  const port = h.port ? null : (X.ports || []).find((p) => p.region === h.region);
+  const areaCount = area ? RESORT_HOTELS.filter((o) => o.region === h.region).length : 0;
+  const wide = `${area ? `<a class="dark" href="${BASE}/area/${area.slug}"><span><b>All ${areaCount} resorts ${area.prep} ${esc(area.name)}</b><small>What's open, and what's near each one</small></span>${icon("arrow", 20, 2.4)}</a>` : ""}${port ? `<a href="${BASE}/near/${port.slug}"><span><b>In port at ${esc(port.name.replace(/ cruise port$/, ""))} for the day?</b><small>Days out that get you back before all-aboard</small></span>${icon("arrow", 20, 2.4)}</a>` : ""}`;
+  /* questions about this place */
+  const withPick = rows.filter((x) => pickupOf(x.v, h)), pricedRows = rows.filter((x) => pricedPickup(x.v, h));
+  const qs = h.port ? [
+    [`What fits a ship day from ${h.name}?`, fits.length ? `${fits.length === 1 ? "One does" : `${fits.length} do`}: ${andList(fits.map((x) => x.v.short))}. We plan to have you back at the pier by ${SHIP.backBy}, or an hour before the all-aboard time you give us.` : `Nothing here fits the hours in port. Ask us on WhatsApp and we'll suggest something closer.`],
+    [`Is there pickup from the pier?`, withPick.length ? `Yes. ${pickupSentence(withPick, h)} For the others, ask us on WhatsApp if you need a ride.` : `Not on these. ${groups.length ? `${leadFrom(groups, "from the pier")} ` : ""}Ask us on WhatsApp if you need a ride.`],
+    [`What's closest to ${h.name}?`, closestAnswer(A, "from the pier")],
+  ] : [
+    [`Is there hotel pickup from ${h.name}?`, withPick.length || pricedRows.length ? `Yes. ${[pickupSentence(withPick, h), pricedSentence(pricedRows, h.name)].filter(Boolean).join(" ")} For the others, ask us on WhatsApp if you need a ride.` : `Not on these. ${groups.length ? `${leadFrom(groups, "by road")} ` : ""}Ask us on WhatsApp if you need a ride.`],
+    [`What's the closest thing to do near ${h.name}?`, closestAnswer(A, "away")],
+    ...(air.length ? [[`How far is ${h.name} from the airport?`, airportAnswer(air)]] : []),
+    [`Is ${h.name} open?`, !r || r.status === "Open" || r.status === "New" ? `Yes, it's open. Every resort on the island is on our resort status page, with reopening dates for the ones that are closed.` : r.status === "Reopening" ? `Not yet. ${h.name} is ${/\d/.test(r.when || "") ? `reopening ${r.when}` : "reopening, with the date still to be confirmed"}. Our resort status page shows what's open around it now.` : r.status === "Closing soon" ? `It's open now and closing for renovation${/\d/.test(r.when || "") ? ` (${r.when})` : ""}. Our resort status page has the dates.` : `It's closed for now. Our resort status page shows what's open around it.`],
+  ].filter(([, a]) => a);
+  const title = (() => { const w = h.port ? "from" : "near", t = `Things to do ${w} ${h.name}, Jamaica`; return t.length <= 60 ? t : `Things to do ${w} ${h.name}`.length <= 60 ? `Things to do ${w} ${h.name}` : `Things to do ${w} ${h.name.split(" / ")[0]}`; })();
+  const desc = h.port
+    ? clip(descFrom(mapGroups(fits)), `Days out that fit a ship day from ${h.name}, back before all-aboard.`)
+    : clip(descFrom(groups), `Published prices in US$ and J$, and whether there's pickup from ${h.name}.`);
+  const crumbsArea = area ? [{ "@type": "ListItem", position: 3, name: cap(area.name), item: `${S.origin}${BASE}/area/${area.slug}` }] : [];
   const jsonld = [
-    { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Golden Vacation & Travel", item: S.origin }, { "@type": "ListItem", position: 2, name: "Golden Experiences", item: `${S.origin}${BASE}/` }, { "@type": "ListItem", position: 3, name: `Near ${h.name}`, item: `${S.origin}${BASE}/near/${h.slug}` }] },
-    { "@context": "https://schema.org", "@type": "ItemList", name: `Things to do ${h.port ? "from" : "near"} ${h.name}`, itemListElement: (h.port ? fits.concat(longDay) : rows).map(({ v }, i) => ({ "@type": "ListItem", position: i + 1, name: v.name, url: `${S.origin}${BASE}/${v.slug}` })) },
+    { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Golden Vacation & Travel", item: S.origin }, { "@type": "ListItem", position: 2, name: "Golden Experiences", item: `${S.origin}${BASE}/` }, ...crumbsArea, { "@type": "ListItem", position: 3 + crumbsArea.length, name: `${h.port ? "From" : "Near"} ${h.name}`, item: `${S.origin}${BASE}/near/${h.slug}` }] },
+    { "@context": "https://schema.org", "@type": "ItemList", name: `Things to do ${h.port ? "from" : "near"} ${h.name}`, itemListElement: (h.port ? fits : rows).map(({ v }, i) => ({ "@type": "ListItem", position: i + 1, name: v.name, url: `${S.origin}${BASE}/${v.slug}` })) },
+    faqLd(qs),
   ];
-  const title = h.port ? `Things to do from ${h.name} | tours and day passes for your ship day, with drive times` : `Things to do near ${h.name} | day passes and tours with drive times`;
-  const desc = h.port ? `${fits.length} days out that fit a ship day from ${h.name}: ${fits.slice(0, 3).map((r) => r.v.short).join(", ")} and more, timed to your all-aboard. Published prices in US$, port pickup where it runs, booked by Golden Vacation & Travel in Jamaica.` : `${under(60)} days out under an hour from ${h.name}, ${region.label}: ${rows.slice(0, 3).map((r) => r.v.short).join(", ")} and more. Published prices in US$ and J$, hotel pickup where it runs, booked by Golden Vacation & Travel in Jamaica.`;
-  return `${head({ title, description: desc, pathname: `${BASE}/near/${h.slug}`, image: hero.file, jsonld, bodyClass: "exp exp-near" })}
+  const hero = (A || rows[0] || { v: X.venues[0] }).v.photos[0];
+  return `${head({ title, description: desc, pathname: `${BASE}/near/${h.slug}`, image: hero.file, jsonld, bodyClass: "exp exp-near", near: true })}
 ${nav()}
-<main class="near wrap" data-hotel="${h.slug}">
-<nav class="crumbs" aria-label="Breadcrumb"><a href="${BASE}/">Golden Experiences</a><span>/</span><span>${h.port ? "From" : "Near"} ${esc(h.name)}</span></nav>
-<section class="near-hero">
-  <div class="near-t">
-    ${kicker(h.area || region.label)}
-    <h1 class="hh">${h.port ? `In port for the day? Things to do from ${esc(h.name)}.` : `Things to do near ${esc(h.name)}.`}</h1>
-    <p class="lead">${h.port ? `${fits.length} fit a ship day${longDay.length ? `, ${longDay.length} ${longDay.length === 1 ? "is" : "are"} a long day we check first` : ""}${notShip.length ? `, ${notShip.length} ${notShip.length === 1 ? "doesn't" : "don't"} fit` : ""}. ${esc(h.note || "")} We plan to have you back at the pier by ${esc(SHIP.backBy)}, or an hour before the all-aboard time you give us. Every price is the published rate, and we say when pickup runs from the pier and when it doesn't.` : `${under(30) ? `${under(30)} within half an hour, ` : ""}${under(60)} under an hour, ${rows.length} worth the drive. Every price is the published rate, both currencies, and we say when hotel pickup runs from ${esc(h.name)} and when it doesn't.`}</p>
-    <div class="near-btns">${btn(h.port ? "Plan my ship day" : "Add a day out to my stay", wa(waText), "black", "", "chat")}${btn(h.port ? "Browse from this port" : "Browse with my hotel set", `${BASE}/?hotel=${h.slug}`, "outline", "", "arrow")}</div>
-    <p class="pf-hint">${esc(X.driveNote.split(".")[0])}. Traffic and the road decide the rest.</p>
-  </div>
-  <div class="near-photo">${pic(hero.file, hero.alt, ' loading="eager"')}<div class="hero-tags">${tag(`Nearest: ${(h.port && fits[0] ? fits[0] : nearest).v.short}, ${driveLabel((h.port && fits[0] ? fits[0] : nearest).min)}`, "gold")}</div></div>
-</section>
-<section class="near-list">${list}</section>
-<section class="near-foot">
-  <div class="sec-head"><div>${kicker("Also from here")}<h2 class="hh">Airport, transfers and the room itself.</h2></div></div>
-  <div class="near-links">
-    <a class="pair" href="${BASE}/club-mobay"><span class="pair-t"><b>Club MoBay</b><small>Fast track and lounge at Montego Bay airport, timed to your flight</small></span>${icon("arrow", 18, 2.4)}</a>
-    ${h.port ? `<a class="pair" href="${BASE}/#port"><span class="pair-t"><b>In port for the day</b><small>Every day out that fits a ship day, nearest ports first</small></span>${icon("arrow", 18, 2.4)}</a>` : (h.small ? `<a class="pair" href="/transfers/"><span class="pair-t"><b>Airport transfer to ${esc(h.name)}</b><small>A private ride from the airport to your hotel, priced before you book</small></span>${icon("arrow", 18, 2.4)}</a>` : `<a class="pair" href="/hotel-status"><span class="pair-t"><b>Is ${esc(h.name)} open?</b><small>What's open, reopening and closed across the island, updated from the hotels</small></span>${icon("arrow", 18, 2.4)}</a>`)}
-    <a class="pair" href="${wa(`Hi Golden Vacation! I'd like a quote for a stay at ${h.name} with a day out added. Ref GV-EXP-STAY`)}"><span class="pair-t"><b>Your hotel, tours and pickup</b><small>We put the accommodation, the tours and the transportation together, giving you one total</small></span>${icon("chat", 18, 2.4)}</a>
+<main class="nr" data-hotel="${h.slug}">
+<nav class="crumbs wrap" aria-label="Breadcrumb"><a href="${BASE}/">Golden Experiences</a><span>/</span>${area ? `<a href="${BASE}/area/${area.slug}">${esc(cap(area.name))}</a><span>/</span>` : ""}<span>${h.port ? "From" : "Near"} ${esc(h.name)}</span></nav>
+<section class="nr-hero" aria-labelledby="nr-h1">
+  <div class="wrap nr-hero-in">
+    <div class="nr-hero-t">
+      ${h.port ? `<span class="nr-hotel">${chip}</span>` : `<a class="nr-hotel" href="/hotel-status/">${chip}</a>`}
+      <h1 class="hh" id="nr-h1">${h.port ? `In port for the day? Things to do from ${esc(h.name)}.` : `Things to do near ${esc(h.name)}.`}</h1>
+      <p class="nr-lead">${esc(lead)}</p>
+      <div class="nr-btns">${btn(h.port ? "Plan my ship day" : "Plan my day out", waPlan, "gold", "", "chat")}${h.port ? btn("Browse from this port", `${BASE}/?hotel=${h.slug}`, "line", "", "arrow") : `<a class="btn btn-line" href="#getting-here">Airport pickup${icon("car", 18)}</a>`}</div>
+    </div>
+    <div class="nr-map-w">${map}<p class="nr-map-note">${esc(X.driveNote.split(".")[0])}. Traffic and the road decide the rest.</p></div>
   </div>
 </section>
+${jumpBar(bands, air.length ? `<a class="nr-chip" href="#getting-here">Airport<small>${air.length}</small></a>` : "", `<a class="nr-change" href="${BASE}/?hotel=${h.slug}">${icon("pin", 17)}${h.port ? "Change port" : "Change hotel"}</a>`)}
+<div class="wrap nr-list">
+${bands.map((b) => bandHtml(b, h, who, ask)).join("\n")}
+</div>
+${airportHtml(h, who, air, transfersHref)}
+<section class="wrap nr-also" aria-labelledby="nr-also-h">
+  <div class="nr-sec-h"><h2 class="hh" id="nr-also-h">${h.port ? `Resorts near ${esc(h.name)}.` : `Also near ${esc(h.name)}.`}</h2><p>Every resort around here has its own page, with drive times from its own door.</p></div>
+  <div class="nr-nb">${nbHtml}</div>
+  ${wide ? `<div class="nr-wide">${wide}</div>` : ""}
+</section>
+${questionsHtml(`Questions about ${h.name}.`, qs)}
 </main>
 ${footer()}
 ${scripts({ page: "near", whatsapp: S.whatsapp, hotel: h.slug })}
 </body></html>`;
+}
+
+function areaPage(a) {
+  const c = X.regions[a.region];
+  const P = { name: `the middle of ${a.name}`, region: a.region, lat: c.lat, lng: c.lng, slug: `area-${a.slug}`, isArea: true, areaName: a.name };
+  const rows = daysOut(P);
+  const bands = bandsFor(P, rows, `the middle of ${a.name}`);
+  const resorts = RESORT_HOTELS.filter((h) => h.region === a.region).sort((x, y) => (x.status === "Open" ? 0 : 1) - (y.status === "Open" ? 0 : 1) || x.name.localeCompare(y.name));
+  const openN = resorts.filter((h) => h.status === "Open").length;
+  const smallOnes = SMALL_HOTELS.filter((h) => h.region === a.region).sort((x, y) => x.name.localeCompare(y.name));
+  const port = (X.ports || []).find((p) => p.region === a.region);
+  const air = airportRows(P);
+  const [A, B] = rows;
+  const where = cap(a.name);
+  const waPlan = wa(`Hi Golden Vacation! We're staying ${a.prep} ${a.name} and we'd like to add a day out. Ref GV-EXP-NEAR`);
+  const ask = wa(`Hi Golden Vacation! We're staying ${a.prep} ${a.name} and we need a ride to a day out. Ref GV-EXP-NEAR`);
+  const groups = mapGroups(rows);
+  const lead = `${leadFrom(groups, `from the middle of ${a.name}`)} Pick your resort below for drive times from its own door. Every price is the published rate, in US$ and J$.`.trim();
+  const map = nearMap({ ring: JM.ring, anchor: { lat: c.lat, lng: c.lng, name: null }, groups, dots: resorts, esc, arrow: arrowIcon, lngSpan: 0.56, title: `Map of ${a.name} with its resorts and the days out near it` });
+  const nbHtml = resorts.map((o) => { const ro = RES_BY_NAME[o.name], note = cleanNote(ro && ro.note); return `<a href="${BASE}/near/${o.slug}"><span class="nr-nb-t"><b>${esc(disp(o.name))}</b><small>${esc(note || o.area)}</small></span>${pill(ro)}${icon("arrow", 18, 2.4)}</a>`; }).join("\n");
+  const withPick = rows.filter((x) => pickupOf(x.v, P)), pricedRows = rows.filter((x) => pricedPickup(x.v, P));
+  const qs = [
+    [`What's closest to ${a.name}?`, closestAnswer(A, `from the middle of ${a.name}`)],
+    [`Is there hotel pickup ${a.prep} ${a.name}?`, withPick.length || pricedRows.length ? `Yes. ${[pickupSentence(withPick, P), pricedSentence(pricedRows, `${a.name} hotels`)].filter(Boolean).join(" ")} For the others, ask us on WhatsApp if you need a ride.` : `Not on these. Ask us on WhatsApp if you need a ride.`],
+    ...(air.length ? [[`How far is ${a.name} from the airport?`, airportAnswer(air)]] : []),
+  ].filter(([, x]) => x);
+  const title = `Things to do ${a.prep} ${a.name}, Jamaica`;
+  const desc = clip(descFrom(groups), `Drive times from ${resorts.length === 1 ? "the resort" : `${resorts.length} resorts`} ${a.prep} ${a.name}, with published prices.`);
+  const jsonld = [
+    { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Golden Vacation & Travel", item: S.origin }, { "@type": "ListItem", position: 2, name: "Golden Experiences", item: `${S.origin}${BASE}/` }, { "@type": "ListItem", position: 3, name: where, item: `${S.origin}${BASE}/area/${a.slug}` }] },
+    { "@context": "https://schema.org", "@type": "ItemList", name: `Resorts ${a.prep} ${a.name}`, itemListElement: resorts.map((o, i) => ({ "@type": "ListItem", position: i + 1, name: `Things to do near ${disp(o.name)}`, url: `${S.origin}${BASE}/near/${o.slug}` })) },
+    faqLd(qs),
+  ];
+  const hero = (A || { v: X.venues[0] }).v.photos[0];
+  return `${head({ title, description: desc, pathname: `${BASE}/area/${a.slug}`, image: hero.file, jsonld, bodyClass: "exp exp-near exp-area", near: true })}
+${nav()}
+<main class="nr" data-area="${a.slug}">
+<nav class="crumbs wrap" aria-label="Breadcrumb"><a href="${BASE}/">Golden Experiences</a><span>/</span><span>${esc(where)}</span></nav>
+<section class="nr-hero" aria-labelledby="nr-h1">
+  <div class="wrap nr-hero-in">
+    <div class="nr-hero-t">
+      <a class="nr-hotel" href="#resorts"><span class="nr-noimg">${icon("pin", 20)}</span><span><b>${resorts.length} ${resorts.length === 1 ? "resort" : "resorts"}${smallOnes.length ? ` and ${smallOnes.length} smaller hotels` : ""}</b><span class="nr-st o"><i></i>${openN} open now</span></span></a>
+      <h1 class="hh" id="nr-h1">Things to do ${a.prep} ${esc(a.name)}.</h1>
+      <p class="nr-lead">${esc(lead)}</p>
+      <div class="nr-btns">${btn("Plan my day out", waPlan, "gold", "", "chat")}<a class="btn btn-line" href="#resorts">Find my resort${icon("arrow", 18)}</a></div>
+    </div>
+    <div class="nr-map-w">${map}<p class="nr-map-note">${esc(X.driveNote.split(".")[0])}, from the middle of the area. Traffic and the road decide the rest.</p></div>
+  </div>
+</section>
+${jumpBar(bands, `<a class="nr-chip" href="#resorts">Resorts<small>${resorts.length}</small></a>${air.length ? `<a class="nr-chip" href="#getting-here">Airport<small>${air.length}</small></a>` : ""}`, "")}
+<div class="wrap nr-list">
+${bands.map((b) => bandHtml(b, P, `${cap(a.name).replace(/^The /, "")} hotels`, ask)).join("\n")}
+</div>
+<section class="wrap nr-also" id="resorts" aria-labelledby="nr-also-h">
+  <div class="nr-sec-h"><h2 class="hh" id="nr-also-h">Resorts ${a.prep} ${esc(a.name)}.</h2><p>Every one has its own page, with drive times from its own door.</p></div>
+  <div class="nr-nb">${nbHtml}</div>
+  ${smallOnes.length ? `<div class="nr-smallh"><h3>Villas, guesthouses and smaller hotels</h3><p>Staying at one of these? The drive times on this page are from the middle of ${esc(a.name)}.</p><ul>${smallOnes.map((o) => `<li>${esc(o.name)}</li>`).join("")}</ul></div>` : ""}
+  ${port ? `<div class="nr-wide"><a href="${BASE}/near/${port.slug}"><span><b>In port at ${esc(port.name.replace(/ cruise port$/, ""))} for the day?</b><small>Days out that get you back before all-aboard</small></span>${icon("arrow", 20, 2.4)}</a></div>` : ""}
+</section>
+${airportHtml(P, a.name, air, "/transfers/")}
+${questionsHtml(`Questions about ${a.name}.`, qs)}
+</main>
+${footer()}
+${scripts({ page: "near", whatsapp: S.whatsapp })}
+</body></html>`;
+}
+
+/* ---------- links in: the hub's list of every resort, and "Staying nearby?" on each tour ---------- */
+function hubDirectory() {
+  const fold = (title, count, links, foot = "") => `<details><summary><span><b>${esc(title)}</b>${count ? `<small>${count}</small>` : ""}</span>${icon("chev", 20, 2.6)}</summary><ul>${links}</ul>${foot}</details>`;
+  const blocks = AREA_PAGES.map((a) => {
+    const hs = RESORT_HOTELS.filter((h) => h.region === a.region).sort((x, y) => x.name.localeCompare(y.name));
+    return hs.length ? fold(cap(a.name), `${hs.length} ${hs.length === 1 ? "resort" : "resorts"}`, hs.map((h) => `<li><a href="${BASE}/near/${h.slug}">${esc(disp(h.name))}</a></li>`).join(""), `<a class="eh-dir-area" href="${BASE}/area/${a.slug}">Everything ${a.prep} ${esc(a.name)}${icon("arrow", 16, 2.4)}</a>`) : "";
+  }).join("");
+  const ports = fold("Cruise ports", `${(X.ports || []).length} ports`, (X.ports || []).map((p) => `<li><a href="${BASE}/near/${p.slug}">${esc(p.name)}</a></li>`).join(""));
+  const smalls = fold("Villas and smaller hotels", "by area", AREA_PAGES.filter((a) => SMALL_HOTELS.some((h) => h.region === a.region)).map((a) => `<li><a href="${BASE}/area/${a.slug}">${esc(cap(a.name))}</a></li>`).join(""));
+  return `<section class="eh-dir wrap" id="by-hotel" aria-labelledby="eh-dir-h">
+  <div class="eh-dir-head"><div>${kicker("By hotel")}<h2 class="hh" id="eh-dir-h">Things to do near your hotel.</h2></div><p>Every resort has its own page, with drive times from its door and pickup for that hotel.</p></div>
+  <div class="eh-dir-list">${blocks}${ports}${smalls}</div>
+</section>`;
+}
+function stayingNearby(v) {
+  if (isLounge(v)) return "";
+  const openish = (h) => /^(Open|New|Closing soon)$/.test(h.status);
+  const all = RESORT_HOTELS.filter((h) => !samePlace(h, v)).map((h) => ({ h, min: driveMin(h, v) })).filter((r) => r.min != null).sort((a, b) => a.min - b.min || a.h.name.localeCompare(b.h.name));
+  const pick = [...all.filter((r) => openish(r.h)), ...all.filter((r) => !openish(r.h))].slice(0, 6).sort((a, b) => a.min - b.min || a.h.name.localeCompare(b.h.name));
+  if (!pick.length) return "";
+  const region = { trelawny: "falmouth" }[v.area] || v.area, area = AREA_BY_REGION[region];
+  return `<div class="nr-stay">
+      <div class="nr-stay-h"><div><h2 class="hh">Staying nearby?</h2><p>Drive times to ${esc(v.short)} from the resorts closest to it.</p></div>${area ? `<a class="nr-go" href="${BASE}/area/${area.slug}">All of ${esc(cap(area.name))}${icon("arrow", 16, 2.4)}</a>` : ""}</div>
+      <div class="nr-stay-g">${pick.map(({ h, min }) => `<a href="${BASE}/near/${h.slug}"><span><b>${esc(disp(h.name))}</b><small>${icon("clock", 14)}${esc(cap(driveLabel(min)))}</small></span>${icon("arrow", 17, 2.4)}</a>`).join("")}</div>
+    </div>`;
 }
 
 /* ---------- booked page ---------- */
@@ -850,7 +1282,8 @@ const pages = [
   ["public/experiences/booked.html", bookedPage(), "booked"],
   ["public/experiences/partners.html", partnersPage(), "partners"],
   ...(BUNDLE ? [["public/experiences/booked-team.html", bookedPage("team"), "booked-team"]] : []),
-  ...(BUNDLE ? HOTELS.filter((h) => /RIU Ocho Rios|Iberostar Waves Rose Hall|Royalton Negril|Falmouth cruise port/.test(h.name)) : HOTELS).map((h) => [`public/experiences/near/${h.slug}.html`, nearPage(h), `near-${h.slug}`]),
+  ...NEAR_HOTELS.map((h) => [`public/experiences/near/${h.slug}.html`, nearPage(h), `near-${h.slug}`]),
+  ...AREA_PAGES.map((a) => [`public/experiences/area/${a.slug}.html`, areaPage(a), `area-${a.slug}`]),
 ];
 
 if (!BUNDLE) {
@@ -873,15 +1306,27 @@ export const SHIP = ${JSON.stringify({ settings: SHIP_CFG, ports: Object.fromEnt
 `;
   fs.writeFileSync(path.join(ROOT, "netlify/functions/_exp-data.mjs"), dataModule);
   console.log("wrote netlify/functions/_exp-data.mjs", `${(dataModule.length / 1024).toFixed(0)}K`);
-  /* sitemap: the section's indexable pages, replacing any earlier experiences entries */
+  /* sitemap: the section's indexable pages. Every earlier experiences entry is found by its address and replaced in
+     place, so a missing marker can never double the list. The smaller hotels' near pages are not listed: they redirect. */
   const smPath = path.join(ROOT, "public/sitemap.xml");
   if (fs.existsSync(smPath)) {
-    const urls = [[`${BASE}/`, "0.8"], ...X.venues.map((v) => [`${BASE}/${v.slug}`, "0.7"]), ...HOTELS.map((h) => [`${BASE}/near/${h.slug}`, "0.6"])];
+    const urls = [[`${BASE}/`, "0.8"], [`${BASE}/partners`, "0.4"], ...X.venues.map((v) => [`${BASE}/${v.slug}`, "0.7"]), ...AREA_PAGES.map((a) => [`${BASE}/area/${a.slug}`, "0.7"]), ...NEAR_HOTELS.map((h) => [`${BASE}/near/${h.slug}`, "0.6"])];
     const entries = urls.map(([u, pr]) => `<url>\n  <loc>${S.origin}${u}</loc>\n  <lastmod>${TODAY}T00:00:00+00:00</lastmod>\n  <priority>${pr}</priority>\n</url>`).join("\n\n");
-    let sm = fs.readFileSync(smPath, "utf8").replace(/\n*<!-- experiences -->[\s\S]*?<!-- \/experiences -->\n*/, "\n");
-    sm = sm.replace(/\s*<\/urlset>\s*$/, `\n\n<!-- experiences -->\n${entries}\n<!-- /experiences -->\n\n</urlset>\n`);
+    const block = `<!-- experiences -->\n${entries}\n<!-- /experiences -->\n`;
+    const urlRe = new RegExp(`<url>\\s*<loc>${S.origin.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}${BASE}[/?][^<]*</loc>[\\s\\S]*?</url>\\s*`, "g");
+    let placed = false;
+    let sm = fs.readFileSync(smPath, "utf8").replace(/<!-- \/?experiences -->\s*/g, "").replace(urlRe, () => (placed ? "" : ((placed = true), "@@EXPERIENCES@@\n")));
+    sm = placed ? sm.replace("@@EXPERIENCES@@\n", `${block}\n`) : sm.replace(/\s*<\/urlset>\s*$/, `\n\n${block}\n</urlset>\n`);
     fs.writeFileSync(smPath, sm);
     console.log("sitemap:", urls.length, "experiences urls");
+  }
+  const rdPath = path.join(ROOT, "public/_redirects");
+  if (fs.existsSync(rdPath)) {
+    const lines = SMALL_HOTELS.filter((h) => AREA_BY_REGION[h.region]).map((h) => `${BASE}/near/${h.slug}  ${BASE}/area/${AREA_BY_REGION[h.region].slug}  301!`);
+    const block = `# Smaller hotels, villas and guesthouses: their near pages fold into their area page (written by scripts/build-experiences.mjs)\n${lines.join("\n")}\n# /smaller hotels\n`;
+    const rd = fs.readFileSync(rdPath, "utf8").replace(/\n*# Smaller hotels, villas and guesthouses[\s\S]*?# \/smaller hotels\n?/, "\n").replace(/\s*$/, "\n");
+    fs.writeFileSync(rdPath, `${rd}\n${block}`);
+    console.log("redirects:", lines.length, "smaller hotels to their area pages");
   }
   const missing = [...usedImages].filter((f) => !fs.existsSync(path.join(IMG_DIR, f)));
   if (missing.length) console.warn("MISSING IMAGES:", missing.join(", "));
@@ -889,11 +1334,24 @@ export const SHIP = ${JSON.stringify({ settings: SHIP_CFG, ports: Object.fromEnt
   if (expired.length) console.log("expired, left out:", expired.join(", "));
 } else {
   /* one file, every page inside, a hash router switches between them; images inline (card size where one exists) */
-  const css = ["public/getaways/assets/getaways.css", "public/assets/home.css", "public/assets/experiences.css"].map((f) => fs.readFileSync(path.join(ROOT, f), "utf8")).join("\n");
+  const css = ["public/getaways/assets/getaways.css", "public/assets/home.css", "public/assets/experiences.css", "public/assets/near.css"].map((f) => fs.readFileSync(path.join(ROOT, f), "utf8")).join("\n");
   const js = ["public/getaways/assets/getaways.js", "public/assets/home.js", "public/assets/experiences.js"].map((f) => fs.readFileSync(path.join(ROOT, f), "utf8")).join("\n");
   const stripHead = (html) => html.replace(/^[\s\S]*?<body[^>]*>/, "").replace(/<\/body><\/html>\s*$/, "");
   const cfgOf = (html) => { const m = html.match(/<script>window\.GV_EXP=(\{[\s\S]*?\});<\/script>/); return m ? m[1] : "{}"; };
   const bodyClassOf = (html) => { const m = html.match(/<body class="([^"]*)"/); return m ? m[1] : ""; };
+  pages.sort((a, b) => (/^(near|area)-/.test(b[2]) ? 1 : 0) - (/^(near|area)-/.test(a[2]) ? 1 : 0));
+  /* the preview's page menu: every hotel A to Z, then the cruise ports, the areas, and the tours and other pages */
+  const pvLabel = (key) => key === "hub" ? "Experiences hub" : key === "booked" ? "After paying (JamWest)" : key === "booked-team" ? "After paying (other tours)" : key === "partners" ? "Tour partners" : key.startsWith("near-") ? HOTELS.find((h) => h.slug === key.slice(5)).name : key.startsWith("area-") ? cap(AREA_PAGES.find((a) => a.slug === key.slice(5)).name) : venueBySlug[key] ? venueBySlug[key].name : key;
+  const pvMenu = () => {
+    const keys = pages.map((x) => x[2]);
+    const group = (label, list) => (list.length ? `<optgroup label="${esc(label)}">${list.map((k) => `<option value="${k}">${esc(pvLabel(k))}</option>`).join("")}</optgroup>` : "");
+    const near = keys.filter((k) => k.startsWith("near-") && !HOTELS.find((h) => h.slug === k.slice(5)).port).sort((a, b) => pvLabel(a).localeCompare(pvLabel(b)));
+    const ports = keys.filter((k) => k.startsWith("near-") && HOTELS.find((h) => h.slug === k.slice(5)).port);
+    return group("Things to do near a hotel (A to Z)", near) + group("From a cruise port", ports) + group("Areas", keys.filter((k) => k.startsWith("area-"))) + group("Tours and other pages", keys.filter((k) => !/^(near|area)-/.test(k)));
+  };
+  const lead = pages.findIndex((x) => x[2] === "hub"); // the preview opens on the Experiences page itself
+  if (lead > 0) pages.unshift(...pages.splice(lead, 1));
+  const firstKey = pages[0][2];
   const sections = pages.map(([rel, html, key]) => {
     let inner = stripHead(html).replace(/<script>window\.GV_EXP=[\s\S]*?<\/script>\s*/, "").replace(/<script src="[^"]*" defer><\/script>\s*/g, "");
     return `<section class="pv-page" id="pv-${key}" data-body="${bodyClassOf(html)}" data-cfg='${cfgOf(html).replace(/'/g, "&#39;")}' hidden>${inner}</section>`;
@@ -902,18 +1360,21 @@ export const SHIP = ${JSON.stringify({ settings: SHIP_CFG, ports: Object.fromEnt
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Golden Experiences preview</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100,400;100,500;100,600;100,700;110,800;110,900&display=swap">
 <style>${css}
-.pv-bar{position:sticky;top:0;z-index:50;display:flex;gap:10px;align-items:center;padding:8px 14px;background:#F2B93B;color:#0E0F0E;font:800 13px/1.2 Archivo,system-ui,sans-serif}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+.nr-jump{top:env(safe-area-inset-top,0px)}
+.pv-bar{position:relative;z-index:50;display:flex;gap:10px;align-items:center;padding:8px 14px;background:#F2B93B;color:#0E0F0E;font:800 13px/1.2 Archivo,system-ui,sans-serif}
 .pv-bar select{font:inherit;padding:6px 8px;border-radius:8px;border:2px solid #0E0F0E;background:#fff;max-width:60vw}
 .pv-bar span{opacity:.75;font-weight:600}</style>
 <script>window.GV_CONFIG=${JSON.stringify({ base: BASE, whatsapp: S.whatsapp, jmdRate: S.jmdRate, preview: true })};</script>
 </head>
 <body class="exp">
-<div class="pv-bar"><b>PREVIEW</b><select id="pv-pick" aria-label="Page">${pages.map(([, , key]) => `<option value="${key}">${key === "hub" ? "Experiences hub" : key === "booked" ? "After paying (JamWest)" : key === "booked-team" ? "After paying (other tours)" : key.startsWith("near-") ? (HOTELS.find((h) => h.slug === key.slice(5)).port ? "From " : "Near ") + HOTELS.find((h) => h.slug === key.slice(5)).name : venueBySlug[key].name}</option>`).join("")}</select><span>Nothing here is live. Site links open goldenvacays.com in a new tab.</span></div>
+<div class="pv-bar"><b>PREVIEW</b><select id="pv-pick" aria-label="Page">${pvMenu()}</select><span>Nothing here is live. Site links open goldenvacays.com in a new tab.</span></div>
 <div id="pv-root">${sections}</div>
 <script>${js}</script>
 <script>
@@ -931,14 +1392,15 @@ export const SHIP = ${JSON.stringify({ settings: SHIP_CFG, ports: Object.fromEnt
   pick.addEventListener('change',function(){location.hash='#'+pick.value;});
   window.addEventListener('hashchange',function(){show((location.hash||'#hub').slice(1));});
   document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a)return;var h=a.getAttribute('href')||'';
-    var m=h.match(/^\\/experiences\\/(near\\/)?([a-z0-9-]+)\\/?(\\?[^#]*)?(#.*)?$/); if(h.indexOf('/experiences/')===0&&!m){e.preventDefault();location.hash='#hub';return;}
-    if(m){var key=(m[1]?'near-':'')+m[2]; if(document.getElementById('pv-'+key)){e.preventDefault();location.hash='#'+key;return;} if(m[1]){a.setAttribute('target','_blank');a.href='${S.origin}'+h;return;} e.preventDefault();location.hash='#hub';return;}
+    var m=h.match(/^\\/experiences\\/(near\\/|area\\/)?([a-z0-9-]+)\\/?(\\?[^#]*)?(#.*)?$/); if(h.indexOf('/experiences/')===0&&!m){e.preventDefault();location.hash='#hub';return;}
+    if(m){var key=(m[1]==='near/'?'near-':m[1]==='area/'?'area-':'')+m[2]; if(document.getElementById('pv-'+key)){e.preventDefault();location.hash='#'+key;return;} if(m[1]){a.setAttribute('target','_blank');a.href='${S.origin}'+h;return;} e.preventDefault();location.hash='#hub';return;}
     if(h.charAt(0)==='/'){a.setAttribute('target','_blank');a.href='${S.origin}'+h;}
   });
-  show((location.hash||'#hub').slice(1));
+  show((location.hash||'#${firstKey}').slice(1));
 })();
 </script>
 </body></html>`;
+  html = html.replace(/ srcset="[^"]*"/g, "").replace(/ sizes="[^"]*"/g, "");
   /* images once each: a map of data URIs, wired to the img tags on load (the same photo appears on many pages) */
   const imgMap = {};
   for (const f of usedImages) {
@@ -952,7 +1414,7 @@ export const SHIP = ${JSON.stringify({ settings: SHIP_CFG, ports: Object.fromEnt
   }
   html = html.replace("</body></html>", `<script>(function(){var M=${JSON.stringify(imgMap)};document.querySelectorAll('[data-gvimg]').forEach(function(i){i.src=M[i.getAttribute('data-gvimg')]||'';i.removeAttribute('loading');});})();</script></body></html>`);
   let out = html;
-  if (ARTIFACT) out = html.replace(/^<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n/, "").replace(/<\/head>\n<body class="exp">/, '<div class="exp">').replace(/<\/body><\/html>$/, "</div>");
+  if (ARTIFACT) out = html.replace(/^<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1(, viewport-fit=cover)?">\n/, "").replace(/<\/head>\n<body class="exp">/, '<div class="exp">').replace(/<\/body><\/html>$/, "</div>");
   fs.writeFileSync(BUNDLE, out);
   console.log("wrote", BUNDLE, `${(out.length / 1024).toFixed(0)}K`);
 }
