@@ -55,18 +55,66 @@
   }
   function placeLabel(hh, regions) { return hh.port ? "Cruise port" : (regions && regions[hh.region] ? regions[hh.region].label : hh.region); }
   /* type-ahead over hotels and cruise ports: ports also answer to "cruise", "ship", "terminal", "pier", "dock" and the short town names; an empty box lists the ports first so cruise guests see them without typing.
-     Each word typed only has to start a word of the name, in any order, so "riu a" finds RIU Palace Aquarelle; case, accents and punctuation are ignored ("dunns", "st james", "t bird").
-     Names that hold the words as typed, side by side, stay first, in list order. */
+     Each word typed only has to start a word of the name, in any order, so "riu a" finds RIU Palace Aquarelle; case, accents and punctuation are ignored ("dunns", "st james", "t bird"),
+     and words run together still count ("tbird", "moonpalace"). Typos are forgiven: one in a word of 4 letters or more, two from 7 letters ("sandles"), two letters swapped in a 3-letter word ("rui").
+     The first letter has to be right and a word of 1 or 2 letters has to be exact, so a short search doesn't pull in odd hotels.
+     Order: the words as typed, from the start of a word; then every word starting a word; then words run together; then near misses, fewest typos first;
+     last, letters that only turn up inside a word. Each group keeps the list order. */
   var PORT_WORDS = " cruise ship terminal pier dock port ", TOWN_ALIASES = { "montego bay": " mobay ", "ocho rios": " ochi " };
   function normText(s) { s = String(s || "").toLowerCase(); if (s.normalize) s = s.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); return s.replace(/['\u2018\u2019`]/g, "").replace(/&/g, " and ").replace(/[^a-z0-9]+/g, " ").trim(); }
-  function textMatches(text, q) { var t = " " + normText(text) + " ", qq = normText(q); if (!qq || t.indexOf(qq) >= 0) return true; return qq.split(" ").every(function (w) { return t.indexOf(" " + w) >= 0; }); }
+  /* fewest typos (a letter added, dropped or changed, or two letters side by side swapped) that turn a into the start of w */
+  function typosToStart(a, w) {
+    var n = a.length, m = Math.min(w.length, n + 2), d = [], i, j, v, best = 99;
+    for (i = 0; i <= n; i++) { d[i] = [i]; }
+    for (j = 1; j <= m; j++) d[0][j] = j;
+    for (i = 1; i <= n; i++) for (j = 1; j <= m; j++) {
+      v = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a.charAt(i - 1) === w.charAt(j - 1) ? 0 : 1));
+      if (i > 1 && j > 1 && a.charAt(i - 1) === w.charAt(j - 2) && a.charAt(i - 2) === w.charAt(j - 1)) v = Math.min(v, d[i - 2][j - 2] + 1);
+      d[i][j] = v;
+    }
+    for (j = 0; j <= m; j++) best = Math.min(best, d[n][j]);
+    return best;
+  }
+  /* how far the typed word t is from starting one of the words: 0 one starts with it, 1 or 2 typos, -1 too far */
+  function wordTypos(t, words) {
+    var allow = t.length >= 7 ? 2 : t.length >= 4 ? 1 : 0, best = -1, k, w, e;
+    for (k = 0; k < words.length; k++) {
+      w = words[k];
+      if (w.indexOf(t) === 0) return 0;
+      if (w.charAt(0) !== t.charAt(0)) continue;
+      e = t.length === 3 ? (t.charAt(1) === w.charAt(2) && t.charAt(2) === w.charAt(1) ? 1 : 99) : allow ? typosToStart(t, w) : 99;
+      if (e <= Math.max(allow, 1) && e < 99 && (best < 0 || e < best)) best = e;
+    }
+    return best;
+  }
+  /* 0 the words as typed, from the start of a word; 1 every word starts a word; 2 the words run together; 3 and up near misses (3 + typos);
+     99 the letters only turn up inside a word ("rui" in cruise), so those go last; -1 no match */
+  function placeScore(text, q) {
+    var qq = normText(q), t = " " + normText(text) + " ", toks, words, joined, k, s, typos = 0;
+    if (!qq || t.indexOf(" " + qq) >= 0) return 0;
+    toks = qq.split(" ");
+    if (toks.every(function (w) { return t.indexOf(" " + w) >= 0; })) return 1;
+    words = t.trim().split(" "); joined = qq.replace(/ /g, "");
+    if (joined.length >= 4) for (k = 0; k < words.length; k++) if (words.slice(k).join("").indexOf(joined) === 0) return 2;
+    for (k = 0; k < toks.length; k++) { s = wordTypos(toks[k], words); if (s < 0) break; typos += s; }
+    if (k === toks.length) return 3 + typos;
+    return t.indexOf(qq) >= 0 ? 99 : -1;
+  }
+  function textMatches(text, q) { return placeScore(text, q) >= 0; }
   function searchText(hh) { var s = " " + normText(hh.name) + " "; Object.keys(TOWN_ALIASES).forEach(function (k) { if (s.indexOf(k) >= 0) s += TOWN_ALIASES[k]; }); if (hh.port) s += PORT_WORDS; return s; }
+  /* the places that match, best first; .near on the result = every one of them is a near miss, so the list also offers WhatsApp */
   function matchPlaces(list, q, opts) {
-    var qq = normText(q), portsOnly = !!(opts && opts.portsOnly), limit = (opts && opts.limit) || 8;
-    var hits = list.filter(function (hh) { if (portsOnly && !hh.port) return false; return !qq || textMatches(searchText(hh), qq); });
-    if (!qq) hits = hits.filter(function (hh) { return hh.port; }).concat(hits.filter(function (hh) { return !hh.port; }));
-    else hits = hits.filter(function (hh) { return searchText(hh).indexOf(qq) >= 0; }).concat(hits.filter(function (hh) { return searchText(hh).indexOf(qq) < 0; }));
-    return hits.slice(0, limit);
+    var qq = normText(q), portsOnly = !!(opts && opts.portsOnly), limit = (opts && opts.limit) || 8, hits, out;
+    if (!qq) {
+      hits = list.filter(function (hh) { return !portsOnly || hh.port; });
+      return hits.filter(function (hh) { return hh.port; }).concat(hits.filter(function (hh) { return !hh.port; })).slice(0, limit);
+    }
+    hits = [];
+    list.forEach(function (hh, i) { if (portsOnly && !hh.port) return; var s = placeScore(searchText(hh), qq); if (s >= 0) hits.push({ s: s, i: i, hh: hh }); });
+    hits.sort(function (a, b) { return a.s - b.s || a.i - b.i; });
+    out = hits.slice(0, limit).map(function (x) { return x.hh; });
+    out.near = hits.length > 0 && hits[0].s >= 3;
+    return out;
   }
   function savedHotel(X) { var slug = store("gv_hotel"); if (!slug) return null; return hotelsOf(X).filter(function (h) { return h.slug === slug; })[0] || null; }
 
@@ -149,12 +197,13 @@
       hList.innerHTML = ""; cursor = -1;
       if (!hits.length) { var li = document.createElement("li"); li.className = "none"; li.textContent = "Not on our list yet. Tell us on WhatsApp and we'll price from there."; hList.appendChild(li); }
       hits.forEach(function (hh) { var li = document.createElement("li"); li.setAttribute("role", "option"); li.innerHTML = "<span></span><small></small>"; li.firstChild.textContent = hh.name; li.lastChild.textContent = placeLabel(hh, X.regions); li.addEventListener("mousedown", function (e) { e.preventDefault(); setHotel(hh, true, true); }); hList.appendChild(li); });
+      if (hits.near) { var ln = document.createElement("li"); ln.className = "none"; ln.textContent = "Not the one? Tell us on WhatsApp and we'll price from there."; hList.appendChild(ln); }
       hList.hidden = false;
     }
     if (hIn) {
       hIn.addEventListener("input", function () { openList(hIn.value); });
       hIn.addEventListener("focus", function () { if (!hotel) openList(hIn.value); });
-      hIn.addEventListener("blur", function () { setTimeout(closeList, 150); });
+      hIn.addEventListener("blur", function () { setTimeout(function () { if (document.activeElement !== hIn) closeList(); }, 150); }); // "Show my days out" puts the focus back to show the list
       hIn.addEventListener("keydown", function (e) {
         var items = $$("li[role=option]", hList);
         if (e.key === "ArrowDown") { e.preventDefault(); cursor = Math.min(items.length - 1, cursor + 1); }
@@ -164,11 +213,11 @@
         items.forEach(function (li, i) { li.setAttribute("aria-selected", i === cursor ? "true" : "false"); });
       });
     }
-    /* the arrow and "Show my days out": the first match if they typed something, otherwise the list */
+    /* the arrow and "Show my days out": the first match if they typed something, otherwise the list (also when the only matches are near misses, so nobody lands on a hotel they didn't pick) */
     $$("[data-go]", root).forEach(function (b) { b.addEventListener("click", function () {
       var q = hIn ? hIn.value : "", hits = q ? matchPlaces(HOTELS, q) : [];
       if (hotel && q === hotel.name) { setHotel(hotel, false, true); return; }
-      if (hits.length) setHotel(hits[0], true, true); else if (hIn) { hIn.focus(); openList(q); }
+      if (hits.length && !hits.near) setHotel(hits[0], true, true); else if (hIn) { hIn.focus(); openList(q); }
     }); });
     function clearHotel() { setHotel(null, true); if (hIn) { try { hIn.focus({ preventScroll: true }); } catch (e) { hIn.focus(); } } }
     if (hClear) hClear.addEventListener("click", clearHotel);
@@ -760,7 +809,7 @@
     function closeHotelList() { if (el.hotelList) { el.hotelList.hidden = true; el.hotelList.innerHTML = ""; } hCursor = -1; }
     function openHotelList(q) {
       if (!el.hotelList) return;
-      var hits = matchPlaces(HOTELS, q, { portsOnly: portsOnly }).filter(function (hh) { return !hh.port || placeServed(hh); }); portsOnly = false; // only the cruise ports this tour picks up from
+      var found = matchPlaces(HOTELS, q, { portsOnly: portsOnly }), hits = found.filter(function (hh) { return !hh.port || placeServed(hh); }); portsOnly = false; // only the cruise ports this tour picks up from
       var areas = areaRows(q);
       el.hotelList.innerHTML = ""; hCursor = -1;
       if (!hits.length && !areas.length) { var li0 = document.createElement("li"); li0.className = "none"; li0.textContent = V.pickupNotListed || "Not on our list. Type your area (" + (V.pickupAreas || "Negril, Lucea or Montego Bay") + ") for a villa or Airbnb, or make your own way."; el.hotelList.appendChild(li0); }
@@ -772,6 +821,8 @@
         li.addEventListener("mousedown", function (e) { e.preventDefault(); pickHotel(hh); });
         el.hotelList.appendChild(li);
       });
+      /* only near misses for what they typed: their hotel may not be on the list, so say what to do then */
+      if (found.near && hits.length && !areas.length) { var li2 = document.createElement("li"); li2.className = "none"; li2.textContent = V.pickupNotListed || "Not the one? Type your area (" + (V.pickupAreas || "Negril, Lucea or Montego Bay") + ") for a villa or Airbnb, or make your own way."; el.hotelList.appendChild(li2); }
       areas.forEach(function (a) {
         var li = document.createElement("li"); li.setAttribute("role", "option"); li.className = "area"; li.innerHTML = "<span></span><small></small>";
         li.firstChild.textContent = a.name; li.lastChild.textContent = a.sub;
