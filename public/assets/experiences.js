@@ -418,6 +418,9 @@
 
     /* expired seasonal products (belt and braces: the build already drops them) */
     $$("[data-until]", root).forEach(function (o) { if (o.getAttribute("data-until") < today) { o.setAttribute("data-expired", ""); var r = $("input", o); if (r) r.checked = false; } });
+    /* ?option=<id> opens the page with that option picked (the hub's zipline photo links to /experiences/jamwest?option=zipline) */
+    var qOpt = new URLSearchParams(location.search).get("option"), optIn = qOpt ? $$(".op:not([data-expired]) input[name=product]", root).filter(function (r) { return r.value === qOpt; })[0] : null;
+    if (optIn) $$(".op input[name=product]", root).forEach(function (r) { r.checked = r === optIn; });
     var first = $$(".op:not([data-expired]) input[name=product]", root)[0];
     if (first && !$$(".op:not([data-expired]) input[name=product]:checked", root).length) first.checked = true;
 

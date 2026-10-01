@@ -409,12 +409,13 @@ function hubPage() {
   const days = gridOrder().filter(isDayOut), lounges = X.venues.filter((v) => !isDayOut(v));
   const vb = (s) => venueBySlug[s];
   const zip = (vb("jamwest") && vb("jamwest").products.find((p) => p.id === "zipline")) || null;
-  const fig = (file, alt, cap, extra, eager) => `<figure class="eh-fig${extra}">${pic(file, alt, `${eager ? ' loading="eager"' : ""} srcset="${img(small(file))} 800w, ${img(file)} 1280w" sizes="(min-width: 900px) 26vw, 46vw"`)}<figcaption>${cap}</figcaption></figure>`;
+  /* each photo links to its tour; the zipline one opens the JamWest page with the zipline picked (?option=, read by experiences.js) */
+  const fig = (file, alt, cap, extra, eager, href, label) => `<figure class="eh-fig${extra}">${pic(file, alt, `${eager ? ' loading="eager"' : ""} srcset="${img(small(file))} 800w, ${img(file)} 1280w" sizes="(min-width: 900px) 26vw, 46vw"`)}<figcaption>${cap}</figcaption>${href ? `<a class="eh-fig-a" href="${esc(href)}" aria-label="${esc(label)}"></a>` : ""}</figure>`;
   const priceOf = (s) => { const f = vb(s) && fromPrice(vb(s)); return f && f.usd != null ? dual(f.usd) : ""; };
   const mosaic = `<div class="eh-mosaic">
-      ${fig("jamwest-zipline-rider.jpg", "A rider on the JamWest zipline", `JamWest zipline · from ${zip ? dual(zip.visitor.usd) : priceOf("jamwest")}`, " eh-fig-tall", true)}
-      ${vb("poko-loko") ? fig(vb("poko-loko").photos[0].file, vb("poko-loko").photos[0].alt, `Poko Loko · ${priceOf("poko-loko")}`, "", false) : ""}
-      ${vb("jamwest-catamaran") ? fig(vb("jamwest-catamaran").photos[0].file, vb("jamwest-catamaran").photos[0].alt, `Sunset catamaran · ${priceOf("jamwest-catamaran")}`, "", false) : ""}
+      ${fig("jamwest-zipline-rider.jpg", "A rider on the JamWest zipline", `JamWest zipline · from ${zip ? dual(zip.visitor.usd) : priceOf("jamwest")}`, " eh-fig-tall", true, `${BASE}/jamwest${zip ? `?option=${zip.id}` : ""}`, "See the JamWest zipline")}
+      ${vb("poko-loko") ? fig(vb("poko-loko").photos[0].file, vb("poko-loko").photos[0].alt, `Poko Loko · ${priceOf("poko-loko")}`, "", false, `${BASE}/poko-loko`, "See Poko Loko") : ""}
+      ${vb("jamwest-catamaran") ? fig(vb("jamwest-catamaran").photos[0].file, vb("jamwest-catamaran").photos[0].alt, `Sunset catamaran · ${priceOf("jamwest-catamaran")}`, "", false, `${BASE}/jamwest-catamaran`, "See the sunset catamaran") : ""}
     </div>`;
   const shortcuts = [...HUB_GROUPS.map(([k, name]) => `<button type="button" data-jump="${k}">${icon("pin", 16)}${esc(name === "Falmouth and Trelawny" ? "Falmouth" : name === "Montego Bay and Rose Hall" ? "Montego Bay" : name)}</button>`),
     `<button type="button" data-ports>${icon("ship", 16)}Off a cruise ship</button>`, `<button type="button" data-local aria-pressed="false">${icon("home", 16)}I live in Jamaica</button>`].join("");
