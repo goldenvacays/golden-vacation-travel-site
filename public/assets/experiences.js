@@ -34,7 +34,7 @@
     return Math.max(5, Math.round((anchor + nudge) / 5) * 5);
   }
   function driveLabel(m) { if (m == null) return ""; if (m < 60) return "about " + m + " min"; var h = Math.floor(m / 60), r = m % 60; return "about " + h + " h" + (r ? " " + (r < 10 ? "0" + r : r) : ""); }
-  function hotelsOf(X) { return (X.hotels || []).map(function (h) { return { name: h[0], slug: h[1], region: h[2], lat: h[3], lng: h[4], port: !!h[5] }; }); }
+  function hotelsOf(X) { return (X.hotels || []).map(function (h) { return { name: h[0], slug: h[1], region: h[2], lat: h[3], lng: h[4], port: !!h[5], resort: h[6] == null ? true : !!h[6] }; }); }
   /* ship days. A cruise guest is planned back at the pier by X.shipDay.backBy (3:30pm) or an hour before the all-aboard time they pick.
      The drive from their port puts a tour in a tier: ok (books on the spot), ask (WhatsApp first, we check it against the ship), no (not offered). */
   function clockMins(s) {
@@ -65,89 +65,90 @@
   }
   function savedHotel(X) { var slug = store("gv_hotel"); if (!slug) return null; return hotelsOf(X).filter(function (h) { return h.slug === slug; })[0] || null; }
 
-  /* ================= hub: doors, categories, area ================= */
+  /* ================= hub: one question first, the days out by area, nearest first once a hotel is picked ================= */
   function initHub(root) {
-    var grid = $("#vgrid", root); if (!grid) return;
-    var cards = $$(".vcard", grid), empty = $("#vempty", root), note = $("#cat-note", root);
-    var state = { cat: "all", area: "all", door: "" };
-    var doorText = { stay: "Everything below can be added to a stay. Hotel pickup where the tour includes it; ask us to bundle it with the room.", port: "Near the ports: Falmouth for the Ocean resorts, Ocho Rios for Mystic Mountain and Poko Loko, Montego Bay for the Rose Hall day passes. Tell us your all-aboard time.", locals: "Resident rates in J$ where they exist, with a Jamaican ID at the gate. Everything else is the same published price for everyone." };
-    var baseNote = note ? note.textContent : "";
-    function apply() {
+    var groupsBox = $("#eh-groups", root); if (!groupsBox) return;
+    var X = window.GV_EXP || {}, HOTELS = hotelsOf(X), VEN = {}, SD = X.shipDay || null, AP = X.areaPages || {};
+    (X.venues || []).forEach(function (v) { VEN[v.slug] = v; });
+    var cards = $$(".ecard", groupsBox), homes = cards.map(function (c) { return { card: c, grid: c.parentNode }; });
+    var near = $("#eh-near", root), empty = $("#vempty", root), mode = $("#hotel-note", root), modeT = $(".eh-mode-t", root);
+    var band = { b30: $('[data-band="30"] .eh-grid', near), b60: $('[data-band="60"] .eh-grid', near), far: $('[data-band="far"] .eh-grid', near) };
+    var farT = $(".eh-far-t", near), nearLink = $("#eh-near-link", root);
+    var hIn = $("#hotel-in", root), hList = $("#hotel-list", root), hClear = $("#hotel-clear", root);
+    var state = { cat: "all", local: false }, hotel = null, cursor = -1;
+    function cap1(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+    /* what pickup from this hotel costs on this tour: the same limits the tour page applies */
+    function pickFor(ven, h) {
+      var who = h.port ? "the pier" : h.name, key = h.port ? h.slug : h.region, e = null;
+      (ven.pk || []).forEach(function (p) { if (p.k === key) e = p; });
+      if (e && ((e.x && e.x.indexOf(h.slug) >= 0) || (e.lx != null && h.lng > e.lx) || (e.ln != null && h.lng < e.ln) || (e.r && !h.resort))) e = null;
+      if (!e) return { kind: "no", text: "No pickup from " + who + ", ask us for a ride" };
+      if (e.q) return { kind: "add", text: "Pickup from " + who + " on request" };
+      if (e.a) return { kind: "add", text: "Pickup from " + who + ", +US$" + e.a + " per person" };
+      return { kind: "yes", text: "Pickup from " + who + " included" };
+    }
+    function setPick(c) {
+      var li = $(".ecard-pick", c); if (!li) return;
+      var p = hotel ? pickFor(VEN[c.getAttribute("data-slug")] || {}, hotel) : { kind: li.getAttribute("data-def-kind"), text: li.getAttribute("data-def") };
+      li.className = "ecard-pick " + p.kind; $(".t", li).textContent = p.text;
+    }
+    function filterCards() {
       var shown = 0;
       cards.forEach(function (c) {
-        var ok = (state.cat === "all" || (c.getAttribute("data-cats") || "").split(" ").indexOf(state.cat) >= 0)
-          && (state.area === "all" || c.getAttribute("data-area") === state.area)
-          && (!state.door || (c.getAttribute("data-doors") || "").split(" ").indexOf(state.door) >= 0);
+        var ok = (state.cat === "all" || (c.getAttribute("data-cats") || "").split(" ").indexOf(state.cat) >= 0) && (!state.local || (c.getAttribute("data-doors") || "").split(" ").indexOf("locals") >= 0);
         c.hidden = !ok; if (ok) shown++;
       });
+      $$(".eh-group", groupsBox).forEach(function (g) { g.hidden = !$$(".ecard", g).some(function (c) { return !c.hidden; }); });
+      $$(".eh-band", near).forEach(function (b) { b.hidden = !$$(".ecard", b).some(function (c) { return !c.hidden; }); });
+      if (farT) { var n = $$(".ecard", band.far).filter(function (c) { return !c.hidden; }).length; farT.textContent = hotel && hotel.port ? n + " more, a long day or not on a ship day" : n + " more further away"; }
       if (empty) empty.hidden = shown > 0;
-      if (note) note.textContent = state.door && doorText[state.door] ? doorText[state.door] : baseNote;
-      $$(".cat-chips .chip", root).forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-cat") === state.cat ? "true" : "false"); });
-      $$("[data-door]", root).forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-door") === state.door ? "true" : "false"); });
-      var sel = $("#area-pick", root); if (sel && sel.value !== state.area) sel.value = state.area;
+      $$(".eh-tabs [data-cat]", root).forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-cat") === state.cat ? "true" : "false"); });
     }
-    $$(".cat-chips .chip", root).forEach(function (b) { b.addEventListener("click", function () { state.cat = b.getAttribute("data-cat"); state.door = ""; apply(); track("exp_filter", { cat: state.cat }); }); });
-    var sel = $("#area-pick", root); if (sel) sel.addEventListener("change", function () { state.area = sel.value; apply(); track("exp_filter", { area: state.area }); });
-    $$("[data-door]", root).forEach(function (b) {
-      b.addEventListener("click", function () {
-        var d = b.getAttribute("data-door");
-        state.door = state.door === d && b.classList.contains("edoor") ? "" : d;
-        state.cat = "all";
-        apply();
-        var target = $("#all", root); if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-        /* the stay ticket lands the guest in the hotel box (drive times, nearest first); the port ticket lands them on the port chips */
-        if (d === "stay" && hIn && !hotel) { setTimeout(function () { try { hIn.focus({ preventScroll: true }); } catch (e) { hIn.focus(); } }, 350); }
-        else if (d === "port" && !hotel) { var pc = $("#port-chips", root); if (pc) { pc.classList.remove("flash"); void pc.offsetWidth; pc.classList.add("flash"); var f = $(".chip", pc); if (f) setTimeout(function () { try { f.focus({ preventScroll: true }); } catch (e) {} }, 350); } }
-        track("exp_door", { door: d });
-      });
-    });
-    var clear = $("#clear-filters", root); if (clear) clear.addEventListener("click", function () { state = { cat: "all", area: "all", door: "" }; apply(); });
-    var h = (location.hash || "").slice(1);
-    if (h === "stay" || h === "port" || h === "locals") { state.door = h; }
-
-    /* hotel picker: drive times on every card, nearest first */
-    var X = window.GV_EXP || {}, HOTELS = hotelsOf(X), VEN = {}; (X.venues || []).forEach(function (v) { VEN[v.slug] = v; });
-    var hIn = $("#hotel-in", root), hList = $("#hotel-list", root), hClear = $("#hotel-clear", root), dist = $("#dist-chips", root), hNote = $("#hotel-note", root), heading = $(".cat-head h2", root);
-    var hotel = null, maxMin = 0, cursor = -1, baseHeading = heading ? heading.textContent : "";
-    function labelFor(v) { return hotel ? driveMin(hotel, VEN[v.getAttribute("data-slug")] || {}, X.regions || {}) : null; }
-    var SD = X.shipDay || null;
-    function applyHotel() {
-      cards.forEach(function (c) {
-        var t = $(".drive-tag", c), m = labelFor(c), ven = VEN[c.getAttribute("data-slug")] || {};
-        var tier = hotel && hotel.port ? shipTier(SD, ven.sd, m) : "ok";
-        if (t) {
-          t.hidden = !hotel || (m == null && tier !== "no");
-          t.textContent = tier === "no" ? "Not on a ship day" : tier === "ask" ? "Long day from the pier, ask us" : (m == null ? "" : driveLabel(m) + (hotel && hotel.port ? " from the pier" : ""));
-          t.className = "tag drive-tag " + (tier === "no" ? "tag-black" : "tag-white");
+    function layout() {
+      if (!hotel) {
+        homes.forEach(function (h) { h.grid.appendChild(h.card); });
+        $$(".eh-port", groupsBox).forEach(function (p) { p.parentNode.appendChild(p); });
+        cards.forEach(function (c) { var t = $(".ecard-drive", c); if (t) t.hidden = true; });
+        groupsBox.hidden = false; near.hidden = true; if (mode) mode.hidden = true;
+      } else {
+        var rows = cards.map(function (c) {
+          var ven = VEN[c.getAttribute("data-slug")] || {}, m = driveMin(hotel, ven, X.regions || {}), tier = hotel.port ? shipTier(SD, ven.sd, m) : "ok";
+          var t = $(".ecard-drive", c);
+          if (t) { t.hidden = m == null && tier === "ok"; t.textContent = tier === "no" ? "Not on a ship day" : tier === "ask" ? "Long day, ask us" : cap1(driveLabel(m)); }
+          return { c: c, m: m == null ? 9999 : m, tier: tier };
+        }).sort(function (a, b) { return (a.tier === "no") - (b.tier === "no") || a.m - b.m; });
+        rows.forEach(function (r) { (r.tier === "ok" && r.m <= 30 ? band.b30 : r.tier === "ok" && r.m <= 60 ? band.b60 : band.far).appendChild(r.c); });
+        var t30 = $('[data-band="30"] h3', near), t60 = $('[data-band="60"] h3', near);
+        if (t30) t30.textContent = hotel.port ? "30 min or less from the pier" : "30 min or less";
+        if (t60) t60.textContent = hotel.port ? "Within the hour, still a ship day" : "Within the hour";
+        if (nearLink) {
+          nearLink.href = (X.base || "/experiences") + (hotel.port || hotel.resort ? "/near/" + hotel.slug : AP[hotel.region] ? "/area/" + AP[hotel.region] : "/");
+          $("b", nearLink).textContent = hotel.port ? "Everything from " + hotel.name : hotel.resort ? "Everything near " + hotel.name : "Everything near you";
         }
-        c.setAttribute("data-min", tier === "no" ? 9999 : (m == null ? 9999 : m));
-        c.classList.toggle("no-ship", tier === "no");
-        c.classList.toggle("too-far", !!(hotel && maxMin && (m == null || m > maxMin || tier === "no")));
-      });
-      if (hotel) { var sorted = cards.slice().sort(function (a, b) { return (+a.getAttribute("data-min")) - (+b.getAttribute("data-min")); }); sorted.forEach(function (c) { grid.appendChild(c); }); }
-      if (heading) heading.textContent = hotel ? (hotel.port ? "Days out from " + hotel.name + "." : "Days out near " + hotel.name + ".") : baseHeading;
-      if (dist) dist.hidden = !hotel;
-      if (hClear) hClear.hidden = !hotel;
-      $$("#port-chips .chip", root).forEach(function (b) { b.setAttribute("aria-pressed", hotel && hotel.slug === b.getAttribute("data-port") ? "true" : "false"); });
-      root.classList ? root.classList.toggle("hotel-on", !!hotel) : null;
-      if (hNote) hNote.innerHTML = hotel ? (hotel.port && SD ? "Ship day: we plan to have you back at the pier by " + SD.backByText + ", or an hour before your all-aboard. Tours marked not on a ship day are too far for the hours in port. " : "Drive times from " + hotel.name + " are rounded and say about. Traffic and the road decide the rest. ") + "<a href=\"" + (X.base || "/experiences") + "/near/" + hotel.slug + "\">Open the page for " + hotel.name + "</a>." : "Pick your hotel and every card shows the drive time from it, nearest first. Not staying yet? <a href=\"/hotel-status\">See which resorts are open</a>.";
-      apply();
+        if (modeT) modeT.textContent = hotel.port ? (SD ? "Days out from " + hotel.name + ". We plan to have you back at the pier by " + SD.backByText + "." : "Days out from " + hotel.name + ".") : "Sorted by drive time from " + hotel.name + ".";
+        groupsBox.hidden = true; near.hidden = false; if (mode) mode.hidden = false;
+      }
+      cards.forEach(setPick); filterCards();
     }
-    var applyBase = apply;
-    apply = function () { applyBase(); if (hotel && maxMin) { var shown = 0; cards.forEach(function (c) { if (!c.hidden && c.classList.contains("too-far")) c.hidden = true; if (!c.hidden) shown++; }); if (empty) empty.hidden = shown > 0; } };
-    function setHotel(hh, save) { hotel = hh; if (hIn) hIn.value = hh ? hh.name : ""; if (save) store("gv_hotel", hh ? hh.slug : null); closeList(); applyHotel(); if (hh) track("exp_hotel", { hotel: hh.slug }); }
+    function setHotel(hh, save, go) {
+      hotel = hh; if (hIn) hIn.value = hh ? hh.name : ""; if (hClear) hClear.hidden = !hh;
+      if (save) store("gv_hotel", hh ? hh.slug : null);
+      closeList(); layout();
+      if (hh) track("exp_hotel", { hotel: hh.slug });
+      if (go) { var all = $("#all", root); if (all) all.scrollIntoView({ behavior: "smooth", block: "start" }); }
+    }
     function closeList() { if (hList) { hList.hidden = true; hList.innerHTML = ""; } cursor = -1; }
-    function openList(q) {
+    function openList(q, opts) {
       if (!hList) return;
-      var hits = matchPlaces(HOTELS, q);
+      var hits = matchPlaces(HOTELS, q, opts || {});
       hList.innerHTML = ""; cursor = -1;
       if (!hits.length) { var li = document.createElement("li"); li.className = "none"; li.textContent = "Not on our list yet. Tell us on WhatsApp and we'll price from there."; hList.appendChild(li); }
-      hits.forEach(function (hh) { var li = document.createElement("li"); li.setAttribute("role", "option"); li.innerHTML = "<span></span><small></small>"; li.firstChild.textContent = hh.name; li.lastChild.textContent = placeLabel(hh, X.regions); li.addEventListener("mousedown", function (e) { e.preventDefault(); setHotel(hh, true); }); hList.appendChild(li); });
+      hits.forEach(function (hh) { var li = document.createElement("li"); li.setAttribute("role", "option"); li.innerHTML = "<span></span><small></small>"; li.firstChild.textContent = hh.name; li.lastChild.textContent = placeLabel(hh, X.regions); li.addEventListener("mousedown", function (e) { e.preventDefault(); setHotel(hh, true, true); }); hList.appendChild(li); });
       hList.hidden = false;
     }
     if (hIn) {
       hIn.addEventListener("input", function () { openList(hIn.value); });
-      hIn.addEventListener("focus", function () { openList(hIn.value); });
+      hIn.addEventListener("focus", function () { if (!hotel) openList(hIn.value); });
       hIn.addEventListener("blur", function () { setTimeout(closeList, 150); });
       hIn.addEventListener("keydown", function (e) {
         var items = $$("li[role=option]", hList);
@@ -158,20 +159,58 @@
         items.forEach(function (li, i) { li.setAttribute("aria-selected", i === cursor ? "true" : "false"); });
       });
     }
-    if (hClear) hClear.addEventListener("click", function () { maxMin = 0; $$("#dist-chips .chip", root).forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-max") === "0" ? "true" : "false"); }); setHotel(null, true); });
-    $$("#port-chips .chip", root).forEach(function (b) { b.addEventListener("click", function () { var slug = b.getAttribute("data-port"), p = HOTELS.filter(function (hh) { return hh.slug === slug; })[0]; if (!p) return; setHotel(hotel && hotel.slug === slug ? null : p, true); }); });
-    $$("#dist-chips .chip", root).forEach(function (b) { b.addEventListener("click", function () { maxMin = +b.getAttribute("data-max"); $$("#dist-chips .chip", root).forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); }); applyHotel(); track("exp_distance", { max: maxMin }); }); });
-    /* What the front page search hands over: the kind of day, the area, and the hotel if they named one.
-       Anything the page does not know about is ignored, rather than showing an empty grid. */
-    var qp = new URLSearchParams(location.search);
-    var qCat = qp.get("cat"), qArea = qp.get("area");
-    if (qCat && $('.cat-chips .chip[data-cat="' + qCat + '"]', root)) state.cat = qCat;
-    var areaSel = $("#area-pick", root);
-    if (qArea && areaSel && $('option[value="' + qArea + '"]', areaSel)) state.area = qArea;
-    var qs = qp.get("hotel");
+    /* the arrow and "Show my days out": the first match if they typed something, otherwise the list */
+    $$("[data-go]", root).forEach(function (b) { b.addEventListener("click", function () {
+      var q = hIn ? hIn.value : "", hits = q ? matchPlaces(HOTELS, q) : [];
+      if (hotel && q === hotel.name) { setHotel(hotel, false, true); return; }
+      if (hits.length) setHotel(hits[0], true, true); else if (hIn) { hIn.focus(); openList(q); }
+    }); });
+    function clearHotel() { setHotel(null, true); if (hIn) { try { hIn.focus({ preventScroll: true }); } catch (e) { hIn.focus(); } } }
+    if (hClear) hClear.addEventListener("click", clearHotel);
+    var change = $("#hotel-change", root); if (change) change.addEventListener("click", function () { var top = $(".eh-q", root); if (top) top.scrollIntoView({ behavior: "smooth", block: "center" }); clearHotel(); });
+    $$(".eh-tabs [data-cat]", root).forEach(function (b) { b.addEventListener("click", function () { state.cat = b.getAttribute("data-cat"); filterCards(); track("exp_filter", { cat: state.cat }); }); });
+    /* the shortcuts: an area scrolls to its group, the ship opens the cruise ports, "I live in Jamaica" shows resident rates in J$ */
+    $$("[data-jump]", root).forEach(function (b) { b.addEventListener("click", function () {
+      if (hotel) setHotel(null, true);
+      var g = $('.eh-group[data-group="' + b.getAttribute("data-jump") + '"]', root); if (g) g.scrollIntoView({ behavior: "smooth", block: "start" });
+      track("exp_filter", { area: b.getAttribute("data-jump") });
+    }); });
+    $$("[data-ports]", root).forEach(function (b) { b.addEventListener("click", function () { if (hIn) { hIn.value = ""; try { hIn.focus({ preventScroll: true }); } catch (e) { hIn.focus(); } } openList("", { portsOnly: true }); track("exp_door", { door: "port" }); }); });
+    $$("[data-local]", root).forEach(function (b) { b.addEventListener("click", function () {
+      state.local = !state.local; b.setAttribute("aria-pressed", state.local ? "true" : "false");
+      if (state.local) { var j = document.querySelector('.curr [data-c="JMD"]'); if (j && !j.classList.contains("on")) j.click(); }
+      filterCards(); var all = $("#all", root); if (all && state.local) all.scrollIntoView({ behavior: "smooth", block: "start" });
+      track("exp_door", { door: "locals" });
+    }); });
+    /* phones show two tours an area; "See all" opens the rest */
+    $$(".eh-all", root).forEach(function (b) { b.addEventListener("click", function () {
+      var g = b.closest(".eh-group"), open = !g.classList.contains("open"); g.classList.toggle("open", open);
+      b.setAttribute("aria-expanded", open ? "true" : "false"); b.textContent = open ? "Show fewer" : "See all " + b.getAttribute("data-n");
+    }); });
+    var clear = $("#clear-filters", root); if (clear) clear.addEventListener("click", function () { state = { cat: "all", local: false }; $$("[data-local]", root).forEach(function (b) { b.setAttribute("aria-pressed", "false"); }); filterCards(); });
+    /* Tripadvisor ratings, fetched live when a card comes into view, once per listing (Tripadvisor's terms: never stored) */
+    var taWait = {};
+    function fillRating(key, d) { $$('.ecard-rate[data-ta="' + key + '"]', root).forEach(function (li) { if (!d || !d.ok || !d.rating) { li.hidden = true; return; } $("b", li).textContent = d.rating; $("small", li).textContent = "(" + Number(d.count || 0).toLocaleString("en-US") + " reviews)"; li.hidden = false; }); }
+    function loadRating(li) {
+      var key = li.getAttribute("data-ta"); if (taWait[key]) return; taWait[key] = 1;
+      var slug = li.closest(".ecard").getAttribute("data-slug");
+      fetch("/.netlify/functions/exp-tripadvisor?slug=" + encodeURIComponent(slug)).then(function (r) { return r.ok ? r.text() : ""; }).then(function (t) { var d = null; try { d = JSON.parse(t.replace(/[\u0000-\u001f]/g, " ")); } catch (e) {} fillRating(key, d); }).catch(function () { fillRating(key, null); });
+    }
+    var rates = $$(".ecard-rate[data-ta]", root);
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting && en.target._rate) { io.unobserve(en.target); loadRating(en.target._rate); } }); }, { rootMargin: "200px 0px" });
+      rates.forEach(function (li) { var c = li.closest(".ecard"); c._rate = li; io.observe(c); });
+    }
+    /* what the front page search and older links hand over: the kind of day, the area, the hotel; #stay, #port and #locals */
+    var qp = new URLSearchParams(location.search), qCat = qp.get("cat"), qArea = qp.get("area"), qs = qp.get("hotel"), hsh = (location.hash || "").slice(1);
+    if (qCat && $('.eh-tabs [data-cat="' + qCat + '"]', root)) state.cat = qCat;
     var pre = qs ? HOTELS.filter(function (hh) { return hh.slug === qs; })[0] : savedHotel(X);
-    if (pre) setHotel(pre, !!qs); else apply();
-    if (qCat || qArea) track("exp_filter", { cat: state.cat, area: state.area, from: "search" });
+    if (pre) setHotel(pre, !!qs, !!qs); else layout();
+    if (qArea && !pre) { var g = $('.eh-group[data-group="' + qArea + '"]', root); if (g) setTimeout(function () { g.scrollIntoView({ block: "start" }); }, 60); }
+    if (hsh === "locals") { var lb = $("[data-local]", root); if (lb) lb.click(); }
+    else if (hsh === "port" && !pre) { var pb = $("[data-ports]", root); if (pb) setTimeout(function () { pb.click(); }, 60); }
+    else if (hsh === "stay" && hIn && !pre) setTimeout(function () { try { hIn.focus({ preventScroll: true }); } catch (e) { hIn.focus(); } }, 60);
+    if (qCat || qArea) track("exp_filter", { cat: state.cat, area: qArea || "", from: "search" });
   }
 
   /* ================= venue: the photo viewer ================= */
@@ -294,9 +333,10 @@
     var qsHotel = new URLSearchParams(location.search).get("hotel");
     var myHotel = (qsHotel && HOTELS.filter(function (hh) { return hh.slug === qsHotel; })[0]) || savedHotel(X);
     if (qsHotel && myHotel && myHotel.slug === qsHotel) store("gv_hotel", myHotel.slug);
+    var portPickups = !!V.pickups && V.pickups.some(function (pk) { return HOTELS.some(function (hh) { return hh.port && hh.slug === pk.key; }); });
     function portOf() {
-      if (V.pickups && state.pickupMode === "hotel" && state.pickupPlace) return state.pickupPlace.port ? state.pickupPlace : null;
-      if (V.pickups && state.pickupMode !== "hotel") return null;
+      if (portPickups && state.pickupMode === "hotel" && state.pickupPlace) return state.pickupPlace.port ? state.pickupPlace : null;
+      if (portPickups && state.pickupMode !== "hotel") return null;
       if (state.cruisePort) return state.cruisePort;
       return myHotel && myHotel.port ? myHotel : null;
     }
@@ -349,7 +389,7 @@
         return { lead: jmd(tot), sub: "total for " + a + " adult" + (a === 1 ? "" : "s") + (c ? " + " + c + " child" + (c === 1 ? "" : "ren") : ""), total: tot, cur: "JMD", note: !childKnown && c ? "Children on the resident rate are priced when we confirm." : "Resident rate, Jamaican ID at the gate." };
       }
       if (p.visitor) {
-        var pk = pickupOf(), add = pk ? (pk.add || 0) : 0, addC = pk ? (pk.addChild != null ? pk.addChild : add) : 0;
+        var pk = state.pickupMode === "other" || (state.pickupMode === "hotel" && state.pickupHotel) ? pickupOf() : null, add = pk ? (pk.add || 0) : 0, addC = pk ? (pk.addChild != null ? pk.addChild : add) : 0;
         var childKnownV = p.visitor.usdChild != null;
         var totV = a * (p.visitor.usd + add) + (childKnownV ? c * (p.visitor.usdChild + addC) : 0);
         return { lead: usd(totV), sub: "total for " + a + " adult" + (a === 1 ? "" : "s") + (c ? " + " + c + " child" + (c === 1 ? "" : "ren") : ""), total: totV, cur: "USD", note: !childKnownV && c ? "Children are priced when we confirm." : (add ? "Includes " + usd(add) + " per person for pickup." : "") };
@@ -491,7 +531,7 @@
       if (isCruise && !productOk(p) && driveTier() !== "no" && V.sd !== 0) { var alt = V.products.filter(productOk)[0]; if (alt) { selectProduct(alt.id); return; } }
       var aboardWrap = $("#pf-aboard-wrap", root); if (aboardWrap) aboardWrap.hidden = !isCruise || V.sd === 0;
       /* the cruise question: a small link under the date until the guest opens it, or the site already knows the port; never for residents */
-      var cruiseAllowed = !!SD && !isFlight && !V.pickups && V.sd !== 0 && r === "visitor";
+      var cruiseAllowed = !!SD && !isFlight && !portPickups && V.sd !== 0 && r === "visitor";
       if (el.cruiseLink) el.cruiseLink.hidden = !cruiseAllowed || isCruise || state.cruiseOpen;
       if (el.cruiseWrap) el.cruiseWrap.hidden = !cruiseAllowed || !(isCruise || state.cruiseOpen);
       var shipNote = $("#ship-note", root); if (shipNote && isCruise) { shipNote.textContent = shipText(); shipNote.className = "pf-hint" + (shipBlock() ? " bad" : shipAsk() ? " warn" : ""); }
@@ -667,11 +707,20 @@
     $$("[data-step]", root).forEach(function (b) { b.addEventListener("click", function () { var k = b.getAttribute("data-step"), d = +b.getAttribute("data-d"); state[k] = Math.max(k === "adults" ? 1 : 0, Math.min(MAX_GUESTS, state[k] + d)); el[k].value = state[k]; render(); }); });
     /* ---- pickup hotel picker ---- */
     function servedKey(key) { return V.pickups && V.pickups.some(function (pk) { return pk.key === key; }) ? key : null; }
+    /* a place is picked up when its area (or its cruise port) is on the tour's list, it is not named as an exception,
+       and it sits inside the tour's edge (Poko Loko: Couples Sans Souci and west) */
+    function placeServed(hh) {
+      var key = hh.port ? hh.slug : hh.region, pk = V.pickups && V.pickups.filter(function (x) { return x.key === key; })[0];
+      if (!pk) return null;
+      if ((pk.except && pk.except.indexOf(hh.slug) >= 0) || (pk.resortsOnly && !hh.resort)) return null;
+      if ((pk.lngMax != null && hh.lng > pk.lngMax) || (pk.lngMin != null && hh.lng < pk.lngMin)) return null;
+      return key;
+    }
     /* the areas this tour picks up from, offered in the same list as the hotels for villas and Airbnbs (ports and "own" are not areas) */
     function areaRows(q) {
       if (!V.pickups) return [];
       var qq = (q || "").toLowerCase().trim();
-      return V.pickups.filter(function (pk) { return pk.key !== "own" && !pk.request && !HOTELS.some(function (hh) { return hh.port && hh.slug === pk.key; }); }).map(function (pk) {
+      return V.pickups.filter(function (pk) { return pk.key !== "own" && !pk.request && !pk.resortsOnly && !HOTELS.some(function (hh) { return hh.port && hh.slug === pk.key; }); }).map(function (pk) {
         var reg = REGIONS[pk.key], label = (reg ? reg.label : pk.label.replace(/ (area )?hotel$/i, "")) + ", villa or Airbnb";
         return { area: true, key: pk.key, name: label, sub: pk.add ? "+" + usd(pk.add) + " each" : "pickup included", text: " " + label.toLowerCase() + " " + pk.label.toLowerCase() + " airbnb villa apartment guesthouse area " };
       }).filter(function (a) { return !qq || a.text.indexOf(qq) >= 0; });
@@ -692,13 +741,13 @@
         if (mode === "own") t = "No pickup. The meeting point comes with your details.";
         else if (mode === "hotel" && state.pickupHotel && pk) t = pk.key === "own" ? "No pickup from " + state.pickupHotel + " on this one, so it's priced without pickup. Make your own way, or ask us on WhatsApp about a transfer." : pk.request ? "Pickup from " + pk.label + " is priced by hand, so this one goes to us on WhatsApp and we confirm the transfer price before anything is charged." : pk.label + (pk.add ? ", +" + usd(pk.add) + " per person" : ", pickup included") + ".";
         else if (mode === "other" && pk) t = pk.label.replace(/ hotel$/i, "") + (pk.add ? ", +" + usd(pk.add) + " per person" : ", pickup included") + ". Give us the villa or Airbnb name and we confirm the pickup point.";
-        else t = V.pickups.some(function (x) { return x.add; }) ? "Pickup from Negril hotels is included. Lucea and Montego Bay pickups are priced per person." : "Hotel pickup from Negril and Montego Bay is included.";
+        else t = V.pickupNote ? V.pickupNote : V.pickups.some(function (x) { return x.add; }) ? "Pickup from Negril hotels is included. Lucea and Montego Bay pickups are priced per person." : "Hotel pickup from Negril and Montego Bay is included.";
         el.pickupNote.textContent = t;
       }
     }
     function pickHotel(hh) {
       state.pickupMode = "hotel"; state.pickupHotel = hh.name; state.pickupPlace = hh;
-      state.pickup = servedKey(hh.port ? hh.slug : hh.region) || "own";
+      state.pickup = placeServed(hh) || "own";
       if (el.hotelIn) el.hotelIn.value = hh.name;
       closeHotelList(); render(); track("exp_pickup_hotel", { venue: V.slug, hotel: hh.slug, served: state.pickup !== "own" });
     }
@@ -706,14 +755,14 @@
     function closeHotelList() { if (el.hotelList) { el.hotelList.hidden = true; el.hotelList.innerHTML = ""; } hCursor = -1; }
     function openHotelList(q) {
       if (!el.hotelList) return;
-      var hits = matchPlaces(HOTELS, q, { portsOnly: portsOnly }).filter(function (hh) { return !hh.port || servedKey(hh.slug); }); portsOnly = false; // only the cruise ports this tour picks up from
+      var hits = matchPlaces(HOTELS, q, { portsOnly: portsOnly }).filter(function (hh) { return !hh.port || placeServed(hh); }); portsOnly = false; // only the cruise ports this tour picks up from
       var areas = areaRows(q);
       el.hotelList.innerHTML = ""; hCursor = -1;
-      if (!hits.length && !areas.length) { var li0 = document.createElement("li"); li0.className = "none"; li0.textContent = "Not on our list. Type your area (Negril, Lucea or Montego Bay) for a villa or Airbnb, or make your own way."; el.hotelList.appendChild(li0); }
+      if (!hits.length && !areas.length) { var li0 = document.createElement("li"); li0.className = "none"; li0.textContent = V.pickupNotListed || "Not on our list. Type your area (" + (V.pickupAreas || "Negril, Lucea or Montego Bay") + ") for a villa or Airbnb, or make your own way."; el.hotelList.appendChild(li0); }
       else if (!hits.length) { var li1 = document.createElement("li"); li1.className = "none"; li1.textContent = "Not on our list? Pick your area for a villa or Airbnb:"; el.hotelList.appendChild(li1); }
       hits.forEach(function (hh) {
         var li = document.createElement("li"); li.setAttribute("role", "option"); li.innerHTML = "<span></span><small></small>";
-        var sk = servedKey(hh.port ? hh.slug : hh.region), spk = sk && V.pickups.filter(function (x) { return x.key === sk; })[0];
+        var sk = placeServed(hh), spk = sk && V.pickups.filter(function (x) { return x.key === sk; })[0];
         li.firstChild.textContent = hh.name; li.lastChild.textContent = !sk ? "no pickup" : (spk && spk.request ? "priced by hand" : (hh.port ? "Cruise port" : (REGIONS[hh.region] ? REGIONS[hh.region].label : hh.region)));
         li.addEventListener("mousedown", function (e) { e.preventDefault(); pickHotel(hh); });
         el.hotelList.appendChild(li);
@@ -873,7 +922,7 @@
     $$("#pf-ports .chip", root).forEach(function (b) { b.addEventListener("click", function () {
       var slug = b.getAttribute("data-port"), pt = HOTELS.filter(function (hh) { return hh.slug === slug; })[0], cur = portOf();
       if (cur && cur.slug === slug) { state.cruisePort = null; store("gv_hotel", null); if (myHotel && myHotel.port) { myHotel = null; var fh2 = $("#fact-hotel", root); if (fh2) fh2.hidden = true; } }
-      else if (pt) { state.cruisePort = pt; store("gv_hotel", pt.slug); }
+      else if (pt) { state.cruisePort = pt; store("gv_hotel", pt.slug); if (V.pickups && !portPickups && state.pickupMode !== "own") setOwnWay(true); }
       renderTimes(); render(); track("exp_port", { venue: V.slug, port: state.cruisePort ? slug : "" });
     }); });
     var shipClear = $("#ship-clear", root);
