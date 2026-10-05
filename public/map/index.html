@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <base href="/map/">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jamaica Resort Map 2026 — Open & Reopening All-Inclusives by Coast | Golden Vacays</title>
-<meta name="description" content="Interactive map of Jamaica's all-inclusive resorts — see what's open, reopening, or closed by coast: Montego Bay, Negril, Ocho Rios and more. Tap any resort for its status and reopening date.">
+<title>Jamaica Resort Map 2026: Open & Reopening All-Inclusives by Coast | Golden Vacation & Travel</title>
+<meta name="description" content="Interactive map of Jamaica's all-inclusive resorts: see what's open, reopening, or closed by coast: Montego Bay, Negril, Ocho Rios and more. Tap any resort for its status and reopening date.">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://goldenvacays.com/hotel-status-map">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Golden Vacation & Travel">
-<meta property="og:title" content="Jamaica Resort Map — Open & Reopening All-Inclusives 2026">
-<meta property="og:description" content="Interactive map of every Jamaica all-inclusive by coast — open, reopening, or closed. Tap a resort for status and dates.">
+<meta property="og:title" content="Jamaica Resort Map: Open & Reopening All-Inclusives 2026">
+<meta property="og:description" content="Interactive map of Jamaica's all-inclusives by coast: open, reopening, or closed. Tap a resort for status and dates.">
 <meta property="og:url" content="https://goldenvacays.com/hotel-status-map">
 <meta property="og:image" content="https://goldenvacays.com/map/photos/riu-ocho-rios.jpg">
-<meta property="og:image:alt" content="Map of Jamaica all-inclusive resorts — Golden Vacation and Travel">
+<meta property="og:image:alt" content="Map of Jamaica all-inclusive resorts, Golden Vacation and Travel">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Jamaica Resort Map 2026 — Open & Reopening">
-<meta name="twitter:description" content="See every Jamaica all-inclusive on a map — open, reopening, or closed by coast.">
+<meta name="twitter:title" content="Jamaica Resort Map 2026: Open & Reopening">
+<meta name="twitter:description" content="See Jamaica's all-inclusives on a map: open, reopening, or closed by coast.">
 <meta name="twitter:image" content="https://goldenvacays.com/map/photos/riu-ocho-rios.jpg">
 <meta name="theme-color" content="#0E0F0E">
 <link rel="preload" href="/assets/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
@@ -382,6 +382,8 @@ body, button, input{ font-family:"Archivo","Helvetica Neue",Helvetica,Arial,sans
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "WebPage", "name": "Jamaica Resort Map", "url": "https://goldenvacays.com/hotel-status-map", "dateModified": "2026-09-28", "provider": {"@type": "TravelAgency", "name": "Golden Vacation and Travel", "telephone": "+1 876 817 3467", "areaServed": "Jamaica"}}
 </script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-WK85CEZFXT');
+addEventListener('load',function(){setTimeout(function(){var s=document.createElement('script');s.async=1;s.src='https://www.googletagmanager.com/gtag/js?id=G-WK85CEZFXT';document.head.appendChild(s);},1200);});</script>
 </head>
 <body>
 <template id="__bundler_thumbnail">
@@ -447,7 +449,7 @@ body, button, input{ font-family:"Archivo","Helvetica Neue",Helvetica,Arial,sans
   </div>
 
   <p class="mp-note">
-    Information maintained by <b>Golden Vacation &amp; Travel</b>. Dates can change — always cross-check with your hotel or booking agent/agency (hopefully, that&rsquo;s us).
+    Information maintained by <b>Golden Vacation &amp; Travel</b>. Dates can change, so always cross-check with your hotel or booking agent (hopefully, that&rsquo;s us).
   </p>
 </div>
 <div class="gvc"><footer class="gvc-foot" role="contentinfo"><div class="gvc-wrap" style="display:flex;flex-direction:column;gap:32px">
@@ -649,10 +651,10 @@ function cardHTML(r){
   const happening=r.happening?`<div><h4>What's happening</h4><p>${esc(r.happening)}</p></div>`:(r.note?`<div><h4>Note</h4><p>${esc(r.note)}</p></div>`:"");
   const book=r.bookInstead?`<div><h4>Book instead</h4><p class="book">${esc(r.bookInstead)}</p></div>`:"";
   const verified=r.verifiedOn?`<div class="vr">✓ Verified ${esc(r.verifiedOn)}</div>`:"";
-  const wa=`https://wa.me/18768173467?text=${encodeURIComponent("Hi Golden Vacays — I'm interested in "+r.name+" ("+r.status+"). Can you help?")}`;
+  const wa=`https://wa.me/18763601567?text=${encodeURIComponent("Hi Golden Vacation! I'm interested in "+r.name+" ("+r.status+"). Can you help? Ref GV-MAP")}`;
   return `<div class="card" data-id="${r._id}" style="--dc:${dc}">
     <div class="chead">
-      <div class="thumb"><div class="ph">PHOTO</div><span>${esc(r.name)}</span>${r.photo?`<img src="${esc(r.photo)}" alt="${esc(r.name)}" onerror="this.remove()">`:""}</div>
+      <div class="thumb"><div class="ph">PHOTO</div><span>${esc(r.name)}</span>${r.photo?`<img src="${esc(r.photo)}" alt="${esc(r.name)}" loading="lazy" decoding="async" onerror="this.remove()">`:""}</div>
       <div class="info">
         <div class="nm">${esc(r.name)} <span class="cat">${esc(r.category)}</span></div>
         ${r.formerly?`<div class="fmr">formerly <b>${esc(r.formerly)}</b></div>`:""}
