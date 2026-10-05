@@ -303,11 +303,18 @@ function tripPage(c) {
 
   /* ---- search: the bar on a computer (sticky), the one-line card on a phone ---- */
   const comboOptions = DATA.combos.map((x) => `<option value="${BASE}/${x.slug}/"${x.slug === c.slug ? " selected" : ""}>${esc(x.name)}</option>`).join("");
+  /* Flying from: the trip's own airport (the price on the page) until they pick or type another city; trip.js draws the list.
+     The lists take tabindex -1: a list that scrolls would otherwise take a Tab stop of its own and swallow the focus as it closes */
+  const fromBox = (where) => where === "bar"
+    ? `<div class="tp-f-wrap tp-from-wrap"><div class="tp-f tp-f-from">${tpIcon("pin", 22, 2)}<span class="tp-f-t"><label class="tp-f-l" for="tp-from-bar">Flying from</label><input class="tp-from-in" id="tp-from-bar" type="text" value="${esc(c.airportName)}" autocomplete="off" autocapitalize="words" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="tp-from-bar-list" aria-autocomplete="list" data-from="search"></span></div>
+      <div class="hq-pop tp-from-pop" id="tp-from-bar-list" role="listbox" aria-label="Airports" tabindex="-1" hidden></div></div>`
+    : `<div class="tp-dp-from"><label class="tp-dpf" for="tp-from-dp">${tpIcon("pin", 20, 2)}<span class="tp-dpf-t"><span class="tp-dpf-l">Flying from</span><input class="tp-from-in" id="tp-from-dp" type="text" value="${esc(c.airportName)}" autocomplete="off" autocapitalize="words" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="tp-from-dp-list" aria-autocomplete="list" data-from="date_picker"></span>${tpIcon("down", 18, 2.4)}</label>
+        <div class="tp-from-list" id="tp-from-dp-list" role="listbox" aria-label="Airports" tabindex="-1" hidden></div></div>`;
   const field = (ic, label, value, bind) => `${tpIcon(ic, 22, 2)}<span class="tp-f-t"><span class="tp-f-l">${esc(label)}</span><span class="tp-f-v"${bind ? ` data-bind="${bind}"` : ""}>${esc(value)}</span></span>`;
   const search = `<div class="tp-search desk" id="tp-search">
   <div class="tp-bar" role="search" aria-label="Find your combo trip">
     <label class="tp-f tp-f-combo">${tpIcon("route", 22, 2)}<span class="tp-f-t"><span class="tp-f-l">Combo trip</span><select class="tp-combo" aria-label="Combo trip" autocomplete="off">${comboOptions}</select></span>${tpIcon("down", 18, 2.4)}</label>
-    <div class="tp-f tp-f-fixed">${field("pin", "Flying from", c.airportName)}</div>
+    ${fromBox("bar")}
     <button type="button" class="tp-f" data-open="dates" data-where="search_dates">${field("cal", `Leaving · ${c.nights} nights`, "Pick a date", "leave")}</button>
     <div class="tp-f-wrap"><button type="button" class="tp-f tp-who" id="tp-who" aria-expanded="false" aria-controls="tp-who-pop">${field("users", "Who's travelling", "2 adults · 1 room", "who")}</button>
       <div class="hq-pop tp-who-pop" id="tp-who-pop" hidden><div class="tp-party" data-party="pop"></div><button type="button" class="hq-addroom" data-addroom>+ Add room</button><p class="hq-hint">Ages at the time of travel.</p><button type="button" class="btn btn-black btn-sm" data-who-done>Done</button></div></div>
@@ -318,7 +325,7 @@ function tripPage(c) {
   <div class="tp-mcard">
     <div class="tp-mcard-t">
       <label class="tp-mcombo"><span class="sr">Combo trip</span><select class="tp-combo" autocomplete="off">${comboOptions}</select>${tpIcon("down", 16, 2.4)}</label>
-      <button type="button" class="tp-msub" data-open="dates" data-where="mobile_search">From ${esc(c.airportName)} · <span data-bind="leaveShort">Pick dates</span> · <span data-bind="whoShort">2 adults</span></button>
+      <button type="button" class="tp-msub" data-open="dates" data-where="mobile_search">From <span data-bind="fromShort">${esc(c.airportName)}</span> · <span data-bind="leaveShort">Pick dates</span> · <span data-bind="whoShort">2 adults</span></button>
     </div>
     <a class="tp-mgo" href="${quoteHref}" data-open="dates" data-where="mobile_search" aria-label="Get a quote">${tpIcon("arrow", 20, 2.4)}</a>
   </div>
@@ -333,12 +340,12 @@ function tripPage(c) {
   <div class="tp-intro-t">
     <span class="tp-kicker">${esc(c.kicker)}</span>
     <h1 class="tp-h1">${esc(c.name)}</h1>
-    <p class="tp-lead">${esc(c.intro)}</p>
+    <p class="tp-lead">${esc(c.intro).replace(/visa-free/g, '<span class="tp-nb">visa-free</span>')}</p>
     <div class="tp-tags">${c.tags.map((t) => `<span class="tp-tag">${esc(t)}</span>`).join("")}</div>
     ${c.guestQuote ? `<figure class="tp-quote"><span class="tp-quote-m" aria-hidden="true">&ldquo;</span><blockquote>${esc(c.guestQuote.text)}<span class="tp-quote-e" aria-hidden="true">&rdquo;</span></blockquote><figcaption>${esc(c.guestQuote.by)}</figcaption></figure>` : ""}
   </div>
   <aside class="tp-price" aria-label="What you get">
-    <div class="tp-price-top"><span class="tp-lbl">From, per person sharing</span><span class="tp-price-n">${both(c.price)}</span><small><span class="usd-v">&asymp; J$${fmt(c.price * S.jmdRate)} at J$${S.jmdRate} to US$1</span><span class="jmd-v">&asymp; ${usd(c.price)} at J$${S.jmdRate} to US$1</span></small></div>
+    <div class="tp-price-top"><span class="tp-lbl">From, per person sharing</span><span class="tp-price-n">${both(c.price)}</span><small><span class="usd-v">&asymp; J$${fmt(c.price * S.jmdRate)} at J$${S.jmdRate} to US$1</span><span class="jmd-v">&asymp; ${usd(c.price)} at J$${S.jmdRate} to US$1</span></small><small class="tp-price-from" data-bind="priceFrom" hidden></small></div>
     <ul class="tp-incl">${c.includes.map(([b, t]) => `<li><span class="tp-tick">${tpIcon("check", 13, 3.4)}</span><span><b>${esc(b)}</b> ${esc(t)}</span></li>`).join("")}</ul>
     <div class="tp-hold"><b>Hold it with ${usd(c.deposit)}.</b> ${esc(c.depositNote)}</div>
     ${openBtn("Get a quote", "price_box", "tp-btn tp-btn-black tp-btn-full tp-btn-lg")}
@@ -369,7 +376,7 @@ function tripPage(c) {
   const trip = `<section class="tp-trip" aria-labelledby="tp-trip-h">
   <div class="tp-sec-head"><span class="tp-kicker">${esc(c.tripKicker)}</span><h2 class="tp-h2" id="tp-trip-h">${esc(c.tripTitle)}</h2></div>
   ${chapters}
-  <div class="tp-home"><span class="tp-home-i">${tpIcon("plane", 20, 2)}</span><p><b>${esc(c.homeLine[0])}</b> <span>${esc(c.homeLine[1])}</span></p></div>
+  <div class="tp-home"><span class="tp-home-i">${tpIcon("plane", 20, 2)}</span><p><b>${esc(c.homeLine[0])}</b> <span data-bind="homeText">${esc(c.homeLine[1])}</span></p></div>
 </section>`;
 
   const gtk = `<section class="tp-gtk" aria-labelledby="tp-gtk-h">
@@ -421,6 +428,7 @@ function tripPage(c) {
     <span class="tp-grab tp-grab-d mob" aria-hidden="true"></span>
     <div class="tp-panel-scroll tp-dp">
       <div class="tp-dp-head"><div><span class="tp-kicker">${esc(c.name)} · ${c.nights} nights</span><h2 id="tp-dates-h" class="tp-dp-h">When do you<br class="mob"> want to go?</h2></div><button type="button" class="tp-round tp-round-alt" data-close aria-label="Close">${tpIcon("close", 22, 2.4)}</button></div>
+      ${fromBox("panel")}
       <div class="tp-dp-chips">${c.popularDates.map((p) => `<button type="button" class="tp-chip" data-pick="${p.key}" data-start="${p.start}">${esc(p.label)}</button>`).join("")}</div>
       <div class="tp-cal">
         <div class="tp-cal-nav"><button type="button" class="tp-round tp-round-alt" data-month="-1" aria-label="Previous month">${tpIcon("left", 20, 2.4)}</button><b class="tp-cal-m" data-cal-month aria-live="polite"></b><button type="button" class="tp-round tp-round-alt" data-month="1" aria-label="Next month">${tpIcon("right", 20, 2.4)}</button></div>
@@ -439,6 +447,7 @@ function tripPage(c) {
 </div>`;
 
   const tripData = { slug: c.slug, code: c.code, name: c.name, nights: c.nights, airport: c.airport, airportName: c.airportName, hotelLabel: c.hotelLabel, quote: quoteHref,
+    origins: ((S.tripOrigins && S.tripOrigins.list) || []).map(([n, k, country, alias]) => (alias ? [n, k, country, alias] : [n, k, country])), homeLine: c.homeLine[1], homeLineOther: c.homeLineOther || "", priceFromOther: c.priceFromOther || "",
     popular: c.popularDates.map((p) => ({ key: p.key, start: p.start })), hotels: hotels.map((h) => h.slug),
     note: c.pickerNote };
   const jsonld = [
