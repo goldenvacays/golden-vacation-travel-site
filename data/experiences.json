@@ -690,7 +690,6 @@
         "ocho": 195,
         "south": 60
       },
-      "calendar": "rezdy",
       "shipDay": false,
       "shipDayNote": "Negril is too far from the cruise ports for a ship day",
       "pickupShort": "Pickup included from Negril and Montego Bay hotels"
@@ -941,7 +940,7 @@
       },
       "shipDayNote": "sails at 2:30pm and is back after most all-aboard times",
       "shipDay": false,
-      "pickupShort": "Pickup included in Negril, +US$5 from Hanover, +US$30 from Montego Bay"
+      "pickupShort": "Pickup included in Negril, also from Hanover and Montego Bay"
     },
     {
       "slug": "jamwest-braco",
@@ -1454,7 +1453,7 @@
       ],
       "pickupNote": "Pickup from all-inclusive resorts: +US$18 per person from Ocho Rios, Runaway Bay and St Mary, +US$25 from Falmouth and Montego Bay. No pickup from Negril or the cruise pier.",
       "pickupNotListed": "Not on our list? Mystic picks up from the all-inclusive resorts listed here. Otherwise, make your own way.",
-      "pickupShort": "Pickup from resorts: +US$18 Ocho Rios side, +US$25 Falmouth and Montego Bay"
+      "pickupShort": "Pickup from resorts in Ocho Rios, Falmouth and Montego Bay"
     },
     {
       "slug": "poko-loko",
@@ -1667,7 +1666,7 @@
       ],
       "pickupNote": "Pickup is included from Couples Tower Isle to Falmouth: hotels, Airbnbs and the Ocho Rios and Falmouth cruise ports. Montego Bay and its cruise port are +US$10 per person.",
       "pickupAreas": "Ocho Rios, Runaway Bay, Falmouth or Montego Bay",
-      "pickupShort": "Pickup included from Couples Tower Isle to Falmouth, +US$10 Montego Bay"
+      "pickupShort": "Pickup included from Couples Tower Isle to Falmouth, also from Montego Bay"
     },
     {
       "slug": "ocean-eden-bay",

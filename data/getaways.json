@@ -34,7 +34,7 @@
     "destinationsSub": "Starting prices per person sharing, with flights, hotel and transfers together. The exact rate depends on your dates. J$ at 160 when you switch currency.",
     "onRequest": { "title": "Cancún · Brazil", "text": "We sell both. Send your dates and we quote it the same day." },
     "combosTitle": "Why stop at one?",
-    "combosSub": "Panama City is the hub of the Americas: two countries on one ticket, visa-free for Jamaican passports, no US transit.",
+    "combosSub": "Panama City is the hub of the Americas: two countries in one trip, visa-free for Jamaican passports, no US transit.",
     "packagesTitle": "Pick one. We'll quote it today.",
     "whyTitle": "Why not just book it yourself?",
     "whySub": "You could. Here's what you'd be doing without.",
@@ -140,7 +140,7 @@
         { "name": "The glass deck", "text": "POIN observation deck: glass walls, glass floor, the whole skyline.", "img": "glass-deck.jpg", "alt": "Glass observation deck", "price": 65 },
         { "name": "Emberá village", "text": "Dugout canoe up the Chagres River, lunch in the village.", "img": "embera.jpg", "alt": "Emberá village", "price": 50 }
       ],
-      "combo": { "kicker": "Add a second country", "title": "Lima + Panama City · 6 nights", "text": "Our most popular combo · one ticket · US$875 per person · visa-free", "href": "/getaways/panama-peru/" },
+      "combo": { "kicker": "Add a second country", "title": "Lima + Panama City · 6 nights", "text": "Our most popular combo · one trip · US$949 per person · visa-free", "href": "/getaways/panama-peru/" },
       "deposit": 500,
       "depositText": "Balance due 30 days before departure, in J$ or US$, by card link or bank transfer. Payment plan available.",
       "faq": [
@@ -377,7 +377,7 @@
         { "name": "Half-day city walk", "text": "Plaza de Armas, the cathedral and the old centre, on foot with a guide.", "img": "t-walking-tour.jpg", "alt": "Plaza de Armas, Lima", "price": 45 },
         { "name": "Paracas & Huacachina", "text": "Day trip from Lima: the Paracas coast, then the dunes at Huacachina by buggy, with a sunset toast.", "img": "t-huacachina.jpg", "alt": "Dune buggies at Huacachina", "price": 110 }
       ],
-      "combo": { "kicker": "Make it two countries", "title": "+ Panama City · 3 nights", "text": "Our most popular combo · one ticket · US$875 per person · visa-free", "href": "/getaways/panama-peru/" },
+      "combo": { "kicker": "Make it two countries", "title": "+ Panama City · 3 nights", "text": "Our most popular combo · one trip · US$949 per person · visa-free", "href": "/getaways/panama-peru/" },
       "deposit": 500,
       "depositText": "Balance due 30 days before departure, in J$ or US$, by card link or bank transfer. Payment plan available.",
       "faq": [
@@ -406,25 +406,25 @@
       "slug": "panama-peru",
       "code": "LIMPTY",
       "name": "Panama + Peru",
-      "title": "Panama + Peru from Jamaica: Lima and Panama City, 6 nights, one ticket, US$875 | Golden Vacation & Travel",
+      "title": "Panama + Peru from Jamaica: Lima and Panama City, 6 nights, one trip, US$949 | Golden Vacation & Travel",
       "description": "Two countries, one trip from Montego Bay: 3 nights in Lima, 3 nights in Panama City, all flights, both hotels and transfers in one price. Visa-free for Jamaican passports, no US transit.",
       "hero": { "img": "lima-hero.jpg", "alt": "The Miraflores cliffs and the lighthouse, Lima" },
-      "heroTags": ["Two countries", "Visa-free", "One ticket"],
+      "heroTags": ["Two countries", "Visa-free", "One trip"],
       "kicker": "Getaways from Jamaica · two countries, one trip",
-      "intro": "Two countries, one trip. Lima first, then Panama City on the way home: six nights, seven days, one ticket, visa-free. Flights, both hotels and all your transfers in one price, per person sharing. J$ at 160.",
+      "intro": "Two countries, one trip. Lima first, then Panama City on the way home: six nights, seven days, visa-free. Flights, both hotels and all your transfers in one price, per person sharing. J$ at 160.",
       "legs": [
         ["Montego Bay → Lima", "3 nights", "Suites del Bosque · San Isidro", "You fly out of Mobay and land in Lima. Our driver picks you up and takes you straight to the hotel. Three nights to enjoy the city: Miraflores by the sea, Barranco for the nightlife, and some of the best food you will ever eat. Want the Paracas & Huacachina trip? We add it on.", "t-suites-bosque.jpg"],
         ["Lima → Panama City", "3 nights", "Dann Carlton Marinn Place · Financial District", "Short flight over to Panama. Pick-up at the airport, straight to the hotel. Three nights in the city: Casco Viejo, the Canal, the Cinta Costera. Any of the Panama tours can add on.", "t-dann-carlton.jpg"],
-        ["Panama City → Montego Bay", "direct", "Home", "Pick-up from the hotel and a direct flight home to Mobay. Same ticket, no stress.", null]
+        ["Panama City → Montego Bay", "direct", "Home", "Pick-up from the hotel and a direct flight home to Mobay. Same trip, no stress.", null]
       ],
       "nightsLabel": "6 nights, per person",
-      "price": 875,
-      "deposit": 550,
+      "price": 949,
+      "deposit": 600,
       "airport": "MBJ",
       "airportName": "Montego Bay",
       "hotelLabel": "Suites del Bosque + Dann Carlton Marinn Place",
       "included": [
-        "All flights: MBJ–PTY–LIM, LIM–PTY, PTY–MBJ, one ticket",
+        "All flights: MBJ–PTY–LIM, LIM–PTY, PTY–MBJ",
         "Six nights across Lima and Panama City: Suites del Bosque, then Dann Carlton Marinn Place",
         "Airport transfers in both cities",
         "1 carry-on + 1 personal item per person · checked bag extra, quoted with your dates"
@@ -442,14 +442,14 @@
         ["Cancelling", "Flights are non-refundable once ticketed. Refunds on the balance vary. We'll let you know before you pay."]
       ],
       "bottomNote": "Opens WhatsApp with both legs, dates and travellers filled in · no payment yet",
-      "ticker": ["IATA-accredited", "Direct flights", "Visa-free", "Thousands of travellers"],
-      "tile": { "img": "lima-hero.jpg", "alt": "The Miraflores cliffs, Lima", "sub": "Lima + Panama City · 6 nights · one ticket · Suites del Bosque and Dann Carlton", "subShort": "Lima + Panama City · 6 nights · one ticket", "tags": ["Two countries", "Visa-free"] }
+      "ticker": ["IATA-accredited", "Two countries", "Visa-free", "Thousands of travellers"],
+      "tile": { "img": "lima-hero.jpg", "alt": "The Miraflores cliffs, Lima", "sub": "Lima + Panama City · 6 nights · one trip · Suites del Bosque and Dann Carlton", "subShort": "Lima + Panama City · 6 nights · one trip", "tags": ["Two countries", "Visa-free"] }
     },
     {
       "slug": "panama-medellin",
       "code": "MDEPTY",
       "name": "Panama + Medellín",
-      "title": "Panama + Medellín from Kingston: 7 nights, two countries, one ticket, US$975 | Golden Vacation & Travel",
+      "title": "Panama + Medellín from Kingston: 7 nights, two countries, one trip, US$975 | Golden Vacation & Travel",
       "description": "Two-in-one from Kingston: 4 nights in Medellín, 3 nights in Panama City, all flights, both hotels and transfers in one price. Visa-free for Jamaican passports, no US transit.",
       "hero": { "img": "metrocable-hero.jpg", "alt": "The Metrocable over Medellín at sunset" },
       "heroTags": ["Two countries", "Visa-free", "From Kingston"],
@@ -458,7 +458,7 @@
       "legs": [
         ["Kingston → Medellín", "4 nights", "Tequendama Hotel Medellín", "You fly out of Kingston and connect in Panama City. Our driver meets you in Medellín and takes you to the hotel. Four nights in the city: Comuna 13, the Metrocable, a day at Guatapé, and the food.", "t-tequendama-lobby.jpg"],
         ["Medellín → Panama City", "3 nights", "Megapolis · Punta Pacífica", "A short hop over to Panama, about an hour. Pick-up at the airport, straight to the hotel. Three nights in the city: Casco Viejo, the Canal, the Cinta Costera, and the mall next door.", "t-megapolis-room.jpg"],
-        ["Panama City → Kingston", "direct", "Home", "Pick-up from the hotel and a direct flight home to Kingston. Same ticket, no stress.", null]
+        ["Panama City → Kingston", "direct", "Home", "Pick-up from the hotel and a direct flight home to Kingston. Same trip, no stress.", null]
       ],
       "nightsLabel": "7 nights, per person",
       "price": 975,
@@ -467,7 +467,7 @@
       "airportName": "Kingston",
       "hotelLabel": "Tequendama + Megapolis",
       "included": [
-        "All flights: KIN–PTY–MDE, MDE–PTY, PTY–KIN, one ticket",
+        "All flights: KIN–PTY–MDE, MDE–PTY, PTY–KIN",
         "Four nights at Tequendama in Medellín, then three at Megapolis in Panama City, bed & breakfast",
         "Airport transfers in both cities",
         "1 carry-on + 1 personal item per person · checked bag extra, quoted with your dates"
@@ -485,8 +485,8 @@
         ["Cancelling", "Flights are non-refundable once ticketed. Refunds on the balance vary. We'll let you know before you pay."]
       ],
       "bottomNote": "Opens WhatsApp with both legs, dates and travellers filled in · no payment yet",
-      "ticker": ["IATA-accredited", "Direct flights", "Visa-free", "Thousands of travellers"],
-      "tile": { "img": "metrocable-hero.jpg", "alt": "The Metrocable over Medellín at sunset", "sub": "Kingston → Medellín 4 nights → Panama City 3 nights → home. Tequendama and Megapolis, one ticket, US$975 per person.", "subShort": "From Kingston · Medellín 4 nights + Panama City 3 nights · US$975", "tags": ["From Kingston"] }
+      "ticker": ["IATA-accredited", "Two countries", "Visa-free", "Thousands of travellers"],
+      "tile": { "img": "metrocable-hero.jpg", "alt": "The Metrocable over Medellín at sunset", "sub": "Kingston → Medellín 4 nights → Panama City 3 nights → home. Tequendama and Megapolis, one trip, US$975 per person.", "subShort": "From Kingston · Medellín 4 nights + Panama City 3 nights · US$975", "tags": ["From Kingston"] }
     }
   ]
 }
