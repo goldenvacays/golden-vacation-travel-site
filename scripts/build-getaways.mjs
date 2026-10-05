@@ -243,6 +243,238 @@ ${scripts(true)}
   return head({ title: c.title, description: c.description, pathname: `${BASE}/${c.slug}/`, image: c.hero.img, jsonld }) + body;
 }
 
+/* ---------- trip page: the two-country template (layout "trip" in data/getaways.json) ----------
+   Split hero, a search bar that floats over it and sticks on scroll (a quote bar at the foot on phones),
+   the price box, one chapter per city with its hotel and its days out, Good to know, a dark quote band.
+   Every Get a quote opens the date picker first (public/getaways/assets/trip.js): the trip length is
+   fixed, so one date is asked and the return fills itself, and the message that goes to WhatsApp
+   carries the dates, the party and any days out added. The hotel panels read their photos from
+   data/hotels-copy.json, the same set the hotel pages show. Panama + Medellín moves over by giving it
+   layout "trip" and the same fields. */
+const HOTELS_COPY = JSON.parse(fs.readFileSync(path.join(ROOT, "data/hotels-copy.json"), "utf8"));
+const TP_ICONS = {
+  route: '<circle cx="6" cy="19" r="2.5"></circle><circle cx="18" cy="5" r="2.5"></circle><path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"></path>',
+  pin: '<path d="M12 22s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z"></path><circle cx="12" cy="10" r="2.5"></circle>',
+  cal: '<rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path>',
+  users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>',
+  down: '<path d="M6 9l6 6 6-6"></path>',
+  left: '<path d="M15 18l-6-6 6-6"></path>',
+  right: '<path d="M9 18l6-6-6-6"></path>',
+  close: '<path d="M18 6L6 18"></path><path d="M6 6l12 12"></path>',
+  photos: '<rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="10" r="1.6"></circle><path d="M21 16l-5-5-8 8"></path>',
+  plus: '<path d="M12 5v14"></path><path d="M5 12h14"></path>',
+  plane: '<path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"></path>',
+  out: '<path d="M7 17L17 7"></path><path d="M8 7h9v9"></path>',
+  star: '<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"></path>',
+  breakfast: '<path d="M4 9h12v4a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"></path><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16"></path><path d="M8 3.5v2.5"></path><path d="M12 3.5v2.5"></path>',
+  gym: '<path d="M6.5 7v10"></path><path d="M3.5 9.5v5"></path><path d="M17.5 7v10"></path><path d="M20.5 9.5v5"></path><path d="M6.5 12h11"></path>',
+  nopool: '<path d="M3 15c1.5 0 1.5-1 3-1s1.5 1 3 1 1.5-1 3-1 1.5 1 3 1 1.5-1 3-1 1.5 1 3 1"></path><path d="M3 19c1.5 0 1.5-1 3-1s1.5 1 3 1 1.5-1 3-1 1.5 1 3 1 1.5-1 3-1 1.5 1 3 1"></path><path d="M4 4l16 16"></path>',
+  rooftop: '<path d="M3 17c1.5 0 1.5-1 3-1s1.5 1 3 1 1.5-1 3-1 1.5 1 3 1 1.5-1 3-1 1.5 1 3 1"></path><path d="M3 21c1.5 0 1.5-1 3-1s1.5 1 3 1 1.5-1 3-1 1.5 1 3 1 1.5-1 3-1 1.5 1 3 1"></path><path d="M9 14V4"></path><path d="M15 14V4"></path><path d="M9 7h6"></path><path d="M9 10.5h6"></path>',
+  pool: '<path d="M3 17c1.5 0 1.5-1 3-1s1.5 1 3 1 1.5-1 3-1 1.5 1 3 1 1.5-1 3-1 1.5 1 3 1"></path><path d="M3 21c1.5 0 1.5-1 3-1s1.5 1 3 1 1.5-1 3-1 1.5 1 3 1 1.5-1 3-1 1.5 1 3 1"></path>',
+};
+const tpIcon = (name, size = 20, sw = 2.2) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${TP_ICONS[name] || ICONS[name]}</svg>`;
+/* the little map tile beside each hotel's address: a drawn street corner with a gold pin, not a real map */
+const TP_MAP = '<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="320" height="200" fill="#E6E6E1"></rect><path d="M-10 150 L330 62" fill="none" stroke="#fff" stroke-width="14"></path><path d="M-10 46 L330 112" fill="none" stroke="#fff" stroke-width="6"></path><path d="M64 -10 L118 210" fill="none" stroke="#fff" stroke-width="9"></path><path d="M214 -10 L252 210" fill="none" stroke="#fff" stroke-width="9"></path><rect x="124" y="122" width="64" height="44" rx="8" fill="#D9DECF"></rect><path d="M160 66 C148 66 140 75 140 86 C140 100 160 116 160 116 C160 116 180 100 180 86 C180 75 172 66 160 66 Z" fill="#F2B93B" stroke="#0E0F0E" stroke-width="2.5"></path><circle cx="160" cy="85" r="6" fill="#0E0F0E"></circle></svg>';
+
+function tripPage(c) {
+  const quoteHref = `${BASE}/quote/?d=${c.slug}`; // where every Get a quote goes without script; with it, the date picker opens instead
+  const both = (n) => `<span class="usd-v">${usd(n)}</span><span class="jmd-v">J$${fmt(n * S.jmdRate)}</span>`;
+  const openBtn = (label, where, cls, iconName = "arrow") => `<a class="${cls}" href="${quoteHref}" data-open="dates" data-where="${where}">${esc(label)}${iconName ? tpIcon(iconName, 18) : ""}</a>`;
+  const hotels = c.chapters.map((ch, i) => {
+    const h = c.hotels[ch.hotel];
+    const copy = HOTELS_COPY[ch.hotel] || {};
+    const photos = (copy.photos || []).filter((p) => p && p.file);
+    if (!photos.length) throw new Error(`${c.slug}: ${ch.hotel} has no photos in data/hotels-copy.json`);
+    photos.forEach((p) => { usedImages.add(p.file); if (p.thumb) usedImages.add(p.thumb); });
+    const page = `${BASE}/${h.dest}/${ch.hotel}`;
+    if (!HOTEL_PAGES.includes(page)) console.warn(`  ${c.slug}: no hotel page at ${page}`);
+    return { ...h, slug: ch.hotel, ch, i, photos, page };
+  });
+  const N = hotels.length;
+
+  /* ---- split hero ---- */
+  const hero = `<section class="tp-hero" aria-label="${esc(c.split.map((s) => s.short).join(" and "))}">
+  ${c.split.map((s, i) => { [s.img, s.mid, s.phone].forEach((f) => usedImages.add(f)); return `<div class="tp-half">
+    <picture><source media="(max-width: 599px)" srcset="${img(s.phone)} 640w" sizes="50vw"><img src="${img(s.img)}" srcset="${img(s.mid)} 1000w, ${img(s.img)} 2000w" sizes="(min-width: 600px) 50vw, 100vw" alt="${esc(s.alt)}" fetchpriority="high" decoding="async"></picture>
+    <span class="tp-city${i ? " tp-city-r" : ""}"><span class="desk">${esc(s.label)}</span><span class="mob">${esc(s.short)}</span></span>
+  </div>`; }).join("\n  ")}
+  <span class="tp-plus" aria-hidden="true">+</span>
+</section>`;
+
+  /* ---- search: the bar on a computer (sticky), the one-line card on a phone ---- */
+  const comboOptions = DATA.combos.map((x) => `<option value="${BASE}/${x.slug}/"${x.slug === c.slug ? " selected" : ""}>${esc(x.name)}</option>`).join("");
+  const field = (ic, label, value, bind) => `${tpIcon(ic, 22, 2)}<span class="tp-f-t"><span class="tp-f-l">${esc(label)}</span><span class="tp-f-v"${bind ? ` data-bind="${bind}"` : ""}>${esc(value)}</span></span>`;
+  const search = `<div class="tp-search desk" id="tp-search">
+  <div class="tp-bar" role="search" aria-label="Find your combo trip">
+    <label class="tp-f tp-f-combo">${tpIcon("route", 22, 2)}<span class="tp-f-t"><span class="tp-f-l">Combo trip</span><select class="tp-combo" aria-label="Combo trip" autocomplete="off">${comboOptions}</select></span>${tpIcon("down", 18, 2.4)}</label>
+    <div class="tp-f tp-f-fixed">${field("pin", "Flying from", c.airportName)}</div>
+    <button type="button" class="tp-f" data-open="dates" data-where="search_dates">${field("cal", `Leaving · ${c.nights} nights`, "Pick a date", "leave")}</button>
+    <div class="tp-f-wrap"><button type="button" class="tp-f tp-who" id="tp-who" aria-expanded="false" aria-controls="tp-who-pop">${field("users", "Who's travelling", "2 adults · 1 room", "who")}</button>
+      <div class="hq-pop tp-who-pop" id="tp-who-pop" hidden><div class="tp-party" data-party="pop"></div><button type="button" class="hq-addroom" data-addroom>+ Add room</button><p class="hq-hint">Ages at the time of travel.</p><button type="button" class="btn btn-black btn-sm" data-who-done>Done</button></div></div>
+    ${openBtn("Get a quote", "search", "tp-go")}
+  </div>
+</div>
+<div class="tp-msearch mob">
+  <div class="tp-mcard">
+    <div class="tp-mcard-t">
+      <label class="tp-mcombo"><span class="sr">Combo trip</span><select class="tp-combo" autocomplete="off">${comboOptions}</select>${tpIcon("down", 16, 2.4)}</label>
+      <button type="button" class="tp-msub" data-open="dates" data-where="mobile_search">From ${esc(c.airportName)} · <span data-bind="leaveShort">Pick dates</span> · <span data-bind="whoShort">2 adults</span></button>
+    </div>
+    <a class="tp-mgo" href="${quoteHref}" data-open="dates" data-where="mobile_search" aria-label="Get a quote">${tpIcon("arrow", 20, 2.4)}</a>
+  </div>
+</div>
+<div class="tp-popular">
+  <span class="tp-popular-l desk">Popular dates</span>
+  ${c.popularDates.map((p) => `<button type="button" class="tp-chip" data-pick="${p.key}" data-start="${p.start}">${esc(p.label)}</button>`).join("\n  ")}
+</div>`;
+
+  /* ---- intro + price box ---- */
+  const intro = `<section class="tp-intro">
+  <div class="tp-intro-t">
+    <span class="tp-kicker">${esc(c.kicker)}</span>
+    <h1 class="tp-h1">${esc(c.name)}</h1>
+    <p class="tp-lead">${esc(c.intro)}</p>
+    <div class="tp-tags">${c.tags.map((t) => `<span class="tp-tag">${esc(t)}</span>`).join("")}</div>
+    ${c.guestQuote ? `<figure class="tp-quote"><span class="tp-quote-m" aria-hidden="true">&ldquo;</span><blockquote>${esc(c.guestQuote.text)}<span class="tp-quote-e" aria-hidden="true">&rdquo;</span></blockquote><figcaption>${esc(c.guestQuote.by)}</figcaption></figure>` : ""}
+  </div>
+  <aside class="tp-price" aria-label="What you get">
+    <div class="tp-price-top"><span class="tp-lbl">From, per person sharing</span><span class="tp-price-n">${both(c.price)}</span><small><span class="usd-v">&asymp; J$${fmt(c.price * S.jmdRate)} at J$${S.jmdRate} to US$1</span><span class="jmd-v">&asymp; ${usd(c.price)} at J$${S.jmdRate} to US$1</span></small></div>
+    <ul class="tp-incl">${c.includes.map(([b, t]) => `<li><span class="tp-tick">${tpIcon("check", 13, 3.4)}</span><span><b>${esc(b)}</b> ${esc(t)}</span></li>`).join("")}</ul>
+    <div class="tp-hold"><b>Hold it with ${usd(c.deposit)}.</b> ${esc(c.depositNote)}</div>
+    ${openBtn("Get a quote", "price_box", "tp-btn tp-btn-black tp-btn-full tp-btn-lg")}
+  </aside>
+</section>`;
+
+  /* ---- the trip: a chapter per city ---- */
+  const tourCard = (t) => { usedImages.add(t.img); return `<div class="tp-tour">
+        <img class="tp-tour-img" src="${img(t.img)}" alt="${esc(t.alt)}" loading="lazy" decoding="async">
+        <div class="tp-tour-t"><b>${esc(t.name)}</b><span class="tp-tour-x">${esc(t.text)}</span><div class="tp-tour-row"><span class="tp-tour-p">${usd(t.price)}</span>
+          <button type="button" class="tp-add" data-tour="${t.key}" data-name="${esc(t.name)}" data-price="${t.price}" aria-pressed="false" aria-label="Add ${esc(t.name)}, ${usd(t.price)}"><span class="tp-add-i">${tpIcon("plus", 15, 3.2)}${tpIcon("check", 15, 3.2)}</span><span class="tp-add-l">Add</span></button></div></div>
+      </div>`; };
+  const chapters = hotels.map((h) => {
+    const ch = h.ch, p0 = h.photos[0];
+    return `<article class="tp-ch${h.i % 2 ? " tp-ch-flip" : ""}" aria-labelledby="tp-ch-${ch.id}">
+    <a class="tp-ch-photo" href="${h.page}" data-hotel="${h.i}" data-where="chapter_photo" aria-label="See the hotel: ${esc(h.name)}"><img src="${img(p0.file)}" alt="${esc(p0.alt)}"${p0.pos ? ` style="object-position:${esc(p0.pos)}"` : ""} loading="lazy" decoding="async"><span class="tp-photos-pill">${tpIcon("photos", 18)}${h.photos.length} photos</span></a>
+    <div class="tp-ch-t">
+      <span class="tp-kicker">${esc(ch.nightsLabel)}</span>
+      <h3 class="tp-h3" id="tp-ch-${ch.id}">${esc(ch.city)}</h3>
+      <p class="tp-ch-line">${esc(ch.line)}</p>
+      <div class="tp-hcard"><span class="tp-lbl">Your hotel · included</span><b>${esc(h.name)}</b><span class="tp-hcard-s">${esc(h.area)} · ${esc(h.room)}</span><a class="tp-btn tp-btn-outline tp-btn-sm" href="${h.page}" data-hotel="${h.i}" data-where="chapter_button">See the hotel${tpIcon("arrow", 16, 2.4)}</a></div>
+    </div>
+    <div class="tp-ch-tours"><span class="tp-lbl">Add a day out</span><div class="tp-tours">
+      ${ch.tours.map(tourCard).join("\n      ")}
+    </div></div>
+  </article>`;
+  }).join("\n  ");
+  const trip = `<section class="tp-trip" aria-labelledby="tp-trip-h">
+  <div class="tp-sec-head"><span class="tp-kicker">${esc(c.tripKicker)}</span><h2 class="tp-h2" id="tp-trip-h">${esc(c.tripTitle)}</h2></div>
+  ${chapters}
+  <div class="tp-home"><span class="tp-home-i">${tpIcon("plane", 20, 2)}</span><p><b>${esc(c.homeLine[0])}</b> <span>${esc(c.homeLine[1])}</span></p></div>
+</section>`;
+
+  const gtk = `<section class="tp-gtk" aria-labelledby="tp-gtk-h">
+  <h2 class="tp-kicker" id="tp-gtk-h">Good to know</h2>
+  <div class="tp-gtk-grid">${c.faq.map(([q, a]) => `<div class="tp-gtk-i"><h3>${esc(q)}</h3><p>${esc(a)}</p></div>`).join("")}</div>
+</section>`;
+
+  const band = `<section class="tp-band"><div class="tp-band-in">
+  <div class="tp-band-t"><span class="tp-band-h">${esc(c.name)}, from ${both(c.price)}</span><span class="tp-band-s">${esc(c.bandSub)}</span></div>
+  ${openBtn("Get a quote", "band", "tp-btn tp-btn-gold tp-btn-lg")}
+</div></section>`;
+
+  /* ---- hotel panels: a side panel on a computer, a sheet from the bottom on a phone ---- */
+  const panel = (h) => {
+    const id = `tp-hotel-${h.i}`, rp = h.photos[h.roomPhoto] || h.photos[0];
+    const slides = h.photos.map((p, k) => `<div class="tp-slide"><img src="${img(p.file)}" alt="${esc(p.alt)}"${p.pos ? ` style="object-position:${esc(p.pos)}"` : ""} loading="lazy" decoding="async"></div>`).join(""); // lazy all through: nothing in a closed panel loads with the page
+    const thumbs = h.photos.map((p, k) => `<button type="button" class="tp-thumb" data-photo="${k}" aria-label="Photo ${k + 1} of ${h.photos.length}: ${esc(p.alt.charAt(0).toLowerCase() + p.alt.slice(1))}"${k ? "" : ' aria-current="true"'}><img src="${img(p.thumb || p.file)}" alt="" loading="lazy" decoding="async"></button>`).join("");
+    const prev = h.i > 0 ? `<button type="button" class="tp-round" data-hotel="${h.i - 1}" data-where="panel_prev" aria-label="Previous hotel: ${esc(hotels[h.i - 1].name)}, ${esc(hotels[h.i - 1].ch.city)}">${tpIcon("left", 22, 2.4)}</button>` : `<button type="button" class="tp-round desk" disabled aria-label="Previous hotel">${tpIcon("left", 22, 2.4)}</button>`;
+    const next = h.i < N - 1 ? `<button type="button" class="tp-round" data-hotel="${h.i + 1}" data-where="panel_next" aria-label="Next hotel: ${esc(hotels[h.i + 1].name)}, ${esc(hotels[h.i + 1].ch.city)}">${tpIcon("right", 22, 2.4)}</button>` : `<button type="button" class="tp-round desk" disabled aria-label="Next hotel">${tpIcon("right", 22, 2.4)}</button>`;
+    return `<div class="tp-sheet" id="${id}" role="dialog" aria-modal="true" aria-labelledby="${id}-h" data-hotel-slug="${h.slug}" hidden>
+  <div class="tp-sheet-back" data-close></div>
+  <section class="tp-panel">
+    <div class="tp-panel-scroll">
+      <div class="tp-gal">
+        <div class="tp-strip" data-strip tabindex="-1">${slides}</div>
+        <span class="tp-grab mob" aria-hidden="true"></span>
+        <div class="tp-gal-top"><span class="tp-pill">Hotel ${h.i + 1} of ${N} · ${esc(h.ch.city)}</span><div class="tp-gal-btns">${prev}${next}<button type="button" class="tp-round" data-close aria-label="Close and go back to the trip">${tpIcon("close", 22, 2.4)}</button></div></div>
+        <div class="tp-gal-tags"><span class="tp-tilt" id="${id}-h">${esc(h.name)}</span><span class="tp-tilt tp-tilt-b">${esc(h.area)} · ${h.ch.nights} nights</span></div>
+        <span class="tp-count" aria-live="polite">${tpIcon("photos", 16)}<span data-count>1</span> / ${h.photos.length}</span>
+      </div>
+      <div class="tp-panel-body">
+        <div class="tp-thumbs" role="group" aria-label="Photos">${thumbs}</div>
+        <div class="tp-room"><img src="${img(rp.thumb || rp.file)}" alt="${esc(rp.alt)}" style="object-position:${esc(h.roomPos || "center")}" loading="lazy" decoding="async"><div class="tp-room-t"><span class="tp-room-k">Your room</span><b>${esc(h.room)}</b><span class="tp-room-x">${esc(h.roomText)}</span>${h.roomNote ? `<span class="tp-room-n desk">${esc(h.roomNote)}</span>` : ""}</div></div>
+        <div class="tp-facts">${h.facts.map(([ic, t]) => `<div class="tp-fact">${tpIcon(ic, 22, 2)}<span>${esc(t)}</span></div>`).join("")}</div>
+        <p class="tp-about">${esc(h.about)}</p>
+        <div class="tp-where"><div class="tp-map">${TP_MAP}</div><div class="tp-where-t"><b>${esc(h.where)}</b><span>${esc(h.address)}</span><a href="https://www.google.com/maps/search/?api=1&amp;query=${h.map}" target="_blank" rel="noopener" data-where="panel_map">Open in Google Maps${tpIcon("out", 14, 2.6)}</a></div></div>
+      </div>
+    </div>
+    <div class="tp-panel-foot"><span class="tp-incl-line">${tpIcon("check", 18, 2.6)}Included in your ${esc(c.name)} trip</span>
+      <div class="tp-panel-act"><button type="button" class="tp-btn tp-btn-outline" data-close><span class="desk">Back to the trip</span><span class="mob">Back</span></button>${openBtn("Get a quote", "panel", "tp-btn tp-btn-black tp-btn-grow")}</div></div>
+  </section>
+</div>`;
+  };
+
+  /* ---- the date picker: the calendar and the summary are drawn by trip.js ---- */
+  const dates = `<div class="tp-sheet tp-sheet-dates" id="tp-dates" role="dialog" aria-modal="true" aria-labelledby="tp-dates-h" hidden>
+  <div class="tp-sheet-back" data-close></div>
+  <section class="tp-panel">
+    <span class="tp-grab tp-grab-d mob" aria-hidden="true"></span>
+    <div class="tp-panel-scroll tp-dp">
+      <div class="tp-dp-head"><div><span class="tp-kicker">${esc(c.name)} · ${c.nights} nights</span><h2 id="tp-dates-h" class="tp-dp-h">When do you<br class="mob"> want to go?</h2></div><button type="button" class="tp-round tp-round-alt" data-close aria-label="Close">${tpIcon("close", 22, 2.4)}</button></div>
+      <div class="tp-dp-chips">${c.popularDates.map((p) => `<button type="button" class="tp-chip" data-pick="${p.key}" data-start="${p.start}">${esc(p.label)}</button>`).join("")}</div>
+      <div class="tp-cal">
+        <div class="tp-cal-nav"><button type="button" class="tp-round tp-round-alt" data-month="-1" aria-label="Previous month">${tpIcon("left", 20, 2.4)}</button><b class="tp-cal-m" data-cal-month aria-live="polite"></b><button type="button" class="tp-round tp-round-alt" data-month="1" aria-label="Next month">${tpIcon("right", 20, 2.4)}</button></div>
+        <div class="tp-cal-dow" aria-hidden="true"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
+        <div class="tp-cal-days" data-cal-days></div>
+      </div>
+      <div class="tp-sum"><div class="tp-sum-t"><b data-bind="sumMain">Pick your leaving date</b><span data-bind="sumSub">The return fills itself: ${c.nights} nights · 2 adults, 1 room</span></div><button type="button" class="tp-change" data-change aria-expanded="false" aria-controls="tp-dp-party">Change</button></div>
+      <div class="tp-dp-party" id="tp-dp-party" hidden><b class="tp-dp-party-h">Who's travelling</b><div class="tp-party" data-party="panel"></div><button type="button" class="hq-addroom" data-addroom>+ Add room</button><p class="hq-hint">Ages at the time of travel.</p><button type="button" class="btn btn-black btn-sm" data-party-done>Done</button></div>
+      <div class="tp-dp-tours" data-bind="tourList" hidden></div>
+    </div>
+    <div class="tp-panel-foot tp-dp-foot">
+      <a class="tp-btn tp-btn-black tp-btn-full tp-btn-lg tp-wa is-off" id="tp-wa" data-wa="1" role="link" aria-disabled="true"><span class="tp-wa-i">${tpIcon("chat", 18)}</span><span data-bind="waLabel">Pick a date first</span></a>
+      <span class="tp-foot-note" data-bind="footNote">${esc(c.pickerNote)}</span>
+    </div>
+  </section>
+</div>`;
+
+  const tripData = { slug: c.slug, code: c.code, name: c.name, nights: c.nights, airport: c.airport, airportName: c.airportName, hotelLabel: c.hotelLabel, quote: quoteHref,
+    popular: c.popularDates.map((p) => ({ key: p.key, start: p.start })), hotels: hotels.map((h) => h.slug),
+    note: c.pickerNote };
+  const jsonld = [
+    { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: `${S.origin}/` }, { "@type": "ListItem", position: 2, name: "Getaways", item: `${S.origin}${BASE}/` }, { "@type": "ListItem", position: 3, name: c.name, item: `${S.origin}${BASE}/${c.slug}/` }] },
+    { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: c.faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) },
+    { "@context": "https://schema.org", "@type": "TouristTrip", name: `${c.name} from Jamaica`, description: c.description, url: `${S.origin}${BASE}/${c.slug}/`, image: `${S.origin}${img(c.share.img)}`, provider: { "@id": `${S.origin}/#organization` },
+      itinerary: { "@type": "ItemList", itemListElement: hotels.map((h, k) => ({ "@type": "ListItem", position: k + 1, item: { "@type": "City", name: h.ch.city } })) },
+      offers: { "@type": "Offer", priceCurrency: "USD", price: c.price, availability: "https://schema.org/InStock" } },
+  ];
+  const body = `<body class="ga-page has-bar tp-page">
+${nav({ back: `${BASE}/`, title: `the ${c.name} page` })}
+<main class="tp" id="main">
+${hero}
+${search}
+${intro}
+${trip}
+${gtk}
+${band}
+</main>
+${ticker(c.ticker)}
+${footer()}
+<div class="bar mob tp-mbar" role="region" aria-label="Get a quote">${openBtn("Get a quote", "bar", "btn btn-black btn-lg btn-full")}<small data-bind="barNote">Pick your dates · quoted on WhatsApp · no payment yet</small></div>
+${hotels.map(panel).join("\n")}
+${dates}
+<script>window.GV_TRIP=${JSON.stringify(tripData)};</script>
+<script src="${BASE}/assets/getaways.js" defer></script>
+<script src="${BASE}/assets/trip.js" defer></script>
+</body></html>`;
+  usedImages.add(c.share.img);
+  const extraHead = `<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${esc(c.share.alt)}">
+<link rel="stylesheet" href="${BASE}/assets/trip.css">`;
+  return head({ title: c.title, description: c.description, pathname: `${BASE}/${c.slug}/`, image: c.share.img, jsonld, extraHead }) + body;
+}
+
 /* ---------- quote page ---------- */
 function quotePage() {
   const quoteData = {
@@ -292,7 +524,7 @@ ${scripts(true)}
 const pages = [
   ["index.html", hubPage()],
   ...DATA.destinations.map((d) => [`${d.slug}/index.html`, destPage(d)]),
-  ...DATA.combos.map((c) => [`${c.slug}/index.html`, comboPage(c)]),
+  ...DATA.combos.map((c) => [`${c.slug}/index.html`, c.layout === "trip" ? tripPage(c) : comboPage(c)]),
   ["quote/index.html", quotePage()],
 ];
 

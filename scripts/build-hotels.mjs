@@ -99,7 +99,7 @@ function hotelPage(hotel) {
   if (photos.length > 1) {
     /* the swipe strip from the tour pages: every photo side by side, dots, arrows on hover, a "N photos" pill, tap opens the viewer */
     /* responsive sources: -s (800px) for tiles, the 1600px file, -l (2400px) for the hero on sharp wide screens and the viewer */
-    const heroSet = (p) => p.large ? ` srcset="${img(p.file)} 1600w, ${img(p.large)} 2400w" sizes="100vw"` : "";
+    const heroSet = (p) => (p.large ? ` srcset="${img(p.file)} 1600w, ${img(p.large)} 2400w" sizes="100vw"` : "") + (p.pos ? ` style="object-position:${esc(p.pos)}"` : ""); // pos: a tall photo whose subject sits off centre
     const slides = photos.map((p, i) => `<div class="hero-slide">${i === 0 ? heroPic(p.file, p.alt).replace("<img ", `<img class="lb-open" data-i="0"${heroSet(p)} `) : pic(p.file, p.alt, "lb-open", ` data-i="${i}"${heroSet(p)}`)}</div>`).join("");
     const dots = `<div class="hero-dots" role="tablist" aria-label="Which photo">${photos.map((p, i) => `<button type="button" role="tab" aria-selected="${i === 0 ? "true" : "false"}" aria-label="Photo ${i + 1} of ${photos.length}" data-i="${i}"></button>`).join("")}</div>`;
     const arrows = `<button type="button" class="hero-arrow hero-prev" aria-label="Previous photo">${icon("arrow", 18, 2.4)}</button><button type="button" class="hero-arrow hero-next" aria-label="Next photo">${icon("arrow", 18, 2.4)}</button>`;

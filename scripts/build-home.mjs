@@ -187,7 +187,9 @@ const gaPlaces = (() => {
       const bySlug = G.destinations.find((d) => d.slug === p);
       return bySlug ? bySlug.short || bySlug.name : p;
     });
-    out.push([parts.join(" + "), href, "Two countries, one ticket", `combo two countries ${parts.join(" ")}`]);
+    /* a combo can say its own line (searchLine in data/getaways.json); the default is "one trip", never "one ticket" (change log, 4 Oct) */
+    const combo = (G.combos || []).find((c) => `/getaways/${c.slug}/` === href);
+    out.push([parts.join(" + "), href, (combo && combo.searchLine) || "Two countries, one trip", `combo two countries ${parts.join(" ")}`]);
   }
   for (const p of pages) {
     const h = bySlug[String(p).split("/").pop()];
