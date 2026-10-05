@@ -1,5 +1,5 @@
 {
-  "_about": "Guest-facing copy for the hotel pages, keyed by the page slug. The facts come from data/hotels.json (the spreadsheet); this file is the words. No em dashes, no supplier names, guide prices only, nothing internal. photos: [{file (1600px), small (800px, tiles), large (2400px, hero on sharp screens and the viewer), alt}] per hotel, files under public/getaways/img/hotels/; the list order is the display order (the first is the hero, the rest make the swipe strip and the viewer), the file numbers are just names. roomPhotos: {room name exactly as the sheet has it: file} puts that photo on the room card; a photo that is also in the photos list opens the viewer. about: the About the hotel block, an array of paragraphs; a paragraph is either a string or [lead, text] for a bold lead-in. It replaces goodToKnow (kept for reference only). roomsUpFront: the room names shown before the See more fold (default: all when 6 or fewer, else the first 5). No square metres, no airport distances, no supplier notes. place: names the country instead of the destination city in the title, kicker and description for resorts outside it (Playa Blanca, Farallon, Playa Bonita), with district as the beach or area. roomVideos: {room name: {file}} puts a Room tour play badge on that card; the clip must be H.264 mp4 (Riu's HEVC exports are converted with ffmpeg), 8 to 15 seconds, no audio.",
+  "_about": "Guest-facing copy for the hotel pages, keyed by the page slug. The facts come from data/hotels.json (the spreadsheet); this file is the words. No em dashes, no supplier names, guide prices only, nothing internal. photos: [{file (1600px), small (800px, tiles), large (2400px, hero on sharp screens and the viewer), alt}] per hotel, files under public/getaways/img/hotels/. Optional per photo: thumb (a copy 240px on its short side, for the trip page hotel panels) and pos (a CSS object-position for a photo whose subject sits off centre, used by the hotel page strip and the trip page panels). Sources smaller than 1600px stay at their own size with no large. The list order is the display order (the first is the hero, the rest make the swipe strip and the viewer), the file numbers are just names. roomPhotos: {room name exactly as the sheet has it: file} puts that photo on the room card; a photo that is also in the photos list opens the viewer. about: the About the hotel block, an array of paragraphs; a paragraph is either a string or [lead, text] for a bold lead-in. It replaces goodToKnow (kept for reference only). roomsUpFront: the room names shown before the See more fold (default: all when 6 or fewer, else the first 5). No square metres, no airport distances, no supplier notes. place: names the country instead of the destination city in the title, kicker and description for resorts outside it (Playa Blanca, Farallon, Playa Bonita), with district as the beach or area. roomVideos: {room name: {file}} puts a Room tour play badge on that card; the clip must be H.264 mp4 (Riu's HEVC exports are converted with ffmpeg), 8 to 15 seconds, no audio.",
   "riu-plaza": {
     "tags": [
       "Most popular",
@@ -183,6 +183,8 @@
     ]
   },
   "marinn-place": {
+    "name": "Dann Carlton Marinn Place",
+    "shortName": "Dann Carlton Marinn Place",
     "tags": [
       "Rooftop pool",
       "Financial District"
@@ -192,6 +194,48 @@
       "Three room categories, all the same size, all with a sofa bed; the Deluxe Double sleeps four.",
       "Breakfast is served in the Dann Carlton restaurant, from breakfast through to brunch.",
       "Walking distance to the Financial District's restaurants, a short taxi to Avenida Balboa."
+    ],
+    "photos": [
+      {
+        "file": "hotels/marinn-01.jpg",
+        "thumb": "hotels/marinn-01-t.jpg",
+        "alt": "The rooftop pool, with the Panama City skyline"
+      },
+      {
+        "file": "hotels/marinn-02.jpg",
+        "thumb": "hotels/marinn-02-t.jpg",
+        "alt": "A king room with the sofa bed and seating area"
+      },
+      {
+        "file": "hotels/marinn-03.jpg",
+        "thumb": "hotels/marinn-03-t.jpg",
+        "alt": "A room with two queen beds"
+      },
+      {
+        "file": "hotels/marinn-04.jpg",
+        "thumb": "hotels/marinn-04-t.jpg",
+        "alt": "The seating area and desk, with city views"
+      },
+      {
+        "file": "hotels/marinn-05.jpg",
+        "thumb": "hotels/marinn-05-t.jpg",
+        "alt": "The lobby bar"
+      },
+      {
+        "file": "hotels/marinn-06.jpg",
+        "thumb": "hotels/marinn-06-t.jpg",
+        "alt": "The breakfast buffet"
+      },
+      {
+        "file": "hotels/marinn-07.jpg",
+        "thumb": "hotels/marinn-07-t.jpg",
+        "alt": "The lobby lounge"
+      },
+      {
+        "file": "hotels/marinn-08.jpg",
+        "thumb": "hotels/marinn-08-t.jpg",
+        "alt": "A bathroom with a walk-in shower"
+      }
     ],
     "about": [
       "Three room categories, all the same size, all with a sofa bed; the Deluxe Double sleeps four. Walking distance to the Financial District's restaurants and a short taxi to Avenida Balboa.",
@@ -504,6 +548,49 @@
       "Two kitchenette categories suit a week or more.",
       "Free parking, free Wi-Fi, a gym on the third floor, and dogs are welcome (ask us about size limits and fees).",
       "About 30 minutes from the airport, traffic depending."
+    ],
+    "photos": [
+      {
+        "file": "hotels/bosque-01.jpg",
+        "thumb": "hotels/bosque-01-t.jpg",
+        "alt": "A suite with its sitting area and king bed"
+      },
+      {
+        "file": "hotels/bosque-02.jpg",
+        "thumb": "hotels/bosque-02-t.jpg",
+        "alt": "A suite with two beds"
+      },
+      {
+        "file": "hotels/bosque-03.jpg",
+        "thumb": "hotels/bosque-03-t.jpg",
+        "alt": "The suite living area, desk and bed"
+      },
+      {
+        "file": "hotels/bosque-04.jpg",
+        "thumb": "hotels/bosque-04-t.jpg",
+        "alt": "A suite bedroom"
+      },
+      {
+        "file": "hotels/bosque-05.jpg",
+        "thumb": "hotels/bosque-05-t.jpg",
+        "alt": "Los Cristales restaurant under its glass roof"
+      },
+      {
+        "file": "hotels/bosque-06.jpg",
+        "thumb": "hotels/bosque-06-t.jpg",
+        "alt": "The front desk"
+      },
+      {
+        "file": "hotels/bosque-07.jpg",
+        "thumb": "hotels/bosque-07-t.jpg",
+        "alt": "Stained glass over the staircase"
+      },
+      {
+        "file": "hotels/bosque-08.jpg",
+        "thumb": "hotels/bosque-08-t.jpg",
+        "alt": "A bathroom with a bathtub",
+        "pos": "center 62%"
+      }
     ],
     "about": [
       "Quiet and residential, not a resort: there is no pool. Two kitchenette categories suit a week or more, and every suite has a sofa bed. Dogs are welcome (ask us about size limits and fees).",

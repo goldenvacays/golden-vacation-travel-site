@@ -110,7 +110,7 @@
             { "slug": "riu-plaza", "name": "Riu Plaza Panama", "note": "Calle 50, Marbella · outdoor pool, refreshed 2025", "prices": { "3": 660, "4": 760, "7": 990 }, "top": true, "img": "h-riu-plaza.jpg" },
             { "slug": "megapolis", "name": "Megapolis", "note": "Avenida Balboa · 62 storey tower, pool bar", "prices": { "3": 665, "4": 730, "7": 920 }, "img": "h-megapolis.jpg" },
             { "slug": "las-americas", "name": "Las Americas Golden", "note": "Marbella · 5 star tower, breakfast included", "prices": { "3": 690, "4": 750, "7": 960 }, "img": "h-las-americas.jpg" },
-            { "slug": "marinn-place", "name": "Marinn Place", "note": "Financial District · by Dann Carlton", "prices": { "3": 635, "4": 690, "7": 845 }, "img": "h-marinn.jpg" },
+            { "slug": "marinn-place", "name": "Dann Carlton Marinn Place", "note": "Financial District · rooftop pool", "prices": { "3": 635, "4": 690, "7": 845 }, "img": "h-marinn.jpg" },
             { "slug": "ramada-plaza", "name": "Ramada Plaza", "note": "Punta Pacífica · free breakfast, outdoor pool", "prices": { "3": 630, "4": 680, "7": 860 }, "img": "h-ramada.jpg" },
             { "slug": "hospedium-princess", "name": "Hospedium Princess", "note": "Best value in the city", "prices": { "3": 575, "4": 609, "7": 690 }, "img": "h-hospedium.jpg" }
           ]
@@ -140,7 +140,7 @@
         { "name": "The glass deck", "text": "POIN observation deck: glass walls, glass floor, the whole skyline.", "img": "glass-deck.jpg", "alt": "Glass observation deck", "price": 65 },
         { "name": "Emberá village", "text": "Dugout canoe up the Chagres River, lunch in the village.", "img": "embera.jpg", "alt": "Emberá village", "price": 50 }
       ],
-      "combo": { "kicker": "Add a second country", "title": "Lima + Panama City · 6 nights", "text": "Our most popular combo · one trip · US$949 per person · visa-free", "href": "/getaways/panama-peru/" },
+      "combo": { "kicker": "Add a second country", "title": "Lima + Panama City · 6 nights", "text": "Our most popular combo · one trip · from US$949 per person · visa-free", "href": "/getaways/panama-peru/" },
       "deposit": 500,
       "depositText": "Balance due 30 days before departure, in J$ or US$, by card link or bank transfer. Payment plan available.",
       "faq": [
@@ -377,7 +377,7 @@
         { "name": "Half-day city walk", "text": "Plaza de Armas, the cathedral and the old centre, on foot with a guide.", "img": "t-walking-tour.jpg", "alt": "Plaza de Armas, Lima", "price": 45 },
         { "name": "Paracas & Huacachina", "text": "Day trip from Lima: the Paracas coast, then the dunes at Huacachina by buggy, with a sunset toast.", "img": "t-huacachina.jpg", "alt": "Dune buggies at Huacachina", "price": 110 }
       ],
-      "combo": { "kicker": "Make it two countries", "title": "+ Panama City · 3 nights", "text": "Our most popular combo · one trip · US$949 per person · visa-free", "href": "/getaways/panama-peru/" },
+      "combo": { "kicker": "Make it two countries", "title": "+ Panama City · 3 nights", "text": "Our most popular combo · one trip · from US$949 per person · visa-free", "href": "/getaways/panama-peru/" },
       "deposit": 500,
       "depositText": "Balance due 30 days before departure, in J$ or US$, by card link or bank transfer. Payment plan available.",
       "faq": [
@@ -406,44 +406,89 @@
       "slug": "panama-peru",
       "code": "LIMPTY",
       "name": "Panama + Peru",
-      "title": "Panama + Peru from Jamaica: Lima and Panama City, 6 nights, one trip, US$949 | Golden Vacation & Travel",
-      "description": "Two countries, one trip from Montego Bay: 3 nights in Lima, 3 nights in Panama City, all flights, both hotels and transfers in one price. Visa-free for Jamaican passports, no US transit.",
-      "hero": { "img": "lima-hero.jpg", "alt": "The Miraflores cliffs and the lighthouse, Lima" },
-      "heroTags": ["Two countries", "Visa-free", "One trip"],
-      "kicker": "Getaways from Jamaica · two countries, one trip",
-      "intro": "Two countries, one trip. Lima first, then Panama City on the way home: six nights, seven days, visa-free. Flights, both hotels and all your transfers in one price, per person sharing. J$ at 160.",
-      "legs": [
-        ["Montego Bay → Lima", "3 nights", "Suites del Bosque · San Isidro", "You fly out of Mobay and land in Lima. Our driver picks you up and takes you straight to the hotel. Three nights to enjoy the city: Miraflores by the sea, Barranco for the nightlife, and some of the best food you will ever eat. Want the Paracas & Huacachina trip? We add it on.", "t-suites-bosque.jpg"],
-        ["Lima → Panama City", "3 nights", "Dann Carlton Marinn Place · Financial District", "Short flight over to Panama. Pick-up at the airport, straight to the hotel. Three nights in the city: Casco Viejo, the Canal, the Cinta Costera. Any of the Panama tours can add on.", "t-dann-carlton.jpg"],
-        ["Panama City → Montego Bay", "direct", "Home", "Pick-up from the hotel and a direct flight home to Mobay. Same trip, no stress.", null]
-      ],
-      "nightsLabel": "6 nights, per person",
+      "layout": "trip",
+      "searchLine": "Two countries, one trip",
+      "title": "Panama + Peru from Jamaica: Lima and Panama City, 6 nights from US$949 | Golden Vacation & Travel",
+      "description": "Two countries, one trip from Montego Bay: 3 nights in Lima, then 3 nights in Panama City. All flights, both hotels with breakfast and your airport transfers in one price, from US$949 per person sharing. Visa-free for Jamaican passports.",
+      "hero": { "img": "lima-hero.jpg", "alt": "The Miraflores cliffs, Lima" },
+      "share": { "img": "pp-share.jpg", "alt": "Lima and Panama City side by side" },
       "price": 949,
       "deposit": 600,
+      "nights": 6,
       "airport": "MBJ",
       "airportName": "Montego Bay",
       "hotelLabel": "Suites del Bosque + Dann Carlton Marinn Place",
-      "included": [
-        "All flights: MBJ–PTY–LIM, LIM–PTY, PTY–MBJ",
-        "Six nights across Lima and Panama City: Suites del Bosque, then Dann Carlton Marinn Place",
-        "Airport transfers in both cities",
-        "1 carry-on + 1 personal item per person · checked bag extra, quoted with your dates"
+      "kicker": "Getaways from Jamaica",
+      "intro": "Two countries, one trip. Lima first, then Panama City on the way home: six nights, seven days, visa-free. Flights, both hotels and all your transfers in one price, per person sharing.",
+      "tags": ["Visa-free"],
+      "guestQuote": { "text": "The trip was beautiful, thank you so much.", "by": "Traveller, September 2026" },
+      "split": [
+        { "img": "lima-hero.jpg", "mid": "pp-lima-m.jpg", "phone": "pp-lima-p.jpg", "alt": "The Miraflores cliffs, Lima", "label": "Lima · 3 nights", "short": "Lima" },
+        { "img": "casco-viejo.jpg", "mid": "pp-panama-m.jpg", "phone": "pp-panama-p.jpg", "alt": "Casco Viejo from the air, Panama City", "label": "Panama City · 3 nights", "short": "Panama City" }
       ],
-      "toursNote": "Per person. Say which you want and we add them to your quote. In Panama, any of the three from the Panama page works.",
-      "tours": [
-        { "name": "Paracas & Huacachina", "text": "Day trip from Lima: the Paracas coast, then the dunes at Huacachina by buggy, with a sunset toast.", "img": "t-huacachina.jpg", "alt": "Dune buggy at Huacachina", "price": 110 },
-        { "name": "City & Canal", "text": "Panama. Miraflores Locks to Amador. Canal admission US$20 extra.", "img": "panama-locks.jpg", "alt": "Miraflores Locks", "price": 65 },
-        { "name": "Emberá village", "text": "Panama. Dugout canoe up the Chagres River, lunch in the village.", "img": "embera.jpg", "alt": "Emberá village", "price": 50 }
+      "includes": [
+        ["3 nights", "Suites del Bosque, Lima, with breakfast"],
+        ["3 nights", "Dann Carlton Marinn Place, Panama City, with breakfast"],
+        ["All flights", "from Montego Bay, connecting in Panama City"],
+        ["Airport transfers", "in both cities"]
       ],
-      "datesNote": "Any dates, any number of people. These are starting prices. The exact rate depends on your dates, so send them and we quote it.",
+      "depositNote": "Payment plan available, balance 30 days before you fly.",
+      "popularDates": [
+        { "key": "christmas", "label": "Christmas · 24–30 Dec", "start": "2026-12-24" },
+        { "key": "easter", "label": "Easter · 26 Mar–1 Apr", "start": "2027-03-26" }
+      ],
+      "tripKicker": "Your trip",
+      "tripTitle": "Six nights, two cities",
+      "chapters": [
+        {
+          "id": "lima", "city": "Lima", "nightsLabel": "Nights 1 to 3", "nights": 3,
+          "line": "Miraflores by the sea, Barranco at night, and the food.",
+          "hotel": "suites-del-bosque",
+          "tours": [
+            { "key": "paracas", "name": "Paracas & Huacachina", "text": "The Paracas coast, then the dunes at Huacachina by buggy, with a sunset toast.", "img": "t-huacachina.jpg", "alt": "Dune buggies at Huacachina", "price": 110 },
+            { "key": "food", "name": "Lima food tour", "text": "Ceviche, anticuchos, the markets and a pisco sour.", "img": "t-food-tour.jpg", "alt": "Ceviche being made on the food tour", "price": 110 }
+          ]
+        },
+        {
+          "id": "panama", "city": "Panama City", "nightsLabel": "Nights 4 to 6", "nights": 3,
+          "line": "Casco Viejo, the Canal and the shopping.",
+          "hotel": "marinn-place",
+          "tours": [
+            { "key": "canal", "name": "City & Canal", "text": "Miraflores Locks to Amador. Canal entry US$20 extra.", "img": "panama-locks.jpg", "alt": "The Miraflores Locks on the Panama Canal", "price": 65 },
+            { "key": "embera", "name": "Emberá village", "text": "Dugout canoe up the Chagres River, lunch in the village.", "img": "embera.jpg", "alt": "Emberá village", "price": 50 }
+          ]
+        }
+      ],
+      "hotels": {
+        "suites-del-bosque": {
+          "dest": "lima", "name": "Suites del Bosque", "area": "San Isidro", "room": "A suite, with breakfast",
+          "roomPhoto": 2, "roomPos": "72% 55%",
+          "roomText": "Every room here is a suite, with a sofa bed, air conditioning, safe, minibar and bathtub.",
+          "roomNote": "Bed type confirmed on your quote",
+          "facts": [["star", "4 star"], ["breakfast", "Breakfast"], ["gym", "Gym"], ["nopool", "No pool"]],
+          "about": "Quiet, leafy San Isidro, a short walk from the El Olivar olive grove. Every room is a suite, most of them loft style with a sitting area.",
+          "where": "San Isidro, Lima", "address": "Av. Paz Soldan 165 · near El Olivar park and Miraflores", "map": "-12.097344,-77.0333072"
+        },
+        "marinn-place": {
+          "dest": "panama", "name": "Dann Carlton Marinn Place", "area": "Financial District", "room": "King or two queens, with breakfast",
+          "roomPhoto": 1, "roomPos": "30% 50%",
+          "roomText": "Every room is the same size, with a sofa bed, seating area, safe, minibar and desk.",
+          "roomNote": "Confirmed on your quote",
+          "facts": [["star", "5 star"], ["breakfast", "Breakfast"], ["rooftop", "Rooftop pool"], ["gym", "Gym"]],
+          "about": "Five star in Bella Vista, the Financial District, with a rooftop pool that looks across the skyline. Every room has a divided living and sleeping space.",
+          "where": "Bella Vista, Panama City", "address": "Aquilino de La Guardia and calle 52 · near Avenida Balboa", "map": "8.9818661,-79.5259982"
+        }
+      },
+      "homeLine": ["Day 7, home.", "Pick-up from the hotel, direct flight home to Montego Bay."],
       "faq": [
-        ["Visas", "Jamaican passports enter Panama visa-free, and Peru visa-free for up to 90 days. The whole trip routes through Panama, with no US transit. Passport valid 6 months past your return to be safe (3 is the minimum). We check it before ticketing."],
-        ["Machu Picchu?", "Available on request. Machu Picchu is an experience on its own and needs extra nights added to the trip. Say so when you ask for a quote and we build it in."],
-        ["Cancelling", "Flights are non-refundable once ticketed. Refunds on the balance vary. We'll let you know before you pay."]
+        ["Visas and passport", "Jamaican passports enter Panama and Peru visa-free. Your passport should be valid 6 months past your return."],
+        ["Money", "Panama uses the US dollar. Peru uses soles, and you can change US dollars when you arrive."],
+        ["Cancelling", "Flights are non-refundable once ticketed. Refunds on the balance vary, and we tell you before you pay."]
       ],
-      "bottomNote": "Opens WhatsApp with both legs, dates and travellers filled in · no payment yet",
-      "ticker": ["IATA-accredited", "Two countries", "Visa-free", "Thousands of travellers"],
-      "tile": { "img": "lima-hero.jpg", "alt": "The Miraflores cliffs, Lima", "sub": "Lima + Panama City · 6 nights · one trip · Suites del Bosque and Dann Carlton", "subShort": "Lima + Panama City · 6 nights · one trip", "tags": ["Two countries", "Visa-free"] }
+      "bandSub": "Per person sharing · 6 nights · flights, hotels with breakfast and transfers",
+      "pickerNote": "No payment yet. We reply on WhatsApp with the price for your dates.",
+      "ticker": ["IATA-accredited", "Visa-free", "Thousands of travellers"],
+      "tile": { "img": "lima-hero.jpg", "alt": "The Miraflores cliffs, Lima", "sub": "Lima + Panama City · 6 nights · one trip · Suites del Bosque and Dann Carlton Marinn Place", "subShort": "Lima + Panama City · 6 nights · one trip", "tags": ["Two countries", "Visa-free"] }
     },
     {
       "slug": "panama-medellin",
