@@ -23,7 +23,7 @@ function hubPage() {
   const quoteForm = `<form id="hub-quote" class="qcard" action="${BASE}/quote/" method="get">
     <div class="qf">${icon("pin", 20)}<label><span>Where to</span><select name="d">${dests.map((d) => `<option value="${d.slug}">${esc(d.name)}</option>`).join("")}${DATA.combos.map((c) => `<option value="${c.slug}">${esc(c.name)}</option>`).join("")}<option value="">Somewhere else</option></select></label></div>
     <div class="qf">${icon("send", 20)}<label><span>Leaving from</span><select name="a"><option value="KIN">Kingston</option><option value="MBJ">Montego Bay</option></select></label></div>
-    <div class="qf qf-dates"><div class="hq-dates"><label><span>Check in</span><input type="date" id="hub-in" name="from" data-dr="start" data-dr-pair="#hub-out" data-dr-optional></label><label><span>Check out</span><input type="date" id="hub-out" name="to" data-dr="end"></label></div></div>
+    <div class="qf qf-dates"><div class="hq-dates"><label><span>Check in</span><input type="date" id="hub-in" name="from" data-dr="start" data-dr-pair="#hub-out" data-dr-optional data-dr-lead="1"></label><label><span>Check out</span><input type="date" id="hub-out" name="to" data-dr="end"></label></div></div>
     <div class="qf qf-who">${icon("users", 20)}<label><span>Who's travelling</span><button type="button" class="hq-who" id="hub-who" aria-expanded="false" aria-controls="hub-pop">2 adults</button></label>
       <div class="hq-pop" id="hub-pop" hidden>
         <div class="hq-line"><b>Adults</b><span class="hq-step"><button type="button" data-hub="a" data-d="-1" aria-label="One fewer adult">&minus;</button><output id="hub-a" aria-live="polite">2</output><button type="button" data-hub="a" data-d="1" aria-label="One more adult">+</button></span></div>
@@ -203,8 +203,11 @@ function comboPage(c) {
   const priceBox = `<div class="combo-price"><div class="price-blk"><span class="lbl">${esc(c.nightsLabel)}</span>${price(c.price, "hh")}<small>deposit from ${usd(c.deposit)}</small></div>${btn("Get a quote", quoteUrl)}</div>`;
   const included = `<section class="list"><div>${kicker("What's included")}</div>${c.included.map((t) => check(esc(t))).join("")}</section>`;
   const tours = `<section class="list"><div>${kicker("Days out")}</div><p class="sec-sub">${esc(c.toursNote)}</p>${c.tours.map((t) => `<div class="tour">${pic(t.img, t.alt)}<div class="tour-t"><b>${esc(t.name)}</b><small>${esc(t.text)}</small></div><span class="hh">${usd(t.price)}</span></div>`).join("")}</section>`;
-  const dates = `<form class="dates" action="${BASE}/quote/" method="get"><input type="hidden" name="d" value="${c.slug}"><div>${kicker("Your dates")}</div>
-    <div class="dates-grid"><label class="field"><span>Leaving</span><span class="field-in"><input type="date" name="from" id="d-leaving" data-dr="start" data-dr-pair="#d-returning" data-dr-optional></span></label><label class="field"><span>Returning</span><span class="field-in"><input type="date" name="to" id="d-returning" data-dr="end"></span></label></div>
+  /* the dates form appears twice (phone column and computer side column), so each copy gets its own ids:
+     with shared ids the date picker paired both Leaving boxes with the first Returning box, and quotes sent
+     from a computer arrived with no return date. data-dr-lead="1": getaways leave the next day at the earliest. */
+  const dates = (k) => `<form class="dates" action="${BASE}/quote/" method="get"><input type="hidden" name="d" value="${c.slug}"><div>${kicker("Your dates")}</div>
+    <div class="dates-grid"><label class="field"><span>Leaving</span><span class="field-in"><input type="date" name="from" id="d-leaving-${k}" data-dr="start" data-dr-pair="#d-returning-${k}" data-dr-optional data-dr-lead="1"></span></label><label class="field"><span>Returning</span><span class="field-in"><input type="date" name="to" id="d-returning-${k}" data-dr="end"></span></label></div>
     <span class="note">${esc(c.datesNote)}</span>
     <button class="btn btn-black btn-full" type="submit">Get a quote for these dates${icon("arrow", 18)}</button></form>`;
   const deposit = `<div class="deposit"><span class="h">Hold it with a deposit from ${usd(c.deposit)}.</span><p>Balance due 30 days before departure, in J$ or US$, by card link or bank transfer.</p></div>`;
@@ -225,11 +228,11 @@ ${nav({ back: `${BASE}/`, title: `the ${c.name} page` })}
     <div class="mob">${priceBox}</div>
     ${included}
     ${tours}
-    <div class="mob">${dates}</div>
+    <div class="mob">${dates("m")}</div>
     <div class="mob">${deposit}</div>
     ${gtk}
   </div>
-  <div class="combo-side desk">${priceBox}${dates}${deposit}</div>
+  <div class="combo-side desk">${priceBox}${dates("d")}${deposit}</div>
 </div>
 </div>
 ${ticker(c.ticker)}
@@ -260,7 +263,7 @@ ${nav({ back: `${BASE}/`, title: "the quote page" })}
 <div class="qform">
   <div class="opt"><span class="lbl">Leaving from</span><div class="chip-row" id="q-airports"></div></div>
   <div class="opt"><span class="lbl">Nights</span><div class="chip-row" id="q-nights"></div></div>
-  <div class="grid2"><label class="field"><span>Leaving</span><span class="field-in"><input type="date" id="q-leaving" name="from" data-dr="start" data-dr-pair="#q-returning" data-dr-optional></span></label><label class="field"><span>Returning</span><span class="field-in"><input type="date" id="q-returning" name="to" data-dr="end"></span></label></div>
+  <div class="grid2"><label class="field"><span>Leaving</span><span class="field-in"><input type="date" id="q-leaving" name="from" data-dr="start" data-dr-pair="#q-returning" data-dr-optional data-dr-lead="1"></span></label><label class="field"><span>Returning</span><span class="field-in"><input type="date" id="q-returning" name="to" data-dr="end"></span></label></div>
   <div id="q-party"></div>
   <button type="button" class="hq-addroom" id="q-addroom">+ Add room</button>
   <div class="opt"><span class="lbl">Meals</span><div class="chip-row">${meals.map((b) => `<button type="button" class="chip" data-meals="${esc(b)}" aria-pressed="${b === "Not sure"}">${esc(b)}</button>`).join("")}</div></div>

@@ -35,7 +35,7 @@ const args = process.argv.slice(2);
 const BUNDLE = args.includes("--bundle") ? args[args.indexOf("--bundle") + 1] : null;
 const ARTIFACT = args.includes("--artifact");
 const NOINDEX = args.includes("--noindex");
-const TODAY = new Date().toISOString().slice(0, 10);
+const TODAY = new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10) /* today in Jamaica (UTC-5 all year), never the UTC date, which runs ahead in the evening */;
 /* a short fingerprint of the section's CSS and JS goes on their URLs, so a browser never keeps an old copy after a deploy */
 /* near.css (the near-hotel and area pages, the hub's hotel list, the tour pages' "Staying nearby?") carries its own fingerprint */
 const NEAR_STAMP = crypto.createHash("md5").update(fs.readFileSync(path.join(ROOT, "public/assets/near.css"), "utf8")).digest("hex").slice(0, 8);
@@ -791,7 +791,8 @@ const pricedPickup = (v, h) => !h.port && !!v.pickupPriced && v.pickupPriced.reg
 const perWho = (v, p) => (v.adultsOnly || p.addChild == null ? "per person" : "per adult");
 function pickupText(v, h, who) {
   const p = pickupOf(v, h), from = h.port ? "the pier" : p && p.resortsOnly && h.isArea ? who.replace(/ hotels$/, " resorts") : who;
-  if (p) return [true, p.add ? `Pickup from ${from}, ${usd(p.add)} more ${perWho(v, p)}.` : `Pickup from ${from} included.`];
+  /* listing cards never show a pickup surcharge (Hana, Oct 2026): it shows in the tour's own booking box once the tour is picked */
+  if (p) return [true, p.add ? `Pickup from ${from} available.` : `Pickup from ${from} included.`];
   if (pricedPickup(v, h)) return [false, `Pickup from ${who} available, priced by hotel.`, "priced"];
   return [false, h.port ? "No pickup from the pier." : h.isArea ? `No hotel pickup in ${h.areaName}.` : `No hotel pickup from ${who}.`];
 }
@@ -953,11 +954,11 @@ function questionsHtml(title, qs) {
 </div></section>`;
 }
 const faqLd = (qs) => ({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: qs.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) });
-/* "JamWest Adventure Park includes pickup from Royalton Negril. JamWest Catamaran picks up for US$30 more per adult." */
+/* "JamWest Adventure Park includes pickup from Royalton Negril. JamWest Catamaran picks up from Royalton Negril too, at a price shown when you book." */
 function pickupSentence(withPick, h) {
   const incl = withPick.filter((x) => !pickupOf(x.v, h).add), extra = withPick.filter((x) => pickupOf(x.v, h).add);
   const where = h.isArea ? `${h.areaName} hotels` : h.name;
-  return [incl.length ? `${andList(incl.map((x) => x.v.name))} ${incl.length === 1 ? "includes" : "include"} pickup from ${where}.` : "", ...extra.map((x) => `${x.v.name} picks up for ${usd(pickupOf(x.v, h).add)} more ${perWho(x.v, pickupOf(x.v, h))}.`)].filter(Boolean).join(" ");
+  return [incl.length ? `${andList(incl.map((x) => x.v.name))} ${incl.length === 1 ? "includes" : "include"} pickup from ${where}.` : "", extra.length ? `${andList(extra.map((x) => x.v.name))} ${extra.length === 1 ? "picks" : "pick"} up from ${where}${incl.length ? " too" : ""}, at a price shown when you book.` : ""].filter(Boolean).join(" ");
 }
 /* "Mystic Mountain picks up from RIU Ocho Rios too, at a price that depends on the hotel, so ask us on WhatsApp for it." */
 const pricedSentence = (rows, where) => (rows.length ? `${andList(rows.map((x) => x.v.name))} ${rows.length === 1 ? "picks" : "pick"} up from ${where} too, at a price that depends on the hotel, so ask us on WhatsApp for it.` : "");
@@ -1012,7 +1013,7 @@ function nearPage(h0) {
     [`Is there hotel pickup from ${h.name}?`, withPick.length || pricedRows.length ? `Yes. ${[pickupSentence(withPick, h), pricedSentence(pricedRows, h.name)].filter(Boolean).join(" ")} For the others, ask us on WhatsApp if you need a ride.` : `Not on these. ${groups.length ? `${leadFrom(groups, "by road")} ` : ""}Ask us on WhatsApp if you need a ride.`],
     [`What's the closest thing to do near ${h.name}?`, closestAnswer(A, "away")],
     ...(air.length ? [[`How far is ${h.name} from the airport?`, airportAnswer(air)]] : []),
-    [`Is ${h.name} open?`, !r || r.status === "Open" || r.status === "New" ? `Yes, it's open. Every resort on the island is on our resort status page, with reopening dates for the ones that are closed.` : r.status === "Reopening" ? `Not yet. ${h.name} is ${/\d/.test(r.when || "") ? `reopening ${r.when}` : "reopening, with the date still to be confirmed"}. Our resort status page shows what's open around it now.` : r.status === "Closing soon" ? `It's open now and closing for renovation${/\d/.test(r.when || "") ? ` (${r.when})` : ""}. Our resort status page has the dates.` : `It's closed for now. Our resort status page shows what's open around it.`],
+    [`Is ${h.name} open?`, !r || r.status === "Open" || r.status === "New" ? `Yes, it's open. Our resort status page tracks ${RESORTS.length} resorts, with reopening dates for the ones that are closed.` : r.status === "Reopening" ? `Not yet. ${h.name} is ${/\d/.test(r.when || "") ? `reopening ${r.when}` : "reopening, with the date still to be confirmed"}. Our resort status page shows what's open around it now.` : r.status === "Closing soon" ? `It's open now and closing for renovation${/\d/.test(r.when || "") ? ` (${r.when})` : ""}. Our resort status page has the dates.` : `It's closed for now. Our resort status page shows what's open around it.`],
   ].filter(([, a]) => a);
   const title = (() => { const w = h.port ? "from" : "near", t = `Things to do ${w} ${h.name}, Jamaica`; return t.length <= 60 ? t : `Things to do ${w} ${h.name}`.length <= 60 ? `Things to do ${w} ${h.name}` : `Things to do ${w} ${h.name.split(" / ")[0]}`; })();
   const desc = h.port

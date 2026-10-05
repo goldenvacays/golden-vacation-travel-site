@@ -47,7 +47,7 @@ const BUNDLE = args.includes("--bundle") ? args[args.indexOf("--bundle") + 1] : 
 const ARTIFACT = args.includes("--artifact");
 const NOINDEX = args.includes("--noindex");
 const NOTE = args.includes("--note") ? args[args.indexOf("--note") + 1] : "";
-const TODAY = new Date().toISOString().slice(0, 10);
+const TODAY = new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10) /* today in Jamaica (UTC-5 all year), never the UTC date, which runs ahead in the evening */;
 const STAMP = crypto.createHash("md5").update(["public/assets/transfers.css", "public/assets/transfers.js"].map((f) => fs.readFileSync(path.join(ROOT, f), "utf8")).join("\n")).digest("hex").slice(0, 8);
 const RATES_STAMP = crypto.createHash("md5").update(JSON.stringify(R)).digest("hex").slice(0, 8);
 const EXP_STAMP = crypto.createHash("md5").update(["public/assets/experiences.css", "public/assets/experiences.js"].map((f) => fs.readFileSync(path.join(ROOT, f), "utf8")).join("\n")).digest("hex").slice(0, 8);

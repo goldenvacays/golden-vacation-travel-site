@@ -21,7 +21,7 @@ const X = Object.fromEntries(J.extraResorts.map((r) => [r.slug, r]));
 const BASE = "/jamaica";
 const WHATSAPP = "18763601567";
 const EMAIL = "goldentravellers@outlook.com";
-const TODAY = new Date().toISOString().slice(0, 10);
+const TODAY = new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10) /* today in Jamaica (UTC-5 all year), never the UTC date, which runs ahead in the evening */;
 const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const phoneDisplay = S.phone.replace(/-/g, " ");
 const MONTHS = { en: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], es: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"] };
@@ -43,7 +43,7 @@ const shortDrive = (s) => String(s || "").replace(/\(.*?\)/g, "").replace(/;.*$/
 const fromMbj = (drv, lang) => (drv ? (lang === "es" ? `a ${drv.replace(/^(\d+ h \d+)$/, "$1 min")} de MBJ` : `${drv} from MBJ`) : "");
 
 /* ---------- head, nav, footer ---------- */
-function head({ title, description, pathname, image, lang = "en", alts = {} }) {
+function head({ title, description, pathname, image, lang = "en", alts = {}, noindex = false }) {
   const url = `${S.origin}${pathname}`;
   const og = `${S.origin}${image}`;
   const hl = Object.keys(alts).length ? [`<link rel="alternate" hreflang="${lang}" href="${url}">`, ...Object.entries(alts).map(([l, p]) => `<link rel="alternate" hreflang="${l}" href="${S.origin}${p}">`)].join("\n") : "";
@@ -58,7 +58,7 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
 <meta name="description" content="${esc(description)}">
 <link rel="canonical" href="${url}">
 ${hl}
-<meta name="robots" content="index,follow">
+<meta name="robots" content="${noindex ? "noindex,follow" : "index,follow"}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(S.brand)}">
 <meta property="og:title" content="${esc(title)}">
@@ -335,7 +335,7 @@ ${footer("en")}
 function sent(lang) {
   const T = J.i18n[lang], X2 = T.sent;
   const back = lang === "es" ? `${BASE}/es/` : `${BASE}/`;
-  return `${head({ title: `${X2.kicker} | Golden Vacation & Travel`, description: X2.lead, pathname: lang === "es" ? `${BASE}/es/enviado/` : `${BASE}/sent/`, image: "/assets/img/hero-arrivals.jpg", lang })}
+  return `${head({ title: `${X2.kicker} | Golden Vacation & Travel`, description: X2.lead, pathname: lang === "es" ? `${BASE}/es/enviado/` : `${BASE}/sent/`, image: "/assets/img/hero-arrivals.jpg", lang, noindex: true })}
 <body class="groups stay jam">
 ${nav(lang, "", false)}
 <main class="wrap sent-wrap">

@@ -49,7 +49,8 @@ const currency = () => `<div class="curr" role="group" aria-label="Currency"><bu
 
 function head({ title, description, pathname, image, noindex = false, jsonld = [] }) {
   const url = `${S.origin}${pathname}`;
-  const og = `${S.origin}${IMG}/${image}-1440.jpg`;
+  /* a full address (or a site path) is used as it is; a bare name is one of the groups photos at its 1440px size */
+  const og = /^https?:\/\//.test(image) ? image : image.startsWith("/") ? `${S.origin}${image}` : `${S.origin}${IMG}/${image}-1440.jpg`;
   const ld = jsonld.map((o) => `<script type="application/ld+json">${JSON.stringify(o)}</script>`).join("\n");
   const ga = S.ga4 ? `<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${S.ga4}');
 addEventListener('load',function(){setTimeout(function(){var s=document.createElement('script');s.async=1;s.src='https://www.googletagmanager.com/gtag/js?id=${S.ga4}';document.head.appendChild(s);},1200);});</script>` : "";

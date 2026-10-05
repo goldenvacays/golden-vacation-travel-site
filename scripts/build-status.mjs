@@ -31,7 +31,7 @@ function standardAnswer(r) {
   const n = esc(r.name), a = esc(areaOf(r)), f = r.formerly ? `(formerly ${esc(r.formerly)}) ` : "";
   const q = `<strong>Is ${n} open?</strong> `;
   switch (r.status) {
-    case "Open": return `${q}${f}Yes — ${n} is <b>open</b> and welcoming guests in ${a}, Jamaica.`;
+    case "Open": return `${q}${f}Yes, ${n} is <b>open</b> and welcoming guests in ${a}, Jamaica.`;
     case "Reopening": return /\d/.test(r.when || "") ? `${q}${f}${n} is currently <b>closed and reopening ${esc(r.when)}</b> in ${a}, Jamaica.` : `${q}${f}${n} is currently <b>closed and reopening</b> in ${a}, Jamaica. The date is not confirmed yet.`;
     case "Closing soon": return `${q}${f}${n} is <b>open now and closing for renovation</b> (${esc(r.when)}) in ${a}, Jamaica.`;
     case "Closed": return `${q}${f}${n} is currently <b>closed</b> in ${a}, Jamaica.`;
@@ -60,7 +60,7 @@ swap(/const HOTELS\s*=\s*\[[\s\S]*?\];/, () => `const HOTELS = ${JSON.stringify(
 /* 2. the A to Z */
 swap(/<div class="az-list">[\s\S]*?<\/div>\n<\/section>/, () => `<div class="az-list">\n${byAZ.map((r) => `<p class="azrow">${answerFor(r)}</p>`).join("\n")}\n</div>\n</section>`, "the A to Z list");
 /* 3. ItemList schema */
-swap(/<script type="application\/ld\+json">\{"@context":"https:\/\/schema\.org","@type":"ItemList"[\s\S]*?<\/script>/, () => `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "ItemList", name: "Jamaica all-inclusive resort status", numberOfItems: byAZ.length, itemListElement: byAZ.map((r, i) => ({ "@type": "ListItem", position: i + 1, name: `${r.name} — ${r.status}` })) })}</script>`, "the ItemList schema");
+swap(/<script type="application\/ld\+json">\{"@context":"https:\/\/schema\.org","@type":"ItemList"[\s\S]*?<\/script>/, () => `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "ItemList", name: "Jamaica all-inclusive resort status", numberOfItems: byAZ.length, itemListElement: byAZ.map((r, i) => ({ "@type": "ListItem", position: i + 1, name: `${r.name}: ${r.status}` })) })}</script>`, "the ItemList schema");
 /* 4. counts and dates */
 swap(/As of \d{1,2} [A-Z][a-z]+ \d{4}, \d+ of the \d+ resorts we track are open now and \d+ are reopening/g, () => `As of ${longDate}, ${open} of the ${listed.length} resorts we track are open now and ${reopening} are reopening`, "the FAQ counts");
 swap(/\b\d+ Jamaica all-inclusives are open and booking now/g, () => `${open} Jamaica all-inclusives are open and booking now`, "the open count");

@@ -35,7 +35,16 @@ const NOINDEX = args.includes("--noindex");
 const resortsJs = fs.readFileSync(path.join(ROOT, "public/map/resorts.js"), "utf8");
 const RESORTS = JSON.parse(resortsJs.slice(resortsJs.indexOf("["), resortsJs.lastIndexOf("]") + 1));
 let resortsUpdated = "";
-try { resortsUpdated = process.env.RESORTS_UPDATED || execSync("git log -1 --format=%cs -- public/map/resorts.js", { cwd: ROOT }).toString().trim(); } catch (e) { resortsUpdated = process.env.RESORTS_UPDATED || ""; }
+/* the date the status page shows ("Updated 28 Sep 2026", written by scripts/build-status.mjs). Reading it from there keeps the
+   front page and /hotel-status/ on the same date; the commit date of resorts.js moved whenever the file was re-uploaded. */
+function statusPageDate() {
+  try {
+    const m = fs.readFileSync(path.join(ROOT, "public/hotel-status/index.html"), "utf8").match(/Updated (\d{1,2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d{4})/);
+    if (m) return `${m[3]}-${String("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(m[2]) / 3 + 1).padStart(2, "0")}-${m[1].padStart(2, "0")}`;
+  } catch (e) {}
+  return "";
+}
+try { resortsUpdated = process.env.RESORTS_UPDATED || statusPageDate() || execSync("git log -1 --format=%cs -- public/map/resorts.js", { cwd: ROOT }).toString().trim(); } catch (e) { resortsUpdated = process.env.RESORTS_UPDATED || ""; }
 const counts = {
   tracked: RESORTS.length,
   open: RESORTS.filter((r) => r.status === "Open").length,
@@ -187,7 +196,7 @@ const gaPlaces = (() => {
   return out;
 })();
 
-const scripts = () => `<script>window.GV_HOME=${JSON.stringify({ whatsapp: S.whatsapp, modes: H.quote.modes, kinds: H.quote.kinds, needs: H.quote.needs, copy: { notSure: H.quote.notSure, childAge: H.quote.childAge, childAgeHint: H.quote.childAgeHint, adults: H.quote.adults, children: H.quote.children, rooms: H.quote.rooms, room: H.quote.room, addRoom: H.quote.addRoom, removeRoom: H.quote.removeRoom }, places: gaPlaces, maxGuests: (TR && TR.site && TR.site.maxGuests) || 16, overflowEmail: (H.footer && H.footer.email) || "", today: new Date().toISOString().slice(0, 10) })};</script>
+const scripts = () => `<script>window.GV_HOME=${JSON.stringify({ whatsapp: S.whatsapp, modes: H.quote.modes, kinds: H.quote.kinds, needs: H.quote.needs, copy: { notSure: H.quote.notSure, childAge: H.quote.childAge, childAgeHint: H.quote.childAgeHint, adults: H.quote.adults, children: H.quote.children, rooms: H.quote.rooms, room: H.quote.room, addRoom: H.quote.addRoom, removeRoom: H.quote.removeRoom }, places: gaPlaces, maxGuests: (TR && TR.site && TR.site.maxGuests) || 16, overflowEmail: (H.footer && H.footer.email) || "", today: new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10) /* today in Jamaica (UTC-5 all year), never the UTC date, which runs ahead in the evening */ })};</script>
 <script src="/getaways/assets/getaways.js" defer></script>
 <script src="${ASSETS}/home.js" defer></script>
 <script src="${ASSETS}/daterange.js" defer></script>`;
@@ -222,7 +231,7 @@ function transfersBlock(today) {
 }
 
 function homePage() {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10) /* today in Jamaica (UTC-5 all year), never the UTC date, which runs ahead in the evening */;
 
   // hero + quick quote
   /* the planning modes are tabs inside the search box: one white box, the tabs along its top over a hairline, the chosen one underlined in gold */
@@ -503,8 +512,37 @@ ${scripts()}
   }) + body;
 }
 
+/* ---------- page not found ----------
+   Netlify serves public/404.html for any address that doesn't exist (old links, typos, retired pages), at that address,
+   so every path in it is absolute. It points people at the main doors and at WhatsApp instead of a dead end. */
+function notFoundPage() {
+  const doors = [
+    ["/getaways/", "Getaways from Jamaica", "Panama, Medellín, Lima and Punta Cana, flights and hotel in one price"],
+    ["/hotel-status/", "Jamaica resorts: what's open", "Every resort we track, open, reopening or closed"],
+    ["/experiences/", "Tours and day passes", "Days out across the island, booked on the spot"],
+    ["/transfers/", "Airport transfers", "Private rides from MBJ, KIN and OCJ, one price per vehicle"],
+    ["/jamaica/", "Coming to Jamaica", "From the USA, coming home, en español, UK and Canada"],
+    ["/groups/", "Group travel", "Rooms for your organisation, overseas groups and group trips"],
+  ];
+  const body = `
+${nav()}
+<main class="legal wrap">
+  ${kicker("Page not found")}
+  <h1 class="hh">We can't find that page.</h1>
+  <p>The link may be old, or the page may have moved. Here's where most people are heading:</p>
+  <ul>${doors.map(([href, name, sub]) => `<li><a href="${href}">${esc(name)}</a>. ${esc(sub)}.</li>`).join("")}</ul>
+  <p>Can't see what you need? ${esc(S.replyLine)}</p>
+  <p class="nf-cta">${btn("Message us on WhatsApp", wa("Hi Golden Vacation! I followed a link to your website that didn't work. Can you help? Ref GV-404"), "black", "", "chat", ' data-where="404"')}</p>
+</main>
+<style>.legal .nf-cta a.btn { color: #fff; text-decoration: none; } .legal .nf-cta a.btn:hover { color: var(--gold); }</style>
+${footer()}
+${scripts()}
+</body></html>`;
+  return head({ title: "Page not found | Golden Vacation & Travel", description: "This page isn't on goldenvacays.com any more. Find getaways, Jamaica resorts, tours and airport transfers here.", pathname: "/404.html", image: H.meta.ogImage, noindex: true, bodyClass: "legal-page" }) + body;
+}
+
 /* ---------- write ---------- */
-const pages = [["index.html", homePage()], ["public/privacy/index.html", legalPage("privacy")], ["public/terms/index.html", legalPage("terms")], ["public/quote/index.html", quotePage()]];
+const pages = [["index.html", homePage()], ["public/privacy/index.html", legalPage("privacy")], ["public/terms/index.html", legalPage("terms")], ["public/quote/index.html", quotePage()], ["public/404.html", notFoundPage()]];
 
 if (!BUNDLE) {
   for (const [rel, html] of pages) {
