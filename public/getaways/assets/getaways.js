@@ -9,6 +9,14 @@
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
   function fmt(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
   function usd(n) { return "US$" + fmt(n); }
+  /* the earliest day a getaway can leave: tomorrow in Jamaica (never the same day) */
+  function firstDay() {
+    var t;
+    try { t = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Jamaica", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date()); } catch (e) {}
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(t || "")) t = new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10);
+    var p = t.split("-"), d = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2] + 1));
+    return d.toISOString().slice(0, 10);
+  }
   function jmd(n) { return "≈ J$" + fmt(n * RATE); }
   function track(name, params) {
     try { if (typeof window.gtag === "function") window.gtag("event", name, params || {}); } catch (e) {}
@@ -409,7 +417,7 @@
     if (nameIn) nameIn.addEventListener("input", function () { st.name = nameIn.value.trim(); render(); });
     if (leaveIn) { leaveIn.value = st.leaving; leaveIn.addEventListener("change", function () { st.leaving = leaveIn.value; if (retIn && retIn.value && retIn.value < st.leaving) { retIn.value = ""; st.returning = ""; } if (retIn) retIn.min = st.leaving; render(); }); }
     if (retIn) { retIn.value = st.returning; retIn.addEventListener("change", function () { st.returning = retIn.value; render(); }); }
-    var today = new Date(); var iso = today.toISOString().slice(0, 10);
+    var iso = firstDay();
     if (leaveIn) leaveIn.min = iso;
     if (retIn) retIn.min = st.leaving || iso;
     send.addEventListener("click", function (e) {
@@ -433,7 +441,7 @@
       din: $("#hub-in"), dout: $("#hub-out")
     };
     var hs = { adults: 2, kids: 0, ages: [] };
-    var todayISO = new Date().toISOString().slice(0, 10);
+    var todayISO = firstDay();
     if (hb.din) hb.din.min = todayISO;
     if (hb.dout) hb.dout.min = todayISO;
     if (hb.din) hb.din.addEventListener("change", function () {
