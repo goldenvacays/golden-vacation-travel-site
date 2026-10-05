@@ -3,7 +3,8 @@
 
    Every Get a quote opens the date picker first. The trip length is fixed, so the guest picks the day they
    leave and the return fills itself; the earliest day is tomorrow, never today. The WhatsApp message carries
-   the dates, the party (a room at a time, like the front page) and any days out added on the page. Without
+   the dates, the party (a room at a time, like the front page), the city they fly from (Montego Bay unless
+   they pick or type another) and any days out added on the page. Without
    script every Get a quote is a plain link to the quote page, and every See the hotel opens the hotel page. */
 (function () {
   "use strict";
@@ -50,13 +51,22 @@
   function endOf(d) { return addDays(d, NIGHTS); }
   function bookable(d) { return !!d && d >= earliest && d < addMonths(lastMonth, 1); }
 
+  /* ---- flying from: the trip's own airport (the price on the page) unless they pick or type another city ---- */
+  function norm(x) { x = String(x == null ? "" : x); if (x.normalize) x = x.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); return x.toLowerCase().replace(/\s+/g, " ").trim(); }
+  function esc(x) { return String(x).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  var ORIG = (T.origins || []).map(function (o) { return { name: o[0], code: o[1], country: o[2], alias: String(o[3] || "").split(",").map(norm).filter(Boolean), region: o[2] === "Jamaica" ? "Jamaica" : (o[2] === "USA" || o[2] === "Canada") ? o[2] : "The Caribbean" }; });
+  var HOME = ORIG.filter(function (o) { return o.code === T.airport; })[0] || { name: T.airportName, code: T.airport, country: "Jamaica", region: "Jamaica", alias: [] };
+  function isHome(o) { return o.code === HOME.code && o.name === HOME.name; }
+
   /* ---- state ---- */
   var REF = (function () { var s = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", v = ""; for (var i = 0; i < 4; i++) v += s.charAt(Math.floor(Math.random() * s.length)); return v; })();
-  var st = { start: null, party: [{ a: 2, k: 0, ages: [] }], tours: [], month: firstMonth, sent: false };
+  var st = { start: null, party: [{ a: 2, k: 0, ages: [] }], tours: [], month: firstMonth, sent: false, from: HOME };
 
   /* what the front page search already asked rides along: the day they leave, the party, the rooms */
   (function () {
     var q = new URLSearchParams(location.search);
+    var ap = (q.get("a") || "").toUpperCase(), hit = ap ? ORIG.filter(function (o) { return o.code === ap; })[0] : null;
+    if (hit) st.from = hit;
     var d = parse(q.get("in") || q.get("from"));
     if (bookable(d)) { st.start = d; st.month = addMonths(d, 0); }
     var split = (q.get("split") || "").split(",").map(function (p) { var x = p.split("-"); return { a: parseInt(x[0], 10), k: parseInt(x[1], 10) }; })
@@ -97,7 +107,7 @@
     lines.push(st.party.length > 1
       ? "Travellers: " + st.party.map(roomLine).join(" · ") + (ages.length ? " (kids aged " + ages.join(", ") + ")" : "")
       : "Travellers: " + tot("a") + " adult" + (tot("a") === 1 ? "" : "s") + ", " + tot("k") + " kid" + (tot("k") === 1 ? "" : "s") + (ages.length ? " (aged " + ages.join(", ") + ")" : "") + ", 1 room");
-    lines.push("From: " + T.airportName + " (" + T.airport + ")");
+    lines.push("From: " + st.from.name + (st.from.code ? " (" + st.from.code + ")" : ""));
     var tl = tourList();
     lines.push("Days out: " + (tl.length ? tl.map(function (t) { return t.name + " (US$" + fmt(t.price) + ")"; }).join(", ") : "none for now"));
     lines.push("Quote me in: " + (document.body.classList.contains("jmd") ? "J$" : "US$"));
@@ -109,6 +119,7 @@
   var binds = {};
   $$("[data-bind]").forEach(function (el) { var k = el.getAttribute("data-bind"); (binds[k] = binds[k] || []).push(el); });
   function put(k, text) { (binds[k] || []).forEach(function (el) { el.textContent = text; }); }
+  var fromBoxes = []; /* the Flying from boxes, filled in further down */
   var waBtn = $("#tp-wa");
 
   function paint() {
@@ -117,6 +128,11 @@
     put("leaveShort", s ? label(s) : "Pick dates");
     put("who", people() + " · " + rooms());
     put("whoShort", people());
+    put("fromShort", st.from.name);
+    var away = !isHome(st.from);
+    (binds.priceFrom || []).forEach(function (el) { el.hidden = !away || !T.priceFromOther; el.textContent = away && T.priceFromOther ? T.priceFromOther.replace("{city}", st.from.name) : ""; });
+    if (T.homeLine) put("homeText", away && T.homeLineOther ? T.homeLineOther.replace("{city}", st.from.name) : T.homeLine);
+    fromBoxes.forEach(function (b) { if (document.activeElement !== b.input) b.input.value = st.from.name; });
     put("barNote", s ? label(s) + " to " + label(e) + " · " + people() + " · no payment yet" : "Pick your dates · quoted on WhatsApp · no payment yet");
     var tl = tourList();
     var extra = tl.length ? " · " + tl.length + (tl.length === 1 ? " day out" : " days out") + " added" : "";
@@ -464,6 +480,130 @@
   var partyDone = $("[data-party-done]");
   if (partyDone) partyDone.addEventListener("click", function () { setPanelParty(false); });
 
+  /* ---- the Flying from boxes (the search bar on a computer, the date picker everywhere): type to search the
+     list, arrows and Enter to pick, Escape to put it back; a city that is not on the list is taken as typed ---- */
+  /* how well a city on the list answers what was typed: its code or name in full, the start of its name, of a word in
+     it, of another name people use for it (MoBay, NYC, Bridgetown), or of its country */
+  function fromScore(o, t) {
+    var n = norm(o.name), c = norm(o.code), k = norm(o.country), best = 0;
+    if (c === t || n === t) return 100;
+    if (n.indexOf(t) === 0) best = 90;
+    else if ((" " + n).indexOf(" " + t) >= 0) best = 75;
+    o.alias.forEach(function (a) { if (a === t) best = Math.max(best, 98); else if (a.indexOf(t) === 0) best = Math.max(best, 88); else if ((" " + a).indexOf(" " + t) >= 0) best = Math.max(best, 70); });
+    if (k.indexOf(t) === 0 || (" " + k).indexOf(" " + t) >= 0) best = Math.max(best, 60);
+    if (!best && t.length >= 3 && c.indexOf(t) === 0) best = 55;
+    if (!best && t.length >= 3 && n.indexOf(t) >= 0) best = 50;
+    return best;
+  }
+  var coarse = window.matchMedia ? window.matchMedia("(pointer: coarse)") : { matches: false };
+  function makeFromBox(input, list) {
+    var where = input.getAttribute("data-from") || "page", items = [], active = -1, moved = false, typedNow = ""; /* moved: the arrow keys chose the highlighted option */
+    var pop = list.classList.contains("tp-from-pop");
+    function isOpen() { return !list.hidden; }
+    function close() { list.hidden = true; input.setAttribute("aria-expanded", "false"); input.removeAttribute("aria-activedescendant"); active = -1; }
+    function setActive(i) {
+      var opts = $$("[role=option]", list);
+      if (!opts.length) { active = -1; input.removeAttribute("aria-activedescendant"); return; }
+      active = (i + opts.length) % opts.length;
+      opts.forEach(function (o, k) { o.classList.toggle("is-active", k === active); });
+      var el = opts[active], top = el.offsetTop, bottom = top + el.offsetHeight;
+      input.setAttribute("aria-activedescendant", el.id);
+      if (top < list.scrollTop + 8) list.scrollTop = Math.max(0, top - (el.previousElementSibling && el.previousElementSibling.classList.contains("tp-from-g") ? 40 : 8));
+      else if (bottom > list.scrollTop + list.clientHeight - 8) list.scrollTop = bottom - list.clientHeight + 8;
+    }
+    function row(o, i) {
+      var sel = o.typed ? !st.from.code && o.name === st.from.name : o.code === st.from.code && o.name === st.from.name;
+      return '<div class="tp-from-o' + (o.typed ? " is-typed" : "") + '" role="option" id="' + input.id + "-o" + i + '" data-i="' + i + '" aria-selected="' + sel + '">'
+        + (o.typed ? "<b>" + (sel ? "" : "Use “") + esc(o.name) + (sel ? "" : "”") + "</b><small>Any city, we quote it</small>" : "<b>" + esc(o.name) + " <span>" + esc(o.code) + "</span></b><small>" + esc(o.country) + "</small>") + "</div>";
+    }
+    function group(label, gi, rows) { return '<div role="group" aria-labelledby="' + input.id + "-g" + gi + '"><div class="tp-from-g" id="' + input.id + "-g" + gi + '">' + esc(label) + "</div>" + rows + "</div>"; }
+    /* the list as it fits under the box: on a computer the popover never runs past the bottom of the window */
+    function fit() {
+      if (!pop) return;
+      var room = window.innerHeight - input.getBoundingClientRect().bottom - 32;
+      list.style.maxHeight = Math.max(180, Math.min(440, room)) + "px";
+    }
+    function show(text) {
+      var raw = String(text || "").trim().slice(0, 40), t = norm(raw.replace(/\(.*?\)/g, " ")), html = "", at = 0;
+      typedNow = t;
+      items = [];
+      if (!t) {
+        /* nothing typed: the whole list by region, with a city they typed before on top */
+        var gi = 0;
+        if (!st.from.code) { items.push({ name: st.from.name, code: "", country: "", typed: true }); html += group("Your city", gi++, row(items[0], 0)); }
+        var region = "", rows = "";
+        ORIG.forEach(function (o) {
+          if (o.region !== region) { if (rows) html += group(region, gi++, rows); region = o.region; rows = ""; }
+          if (o.code === st.from.code && o.name === st.from.name) at = items.length;
+          items.push(o); rows += row(o, items.length - 1);
+        });
+        if (rows) html += group(region, gi++, rows);
+      } else {
+        var hits = ORIG.map(function (o) { return { o: o, s: fromScore(o, t) }; }).filter(function (x) { return x.s > 0; }).sort(function (a, b) { return b.s - a.s; }).slice(0, 8);
+        hits.forEach(function (x) { items.push(x.o); html += row(x.o, items.length - 1); });
+        if (t.length >= 3 && (!hits.length || hits[0].s < 98)) { items.push({ name: raw, code: "", country: "", typed: true }); html += row(items[items.length - 1], items.length - 1); }
+      }
+      if (!items.length) { list.innerHTML = ""; close(); return; } /* nothing to offer yet (one or two letters, no match) */
+      list.innerHTML = html;
+      moved = false;
+      list.hidden = false;
+      input.setAttribute("aria-expanded", "true");
+      fit();
+      if (!t) list.scrollTop = 0;
+      setActive(at);
+    }
+    /* a fresh search each time the box is opened: it empties, with the city still showing as the hint, so typing never mixes into it.
+       On a phone the date picker scrolls the box to its top, so the list has room above the keyboard */
+    function start() {
+      input.placeholder = st.from.name;
+      input.value = "";
+      show("");
+      var sc = !pop && coarse.matches && input.closest(".tp-panel-scroll"), f = sc && input.closest(".tp-dp-from");
+      if (f) {
+        var y = f.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop - 8;
+        if (sc.scrollTop < y) { try { sc.scrollTo({ top: y, behavior: "smooth" }); } catch (e) { sc.scrollTop = y; } }
+      }
+    }
+    function pick(o, how, keepFocus) {
+      if (!o || !String(o.name || "").trim()) { input.value = st.from.name; close(); return; }
+      var changed = o.name !== st.from.name || (o.code || "") !== st.from.code;
+      st.from = o.typed || !o.code ? { name: String(o.name).trim().slice(0, 40), code: "", country: "", region: "", alias: [] } : o;
+      input.value = st.from.name;
+      close();
+      if (changed) { st.sent = false; paint(); track("origin_select", { from: st.from.code || "other", city: st.from.code ? st.from.name : "typed", how: how, where: where, dest: T.slug }); } /* nothing typed goes to Analytics */
+      if (!keepFocus && coarse.matches) input.blur(); /* on a phone the keyboard goes away */
+    }
+    /* leaving the box (Tab, a click elsewhere) takes the highlighted option once they have typed three letters or used
+       the arrows: what is highlighted is what they get. One or two letters with nothing picked leave the city as it was */
+    function commit() {
+      var raw = input.value.trim().slice(0, 40), t = norm(raw.replace(/\(.*?\)/g, " "));
+      if (isOpen() && active >= 0 && (moved || t.length >= 3)) { pick(items[active], moved ? "list" : "typed", true); return; }
+      if (!t || t === norm(st.from.name)) { input.value = st.from.name; return; }
+      var exact = ORIG.filter(function (o) { return fromScore(o, t) >= 98; })[0];
+      if (exact) { pick(exact, "typed", true); return; }
+      input.value = st.from.name;
+    }
+    input.addEventListener("focus", start);
+    input.addEventListener("click", function () { if (!isOpen()) start(); }); /* clicked again after a pick: a new search */
+    input.addEventListener("input", function () { show(input.value); });
+    input.addEventListener("keydown", function (ev) {
+      if (ev.key === "ArrowDown" || ev.key === "ArrowUp") { ev.preventDefault(); if (!isOpen()) show(input.value); else { setActive(active + (ev.key === "ArrowDown" ? 1 : -1)); moved = true; } return; }
+      if (ev.key === "Enter") { ev.preventDefault(); if (isOpen() && active >= 0) pick(items[active], "list", true); else commit(); return; }
+      if (ev.key === "Escape" && isOpen()) { ev.preventDefault(); ev.stopPropagation(); input.value = st.from.name; close(); }
+    });
+    input.addEventListener("blur", function () { setTimeout(function () {
+      if (document.activeElement === input) return;
+      commit();
+      close();
+      input.value = st.from.name;
+    }, 0); });
+    list.addEventListener("mousedown", function (ev) { ev.preventDefault(); }); /* the box keeps the focus while an option is clicked */
+    list.addEventListener("click", function (ev) { var o = ev.target.closest && ev.target.closest("[data-i]"); if (o) pick(items[+o.getAttribute("data-i")], "list"); });
+    window.addEventListener("resize", function () { if (isOpen()) fit(); });
+    fromBoxes.push({ input: input, close: close });
+  }
+  $$("input[data-from]").forEach(function (input) { var list = document.getElementById(input.getAttribute("aria-controls")); if (list) makeFromBox(input, list); });
+
   /* ---- one listener for the page's buttons and links ---- */
   function plainClick(ev) { return !(ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey || (ev.button && ev.button !== 0)); }
   document.addEventListener("click", function (ev) {
@@ -513,7 +653,7 @@
       }
       var text = message(), ref = code(), tl = tourList();
       waBtn.href = "https://wa.me/" + WA + "?text=" + encodeURIComponent(text);
-      track("quote_send", { dest: T.slug, where: "trip-dates", nights: NIGHTS, airport: T.airport, leave: iso(st.start), adults: tot("a"), kids: tot("k"), rooms: st.party.length, tours: st.tours.join(",") || "none", tour_count: tl.length, code: ref });
+      track("quote_send", { dest: T.slug, where: "trip-dates", nights: NIGHTS, airport: st.from.code || "other", from_city: st.from.code ? st.from.name : "typed", leave: iso(st.start), adults: tot("a"), kids: tot("k"), rooms: st.party.length, tours: st.tours.join(",") || "none", tour_count: tl.length, code: ref });
       if (typeof window.GV_WA_EXIT === "function") window.GV_WA_EXIT({ ref: ref, where: "trip-dates", context: text });
       st.sent = true;
       put("footNote", "WhatsApp opened with your message. Press send there, and one of our travel professionals replies within working hours.");
