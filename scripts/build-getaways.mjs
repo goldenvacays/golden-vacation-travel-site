@@ -304,9 +304,10 @@ function tripPage(c) {
   /* ---- search: the bar on a computer (sticky), the one-line card on a phone ---- */
   const comboOptions = DATA.combos.map((x) => `<option value="${BASE}/${x.slug}/"${x.slug === c.slug ? " selected" : ""}>${esc(x.name)}</option>`).join("");
   /* Flying from: the trip's own airport (the price on the page) until they pick or type another city; trip.js draws the list.
-     The lists take tabindex -1: a list that scrolls would otherwise take a Tab stop of its own and swallow the focus as it closes */
+     The lists take tabindex -1: a list that scrolls would otherwise take a Tab stop of its own and swallow the focus as it closes.
+     Each box is a label, so a click anywhere on it (the pin, the padding) opens the search, like the bar's other fields */
   const fromBox = (where) => where === "bar"
-    ? `<div class="tp-f-wrap tp-from-wrap"><div class="tp-f tp-f-from">${tpIcon("pin", 22, 2)}<span class="tp-f-t"><label class="tp-f-l" for="tp-from-bar">Flying from</label><input class="tp-from-in" id="tp-from-bar" type="text" value="${esc(c.airportName)}" autocomplete="off" autocapitalize="words" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="tp-from-bar-list" aria-autocomplete="list" data-from="search"></span></div>
+    ? `<div class="tp-f-wrap tp-from-wrap"><label class="tp-f tp-f-from" for="tp-from-bar">${tpIcon("pin", 22, 2)}<span class="tp-f-t"><span class="tp-f-l">Flying from</span><input class="tp-from-in" id="tp-from-bar" type="text" value="${esc(c.airportName)}" autocomplete="off" autocapitalize="words" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="tp-from-bar-list" aria-autocomplete="list" data-from="search"></span></label>
       <div class="hq-pop tp-from-pop" id="tp-from-bar-list" role="listbox" aria-label="Airports" tabindex="-1" hidden></div></div>`
     : `<div class="tp-dp-from"><label class="tp-dpf" for="tp-from-dp">${tpIcon("pin", 20, 2)}<span class="tp-dpf-t"><span class="tp-dpf-l">Flying from</span><input class="tp-from-in" id="tp-from-dp" type="text" value="${esc(c.airportName)}" autocomplete="off" autocapitalize="words" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="tp-from-dp-list" aria-autocomplete="list" data-from="date_picker"></span>${tpIcon("down", 18, 2.4)}</label>
         <div class="tp-from-list" id="tp-from-dp-list" role="listbox" aria-label="Airports" tabindex="-1" hidden></div></div>`;
