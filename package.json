@@ -7,7 +7,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "build:getaways": "node scripts/build-getaways.mjs",
-    "status": "node scripts/build-status.mjs && node scripts/build-experiences.mjs && node scripts/build-transfers.mjs && node scripts/build-home.mjs"
+    "status": "node scripts/build-status.mjs && node scripts/build-experiences.mjs && node scripts/build-transfers.mjs && node scripts/build-home.mjs && node scripts/sitemap-dates.mjs",
+    "sitemap": "node scripts/sitemap-dates.mjs"
   },
   "dependencies": {
     "react": "^18.2.0",
