@@ -27,7 +27,15 @@
   var DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   function parseDate(s) { if (!s) return null; var p = s.split("-"); if (p.length !== 3) return null; return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])); }
   function longDate(s) { var d = parseDate(s); if (!d) return ""; return DAYS[d.getUTCDay()] + " " + d.getUTCDate() + " " + MONTHS[d.getUTCMonth()] + " " + d.getUTCFullYear(); }
-  function todayISO() { return (window.GV_TR && window.GV_TR.today) || new Date().toISOString().slice(0, 10); }
+  /* today in Jamaica from the clock; the build date in GV_TR.today is only a floor (it goes stale between builds) */
+  function jamToday() {
+    try {
+      var s = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Jamaica", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+    } catch (e) {}
+    return new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10);
+  }
+  function todayISO() { var real = jamToday(), built = window.GV_TR && window.GV_TR.today; return built && built > real ? built : real; }
   /* eighteen months out: past this, a date is a mistyped year far more often than a real booking */
   function farOut() { var p = todayISO().split("-"), d = new Date(Date.UTC(+p[0], +p[1] - 1 + 18, +p[2])); return d.toISOString().slice(0, 10); }
   function waUrl(text) { return "https://wa.me/" + WA + "?text=" + encodeURIComponent(text); }
@@ -125,7 +133,7 @@
     var TRIP = {}; (X.trips || []).forEach(function (t) { TRIP[t.key] = t; });
     var VEH = X.vehicles || {}, INC = X.includes || {}, DRIVE = X.drive || {}, C = X.copy || { results: {}, checkout: {}, search: {} };
     var MAXG = X.maxGuests || 16;
-    var today = X.today || todayISO();
+    var today = todayISO();
     var e = {
       form: $("#search", root), hotelIn: $("#s-hotel", root), hotelList: $("#s-hotel-list", root), hotelClear: $("#s-hotel-clear", root), nameWrap: $("#s-name-wrap", root), name: $("#s-name", root),
       airport: $("#s-airport", root), trip: $("#s-trip", root), people: $("#s-people", root),
@@ -495,7 +503,7 @@
      tr-checkout builds the Checkout Session from the raw fields (never the words or the price in the token) and returns the client
      secret plus the publishable key; if Stripe's script is blocked the same call returns a hosted card page to redirect to. */
   function initCheckout(root, isPay) {
-    var X = window.GV_TR || {}, C = (X.copy && X.copy.checkout) || {}, INC = X.includes || {}, today = X.today || todayISO();
+    var X = window.GV_TR || {}, C = (X.copy && X.copy.checkout) || {}, INC = X.includes || {}, today = todayISO();
     var q = new URLSearchParams(location.search);
     var tok = decodeToken(q.get("b") || "") || (PREVIEW ? (window.GV_TR_PREVIEW_TOKEN ? decodeToken(window.GV_TR_PREVIEW_TOKEN) : X.previewBooking) : null);
     var AIRN = {}; (X.airports || []).forEach(function (a) { AIRN[a.code] = a.name; });

@@ -28,6 +28,15 @@
   function iso(d) { var p = function (n) { return String(n).padStart(2, "0"); }; return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()); }
   function parse(s) { var x = String(s || "").split("-"); return x.length === 3 ? new Date(+x[0], +x[1] - 1, +x[2]) : null; }
   function midnight(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+  /* today's date in Jamaica, where the trips are run from. Pages are built ahead of time, so a min baked into
+     the page is the build day and goes stale; the floor always comes from the clock instead. */
+  function jamToday() {
+    try {
+      var s = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Jamaica", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+    } catch (e) {}
+    return new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10);
+  }
   function addDays(d, n) { return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n); }
   function addMonths(d, n) { return new Date(d.getFullYear(), d.getMonth() + n, 1); }
   function nights(a, b) { return Math.round((midnight(b) - midnight(a)) / 86400000); }
@@ -243,8 +252,11 @@
       var pairSel = start.getAttribute("data-dr-pair");
       var end = pairSel ? document.querySelector(pairSel) : null;
       if (end) end.setAttribute("data-dr-on", "1");
-      /* nobody books yesterday. A field that sets no floor of its own gets today. */
-      if (!start.getAttribute("min")) start.setAttribute("min", iso(new Date()));
+      /* nobody books yesterday: the floor is today in Jamaica, plus data-dr-lead days where a product needs notice
+         (getaways leave the next day at the earliest). A min written into the page at build time only counts when later. */
+      var lead = parseInt(start.getAttribute("data-dr-lead") || "0", 10) || 0;
+      var floor = iso(addDays(parse(jamToday()), lead));
+      [start, end].forEach(function (i) { if (i && (!i.getAttribute("min") || i.getAttribute("min") < floor)) i.setAttribute("min", floor); });
       var g = { start: start, end: end, range: !!end, optional: start.hasAttribute("data-dr-optional") };
       g.startBtn = button(start, g, "start");
       if (end) g.endBtn = button(end, g, "end");

@@ -21,7 +21,16 @@
   var DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   function parseDate(s) { if (!s) return null; var p = s.split("-"); if (p.length !== 3) return null; return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])); }
   function longDate(s) { var d = parseDate(s); if (!d) return ""; return DAYS[d.getUTCDay()] + " " + d.getUTCDate() + " " + MONTHS[d.getUTCMonth()] + " " + d.getUTCFullYear(); }
-  function todayISO() { return (window.GV_EXP && window.GV_EXP.today) || new Date().toISOString().slice(0, 10); }
+  /* today in Jamaica from the clock. The page also carries the day it was built (GV_EXP.today); that is only a floor,
+     because a page built on the 1st would otherwise offer the 2nd and 3rd for booking on the 4th. */
+  function jamToday() {
+    try {
+      var s = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Jamaica", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+    } catch (e) {}
+    return new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10);
+  }
+  function todayISO() { var real = jamToday(), built = window.GV_EXP && window.GV_EXP.today; return built && built > real ? built : real; }
   function waUrl(text) { return "https://wa.me/" + WA + "?text=" + encodeURIComponent(text); }
   function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
 
@@ -137,7 +146,7 @@
       if (e && ((e.x && e.x.indexOf(h.slug) >= 0) || (e.lx != null && h.lng > e.lx) || (e.ln != null && h.lng < e.ln) || (e.r && !h.resort))) e = null;
       if (!e) return { kind: "no", text: "No pickup from " + who + ", ask us for a ride" };
       if (e.q) return { kind: "add", text: "Pickup from " + who + " on request" };
-      if (e.a) return { kind: "add", text: "Pickup from " + who + ", +US$" + e.a + " per person" };
+      if (e.a) return { kind: "add", text: "Pickup from " + who + " available" }; /* the surcharge shows in the tour's booking box, never on a card */
       return { kind: "yes", text: "Pickup from " + who + " included" };
     }
     function setPick(c) {
