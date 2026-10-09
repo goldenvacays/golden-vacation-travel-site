@@ -953,7 +953,7 @@
         "family"
       ],
       "tags": [
-        "We confirm first",
+        "Hotel pickup on the visitor rate",
         "Resident rate with Jamaican ID"
       ],
       "facts": [
@@ -982,7 +982,7 @@
         }
       ],
       "panel": "tour",
-      "booking": "request",
+      "booking": "instant",
       "doors": [
         "stay",
         "locals"
@@ -991,7 +991,7 @@
       "rates": {
         "visitor": {
           "label": "Visitor rate",
-          "note": "Pickup included from Ocho Rios, Falmouth and Montego Bay hotels. We confirm the date and time with the park, then send you a secure card link.",
+          "note": "Pickup included from Ocho Rios, Falmouth and Montego Bay hotels. Paid on the spot, confirmed straight away.",
           "who": "Open to everyone"
         },
         "resident": {
