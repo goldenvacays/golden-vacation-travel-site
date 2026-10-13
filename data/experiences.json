@@ -235,7 +235,7 @@
         "Hotel pickup included",
         "Children from US$45"
       ],
-      "blurb": "ATV trails through the mangroves, eight zipline towers, horseback into the sea and a half-mile push kart run, twenty minutes outside Negril.",
+      "blurb": "ATV trails through the mangroves, eight zipline towers, horseback into the sea and a half-mile push kart run, 28 minutes outside Negril.",
       "card": "ATV, zipline, horseback, safari and push karts. Book the visitor rate on the spot.",
       "photos": [
         {
@@ -298,7 +298,7 @@
       ],
       "before": [
         "Bring your Jamaican ID for the resident rate. Without it you pay the visitor rate at the gate.",
-        "Zipline: 240 lb max, 60 lb min. Horseback from age 9. ATV from age 5.",
+        "Zipline: 240 lb max, 60 lb min. Horseback from age 8. ATV from age 5.",
         "Closed-toe shoes, swimwear and a change of clothes. Most tours get you wet.",
         "Not suitable if pregnant or with back or neck problems.",
         "Closed 25 December."
@@ -324,7 +324,7 @@
             "12 noon",
             "2:00pm"
           ],
-          "desc": "ATV, plus any two of zipline, horseback or safari. Three tours in one day for less than half of booking them separately.",
+          "desc": "ATV, plus any two of zipline, horseback or safari. Three tours in one day for up to 44% less than booking them separately.",
           "audience": "everyone",
           "visitor": {
             "usd": 189,
@@ -540,7 +540,7 @@
             "jmd": 12500
           },
           "notes": [
-            "From age 9, child rate 8 to 11. Max 240 lb.",
+            "From age 8, child rate 8 to 11. Max 240 lb.",
             "About 30 minutes actually on the horse. Bring a change of clothes."
           ],
           "rezdy": {
@@ -1011,7 +1011,7 @@
       ],
       "before": [
         "Bring your Jamaican ID for the resident rate. Without it you pay the visitor rate at the gate.",
-        "Zipline: 240 lb max, 60 lb min. Horseback from age 9. ATV from age 5.",
+        "Zipline: 240 lb max, 60 lb min. Horseback from age 8. ATV from age 5.",
         "Closed-toe shoes, swimwear and a change of clothes. Most tours get you wet.",
         "Not suitable if pregnant or with back or neck problems.",
         "Closed 25 December."
@@ -1044,7 +1044,7 @@
           "resident": {
             "jmd": 24800
           },
-          "desc": "ATV, plus any two of zipline, horseback or the JamCulture tour. Three tours in one day for less than half of booking them separately.",
+          "desc": "ATV, plus any two of zipline, horseback or the JamCulture tour. Three tours in one day for up to 44% less than booking them separately.",
           "choose": {
             "label": "Pick your two",
             "fixed": "ATV",
@@ -1187,7 +1187,7 @@
           },
           "desc": "A guided ride on the park's trails.",
           "notes": [
-            "From age 9, child rate 8 to 11. Max 240 lb."
+            "From age 8, child rate 8 to 11. Max 240 lb."
           ]
         }
       ],

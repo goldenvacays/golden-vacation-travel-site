@@ -50,7 +50,7 @@
     "prefix": "",
     "per": "per adult",
     "sub": "Negril · three tours in one day",
-    "text": "ATV plus any two of zipline, horseback or safari, for less than half of booking them separately.",
+    "text": "ATV plus any two of zipline, horseback or safari, for up to 44% less than booking them separately.",
     "foot": "Children {child}"
    },
    "es": {
@@ -59,7 +59,7 @@
     "prefix": "",
     "per": "por adulto",
     "sub": "Negril · tres tours en un día",
-    "text": "Cuatrimoto más dos a elegir entre tirolesa, cabalgata o safari, por menos de la mitad que por separado.",
+    "text": "Cuatrimoto más dos a elegir entre tirolesa, cabalgata o safari, hasta un 44% menos que por separado.",
     "foot": "Niños {child}"
    }
   }
