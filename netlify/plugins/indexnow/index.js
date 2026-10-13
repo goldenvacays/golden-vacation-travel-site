@@ -5,7 +5,8 @@
    commit Netlify built (CACHED_COMMIT_REF) and this one (COMMIT_REF), so commits marked [skip netlify] are counted
    in the deploy that finally goes out. Only pages listed in the sitemap are sent, plus pages that were deleted.
    The key is the one in public/c27782bd44db7b92096c8921281b6afd.txt. This can never fail or block a deploy: any
-   problem is written to the deploy log and skipped. */
+   problem is written to the deploy log and skipped. Netlify treats every export as a build event, so onSuccess is
+   the only one. */
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
@@ -16,7 +17,7 @@ const KEY = "c27782bd44db7b92096c8921281b6afd";
 
 /* a file in the repo -> the address of its page: index.html at the root is the front page, public/x/index.html is
    /x/, public/x/y.html is /x/y, and the resort map lives at /hotel-status-map (see public/_redirects) */
-export const urlFor = (file) => {
+const urlFor = (file) => {
   if (file === "index.html") return `${ORIGIN}/`;
   if (file === "public/map/index.html") return `${ORIGIN}/hotel-status-map`;
   if (!file.startsWith("public/") || !file.endsWith(".html") || file === "public/404.html") return null;
@@ -25,7 +26,7 @@ export const urlFor = (file) => {
 };
 
 /* "M\tpublic/x.html" lines -> the URLs worth sending */
-export const changedUrls = (nameStatus, sitemapXml) => {
+const changedUrls = (nameStatus, sitemapXml) => {
   const listed = new Set([...sitemapXml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map((m) => m[1]));
   const urls = new Set();
   for (const line of nameStatus.split("\n").filter(Boolean)) {
