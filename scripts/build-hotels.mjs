@@ -14,6 +14,9 @@ import fs from "node:fs";
 import path from "node:path";
 import { ROOT, DATA, OUT, S, BASE, esc, usd, price, img, pic, heroPic, icon, btn, tag, kicker, check, faqItem, ticker, head, nav, footer, bottomBar, scripts } from "./_getaways-chrome.mjs";
 
+/* Bing's limits: titles under 70 characters, descriptions 160 or less. First candidate that fits, else the last. */
+const fit = (max, ...c) => c.find((s) => s && s.length <= max) || c[c.length - 1];
+
 
 const HOTELS = JSON.parse(fs.readFileSync(path.join(ROOT, "data/hotels.json"), "utf8")).hotels;
 const COPY = JSON.parse(fs.readFileSync(path.join(ROOT, "data/hotels-copy.json"), "utf8"));
@@ -189,8 +192,34 @@ function hotelPage(hotel) {
   const faq = `<section class="gtk"><div>${kicker("Questions")}</div><div class="faq">${d.faq.map(([q, a]) => faqItem(q, a)).join("")}</div></section>`;
 
   const description = copy.intro ? copy.intro : guest(hotel.one_line_description);
-  const metaDescription = `${shortName} in ${place}${district ? ` (${district})` : ""}: ${guest(hotel.one_line_description) || description.split(". ")[0]}. From Jamaica with flights and transfers, ${defaultPrice != null ? `from ${usd(defaultPrice)} per person` : "quoted with your dates"}.`.replace(/\.\./g, ".").slice(0, 300);
-  const title = `${shortName}, ${place}: ${d.defaultNights} nights from Jamaica with flights${defaultPrice != null ? ` from ${usd(defaultPrice)}` : ""} | Golden Vacation & Travel`;
+  // Bing wants descriptions of 160 characters or less and titles under 70: fit() takes the first candidate that fits,
+  // so the district drops out first, then the town, then the brand on titles
+  const one = guest(hotel.one_line_description) || description.split(". ")[0];
+  const priceLine = defaultPrice != null ? `from ${usd(defaultPrice)} per person` : "quoted with your dates";
+  const tail = `From Jamaica with flights and transfers, ${priceLine}.`;
+  // the one-liner cut back to whole clauses (at a comma, "with" or "and") so the line still fits; a list cut short
+  // gets its "and" back ("restaurant, bar, gym" becomes "restaurant, bar and gym")
+  const cut = (lead) => {
+    const room = 160 - `${lead}. ${tail}`.length;
+    if (one.length <= room) return `${lead}${one}. ${tail}`;
+    for (const at of [...one.matchAll(/,\s| with | and /g)].map((m) => m.index).reverse()) {
+      let t = one.slice(0, at);
+      const w = t.lastIndexOf(" with "), c = t.lastIndexOf(", ");
+      if (c > w && w >= 0) t = `${t.slice(0, c)} and ${t.slice(c + 2)}`;
+      if (t.length <= room) return `${lead}${t}. ${tail}`;
+    }
+    return null;
+  };
+  const metaDescription = fit(160, ...[
+    `${shortName} in ${place}${district ? ` (${district})` : ""}: ${one}. ${tail}`,
+    `${shortName} in ${place}: ${one}. ${tail}`,
+    `${shortName}: ${one}. ${tail}`,
+    cut(`${shortName} in ${place}: `),
+    cut(`${shortName}: `),
+    `${shortName} in ${place}: ${d.defaultNights} nights from Jamaica with flights and transfers, ${priceLine}.`,
+  ].filter(Boolean).map((s) => s.replace(/\.\./g, ".")));
+  const fromP = defaultPrice != null ? ` from ${usd(defaultPrice)}` : "";
+  const title = fit(69, `${shortName}, ${place}: ${d.defaultNights} nights from Jamaica with flights${fromP} | Golden Vacation & Travel`, `${shortName}, ${place}: ${d.defaultNights} nights from Jamaica with flights${fromP}`, `${shortName}, ${place}: ${d.defaultNights} nights with flights${fromP}`, `${shortName}: ${d.defaultNights} nights from Jamaica with flights${fromP}`, `${shortName}: ${d.defaultNights} nights with flights${fromP}`, `${shortName}, ${place}`);
 
   const jsonld = [
     { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: `${S.origin}/` }, { "@type": "ListItem", position: 2, name: "Getaways", item: `${S.origin}${BASE}/` }, { "@type": "ListItem", position: 3, name: d.name, item: `${S.origin}${BASE}/${d.slug}/` }, { "@type": "ListItem", position: 4, name: shortName, item: `${S.origin}${pathname}` }] },

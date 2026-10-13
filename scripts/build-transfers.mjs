@@ -295,8 +295,8 @@ function transfersPage() {
     zones: T.zones.map((z) => ({ key: z.key, name: z.name, airbnb: z.airbnbLabel, aliases: z.aliases || [], hidden: !!z.hidden })),
     airports: T.airports, trips: T.trips, vehicles: T.vehicles, includes: T.includes, drive: T.drive, copy: { results: RS, search: SR },
   };
-  const title = `Jamaica airport transfers | Montego Bay, Kingston and Ocho Rios airport to your hotel${from != null ? `, from ${usd(from)}` : ""}`;
-  const description = `Private airport transfers in Jamaica: search your hotel, pick the airport and the date, choose the vehicle, pay by card. Resorts across the island, one price per vehicle with taxes included${from != null ? `, from ${usd(from)}` : ""}. Booked by Golden Vacation & Travel, St Ann, Jamaica.`;
+  const title = `Montego Bay, Kingston & Ocho Rios airport transfers${from != null ? ` from ${usd(from)}` : ""}`;
+  const description = `Private airport transfers in Jamaica${from != null ? ` from ${usd(from)}` : ""}: pick your hotel, the airport, the date and the vehicle, and pay by card. One price per vehicle, taxes included.`;
   return `${head({ title, description, pathname: HUB, image: P.heroPhoto.file, jsonld, bodyClass: "exp tr tr-page" })}
 ${nav()}
 <main class="tr-main" id="top">

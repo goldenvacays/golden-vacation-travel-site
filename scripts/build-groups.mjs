@@ -138,7 +138,7 @@ function hub() {
       </div>
     </div>`).join("\n");
   const ld = [{ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: `${S.origin}/` }, { "@type": "ListItem", position: 2, name: "Groups", item: `${S.origin}${BASE}/` }] }];
-  return `${head({ title: "Group travel | Rooms for your organisation, overseas groups and group trips from Jamaica | Golden Vacation & Travel", description: `Ten or more? Rooms for churches, schools, companies and family outings at a group rate, groups coming to Jamaica from the USA, UK or Canada, and group trips from Kingston to Panama City and Punta Cana. Quotes by email within ${G.turnaround}.`, pathname: `${BASE}/`, image: "rooms-resort", jsonld: ld })}
+  return `${head({ title: "Group travel: rooms for organisations, groups to Jamaica, group trips", description: `Ten or more? Group rates on rooms for churches, schools and companies, groups to Jamaica, and trips to Panama City and Punta Cana. Quotes in ${G.turnaround}.`, pathname: `${BASE}/`, image: "rooms-resort", jsonld: ld })}
 <body class="groups">
 ${nav()}
 <main>
@@ -261,7 +261,7 @@ function enquire() {
   const who = f.who.map((w, i) => `<label class="radio-card who hidden-input"><input type="radio" name="branch" value="${w.value}" data-label="${esc(w.title)}"${i === 0 ? " checked" : ""}><span class="rc"><b>${esc(w.title)}</b><span>${esc(w.sub)}</span></span></label>`).join("");
   const tripHotels = G.trips.destinations.map((d) => `<div data-hotels-for="${esc(d.name)}" hidden>${row("Hotel", `<div class="stack">${d.hotels.map((ht) => `<label class="radio-card"><input type="radio" name="hotel" value="${esc(ht.name)}" data-label="${esc(ht.name)}">${thumb(ht.img, ht.alt)}<span class="rc"><b>${esc(ht.name)}</b><span>${d.nights} nights, ${d.board.toLowerCase()} · starting at ${money(ht.usd)} per person</span></span></label>`).join("")}<label class="radio-card"><input type="radio" name="hotel" value="Pick one for me" data-label="pick one for me"><span class="rc"><b>Pick one for me</b><span>Tell us what you want and we choose.</span></span></label></div>`, { req: true })}</div>`).join("");
   const wizNav = (n, last) => `<p class="form-err" role="alert"></p><div class="wiz-nav">${n > 1 ? `<button type="button" class="btn btn-outline" data-back>Back</button>` : `<span></span>`}${last ? `<button type="submit" class="btn">${esc(f.submit)}</button>` : `<button type="button" class="btn" data-next>Next</button>`}</div>`;
-  return `${head({ title: "Get a group quote | Golden Vacation & Travel", description: `Tell us what you need in four short screens. Resort or hotel rooms, a group coming to Jamaica, or an international group trip. Your quote lands by email within ${G.turnaround}.`, pathname: `${BASE}/enquire/`, image: "rooms-resort" })}
+  return `${head({ title: "Get a group quote | Golden Vacation & Travel", description: `Four short screens: hotel rooms, a group coming to Jamaica or an international group trip. Your quote lands by email within ${G.turnaround}.`, pathname: `${BASE}/enquire/`, image: "rooms-resort" })}
 <body class="groups groups-form">
 ${nav({ here: false, back: true })}
 <main class="wrap">
@@ -686,7 +686,7 @@ function copa() {
 }
 @media (max-width:520px){ .cp-offer{flex-direction:column;align-items:flex-start;gap:10px} .cp-offer-r{text-align:left} .cp-perks{grid-template-columns:1fr} .cp-place{aspect-ratio:1/1} .cp-hotel{flex-wrap:wrap} .cp-hotel .cp-btn{flex:1 1 100%} }
 </style>`;
-  return `${head({ title: "Copa Airlines group fares for Caribbean groups | Golden Vacation & Travel", description: `Ten or more flying Copa from the Caribbean or the USA? Group fares with payment plans, included luggage and seat selection. Panama City group trips from US$${fmt(from)} per person.`, pathname: `${BASE}/copa/`, image: `${S.origin}/assets/img/deal-panama-peru.jpg`, jsonld: ld })}
+  return `${head({ title: "Copa Airlines group fares for Caribbean groups of 10 or more", description: `Ten or more flying Copa from the Caribbean or USA? Group fares with payment plans, luggage and seat selection. Panama City group trips from US$${fmt(from)} per person.`, pathname: `${BASE}/copa/`, image: `${S.origin}/assets/img/deal-panama-peru.jpg`, jsonld: ld })}
 <body class="groups">
 ${nav()}
 <main class="cp">

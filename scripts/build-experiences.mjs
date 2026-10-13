@@ -97,6 +97,10 @@ const NAV = [["Getaways", "/getaways/"], ["Staycations", "/#staycations"], ["Jam
 const CATS = Object.fromEntries(X.hub.categories);
 const AREAS = Object.fromEntries(X.hub.areas);
 const venueBySlug = Object.fromEntries(X.venues.map((v) => [v.slug, v]));
+/* Bing's limits: titles under 70 characters, descriptions 160 or less. fit() returns the first candidate that fits
+   (the last one if none do); clauses() cuts a blurb back at its last comma or "with" that fits, never mid-phrase. */
+const fit = (max, ...c) => c.find((s) => s && s.length <= max) || c[c.length - 1];
+const clauses = (s, max) => { if (s.length <= max) return s; for (const at of [...s.matchAll(/,\s| with /g)].map((m) => m.index).reverse()) if (at + 1 <= max) return `${s.slice(0, at)}.`; return s; };
 
 /* ---------- hotels (from the resort list the status page uses) and drive times ---------- */
 const resortsJs = fs.readFileSync(path.join(ROOT, "public/map/resorts.js"), "utf8");
@@ -440,7 +444,7 @@ function hubPage() {
     { "@context": "https://schema.org", "@type": "ItemList", name: "Golden Experiences in Jamaica", itemListElement: gridOrder().map((v, i) => ({ "@type": "ListItem", position: i + 1, name: v.name, url: `${S.origin}${BASE}/${v.slug}` })) },
     { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: hb.questions.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) },
   ];
-  return `${head({ title: "Golden Experiences | Jamaica tours, day passes and airport lounges", description: "Day passes at Ocean and the Rose Hall resorts, JamWest and Mystic Mountain tours, the JamWest catamaran, Poko Loko floating bar and Club MoBay and Club Kingston lounges. Published prices in US$ and J$, resident rates where they exist, booked by people in Jamaica.", pathname: `${BASE}/`, image: heroImg, jsonld, bodyClass: "exp exp-hub", near: true })}
+  return `${head({ title: "Golden Experiences | Jamaica tours, day passes and airport lounges", description: "Day passes at Ocean and the Rose Hall resorts, JamWest and Mystic Mountain tours, the Negril catamaran, Poko Loko and airport lounges. Prices in US$ and J$.", pathname: `${BASE}/`, image: heroImg, jsonld, bodyClass: "exp exp-hub", near: true })}
 ${nav()}
 <main>
 <section class="eh-hero" aria-labelledby="eh-h1">
@@ -654,8 +658,13 @@ function venuePage(v) {
       photos: v.photos.map((p) => [img(p.file), p.alt]), // the photo viewer: full-size file and caption, hero first
       products: v.products.filter(live).map((p) => ({ id: p.id, name: p.name, hours: p.hours, times: p.times || [], audience: p.audience, visitor: p.visitor || null, resident: p.resident || null, perParty: p.perParty || 0, choose: p.choose || null, legs: p.legs || null, request: !!p.request, until: p.until || null, sd: shipDayOf(p, v) })) },
   };
-  const title = `${v.name} | ${v.categories.map((c) => CATS[c]).join(", ")} in ${AREAS[v.area]}, Jamaica`;
-  return `${head({ title, description: `${v.blurb} ${fromPrice(v) && fromPrice(v).usd != null ? `From ${usd(fromPrice(v).usd)} per person.` : ""} Published prices in US$ and J$, booked by Golden Vacation & Travel, St Ann, Jamaica.`, pathname: `${BASE}/${v.slug}`, image: hero.file, jsonld, bodyClass: "exp exp-venue", near: true })}
+  // Bing wants titles under 70 characters and descriptions of 160 or less: fit() takes the first that fits,
+  // so the extra categories go first, then the bracketed town, then ", Jamaica"; on descriptions the booked-by line shortens, then goes
+  const cats = v.categories.map((c) => CATS[c]), where = AREAS[v.area], town = where.replace(/\s*\(.*\)$/, "");
+  const title = fit(69, `${v.name} | ${cats.join(", ")} in ${where}, Jamaica`, `${v.name} | ${cats[0]} in ${where}, Jamaica`, `${v.name} | ${cats[0]} in ${town}, Jamaica`, `${v.name} | ${cats[0]} in ${where}`, `${v.name} | ${cats[0]} in ${town}`, `${v.name} | ${cats[0]}, Jamaica`, `${v.name}, Jamaica`);
+  const fromLine = fromPrice(v) && fromPrice(v).usd != null ? ` From ${usd(fromPrice(v).usd)} per person.` : "";
+  const metaDesc = fit(160, `${v.blurb}${fromLine} Published prices in US$ and J$, booked by Golden Vacation & Travel, St Ann, Jamaica.`, `${v.blurb}${fromLine} Prices in US$ and J$, booked by Golden Vacation & Travel.`, `${v.blurb}${fromLine} Booked by Golden Vacation & Travel.`, `${v.blurb}${fromLine}`, `${clauses(v.blurb, 160 - fromLine.length)}${fromLine}`);
+  return `${head({ title, description: metaDesc, pathname: `${BASE}/${v.slug}`, image: hero.file, jsonld, bodyClass: "exp exp-venue", near: true })}
 ${nav()}
 <main class="venue" data-venue="${v.slug}">
 <nav class="crumbs wrap" aria-label="Breadcrumb"><a href="${BASE}/">Golden Experiences</a><span>/</span><span>${esc(v.short)}</span></nav>
@@ -1211,7 +1220,7 @@ function partnersPage() {
   const chipSet = (name, items, type = "checkbox") => `<div class="pt-chips">${items.map((t) => `<label class="pt-chip"><input type="${type}" name="${name}" value="${esc(t)}"><span>${esc(t)}</span></label>`).join("")}</div>`;
   const q = (label, name, items, type) => `<div class="pt-q" role="group" aria-label="${esc(label)}"><span class="pt-l">${esc(label)}</span>${chipSet(name, items, type)}</div>`;
   const field = (label, name, attrs = "", hint = "") => `<label class="pt-f"><span>${esc(label)}${hint ? ` <small>${esc(hint)}</small>` : ""}</span><input name="${name}" ${attrs}></label>`;
-  return `${head({ title: "List your tours with Golden Experiences | for tour operators in Jamaica", description: "Run tours, excursions, boat trips or an attraction in Jamaica? Send us your details to be listed on Golden Experiences and sold at published prices to visitors, cruise passengers and locals.", pathname: `${BASE}/partners`, image: X.venues[0].photos[0].file, bodyClass: "exp exp-partners" })}
+  return `${head({ title: "List your tours with Golden Experiences | Jamaica tour operators", description: "Run tours, boat trips or an attraction in Jamaica? Send us your details to be listed on Golden Experiences and sold to visitors, cruise passengers and locals.", pathname: `${BASE}/partners`, image: X.venues[0].photos[0].file, bodyClass: "exp exp-partners" })}
 ${PT_CSS}
 ${nav()}
 <main class="partners wrap">
