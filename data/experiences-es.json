@@ -1,0 +1,706 @@
+{
+  "_about": "Spanish copies of the tours listed under venues, built by scripts/build-experiences.mjs at /experiences/es/<slug> (plus /experiences/es/booked). Text only: prices, dates, times, pickups and rules come from data/experiences.json, so they are changed once. Spanish pages are for visitors, so resident-only options, the resident rate and J$ prices are left out. A line missing here shows in English and the build lists it. Choice values stay English (the checkout checks them); only their labels are translated.",
+  "regions": {
+    "mobay": "Montego Bay",
+    "falmouth": "Trelawny (Falmouth)",
+    "ocho": "Ocho Rios y Runaway Bay",
+    "negril": "Negril",
+    "lucea": "Hanover (Lucea)",
+    "south": "Costa sur"
+  },
+  "areas": {
+    "all": "Toda la isla",
+    "mobay": "Montego Bay",
+    "trelawny": "Trelawny (Falmouth)",
+    "ocho": "Ocho Rios",
+    "negril": "Negril",
+    "kingston": "Kingston"
+  },
+  "cats": {
+    "passes": "Pases de día y de noche",
+    "tours": "Tours y aventura",
+    "water": "Paseos en el agua",
+    "night": "Noches y vida nocturna",
+    "lounges": "Salas VIP del aeropuerto",
+    "family": "Días en familia"
+  },
+  "ports": {
+    "montego-bay-cruise-port": "Puerto de cruceros de Montego Bay",
+    "falmouth-cruise-port": "Puerto de cruceros de Falmouth",
+    "ocho-rios-cruise-port": "Puerto de cruceros de Ocho Rios"
+  },
+  "venues": {
+    "mystic-mountain": {
+      "optionNoun": "paquete",
+      "tags": [
+        "Bobsled y montaña rusa Raggamuffin",
+        "Cerrado los viernes"
+      ],
+      "facts": [
+        "Unas 2 horas",
+        "A 10 min del puerto de Ocho Rios",
+        "Cerrado los viernes"
+      ],
+      "blurb": "El Bobsled, la montaña rusa Raggamuffin y la tirolesa sobre los árboles de Ocho Rios, con las cataratas Dunn's River en los pases más completos.",
+      "card": "El Bobsled, la montaña rusa, la tirolesa y Dunn's River en los pases más completos.",
+      "photos": [
+        "La piscina infinita de Mystic Mountain, sobre Ocho Rios",
+        "La pista del bobsled entre los árboles de Mystic Mountain",
+        "Dos personas en el bobsled de Mystic Mountain"
+      ],
+      "included": [
+        "Telesilla Sky Explorer sobre Ocho Rios",
+        "Circuito de cuerdas Anansi's Web",
+        "Muro de escalada The Rock",
+        "Piscina infinita y Super Tube",
+        "Jardín de colibríes (Hummingbird Garden)"
+      ],
+      "notIncluded": [
+        "Comida y bebida",
+        "Recogida en el hotel: +US$18 desde resorts de Ocho Rios, Runaway Bay y St Mary, +US$25 desde Falmouth y Montego Bay"
+      ],
+      "before": [
+        "La telesilla, el circuito de cuerdas, el muro de escalada, el jardín y la piscina vienen con todos los paquetes. El precio es por las atracciones principales.",
+        "Cerrado los viernes desde septiembre de 2026. Abre el 24, el 26 y el 31 de diciembre."
+      ],
+      "gettingThere": [
+        "Dunn's River Road, Ocho Rios, St Ann.",
+        "A diez minutos del puerto de cruceros de Ocho Rios. La recogida en resorts todo incluido, de St Mary a Montego Bay, se agrega al reservar. No hay recogida desde Negril ni desde el muelle."
+      ],
+      "products": {
+        "gold": {
+          "badge": "Lo tiene todo",
+          "hours": "Unas 2 horas",
+          "desc": "Todo lo de Mystic Legends, más la tirolesa sobre los árboles y la subida a las cataratas Dunn's River.",
+          "notes": [
+            "Solo US$20 más que un extra suelto.",
+            "Para las cataratas se recomiendan zapatos de agua."
+          ]
+        },
+        "add-on": {
+          "name": "Legends más uno",
+          "badge": "Dunn's River",
+          "hours": "Unas 2 horas",
+          "desc": "Mystic Legends más uno a tu elección: la subida a las cataratas Dunn's River o la tirolesa. Mismo precio con cualquiera.",
+          "choose": {
+            "label": "Elige tu extra",
+            "labels": {
+              "Dunn's River Falls climb": "Subida a las cataratas Dunn's River",
+              "Canopy zipline": "Tirolesa sobre los árboles"
+            }
+          },
+          "notes": [
+            "La mayoría de los visitantes elige Dunn's River."
+          ]
+        },
+        "legends": {
+          "badge": "Los clásicos",
+          "hours": "Unas 2 horas",
+          "desc": "El Bobsled y la montaña rusa Raggamuffin, las dos atracciones por las que se conoce el parque."
+        },
+        "adventure-pass": {
+          "name": "Pase Adventure",
+          "badge": "Para empezar",
+          "hours": "Unas 2 horas",
+          "desc": "Sky Explorer, circuito de cuerdas, muro de escalada y la piscina infinita. El pase básico."
+        }
+      },
+      "often": {
+        "poko-loko": "Atardecer en el agua después del parque, a diez minutos"
+      },
+      "pickups": {
+        "ocho": "Resorts de Ocho Rios, Runaway Bay y St Mary",
+        "falmouth": "Resorts de Falmouth",
+        "mobay": "Resorts de Montego Bay",
+        "own": "Llego por mi cuenta"
+      },
+      "pickupNote": "Recogida en resorts todo incluido: +US$18 por persona desde Ocho Rios, Runaway Bay y St Mary, +US$25 desde Falmouth y Montego Bay. No hay recogida desde Negril ni desde el muelle de cruceros.",
+      "pickupNotListed": "¿No está en la lista? Mystic recoge en los resorts todo incluido de esta lista. Si no, llega por tu cuenta.",
+      "pickupShort": "Recogida en resorts de Ocho Rios, Falmouth y Montego Bay"
+    },
+    "jamwest": {
+      "optionNoun": "tour",
+      "tags": [
+        "Recogida en el hotel incluida"
+      ],
+      "facts": [
+        "De 1 a 4 horas",
+        "Recogida en el hotel incluida",
+        "Niños desde US$45"
+      ],
+      "blurb": "Cuatrimotos entre manglares, ocho torres de tirolesa, cabalgata hasta el mar y una bajada de media milla en push kart, a veinte minutos de Negril.",
+      "card": "Cuatrimotos, tirolesa, cabalgata, safari y karts. Reserva y paga al momento.",
+      "photos": [
+        "Un grupo en cuatrimotos en JamWest, Westmoreland",
+        "En la tirolesa de JamWest",
+        "Una cuatrimoto cruzando el agua en el sendero de JamWest",
+        "El letrero de la entrada de JamWest",
+        "El bar de JamWest",
+        "La cafetería de JamWest"
+      ],
+      "included": [
+        "Entrada al parque",
+        "Chofer y guía todo el tiempo",
+        "Piscina y tobogán",
+        "Baño mineral",
+        "Aviario",
+        "Muro de escalada"
+      ],
+      "notIncluded": [
+        "Comida y bebida (a la venta)",
+        "Casilleros",
+        "Fotos (a la venta)",
+        "Propinas"
+      ],
+      "before": [
+        "Tirolesa: máximo 240 lb (109 kg), mínimo 60 lb (27 kg). Cabalgata desde los 9 años. Cuatrimoto desde los 5 años.",
+        "Zapatos cerrados, traje de baño y una muda de ropa. En la mayoría de los tours te vas a mojar.",
+        "No se recomienda durante el embarazo ni con problemas de espalda o cuello.",
+        "Cerrado el 25 de diciembre."
+      ],
+      "gettingThere": [
+        "A 28 minutos de Negril, Westmoreland.",
+        "Incluye la recogida en hoteles de las zonas de Negril y Montego Bay.",
+        "Espera en el lobby 5 minutos antes. El transporte espera 5 minutos, no más."
+      ],
+      "products": {
+        "super-deal": {
+          "name": "Super Deal, tres tours",
+          "badge": "Ahorra 44%",
+          "hours": "Unas 4 horas",
+          "desc": "Cuatrimoto más dos a elegir entre tirolesa, cabalgata o safari. Tres tours en un día, y ahorras hasta un 44% frente a reservarlos por separado.",
+          "choose": {
+            "label": "Elige tus dos",
+            "fixed": "Cuatrimoto",
+            "labels": {
+              "Zipline": "Tirolesa",
+              "Horseback": "Cabalgata",
+              "JamCulture safari": "Safari JamCulture"
+            }
+          },
+          "notes": [
+            "La cuatrimoto va siempre, tú eliges los otros dos.",
+            "Tarifa de niño de 3 a 11 años. Aplican los límites de edad y peso de cada tour."
+          ]
+        },
+        "tour-catamaran": {
+          "name": "Un tour + catamarán al atardecer",
+          "badge": "Día completo",
+          "hours": "Día completo. Tour en la mañana, catamarán a las 2:30 p. m.",
+          "desc": "Un tour a tu elección (tirolesa, cuatrimoto o cabalgata) y luego el catamarán al atardecer desde Negril. Mismo precio que el Super Deal, por un día completo.",
+          "choose": {
+            "label": "Elige tu tour",
+            "labels": {
+              "Zipline": "Tirolesa",
+              "ATV": "Cuatrimoto",
+              "Horseback": "Cabalgata"
+            }
+          },
+          "notes": [
+            "Precio para adultos. ¿Vienes con niños? Pregúntanos: el barco lleva familias los martes y jueves.",
+            "Es un barco: depende del clima. Si el mar no lo permite, cambiamos la fecha o te devolvemos el dinero."
+          ]
+        },
+        "two-tours": {
+          "name": "Dos tours",
+          "hours": "Unas 3 horas",
+          "desc": "Dos actividades a elegir en una sola visita: cuatrimoto, tirolesa, cabalgata o el safari JamCulture.",
+          "choose": {
+            "label": "Elige tus dos",
+            "labels": {
+              "ATV": "Cuatrimoto",
+              "Zipline": "Tirolesa",
+              "Horseback": "Cabalgata",
+              "JamCulture safari": "Safari JamCulture"
+            }
+          },
+          "notes": [
+            "Aplican los límites de edad y peso de cada tour."
+          ]
+        },
+        "atv": {
+          "name": "Tour en cuatrimoto",
+          "badge": "Recogida incluida",
+          "hours": "De 45 a 60 minutos",
+          "desc": "Manglares, arenales y colinas rocosas hasta el pueblo pesquero de Salmon Point y una playa privada.",
+          "notes": [
+            "¿Sin licencia? Vas en cuatrimoto. Con licencia puedes manejar un buggy.",
+            "Desde los 5 años. Máximo 300 lb (136 kg). Zapatos cerrados. Te vas a mojar y a ensuciar.",
+            "Casco, gafas y vueltas de práctica antes del sendero."
+          ]
+        },
+        "zipline": {
+          "name": "Tour de tirolesa",
+          "hours": "Unos 60 minutos",
+          "desc": "Ocho torres, 2,450 pies (750 m) de cable y la Racing Zip: dos cables paralelos para echar una carrera con alguien.",
+          "notes": [
+            "La última salida es a las 2:00 p. m.; no hay tirolesa a las 4:00 p. m.",
+            "Termina con un rapel de 60 pies (18 m) o cruza en tirolesa hasta Rocky Water Village, tú eliges.",
+            "Máximo 240 lb (109 kg), mínimo 60 lb (27 kg). No se recomienda para personas con problemas del corazón, de espalda o de cuello."
+          ]
+        },
+        "safari": {
+          "name": "Safari JamCulture",
+          "badge": "El tour más largo",
+          "hours": "90 minutos",
+          "desc": "Humedales, selva y pastizales en 4x4. Una pasarela de 200 pies (60 m) sobre el pantano, 90 especies de aves y al final comida y una degustación de ron.",
+          "notes": [
+            "Tarifa de niño de 3 a 11 años. Máximo 300 lb (136 kg).",
+            "El tour más largo del parque. Buena opción si solo haces uno."
+          ]
+        },
+        "horseback": {
+          "name": "Cabalgata",
+          "hours": "Unos 60 minutos",
+          "desc": "Un sendero hasta Salmon Point y luego entras al mar con los caballos, que lo disfrutan.",
+          "notes": [
+            "Desde los 9 años, tarifa de niño de 8 a 11. Máximo 240 lb (109 kg).",
+            "Unos 30 minutos sobre el caballo. Trae una muda de ropa."
+          ]
+        },
+        "push-kart": {
+          "name": "Push kart",
+          "badge": "Recorrido de 15 min",
+          "hours": "Unos 15 minutos",
+          "desc": "Karts pintados a mano sobre un riel de media milla (800 m), cada uno con su nombre y número. Elige el tuyo y deja que la gravedad haga el resto.",
+          "notes": [
+            "Mejor combinado con otro tour. Tarifa de niño hasta los 12 años. Máximo 300 lb (136 kg)."
+          ]
+        }
+      },
+      "often": {
+        "jamwest-catamaran": "El mismo día, desde Negril a las 2:30 p. m.",
+        "jamwest-water-park": "Al lado, el día más económico que vendemos"
+      },
+      "pickups": {
+        "negril": "Hotel en la zona de Negril",
+        "mobay": "Hotel en la zona de Montego Bay",
+        "own": "Llego por mi cuenta"
+      },
+      "shipDayNote": "Negril queda demasiado lejos de los puertos de cruceros para un día de crucero",
+      "pickupShort": "Recogida incluida en hoteles de Negril y Montego Bay"
+    },
+    "jamwest-catamaran": {
+      "optionNoun": "paseo",
+      "tags": [
+        "Sale a las 2:30 p. m. todos los días"
+      ],
+      "facts": [
+        "3.5 horas, sale a las 2:30 p. m.",
+        "Recogida en el hotel incluida",
+        "Niños mar. y jue., US$65"
+      ],
+      "blurb": "Paseo al atardecer por Seven Mile Beach con barra libre, una parada para hacer snorkel y Rick's Cafe, con sus clavadistas, mientras se pone el sol.",
+      "card": "Paseo al atardecer desde Negril, barra libre, parada para snorkel y Rick's Cafe.",
+      "photos": [
+        "El catamarán de JamWest frente a la playa de Negril",
+        "Un catamarán al atardecer"
+      ],
+      "childDaysText": "Los niños navegan los martes y jueves, los días en familia. Elige uno de esos días o reserva solo para adultos.",
+      "included": [
+        "Barra libre y Red Stripe",
+        "Snacks y agua",
+        "Recogida y regreso al hotel",
+        "Parada para nadar y hacer snorkel, con equipo y guía",
+        "Parada en Rick's Cafe para el atardecer, si el mar y el clima lo permiten",
+        "Acceso a la playa en Seven Mile Beach",
+        "Entretenimiento a bordo"
+      ],
+      "notIncluded": [
+        "Comida y bebidas extra en la playa",
+        "Toallas",
+        "Propinas"
+      ],
+      "before": [
+        "Sale todos los días a las 2:30 p. m. y dura 3 horas y 30 minutos.",
+        "Los niños navegan solo los martes y jueves, los días en familia. Los demás días son solo para adultos.",
+        "Edad mínima 3 años. Trae zapatos de agua y deja las joyas en casa.",
+        "No se recomienda durante el embarazo ni si te mareas en barco.",
+        "Depende del clima. Si el mar no lo permite, cambiamos la fecha o te devolvemos el dinero."
+      ],
+      "gettingThere": [
+        "Seven Mile Beach, Negril.",
+        "La recogida en Negril está incluida. Desde Lucea y Montego Bay cuesta un poco más, por persona."
+      ],
+      "products": {
+        "sunset": {
+          "name": "Paseo al atardecer",
+          "badge": "Mejor precio",
+          "hours": "3.5 horas, sale a las 2:30 p. m.",
+          "desc": "Recogida en cualquier hotel de la zona de Negril. El recorrido más corto y el mejor precio.",
+          "notes": [
+            "Los traslados se cobran por persona.",
+            "Tarifa de niño solo los martes y jueves."
+          ]
+        }
+      },
+      "often": {
+        "jamwest": "Haz un tour en la mañana, mismo precio que el Super Deal"
+      },
+      "pickups": {
+        "negril": "Hotel en la zona de Negril",
+        "lucea": "Costa de Hanover (Lucea)",
+        "mobay": "Hotel en la zona de Montego Bay",
+        "own": "Llego por mi cuenta"
+      },
+      "shipDayNote": "sale a las 2:30 p. m. y vuelve después de la hora de embarque de la mayoría de los cruceros",
+      "pickupShort": "Recogida incluida en Negril, también desde Hanover y Montego Bay"
+    },
+    "poko-loko": {
+      "optionNoun": "sesión",
+      "tags": [
+        "Cuatro sesiones al día"
+      ],
+      "facts": [
+        "Sesiones de tres horas",
+        "Solo adultos, 18+",
+        "Cuatro sesiones al día"
+      ],
+      "blurb": "El primer bar flotante de Jamaica, frente a Mahogany Beach en Ocho Rios. Cuatro sesiones al día, desde nadar en la mañana hasta bailar a medianoche.",
+      "card": "El bar flotante de Jamaica. Para nadar en la mañana, relajarte en la tarde, brindar al atardecer o salir de noche.",
+      "photos": [
+        "Poko Loko, el bar flotante, iluminado al anochecer frente a Ocho Rios",
+        "La cubierta del bar flotante Poko Loko, en Ocho Rios",
+        "La cubierta superior de Poko Loko, con Ocho Rios al fondo",
+        "Poko Loko visto desde el ferry"
+      ],
+      "included": [
+        "Tarjeta de regalo Poko Loko de US$40 por entrada",
+        "Ferry de 10 minutos hasta la plataforma",
+        "Natación y snorkel",
+        "Bebida de bienvenida",
+        "Música y entretenimiento",
+        "Recogida desde Couples Tower Isle hasta Falmouth, incluidos Airbnbs y puertos de cruceros (Montego Bay +US$10)"
+      ],
+      "notIncluded": [
+        "Comida y bebida propias (no se permiten a bordo)",
+        "Recogida al oeste de Montego Bay o al este de Couples Tower Isle"
+      ],
+      "before": [
+        "Solo adultos hasta que se confirme una tarifa para niños.",
+        "Haz el check-in en Mahogany Beach al menos 30 minutos antes de la salida. El barco no espera.",
+        "Las sesiones tienen cupo limitado, así que reserva con tiempo.",
+        "La tarjeta de regalo no es reembolsable. Las reservas canceladas con menos de 48 horas de anticipación no son reembolsables.",
+        "No se permite fumar. Hay una zona para vapear en la plataforma."
+      ],
+      "gettingThere": [
+        "Mahogany Beach, Ocho Rios, St Ann. A bordo se acepta efectivo y tarjeta.",
+        "A pocos minutos del puerto de cruceros de Ocho Rios."
+      ],
+      "products": {
+        "sunset-sips": {
+          "badge": "El más vendido",
+          "hours": "5:00 p. m. a 8:00 p. m.",
+          "desc": "La hora dorada en el agua, con un show de luces láser cuando oscurece."
+        },
+        "moonlight-vibes": {
+          "badge": "De noche",
+          "hours": "9:00 p. m. a 12:00 a. m.",
+          "desc": "Baile sobre el agua bajo las estrellas. Termina a medianoche, así que conviene reservar también una habitación."
+        },
+        "island-chill": {
+          "hours": "1:00 p. m. a 4:00 p. m.",
+          "desc": "La sesión de la tarde. Nadar, hacer snorkel y tomar el sol."
+        },
+        "morning-splash": {
+          "hours": "9:00 a. m. a 12:00 p. m.",
+          "desc": "Natación, snorkel y sol antes de que empiece el día."
+        }
+      },
+      "enquiries": {
+        "title": "La plataforma entera para tu grupo",
+        "sub": "Cumpleaños, aniversarios, eventos de empresa. Precio a consultar.",
+        "items": [
+          [
+            "Birthday Sailabration",
+            "Un día entero en el agua para un cumpleaños. Acceso a la cubierta, natación, música y el lugar para ustedes."
+          ],
+          [
+            "Aniversarios",
+            "La plataforma para tu grupo, con tus propias opciones de comida y bar."
+          ],
+          [
+            "Eventos de empresa",
+            "Jornadas de integración, lanzamientos de productos y reconocimientos al personal, con DJ, barra completa y un buen menú."
+          ]
+        ],
+        "cta": "Cuéntanos qué tienes en mente",
+        "wa": "¡Hola Golden Vacation! Me interesa reservar la plataforma entera de Poko Loko para un grupo. Ref GV-EXP-ENQ"
+      },
+      "often": {
+        "mystic-mountain": "Bobsled en la mañana, el bar al atardecer"
+      },
+      "pickups": {
+        "ocho": "Ocho Rios y Runaway Bay",
+        "ocho-rios-cruise-port": "Puerto de cruceros de Ocho Rios",
+        "falmouth": "Falmouth y Trelawny",
+        "falmouth-cruise-port": "Puerto de cruceros de Falmouth",
+        "mobay": "Montego Bay",
+        "montego-bay-cruise-port": "Puerto de cruceros de Montego Bay",
+        "own": "Llego por mi cuenta"
+      },
+      "pickupNote": "La recogida está incluida desde Couples Tower Isle hasta Falmouth: hoteles, Airbnbs y los puertos de cruceros de Ocho Rios y Falmouth. Desde Montego Bay y su puerto de cruceros, +US$10 por persona.",
+      "pickupAreas": "Ocho Rios, Runaway Bay, Falmouth o Montego Bay",
+      "pickupShort": "Recogida incluida desde Couples Tower Isle hasta Falmouth, también desde Montego Bay"
+    }
+  },
+  "ui": {
+    "Open photo {n} of {total}": "Abrir la foto {n} de {total}",
+    "See photos": "Ver fotos",
+    "Which photo": "Qué foto",
+    "Photo {n} of {total}": "Foto {n} de {total}",
+    "Previous photo": "Foto anterior",
+    "Next photo": "Foto siguiente",
+    "always in": "siempre incluida",
+    "adult": "adulto",
+    "child": "niño",
+    "per person": "por persona",
+    " for two": " para dos",
+    "Price on request": "Precio a consultar",
+    "Booked and paid on the spot": "Se reserva y se paga al momento",
+    "Visitor rate: booked and paid on the spot": "Se reserva y se paga al momento",
+    "We confirm availability, then you pay": "Confirmamos la disponibilidad y luego pagas",
+    "We reply, confirm, then send a card link": "Te respondemos, confirmamos y te enviamos un enlace de pago",
+    "Adults only, 18+": "Solo adultos, 18+",
+    "What you get": "Lo que reservas",
+    "Choose your {noun}": "Elige tu {noun}",
+    "What's included": "Qué incluye",
+    "Not included": "No incluye",
+    "Getting there": "Cómo llegar",
+    "Before you book": "Antes de reservar",
+    "Often booked with this": "Muchos también reservan",
+    "Only if it helps": "Solo si te sirve",
+    "Book and pay": "Reservar y pagar",
+    "Request this date": "Solicitar esta fecha",
+    "Send enquiry": "Enviar consulta",
+    "Confirmed straight away, paid by card on a secure page. You'll get the confirmation by email.": "Confirmado al momento, pagas con tarjeta en una página segura. Recibes la confirmación por correo.",
+    "Paid by card on a secure page and confirmed straight away. We send your booking details shortly.": "Pagas con tarjeta en una página segura y queda confirmado al momento. Te enviamos los detalles de tu reserva en breve.",
+    "We confirm availability first. Nothing is charged now.": "Primero confirmamos la disponibilidad. No se cobra nada ahora.",
+    "We reply within working hours. Nothing is charged now.": "Te respondemos en horario de oficina. No se cobra nada ahora.",
+    "Date": "Fecha",
+    "Start time": "Hora de inicio",
+    "Entry time": "Hora de entrada",
+    "Guests": "Personas",
+    "Adults": "Adultos",
+    "Fewer adults": "Un adulto menos",
+    "More adults": "Un adulto más",
+    "Children": "Niños",
+    "Fewer children": "Un niño menos",
+    "More children": "Un niño más",
+    "Up to 16 guests here. More than 16?": "Hasta 16 personas aquí. ¿Son más de 16?",
+    "Group booking:": "Reserva de grupo:",
+    "Email us": "Escríbenos un correo",
+    "and we'll price it.": "y te damos el precio.",
+    "Hotel pickup from {where} is priced by hotel. Ask us on WhatsApp and we add it to your booking.": "La recogida desde {where} se cotiza según el hotel. Pregúntanos por WhatsApp y la agregamos a tu reserva.",
+    "No hotel pickup on this one. Ask us on WhatsApp if you need a ride.": "Este no incluye recogida en el hotel. Pregúntanos por WhatsApp si necesitas transporte.",
+    "Pickup from": "Recogida en",
+    "Type your hotel, area or cruise port": "Escribe tu hotel, zona o puerto de cruceros",
+    "Pickup hotel, area or cruise port": "Hotel, zona o puerto de cruceros para la recogida",
+    "Villa or hotel name, for the driver": "Nombre de la villa o del hotel, para el chofer",
+    "I'll make my own way": "Llego por mi cuenta",
+    "Pickup from Negril hotels is included. Lucea and Montego Bay pickups are priced per person.": "La recogida en hoteles de Negril está incluida. Desde Lucea y Montego Bay se cobra por persona.",
+    "Hotel pickup from Negril and Montego Bay is included.": "La recogida en hoteles de Negril y Montego Bay está incluida.",
+    "Off a cruise ship?": "¿Vienes en crucero?",
+    "Montego Bay port": "Puerto de Montego Bay",
+    "Falmouth port": "Puerto de Falmouth",
+    "Ocho Rios port": "Puerto de Ocho Rios",
+    "Tell us your port and we only show what gets you back to the pier in time.": "Dinos tu puerto y solo te mostramos lo que te deja de vuelta en el muelle a tiempo.",
+    "All-aboard time": "Hora de embarque",
+    "Not sure": "No sé",
+    "4:00pm": "4:00 p. m.",
+    "5:00pm": "5:00 p. m.",
+    "6:00pm": "6:00 p. m.",
+    "7:00pm or later": "7:00 p. m. o más tarde",
+    "Not off a ship today? Clear this": "¿Hoy no vienes en crucero? Quitar esto",
+    "Who's booking": "Quién reserva",
+    "First name": "Nombre",
+    "Last name": "Apellido",
+    "Email for the confirmation": "Correo para la confirmación",
+    "WhatsApp or phone": "WhatsApp o teléfono",
+    "On a cruise? Ship name": "¿En crucero? Nombre del barco",
+    "Book on the spot": "Reserva al momento",
+    "Request a date": "Solicita una fecha",
+    "Send an enquiry": "Envía tu consulta",
+    "Continue": "Continuar",
+    "Change the booking": "Cambiar la reserva",
+    "How you'd like to pay": "Cómo quieres pagar",
+    "Card now": "Tarjeta ahora",
+    "On the secure card page": "En la página segura de pago",
+    "Pay on arrival": "Pagar al llegar",
+    "Nothing charged now": "No se cobra nada ahora",
+    "This is what we'll get": "Esto es lo que nos llega",
+    "Rather talk to a person first?": "¿Prefieres hablar antes con una persona?",
+    "Send this as a WhatsApp request instead": "Envíalo como solicitud por WhatsApp",
+    "Nothing is charged until you see the total. Tax and service included. A person reads every request.": "No se cobra nada hasta que veas el total. Impuestos y servicio incluidos. Una persona lee cada solicitud.",
+    "Reviews on Tripadvisor": "Opiniones en Tripadvisor",
+    "Traveller reviews": "Opiniones de viajeros",
+    "What people say about": "Lo que dicen de",
+    "Tripadvisor rating": "Calificación en Tripadvisor",
+    "More on Tripadvisor": "Más en Tripadvisor",
+    "Write a review": "Escribe una opinión",
+    "Reviews are written by Tripadvisor travellers about the tour, not about us.": "Las opiniones las escriben viajeros de Tripadvisor sobre el tour, no sobre nosotros.",
+    "Sample data shown until the Tripadvisor key is in.": "Datos de muestra hasta que se active la clave de Tripadvisor.",
+    "Book": "Reservar",
+    "Request": "Solicitar"
+  },
+  "client": {
+    "about ": "aprox. ",
+    "{name} photos": "Fotos de {name}",
+    "Close the photos": "Cerrar las fotos",
+    "Previous photo": "Foto anterior",
+    "Next photo": "Foto siguiente",
+    "Not on a ship day from {port}: {drive} each way.": "No da para un día de crucero desde el {port}: {drive} de ida y otro tanto de vuelta.",
+    " It works from {port} ({drive}).": " Sí funciona desde el {port} ({drive}).",
+    "A long day from {port}, {drive} each way. We check it against your all-aboard time before anything is charged.": "Un día largo desde el {port}, {drive} de ida y otro tanto de vuelta. Lo revisamos con tu hora de embarque antes de cobrar nada.",
+    "This option can't get you back to the pier by {time}": "Para las {time}, esta opción no te deja de vuelta en el muelle",
+    ". Later all-aboard? Pick it above": ". ¿Embarcas más tarde? Elige la hora arriba",
+    "Back at the pier by {time}": "De vuelta en el muelle a las {time}",
+    ", an hour before all-aboard": ", una hora antes del embarque",
+    " unless you tell us your all-aboard time": ", salvo que nos digas tu hora de embarque",
+    ", {drive} each way from {port}": ", {drive} de ida y otro tanto de vuelta desde el {port}",
+    "total for two people": "total para dos personas",
+    "Priced for two people, not per person.": "Precio para dos personas, no por persona.",
+    "total for ": "total para ",
+    "Children are priced when we confirm.": "Los niños se cotizan al confirmar.",
+    "Includes {amount} per person for pickup.": "Incluye {amount} por persona por la recogida.",
+    "Price on request": "Precio a consultar",
+    "That date has passed.": "Esa fecha ya pasó.",
+    "{venue} is closed on {day}days. Pick another day and we'll price the same thing.": "{venue} cierra los {days}. Elige otro día y te damos el mismo precio.",
+    "Children sail on the family days only. Pick one of those, or book adults only.": "Los niños navegan solo los días en familia. Elige uno de esos días o reserva solo para adultos.",
+    "Closed on that date. Pick another day.": "Cerrado esa fecha. Elige otro día.",
+    "This offer ends on {date}.": "Esta oferta termina el {date}.",
+    "Golden Experiences {kind} {ref}": "Golden Experiences, {kind} {ref}",
+    "booking": "reserva",
+    "request": "solicitud",
+    "Date: ": "Fecha: ",
+    "flexible": "flexible",
+    "2 people": "2 personas",
+    "Guests: ": "Personas: ",
+    "Pickup: ": "Recogida: ",
+    "making my own way": "llego por mi cuenta",
+    ", transfer to be priced": ", traslado por cotizar",
+    "Choice: ": "Elección: ",
+    "Total: ": "Total: ",
+    "to be priced": "por cotizar",
+    "Name: ": "Nombre: ",
+    "Cruise: ": "Crucero: ",
+    "from ": "desde el ",
+    "all-aboard ": "embarque a las ",
+    "all-aboard time not given": "sin hora de embarque",
+    " (flagged: not on a ship day)": " (atención: no da para un día de crucero)",
+    " (long day, please check)": " (día largo, por favor revisar)",
+    "Sent from goldenvacays.com/experiences/{slug}": "Enviado desde goldenvacays.com/experiences/es/{slug}",
+    "{n} left": "cupos: {n}",
+    "Back after all-aboard": "Vuelve después del embarque",
+    "after all-aboard": "después del embarque",
+    "No start gets you back to the pier by {time}": "Para las {time}, ninguna salida te deja de vuelta en el muelle",
+    " from {port}": " desde el {port}",
+    " Later all-aboard? Pick it below.": " ¿Embarcas más tarde? Elige la hora abajo.",
+    "Live availability is offline right now, so we'll confirm the time by WhatsApp.": "La disponibilidad en vivo no responde en este momento, así que te confirmamos la hora por WhatsApp.",
+    "Nothing left on that date. Try another day, or ask us and we'll check with the park.": "No queda nada para esa fecha. Prueba otro día o pregúntanos y lo revisamos con el parque.",
+    "Live availability from the park for {date}.": "Disponibilidad en vivo del parque para el {date}.",
+    "Checking availability with the park…": "Revisando la disponibilidad con el parque…",
+    "for two": "para dos",
+    "per person": "por persona",
+    "Adults only at this one.": "Aquí solo se admiten adultos.",
+    "We price children when we confirm.": "Los niños se cotizan al confirmar.",
+    " each": " c/u",
+    "ask us": "pregúntanos",
+    "Not on a ship day": "No da para un día de crucero",
+    "Ends after all-aboard": "Termina después del embarque",
+    "{drive} from {place}": "{drive} desde el {place}",
+    " · not on a ship day": " · no da para un día de crucero",
+    " · a long day, we check it first": " · día largo, lo revisamos primero",
+    " · fits a ship day": " · da para un día de crucero",
+    "Book and pay {total}": "Reservar y pagar {total}",
+    "Ask us anyway": "Pregúntanos de todos modos",
+    "Request this date": "Solicitar esta fecha",
+    "Send enquiry": "Enviar consulta",
+    "Reserve, pay {total} on arrival": "Reservar y pagar {total} al llegar",
+    "Confirmed straight away, paid by card on a secure page. You'll get the confirmation by email.": "Confirmado al momento, pagas con tarjeta en una página segura. Recibes la confirmación por correo.",
+    "Paid by card on a secure page and confirmed straight away. We send your booking details shortly by email and WhatsApp.": "Pagas con tarjeta en una página segura y queda confirmado al momento. Te enviamos los detalles de tu reserva en breve por correo y WhatsApp.",
+    "Live availability is offline, so this goes to us on WhatsApp and we confirm the time with the park. Nothing is charged now.": "La disponibilidad en vivo no responde, así que esto nos llega por WhatsApp y confirmamos la hora con el parque. No se cobra nada ahora.",
+    " Ask us anyway and we'll suggest what fits your ship day. Nothing is charged now.": " Pregúntanos de todos modos y te sugerimos lo que da para tu día de crucero. No se cobra nada ahora.",
+    " This goes to us on WhatsApp first. Nothing is charged now.": " Primero nos llega por WhatsApp. No se cobra nada ahora.",
+    "Pickup from the port is priced by hand, so this goes to us on WhatsApp first and we confirm the total. Nothing is charged now.": "La recogida en el puerto se cotiza aparte, así que primero nos llega por WhatsApp y confirmamos el total. No se cobra nada ahora.",
+    "We confirm availability first, then send a secure card link. Nothing is charged now.": "Primero confirmamos la disponibilidad y luego te enviamos un enlace seguro de pago. No se cobra nada ahora.",
+    "We reply within working hours with a secure card link. Nothing is charged now.": "Te respondemos en horario de oficina con un enlace seguro de pago. No se cobra nada ahora.",
+    "Next: your details, then a secure card page. Nothing is charged yet.": "Siguiente: tus datos y luego una página segura de pago. Todavía no se cobra nada.",
+    "Next: send it to us on WhatsApp. Nothing is charged now.": "Siguiente: envíanoslo por WhatsApp. No se cobra nada ahora.",
+    "Continue": "Continuar",
+    "Book": "Reservar",
+    "Request": "Solicitar",
+    "Date to confirm": "Fecha por confirmar",
+    "Making my own way": "Llego por mi cuenta",
+    "Off a ship": "En crucero",
+    ", all-aboard ": ", embarque a las ",
+    "Pick your departure date first.": "Primero elige la fecha de salida.",
+    "Pick your arrival date first.": "Primero elige la fecha de llegada.",
+    "Pick a date first.": "Primero elige una fecha.",
+    "Pick a start time.": "Elige una hora de inicio.",
+    "Where should the driver collect you? Pick your hotel or area from the list, or choose I'll make my own way.": "¿Dónde te recoge el chofer? Elige tu hotel o zona de la lista, o marca “Llego por mi cuenta”.",
+    "Pick a date": "Elige una fecha",
+    "Previous month": "Mes anterior",
+    "Next month": "Mes siguiente",
+    "Date": "Fecha",
+    "Closed on {days}": "Cerrado los {days}",
+    " and ": " y ",
+    "With children: {days} only": "Con niños: solo los {days}",
+    "This offer ends {date}": "Esta oferta termina el {date}",
+    ", villa or Airbnb": ", villa o Airbnb",
+    "pickup included": "recogida incluida",
+    "No pickup. The meeting point comes with your details.": "Sin recogida. El punto de encuentro te llega con los detalles de la reserva.",
+    "No pickup from {place} on this one, so it's priced without pickup. Make your own way, or ask us on WhatsApp about a transfer.": "Este no recoge en {place}, así que el precio va sin recogida. Llega por tu cuenta o pregúntanos por WhatsApp por un traslado.",
+    "Pickup from {place} is priced by hand, so this one goes to us on WhatsApp and we confirm the transfer price before anything is charged.": "La recogida desde {place} se cotiza aparte, así que esto nos llega por WhatsApp y confirmamos el precio del traslado antes de cobrar nada.",
+    ", +{amount} per person": ", +{amount} por persona",
+    ", pickup included": ", recogida incluida",
+    ". Give us the villa or Airbnb name and we confirm the pickup point.": ". Danos el nombre de la villa o del Airbnb y te confirmamos el punto de recogida.",
+    "Pickup from Negril hotels is included. Lucea and Montego Bay pickups are priced per person.": "La recogida en hoteles de Negril está incluida. Desde Lucea y Montego Bay se cobra por persona.",
+    "Hotel pickup from Negril and Montego Bay is included.": "La recogida en hoteles de Negril y Montego Bay está incluida.",
+    "Not on our list. Type your area ({areas}) for a villa or Airbnb, or make your own way.": "No está en nuestra lista. Escribe tu zona ({areas}) si te quedas en una villa o un Airbnb, o llega por tu cuenta.",
+    "Negril, Lucea or Montego Bay": "Negril, Lucea o Montego Bay",
+    "Not on our list? Pick your area for a villa or Airbnb:": "¿No está en la lista? Elige tu zona si te quedas en una villa o un Airbnb:",
+    "no pickup": "sin recogida",
+    "priced by hand": "se cotiza aparte",
+    "Cruise port": "Puerto de cruceros",
+    "Not the one? Type your area ({areas}) for a villa or Airbnb, or make your own way.": "¿No es ese? Escribe tu zona ({areas}) si te quedas en una villa o un Airbnb, o llega por tu cuenta.",
+    "I'll make my own way": "Llego por mi cuenta",
+    "We need a first name for the booking.": "Necesitamos un nombre para la reserva.",
+    "And a last name.": "Y un apellido.",
+    "The confirmation goes by email, so we need an address.": "La confirmación llega por correo, así que necesitamos tu correo electrónico.",
+    "That email doesn't look right.": "Ese correo no parece correcto.",
+    "A WhatsApp or phone number, so we can send your details.": "Un número de WhatsApp o de teléfono, para enviarte los detalles.",
+    "Opening secure payment…": "Abriendo el pago seguro…",
+    "Something went wrong.": "Algo salió mal.",
+    " You can send the same booking by WhatsApp and we'll confirm it by hand.": " Puedes enviarnos la misma reserva por WhatsApp y te la confirmamos nosotros.",
+    "Reserving…": "Reservando…",
+    "<span class=\"kicker\">Reserved</span><h3 class=\"hh\"></h3><p>Your reference is <b class=\"r-ref\"></b>. The details are on their way to <b class=\"r-mail\"></b>, and one of our travel professionals will send your pickup details shortly.</p>": "<span class=\"kicker\">Reservado</span><h3 class=\"hh\"></h3><p>Tu número de reserva es <b class=\"r-ref\"></b>. Los detalles van en camino a <b class=\"r-mail\"></b>, y uno de nuestros asesores de viaje te enviará los datos de la recogida en breve.</p>",
+    "You're booked in. You pay {total} when you arrive.": "Reserva hecha. Pagas {total} al llegar.",
+    "your email": "tu correo",
+    "Send by WhatsApp": "Enviar por WhatsApp",
+    "{n} of 5 bubbles": "{n} de 5 burbujas",
+    "from {n} review": "según {n} opinión",
+    "from {n} reviews": "según {n} opiniones",
+    "Read more on Tripadvisor": "Leer más en Tripadvisor",
+    "Hi Golden Vacation! I've just booked an experience on your website and I have a question. Ref ": "¡Hola Golden Vacation! Acabo de reservar una excursión en su sitio web y tengo una pregunta. Ref ",
+    "Tour": "Tour",
+    "Booked": "Reserva",
+    "When": "Cuándo",
+    "Guests": "Personas",
+    "Pickup": "Recogida",
+    "Paid": "Pagado",
+    "The payment page didn't open.": "La página de pago no se abrió.",
+    "That didn't go through.": "No se pudo completar.",
+    "This one is booked by WhatsApp, not on the spot.": "Este se reserva por WhatsApp, no al momento.",
+    "Pick a date.": "Elige una fecha.",
+    "We need a first and last name for the booking.": "Necesitamos nombre y apellido para la reserva.",
+    "We need a phone or WhatsApp number.": "Necesitamos un número de teléfono o de WhatsApp.",
+    "This option can't be confirmed live right now.": "Esta opción no se puede confirmar en vivo en este momento.",
+    "The park's live calendar didn't answer.": "El calendario en vivo del parque no respondió.",
+    "Which hotel should the driver collect you from?": "¿En qué hotel te recoge el chofer?",
+    "Couldn't price that.": "No pudimos calcular el precio.",
+    "Children on this one are priced by a person. Send it as a WhatsApp request.": "En esta opción, a los niños los cotizamos aparte. Envíalo como solicitud por WhatsApp.",
+    "Adults only at this venue.": "Aquí solo se admiten adultos.",
+    "The venue is closed on that date.": "Cerrado esa fecha."
+  }
+}
