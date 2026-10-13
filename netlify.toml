@@ -8,3 +8,7 @@
   for = "/.netlify/functions/*"
   [headers.values]
     Cache-Control = "no-store"
+
+# IndexNow: once a deploy is live, tell Bing which pages changed (netlify/plugins/indexnow/index.js)
+[[plugins]]
+  package = "/netlify/plugins/indexnow"
