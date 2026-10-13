@@ -257,6 +257,11 @@
         "subMobile": "Suites del Bosque · direct from MBJ",
         "nights": 3
       }
+    ],
+    "visaLink": [
+      "Not sure where your passport can take you?",
+      "See every visa-free country for Jamaicans",
+      "/getaways/visa-free-countries/"
     ]
   },
   "staycations": {
@@ -494,6 +499,10 @@
       [
         "About us",
         "/about/"
+      ],
+      [
+        "Visa-free countries",
+        "/getaways/visa-free-countries/"
       ],
       [
         "Resort status",

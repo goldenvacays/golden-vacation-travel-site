@@ -81,12 +81,64 @@
    "No. Both are visa-free for Jamaican passports. Colombia allows up to 90 days, extendable to 180 days a year. In Peru the officer sets your stay on arrival, usually up to 90 days."
   ],
   [
-   "Can I use my US visa to travel without another visa?",
-   "In some places, yes. Costa Rica, the Cayman Islands, Turks and Caicos, Aruba, the British Virgin Islands, Bermuda and Guatemala let Jamaicans in with a valid US visa (and some also accept UK, Canadian or Schengen visas). Each has its own conditions, such as multiple entry, months left on the visa or flying in from the US. They are in the table above."
-  ],
-  [
    "Do Jamaicans need a visa for Thailand now?",
    "Yes. Since 15 September 2026 Jamaica is not on Thailand's visa-exemption list, so you need a Thai e-Visa before you travel."
+  ],
+  [
+   "Do Jamaicans need a visa for Canada?",
+   "Yes. Jamaicans need a Canadian visitor visa. The exception is a US green card: with it you need no visa or eTA, just the green card and your Jamaican passport."
+  ],
+  [
+   "Do Jamaicans need a visa for the UK?",
+   "Yes. Jamaica is on the UK's visa national list, so you need a Standard Visitor visa (£135) before you travel. Visits can be up to 6 months."
+  ],
+  [
+   "Do Jamaicans need a visa for the USA?",
+   "Yes. You need a B1/B2 visitor visa (US$185 to apply), because Jamaica is not in the Visa Waiver Program. Puerto Rico and the US Virgin Islands follow the same rules."
+  ],
+  [
+   "Do Jamaicans need a visa for Europe?",
+   "Yes, for most of Europe. One Schengen visa covers the Schengen countries for up to 90 days in any 180 days (€90 for adults). Ireland and Cyprus have their own rules."
+  ],
+  [
+   "Do Jamaicans need a visa for Cuba?",
+   "You need a tourist e-Visa, which you get online at evisacuba.cu before you fly. Stays are up to 90 days, extendable once. Bring travel medical insurance and fill in the D’Viajeros form."
+  ],
+  [
+   "Do Jamaicans need a visa for the Cayman Islands?",
+   "Yes, unless you hold a valid US, UK or Canadian visa and fly in directly from that country; then you can stay up to 30 days. Under 15s, over 70s and Jamaicans living in the US, Canada or UK and flying in from there are exempt too."
+  ],
+  [
+   "Do Jamaicans need a visa for Costa Rica?",
+   "Yes, unless you hold a multiple-entry US or Canadian visa or residence (not a transit visa) or a multiple-entry Schengen C or D visa, valid at least 1 day when you arrive. UK, EU, Swiss, Norwegian or Icelandic residence also works. Stays are up to 30 days, extendable to 90."
+  ],
+  [
+   "Do Jamaicans need a visa for Trinidad, Barbados or the Bahamas?",
+   "No. CARICOM countries such as Trinidad and Tobago, Barbados, Saint Lucia and Grenada let Jamaicans stay up to 6 months. The Bahamas is visa-free too; the officer sets your stay, up to 8 months."
+  ],
+  [
+   "Do Jamaicans need a visa for Brazil?",
+   "No. Brazil is visa-free for Jamaican passports for up to 90 days."
+  ],
+  [
+   "Do Jamaicans need a visa for Dubai?",
+   "Yes. Jamaicans can't get a visa on arrival in the UAE, so arrange the visit visa before you travel. It is usually for 30 days."
+  ],
+  [
+   "Do Jamaicans need a visa for Turkey?",
+   "You need an e-Visa, which you get online at evisa.gov.tr before you fly. It allows multiple entries for up to 3 months."
+  ],
+  [
+   "Do Jamaicans need a visa for Japan?",
+   "Yes. Apply at the Embassy of Japan in Kingston. If you live in the US, Canada or the UK, you can apply for Japan’s eVISA online instead."
+  ],
+  [
+   "Can Jamaicans go to Aruba or Curaçao without a visa?",
+   "Curaçao, yes: it is visa-free, 30 days at a time. Aruba needs a visa unless you hold a valid multiple-entry US, Canadian, UK, Irish or Schengen visa, or residence in one of those places, plus an approved ED card before you fly."
+  ],
+  [
+   "Can I use my US visa to travel without another visa?",
+   "In some places, yes. Costa Rica, the Cayman Islands, Turks and Caicos, Aruba, the British Virgin Islands, Bermuda and Guatemala let Jamaicans in with a valid US visa (and some also accept UK, Canadian or Schengen visas). Each has its own conditions, such as multiple entry, months left on the visa or flying in from the US. They are in the table above."
   ],
   [
    "How long should my passport be valid?",
@@ -1449,5 +1501,53 @@
    "src": "https://embwashington.mfaft.gov.jm/pdf/Country-Listing-March-3-2025.pdf",
    "official": true
   }
- ]
+ ],
+ "aliases": {
+  "Mexico": "cancun mexico city tulum playa del carmen",
+  "Dominican Republic": "punta cana santo domingo dr",
+  "United Arab Emirates": "dubai abu dhabi uae emirates",
+  "Schengen area (most of Europe)": "europe spain france italy germany netherlands holland portugal greece switzerland austria belgium sweden norway denmark finland iceland poland czech croatia malta hungary romania bulgaria paris rome amsterdam",
+  "United Kingdom": "uk england london scotland wales britain",
+  "United States": "usa us america new york miami florida puerto rico virgin islands",
+  "Turks and Caicos Islands (UK)": "tci providenciales turks",
+  "Cayman Islands (UK)": "grand cayman",
+  "Colombia": "medellin bogota cartagena",
+  "Peru": "lima machu picchu cusco",
+  "Panama": "panama city",
+  "Brazil": "rio de janeiro sao paulo",
+  "Bahamas": "nassau",
+  "Trinidad and Tobago": "trinidad tobago port of spain",
+  "Antigua and Barbuda": "antigua",
+  "Saint Kitts and Nevis": "st kitts nevis",
+  "Saint Lucia": "st lucia",
+  "Saint Vincent and the Grenadines": "st vincent svg",
+  "Hong Kong (China)": "hongkong",
+  "South Korea": "korea seoul",
+  "Russia": "moscow",
+  "Turkey": "istanbul turkiye",
+  "Israel": "tel aviv jerusalem",
+  "Japan": "tokyo",
+  "China": "beijing shanghai",
+  "Thailand": "bangkok phuket",
+  "South Africa": "cape town johannesburg",
+  "Kenya": "nairobi",
+  "Ghana": "accra",
+  "Canada": "toronto montreal vancouver",
+  "Australia": "sydney melbourne",
+  "Cuba": "havana",
+  "Curaçao (Netherlands)": "curacao willemstad",
+  "British Virgin Islands (UK)": "bvi tortola",
+  "Ireland": "dublin",
+  "Egypt": "cairo",
+  "India": "delhi mumbai",
+  "Indonesia": "bali jakarta",
+  "Vietnam": "hanoi ho chi minh",
+  "Costa Rica": "san jose",
+  "Guatemala": "guatemala city",
+  "Argentina": "buenos aires",
+  "Chile": "santiago",
+  "Ecuador": "quito galapagos",
+  "Belize": "belize city",
+  "Barbados": "bridgetown"
+ }
 }

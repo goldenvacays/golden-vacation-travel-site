@@ -310,6 +310,7 @@ function homePage() {
   const getaways = `<section class="sec wrap" id="getaways" aria-labelledby="getaways-h">
   <div class="sec-head"><div>${kicker(H.getaways.kicker)}<h2 id="getaways-h" class="hh">${esc(H.getaways.title)}</h2><p class="sec-sub desk">${esc(H.getaways.sub)}</p></div>${biglink(H.getaways.all, "/getaways/")}</div>
   <div class="strip">${gcards}</div>
+  ${H.getaways.visaLink ? `<p class="sec-sub gv-visa">${esc(H.getaways.visaLink[0])} <a href="${H.getaways.visaLink[2]}" style="color:var(--ink);font-weight:800;text-decoration:underline">${esc(H.getaways.visaLink[1])}</a></p>` : ""}
 </section>`;
 
   // staycations
