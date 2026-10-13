@@ -465,7 +465,7 @@ ${footer()}
 ${scripts()}
 </body></html>`;
   const title = kind === "privacy" ? "Privacy policy | Golden Vacation & Travel" : "Terms and conditions | Golden Vacation & Travel";
-  const description = kind === "privacy" ? "What Golden Vacation and Travel collects, why, and how we protect it." : "Booking terms, payments, cancellations and responsibilities for Golden Vacation and Travel.";
+  const description = kind === "privacy" ? "What Golden Vacation and Travel collects, why, and how we protect it. We don't sell your data, and you can ask us to see, correct or delete what we hold." : "Booking terms for Golden Vacation and Travel: quotes, deposits and payments, cancellations and changes, group rates, travel documents and our role as an agent.";
   return head({ title, description, pathname: `/${kind}/`, image: H.meta.ogImage, bodyClass: "legal-page" }) + body;
 }
 
