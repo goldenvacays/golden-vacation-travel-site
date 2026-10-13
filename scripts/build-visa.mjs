@@ -261,8 +261,12 @@ const smPath = path.join(ROOT, "public/sitemap.xml");
 if (fs.existsSync(smPath)) {
   const entry = `<!-- visa -->\n<url>\n  <loc>${URL_}</loc>\n  <lastmod>${V.asOf}T00:00:00+00:00</lastmod>\n  <priority>0.7</priority>\n</url>\n<!-- /visa -->\n`;
   const pageRe = new RegExp(`<url>\\s*<loc>${URL_.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}</loc>[\\s\\S]*?</url>\\s*`, "g");
-  let sm = fs.readFileSync(smPath, "utf8").replace(/\n*<!-- visa -->[\s\S]*?<!-- \/visa -->\n*/, "\n").replace(pageRe, "");
-  sm = sm.replace(/\s*<\/urlset>\s*$/, `\n\n${entry}\n</urlset>\n`);
+  /* the block stays where it is, so running the builders in a different order never reshuffles the sitemap */
+  let sm = fs.readFileSync(smPath, "utf8");
+  const blockRe = /<!-- visa -->[\s\S]*?<!-- \/visa -->\n?/;
+  const m = sm.match(blockRe);
+  if (m) sm = sm.slice(0, m.index).replace(pageRe, "") + entry + sm.slice(m.index + m[0].length).replace(pageRe, "");
+  else sm = sm.replace(pageRe, "").replace(/\s*<\/urlset>\s*$/, `\n\n${entry}\n</urlset>\n`);
   fs.writeFileSync(smPath, sm);
   console.log("sitemap: visa page listed");
 }

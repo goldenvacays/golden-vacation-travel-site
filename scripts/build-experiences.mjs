@@ -352,7 +352,7 @@ function footer() {
     ${col("Coming to Jamaica", coming)}
     ${col("Help", help)}
   </div>
-  <div class="foot-links mob">${NAV.map(([l, h]) => `<a href="${h}">${esc(l)}</a>`).join("")}<a href="${waHome}">Contact</a></div>
+  <div class="foot-links mob">${[...NAV, ...(F.mob || [])].map(([l, h]) => `<a href="${h}">${esc(l)}</a>`).join("")}<a href="${waHome}">Contact</a></div>
   <div class="foot-bot"><span>© 2026 Golden Vacation &amp; Travel Limited · St Ann, Jamaica · <a href="/terms/">Terms</a> · <a href="/privacy/">Privacy</a></span><span><a href="${S.instagram}" rel="noopener">Instagram</a> · <a href="${S.facebook}" rel="noopener">Facebook</a></span></div>
 </div></footer>`;
 }

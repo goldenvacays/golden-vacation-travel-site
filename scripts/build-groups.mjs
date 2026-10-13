@@ -112,8 +112,8 @@ function footer(short = false) {
   <div class="foot-brand"><b>GOLDEN VACATION &amp; TRAVEL</b><span>${esc(G.officesLine)}. ${esc(G.iataLine)}.</span></div>
   ${short ? "" : `<div class="foot-links">
     <div><a href="${BASE}/#rooms">${esc(G.rooms.kicker)}</a><a href="${BASE}/#jamaica">${esc(G.overseas.kicker)}</a><a href="${BASE}/#trips">${esc(G.trips.kicker)}</a><a href="${BASE}/copa/">Copa group fares</a><a href="${BASE}/#hold">The hold</a></div>
-    <div><a href="${BASE}/enquire/">${esc(G.cta.button)}</a><a href="${BASE}/#how">How it works</a><a href="/getaways/">Getaways</a><a href="/">Jamaica hotels &amp; tours</a></div>
-    <div><a href="/terms/">Terms</a><a href="/privacy/">Privacy</a></div>
+    <div><a href="${BASE}/enquire/">${esc(G.cta.button)}</a><a href="${BASE}/#how">How it works</a><a href="/getaways/">Getaways</a><a href="/getaways/visa-free-countries/">Visa-free countries</a><a href="/">Jamaica hotels &amp; tours</a></div>
+    <div><a href="/about/">About us</a><a href="/terms/">Terms</a><a href="/privacy/">Privacy</a></div>
   </div>`}
   <div class="foot-contact"><a href="mailto:${G.email}">${G.email}</a><span>Call ${esc(phoneDisplay)}</span><span>St Ann, Jamaica</span></div>
 </div></footer>`;

@@ -118,12 +118,15 @@ function nav(lang, here, cta = true) {
 
 function footer(lang) {
   const T = J.i18n[lang], F = T.foot;
+  /* the footer only (not the menu): the visa list sits under Getaways, About us with the legal pages.
+     The Spanish footer leaves both out, as both pages are in English. */
+  const more = T.menuMore.flatMap((x) => (x[1] === "/getaways/" && F.visa ? [x, F.visa] : [x]));
   return `<footer class="foot" role="contentinfo"><div class="wrap">
   <div class="foot-brand"><b>GOLDEN VACATION &amp; TRAVEL</b><span>${esc(F.line)}</span></div>
   <div class="foot-links">
     <div>${T.audiences.map(([l, h]) => `<a href="${h}">${esc(l)}</a>`).join("")}</div>
-    <div>${T.menuMore.map(([l, h]) => `<a href="${h}">${esc(l)}</a>`).join("")}</div>
-    <div><a href="/terms/">${esc(F.terms)}</a><a href="/privacy/">${esc(F.privacy)}</a></div>
+    <div>${more.map(([l, h]) => `<a href="${h}">${esc(l)}</a>`).join("")}</div>
+    <div>${F.about ? `<a href="${F.about[1]}">${esc(F.about[0])}</a>` : ""}<a href="/terms/">${esc(F.terms)}</a><a href="/privacy/">${esc(F.privacy)}</a></div>
   </div>
   <div class="foot-contact"><a href="mailto:${EMAIL}">${EMAIL}</a><span>${esc(F.call)} ${esc(phoneDisplay)}</span><span>${esc(F.where)}</span></div>
 </div></footer>`;

@@ -200,7 +200,9 @@
     "call": "Call",
     "where": "St Ann, Jamaica",
     "terms": "Terms",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "visa": ["Visa-free countries", "/getaways/visa-free-countries/"],
+    "about": ["About us", "/about/"]
    },
    "dealsKicker": "This month",
    "dealsTitle": "Deals worth a look."

@@ -513,15 +513,18 @@ body.jmd .jmd-v { display: inline; }
   .hero h1 { font-size: 96px; }
 }
 
-/* The Getaways pages have no menu button, so their four links cannot be tucked behind one and
-   hiding them would strand the only route to those sections. The wordmark, the pill, the links and
-   the currency switch want about 1050px and the nav has that only from 1200px up; .nav-l carries
-   min-width:0, so rather than overflow it was shrinking under its own content and sliding the
-   wordmark behind "Destinations". Below 1200px the links take a row of their own. */
-@media (min-width: 900px) and (max-width: 1199px) {
-  .ga-page .nav { flex-wrap: wrap; height: auto; padding-top: 12px; padding-bottom: 12px; row-gap: 10px; }
-  .ga-page .nav-l { flex: none; }                            /* never narrower than its own content */
-  .ga-page .nav-links { order: 3; flex-basis: 100%; }
+/* The Getaways pages have no menu button, so their five links cannot be tucked behind one and
+   hiding them would strand the only route to those sections. Measured with "Visa-free countries"
+   added: the padding, the wordmark and pill (322px), the links (639px, 679px once the gap is 30px)
+   and the currency switch with WhatsApp (245px) want 1358px, plus room between the groups, so one
+   row fits only from 1440px up. .nav-l carries min-width:0, so rather than overflow it shrinks under
+   its own content and slides the wordmark behind "Destinations". Below 1440px the links take a row
+   of their own. The rule hangs off .ga-nav, which the nav itself carries, so the hotel pages and the
+   visa page get it too (they missed it when it hung off the hub's body class). */
+@media (min-width: 900px) and (max-width: 1439px) {
+  .nav.ga-nav { flex-wrap: wrap; height: auto; padding-top: 12px; padding-bottom: 12px; row-gap: 10px; }
+  .ga-nav .nav-l { flex: none; }                             /* never narrower than its own content */
+  .ga-nav .nav-links { order: 3; flex-basis: 100%; }
 }
 @media (min-width: 1340px) { .nav-links { gap: 30px; } }
 

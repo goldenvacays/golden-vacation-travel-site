@@ -162,7 +162,7 @@ function footer() {
     ${col("Coming to Jamaica", coming)}
     ${col("Help", help)}
   </div>
-  <div class="foot-links mob">${H.nav.map(([l, h]) => `<a href="${h}">${esc(l)}</a>`).join("")}<a href="${waHome}">Contact</a></div>
+  <div class="foot-links mob">${[...H.nav, ...(F.mob || [])].map(([l, h]) => `<a href="${h}">${esc(l)}</a>`).join("")}<a href="${waHome}">Contact</a></div>
   <div class="foot-bot"><span>© 2026 Golden Vacation &amp; Travel Limited · St Ann, Jamaica · <a href="/terms/">Terms</a> · <a href="/privacy/">Privacy</a></span><span><a href="${S.instagram}" rel="noopener">Instagram</a> · <a href="${S.facebook}" rel="noopener">Facebook</a></span></div>
 </div></footer>`;
 }
@@ -643,8 +643,12 @@ if (!BUNDLE) {
     const loc = `${S.origin}/about/`;
     const entry = `<!-- about -->\n<url>\n  <loc>${loc}</loc>\n  <lastmod>${new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10)}T00:00:00+00:00</lastmod>\n  <priority>0.5</priority>\n</url>\n<!-- /about -->\n`;
     const re = new RegExp(`<url>\\s*<loc>${loc.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}</loc>[\\s\\S]*?</url>\\s*`, "g");
-    let smx = fs.readFileSync(smPath, "utf8").replace(/\n*<!-- about -->[\s\S]*?<!-- \/about -->\n*/, "\n").replace(re, "");
-    smx = smx.replace(/\s*<\/urlset>\s*$/, `\n\n${entry}\n</urlset>\n`);
+    /* the block stays where it is, so running the builders in a different order never reshuffles the sitemap */
+    let smx = fs.readFileSync(smPath, "utf8");
+    const blockRe = /<!-- about -->[\s\S]*?<!-- \/about -->\n?/;
+    const m = smx.match(blockRe);
+    if (m) smx = smx.slice(0, m.index).replace(re, "") + entry + smx.slice(m.index + m[0].length).replace(re, "");
+    else smx = smx.replace(re, "").replace(/\s*<\/urlset>\s*$/, `\n\n${entry}\n</urlset>\n`);
     fs.writeFileSync(smPath, smx);
     console.log("sitemap: about page listed");
   }

@@ -258,7 +258,7 @@ function footer() {
     ${col("Coming to Jamaica", coming)}
     ${col("Help", help)}
   </div>
-  <div class="foot-links mob">${NAV.map(([l, h]) => `<a href="${h}">${esc(l)}</a>`).join("")}<a href="${waHome}">Contact</a></div>
+  <div class="foot-links mob">${[...NAV, ...(F.mob || [])].map(([l, h]) => `<a href="${h}">${esc(l)}</a>`).join("")}<a href="${waHome}">Contact</a></div>
   <div class="foot-bot"><span>© 2026 Golden Vacation &amp; Travel Limited · St Ann, Jamaica · <a href="/terms/">Terms</a> · <a href="/privacy/">Privacy</a></span><span><a href="${S.instagram}" rel="noopener">Instagram</a> · <a href="${S.facebook}" rel="noopener">Facebook</a></span></div>
 </div></footer>`;
 }
@@ -566,8 +566,12 @@ export const TR = ${JSON.stringify({ airports: T.airports, trips: T.trips, vehic
     const entries = `<url>\n  <loc>${S.origin}${HUB}</loc>\n  <lastmod>${TODAY}T00:00:00+00:00</lastmod>\n  <priority>0.8</priority>\n</url>`;
     /* drop the marked block and any loose copy of the hub's entry, so the sitemap never lists /transfers/ twice */
     const hubRe = new RegExp(`<url>\\s*<loc>${(S.origin + HUB).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}</loc>[\\s\\S]*?</url>\\s*`, "g");
-    let sm = fs.readFileSync(smPath, "utf8").replace(/\n*<!-- transfers -->[\s\S]*?<!-- \/transfers -->\n*/, "\n").replace(hubRe, "");
-    sm = sm.replace(/\s*<\/urlset>\s*$/, `\n\n<!-- transfers -->\n${entries}\n<!-- /transfers -->\n\n</urlset>\n`);
+    /* the block stays where it is, so running the builders in a different order never reshuffles the sitemap */
+    let sm = fs.readFileSync(smPath, "utf8");
+    const block = `<!-- transfers -->\n${entries}\n<!-- /transfers -->\n`, blockRe = /<!-- transfers -->[\s\S]*?<!-- \/transfers -->\n?/;
+    const m = sm.match(blockRe);
+    if (m) sm = sm.slice(0, m.index).replace(hubRe, "") + block + sm.slice(m.index + m[0].length).replace(hubRe, "");
+    else sm = sm.replace(hubRe, "").replace(/\s*<\/urlset>\s*$/, `\n\n${block}\n</urlset>\n`);
     fs.writeFileSync(smPath, sm);
     console.log("sitemap: transfers url added");
   }
