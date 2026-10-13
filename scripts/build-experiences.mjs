@@ -6,6 +6,8 @@
     public/experiences/<venue>.html               one page per venue, served at /experiences/<venue> (Netlify serves .html files at the bare path)
     public/experiences/booked.html                the page a guest lands on after paying
     public/experiences/near/<hotel>.html          one page per hotel, served at /experiences/near/<hotel>
+    public/experiences/es/<venue>.html            Spanish copies of the tours in data/experiences-es.json, at /experiences/es/<venue>
+    public/experiences/es/booked.html             the Spanish booked page
   Flat files on purpose: the section goes up through GitHub's web uploader, which commits one directory at a time.
   Bold design: /getaways/assets/getaways.css (tokens) + /assets/experiences.css (this section's components).
 
@@ -54,7 +56,62 @@ const small = (file) => file.replace(/\.jpg$/, "-s.jpg");
 const pic = (file, alt, extra = "") => `<img src="${img(file)}" alt="${esc(alt)}"${/loading=/.test(extra) ? "" : ' loading="lazy"'} decoding="async"${extra}>`; // a hero image passes loading="eager" itself; the first loading attribute is the one browsers honour
 const wa = (text) => `https://wa.me/${S.whatsapp}?text=${encodeURIComponent(text)}`;
 const waHome = wa("Hi Golden Vacation! I'm looking at your tours and day passes and I'd like some help choosing. Ref GV-EXP");
+const waHomeEs = wa("¡Hola Golden Vacation! Estoy viendo sus excursiones y quisiera ayuda para elegir. Ref GV-EXP-ES");
 const live = (p) => !p.until || p.until >= TODAY;
+
+/* ---------- Spanish ----------
+   The tours listed in data/experiences-es.json also get a Spanish page at /experiences/es/<slug>, with a Spanish booked page
+   at /experiences/es/booked. That file carries text only, so prices, dates, times and rules are changed once, in
+   data/experiences.json. LANG is the language of the page being written: L() looks up a fixed string in the Spanish file's
+   ui list (the English text is the key), esVenue() lays the Spanish text over a tour. Anything missing stays English and
+   the build lists it at the end. English pages never change because of any of this, except the EN/ES switch and the
+   hreflang lines on the tours that have a Spanish page. */
+const ES = fs.existsSync(path.join(ROOT, "data/experiences-es.json")) ? JSON.parse(fs.readFileSync(path.join(ROOT, "data/experiences-es.json"), "utf8")) : null;
+const ES_SLUGS = new Set(ES ? Object.keys(ES.venues || {}) : []);
+const ES_BASE = `${BASE}/es`;
+let LANG = "en";
+const ES_MISSING = new Set();
+const L = (s) => { if (LANG !== "es") return s; const t = (ES.ui || {})[s]; if (t == null) { ES_MISSING.add(s); return s; } return t; };
+const Lf = (s, vars) => Object.entries(vars).reduce((t, [k, v]) => t.split(`{${k}}`).join(String(v)), L(s));
+const hasEs = (slug) => ES_SLUGS.has(slug);
+/* a tour's page in the language being written: a Spanish page links to the Spanish copy when there is one */
+const venueHref = (slug) => (LANG === "es" && hasEs(slug) ? `${ES_BASE}/${slug}` : `${BASE}/${slug}`);
+/* "10:00am" shows as "10:00 a. m." on Spanish pages; the value the checkout gets never changes, only what is shown */
+const showTime = (t) => {
+  if (LANG !== "es") return t;
+  const m = String(t).trim().toLowerCase().match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm|noon|midnight)?$/); if (!m) return t;
+  const ap = m[3] === "noon" ? "pm" : m[3] === "midnight" ? "am" : m[3];
+  return `${m[1]}:${m[2] || "00"}${ap ? ` ${ap === "am" ? "a. m." : "p. m."}` : ""}`;
+};
+/* the EN / ES switch: the currency pill's look, but links, because each language has its own address */
+const langPill = (slug) => hasEs(slug) ? `<div class="curr lang" role="group" aria-label="${LANG === "es" ? "Idioma" : "Language"}"><a href="${BASE}/${slug}" hreflang="en" lang="en"${LANG === "en" ? ' class="on" aria-current="page"' : ""}>EN</a><a href="${ES_BASE}/${slug}" hreflang="es" lang="es"${LANG === "es" ? ' class="on" aria-current="page"' : ""}>ES</a></div>` : "";
+/* a tour with its Spanish text laid over it. The Spanish pages are for visitors: resident-only options, the resident rate and
+   J$ prices are left out. Choice labels are translated but the values stay English, because the checkout checks them. */
+function esVenue(v) {
+  const e = ES.venues[v.slug]; if (!e) return v;
+  const take = (where, en, es, quiet = false) => { if (es != null) return es; if (!quiet && en != null && en !== "" && !(Array.isArray(en) && !en.length)) ES_MISSING.add(`${v.slug}: ${where}`); return en; };
+  const products = v.products.filter((p) => p.audience !== "resident").map((p) => {
+    const t = (e.products || {})[p.id] || {}, tc = t.choose || {};
+    const out = { ...p, name: take(`${p.id}.name`, p.name, t.name, true), badge: take(`${p.id}.badge`, p.badge, t.badge), hours: take(`${p.id}.hours`, p.hours, t.hours), desc: take(`${p.id}.desc`, p.desc, t.desc), notes: take(`${p.id}.notes`, p.notes, t.notes) };
+    delete out.resident;
+    if (p.choose) out.choose = { ...p.choose, label: take(`${p.id}.choose.label`, p.choose.label, tc.label), ...(p.choose.fixed ? { fixed: take(`${p.id}.choose.fixed`, p.choose.fixed, tc.fixed) } : {}), labels: Object.fromEntries(p.choose.from.map((c) => [c, take(`${p.id}.choice ${c}`, c, (tc.labels || {})[c])])) };
+    return out;
+  });
+  const groups = v.groups ? v.groups.filter((g) => products.some((p) => p.group === g.key)) : null;
+  return {
+    ...v,
+    tags: take("tags", v.tags, e.tags), facts: take("facts", v.facts, e.facts), blurb: take("blurb", v.blurb, e.blurb), card: take("card", v.card, e.card), optionNoun: take("optionNoun", v.optionNoun, e.optionNoun),
+    photos: v.photos.map((ph, i) => ({ ...ph, alt: take(`photo ${i + 1}`, ph.alt, (e.photos || [])[i]) })),
+    groups: groups && groups.length > 1 ? groups.map((g) => ({ ...g, ...((e.groups || {})[g.key] || {}) })) : null,
+    rates: null, products,
+    included: take("included", v.included, e.included), notIncluded: take("notIncluded", v.notIncluded, e.notIncluded), before: take("before", v.before, e.before), gettingThere: take("gettingThere", v.gettingThere, e.gettingThere),
+    childDaysText: take("childDaysText", v.childDaysText, e.childDaysText), shipDayNote: take("shipDayNote", v.shipDayNote, e.shipDayNote),
+    pickups: v.pickups ? v.pickups.map((pk) => ({ ...pk, label: take(`pickup ${pk.key}`, pk.label, (e.pickups || {})[pk.key]) })) : v.pickups,
+    pickupNote: take("pickupNote", v.pickupNote, e.pickupNote), pickupNotListed: take("pickupNotListed", v.pickupNotListed, e.pickupNotListed), pickupAreas: take("pickupAreas", v.pickupAreas, e.pickupAreas), pickupShort: take("pickupShort", v.pickupShort, e.pickupShort),
+    often: (v.often || []).map((o) => ({ ...o, why: take(`often ${o.slug}`, o.why, (e.often || {})[o.slug]) })),
+    enquiries: v.enquiries ? (e.enquiries ? { ...v.enquiries, ...e.enquiries } : (ES_MISSING.add(`${v.slug}: enquiries`), v.enquiries)) : v.enquiries,
+  };
+}
 
 const ICONS = {
   arrow: '<path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path>',
@@ -97,6 +154,8 @@ const NAV = [["Getaways", "/getaways/"], ["Staycations", "/#staycations"], ["Jam
 const CATS = Object.fromEntries(X.hub.categories);
 const AREAS = Object.fromEntries(X.hub.areas);
 const venueBySlug = Object.fromEntries(X.venues.map((v) => [v.slug, v]));
+const areaName = (k) => (LANG === "es" && ES && ES.areas && ES.areas[k]) || AREAS[k];
+const NAV_ES = [["Escapadas", "/getaways/"], ["Resorts", "/#staycations"], ["Jamaica", "/jamaica/es/"], ["Excursiones", "/jamaica/es/#do"], ["Traslados", "/transfers/"], ["Grupos", "/groups/"], ["Estado de resorts", "/hotel-status/"]];
 /* Bing's limits: titles under 70 characters, descriptions 160 or less. fit() returns the first candidate that fits
    (the last one if none do); clauses() cuts a blurb back at its last comma or "with" that fits, never mid-phrase. */
 const fit = (max, ...c) => c.find((s) => s && s.length <= max) || c[c.length - 1];
@@ -215,21 +274,23 @@ const bookingWord = (v) => v.booking === "instant" ? "Book on the spot" : v.book
 const bookingTone = (v) => v.booking === "instant" ? "gold" : "white";
 
 /* ---------- chrome ---------- */
-function head({ title, description, pathname, image, jsonld = [], noindex = false, bodyClass = "", near = false }) {
+function head({ title, description, pathname, image, jsonld = [], noindex = false, bodyClass = "", near = false, alternates = null }) {
   const url = `${S.origin}${pathname}`;
   const og = `${S.origin}${image ? img(image) : `${ASSETS}/img/${H.meta.ogImage}`}`;
   const ld = jsonld.map((o) => `<script type="application/ld+json">${JSON.stringify(o)}</script>`).join("\n");
   /* Analytics loads after the page has painted, so it stops competing with the page the visitor is waiting on. */
   const ga = S.ga4 ? `<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${S.ga4}');
 addEventListener('load',function(){setTimeout(function(){var s=document.createElement('script');s.async=1;s.src='https://www.googletagmanager.com/gtag/js?id=${S.ga4}';document.head.appendChild(s);},1200);});</script>` : "";
+  /* a tour with a Spanish copy names both versions, English as the default */
+  const alt = alternates ? `\n${alternates.map(([hl, p]) => `<link rel="alternate" hreflang="${hl}" href="${S.origin}${p}">`).join("\n")}\n<link rel="alternate" hreflang="x-default" href="${S.origin}${alternates[0][1]}">` : "";
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="${LANG}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-<link rel="canonical" href="${url}">
+<link rel="canonical" href="${url}">${alt}
 <meta name="robots" content="${NOINDEX || noindex ? "noindex,follow" : "index,follow"}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(S.brand)}">
@@ -237,7 +298,7 @@ addEventListener('load',function(){setTimeout(function(){var s=document.createEl
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${url}">
 <meta property="og:image" content="${og}">
-<meta property="og:locale" content="en_JM">
+<meta property="og:locale" content="${LANG === "es" ? "es_LA" : "en_JM"}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(description)}">
@@ -259,22 +320,24 @@ ${ga}
 <body${bodyClass ? ` class="${bodyClass}"` : ""}>`;
 }
 
-function nav() {
-  const links = NAV.map(([l, h]) => `<a href="${h}"${h === `${BASE}/` ? ' aria-current="page"' : ""}>${esc(l)}</a>`).join("");
+function nav(pill = "") {
+  const es = LANG === "es", wh = es ? waHomeEs : waHome;
+  const links = (es ? NAV_ES : NAV).map(([l, h]) => `<a href="${h}"${h === (es ? "/jamaica/es/#do" : `${BASE}/`) ? ' aria-current="page"' : ""}>${esc(l)}</a>`).join("");
   return `<header class="nav wrap" role="banner">
-  <div class="nav-l"><a class="wordmark hh" href="/" aria-label="Golden Vacation, home">GOLDEN VACATION</a></div>
-  <nav class="nav-links" aria-label="Main">${links}</nav>
+  <div class="nav-l"><a class="wordmark hh" href="/" aria-label="${es ? "Golden Vacation, inicio" : "Golden Vacation, home"}">GOLDEN VACATION</a></div>
+  <nav class="nav-links" aria-label="${es ? "Principal" : "Main"}">${links}</nav>
   <div class="nav-r">
-    ${currency()}
-    <a class="icon-btn icon-btn-black mob" href="${waHome}" aria-label="WhatsApp us" data-where="nav">${icon("chat", 20)}</a>
-    <button class="icon-btn menu-btn mob" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu">${icon("menu", 24, 2.4)}</button>
-    ${btn("WhatsApp", waHome, "black", "sm", "chat", ' data-where="nav"').replace('class="btn', 'class="desk btn')}
+    ${pill ? `${pill}\n    ` : ""}${currency()}
+    <a class="icon-btn icon-btn-black mob" href="${wh}" aria-label="${es ? "Escríbenos por WhatsApp" : "WhatsApp us"}" data-where="nav">${icon("chat", 20)}</a>
+    <button class="icon-btn menu-btn mob" type="button" aria-label="${es ? "Menú" : "Menu"}" aria-expanded="false" aria-controls="menu">${icon("menu", 24, 2.4)}</button>
+    ${btn("WhatsApp", wh, "black", "sm", "chat", ' data-where="nav"').replace('class="btn', 'class="desk btn')}
   </div>
 </header>
-<nav id="menu" class="menu mob" aria-label="Menu">${links}${currency()}</nav>`;
+<nav id="menu" class="menu mob" aria-label="${es ? "Menú" : "Menu"}">${links}${currency()}</nav>`;
 }
 
 function footer() {
+  if (LANG === "es") return footerEs();
   const F = H.footer;
   const comingHref = (key) => wa(H.coming.doors.find((d) => d.key === key).message);
   const col = (t, items) => `<div class="foot-col"><span>${esc(t)}</span>${items.map(([l, h]) => `<a href="${h}">${esc(l)}</a>`).join("")}</div>`;
@@ -294,6 +357,24 @@ function footer() {
 </div></footer>`;
 }
 
+/* the Spanish pages' footer: the same layout, with the four Coming to Jamaica pages instead of WhatsApp links */
+function footerEs() {
+  const col = (t, items) => `<div class="foot-col"><span>${esc(t)}</span>${items.map(([l, h]) => `<a href="${h}">${esc(l)}</a>`).join("")}</div>`;
+  const book = [["Viajes desde Jamaica", "/getaways/"], ["Resorts en Jamaica", "/#staycations"], ["Qué está abierto en Jamaica", "/hotel-status/"], ["Excursiones", "/jamaica/es/#do"], ["Traslados desde el aeropuerto", "/transfers/"], ["Viajes en grupo", "/groups/"]];
+  const coming = [["Desde EE. UU.", "/jamaica/usa/"], ["De vuelta a casa", "/jamaica/coming-home/"], ["En español", "/jamaica/es/"], ["Reino Unido y Canadá", "/jamaica/uk-canada/"]];
+  const help = [["Estado de los resorts", "/hotel-status/"], ["Mapa de resorts", "/hotel-status-map"], ["Depósitos y pagos", "/getaways/#questions"], ["Escríbenos", waHomeEs]];
+  return `<footer class="foot" role="contentinfo"><div class="wrap" style="display:flex;flex-direction:column;gap:32px">
+  <div class="foot-grid">
+    <div class="foot-brand"><a class="wordmark hh" href="/">GOLDEN VACATION</a><p>${esc(S.footerAddress)}<br>WhatsApp ${esc(S.whatsappDisplay)} · Llama al ${esc(S.phone)}<br>Agencia acreditada por IATA · 85500310</p></div>
+    ${col("Reserva", book)}
+    ${col("Viajar a Jamaica", coming)}
+    ${col("Ayuda", help)}
+  </div>
+  <div class="foot-links mob">${NAV_ES.map(([l, h]) => `<a href="${h}">${esc(l)}</a>`).join("")}<a href="${waHomeEs}">Contacto</a></div>
+  <div class="foot-bot"><span>© 2026 Golden Vacation &amp; Travel Limited · St Ann, Jamaica · <a href="/terms/">Términos</a> · <a href="/privacy/">Privacidad</a></span><span><a href="${S.instagram}" rel="noopener">Instagram</a> · <a href="${S.facebook}" rel="noopener">Facebook</a></span></div>
+</div></footer>`;
+}
+
 const scripts = (cfg) => `<script>window.GV_EXP=${JSON.stringify(cfg)};</script>
 <script src="/getaways/assets/getaways.js" defer></script>
 <script src="/assets/home.js" defer></script>
@@ -305,13 +386,13 @@ function priceLine(p) {
     return `<span class="op-price"><b>${dual(p.visitor.usd)}</b><small>visitor</small></span><span class="op-price res"><b>${jmd(p.resident.jmd)}</b><small>resident</small></span>`;
   }
   if (p.visitor) {
-    const pp = p.perParty ? " for two" : "";
-    return `<span class="op-price"><b>${dual(p.visitor.usd)}</b><small>${p.usdChild || p.visitor.usdChild ? `adult${pp} · child ${usd(p.visitor.usdChild)}` : `per person${pp}`}</small></span>`;
+    const pp = p.perParty ? L(" for two") : "";
+    return `<span class="op-price"><b>${dual(p.visitor.usd)}</b><small>${p.usdChild || p.visitor.usdChild ? `${L("adult")}${pp} · ${L("child")} ${usd(p.visitor.usdChild)}` : `${L("per person")}${pp}`}</small></span>`;
   }
   if (p.resident) {
     return `<span class="op-price res"><b>${jmd(p.resident.jmd)}</b><small>${p.resident.jmdChild ? `adult · child ${jmd(p.resident.jmdChild)}` : "per person"} · resident</small></span>`;
   }
-  return `<span class="op-price"><b>Price on request</b></span>`;
+  return `<span class="op-price"><b>${L("Price on request")}</b></span>`;
 }
 
 const featured = (v) => (X.hub.featured || []).includes(v.slug);
@@ -524,8 +605,8 @@ function optionRow(v, p, i, only = false) {
   /* a badge like "best value" only means something next to another option */
   const badge = p.badge && !only ? `<span class="op-badge">${esc(p.badge)}</span>` : "";
   const notes = (p.notes || []).map((n) => `<li>${esc(noDash(n))}</li>`).join("");
-  const choose = p.choose ? `<div class="op-choose" data-pick="${p.choose.pick}">${p.choose.fixed ? `<span class="fixed">${esc(p.choose.fixed)}<small>always in</small></span>` : ""}<span class="op-choose-l">${esc(p.choose.label)}${p.choose.pick > 1 ? ` (${p.choose.pick})` : ""}</span><span class="op-choose-c">${p.choose.from.map((c) => `<button type="button" class="chip" data-choice="${esc(c)}">${esc(c)}</button>`).join("")}</span></div>` : "";
-  const times = p.times && p.times.length ? `<span class="op-times">${icon("clock", 14)}${esc(p.times.join(" · "))}</span>` : "";
+  const choose = p.choose ? `<div class="op-choose" data-pick="${p.choose.pick}">${p.choose.fixed ? `<span class="fixed">${esc(p.choose.fixed)}<small>${L("always in")}</small></span>` : ""}<span class="op-choose-l">${esc(p.choose.label)}${p.choose.pick > 1 ? ` (${p.choose.pick})` : ""}</span><span class="op-choose-c">${p.choose.from.map((c) => `<button type="button" class="chip" data-choice="${esc(c)}">${esc((p.choose.labels && p.choose.labels[c]) || c)}</button>`).join("")}</span></div>` : "";
+  const times = p.times && p.times.length ? `<span class="op-times">${icon("clock", 14)}${esc(p.times.map(showTime).join(" · "))}</span>` : "";
   return `<label class="op${only ? " op-only" : ""}"${attrs}>
     <input type="radio" name="product" value="${p.id}"${i === 0 ? " checked" : ""}${only ? ' tabindex="-1"' : ""}>
     <span class="op-body">
@@ -548,8 +629,8 @@ function panel(v) {
   const isFlight = v.panel === "flight";
   const isTour = v.panel === "tour";
   const instant = v.booking === "instant", live = v.calendar === "rezdy";
-  const cta = instant ? "Book and pay" : v.booking === "request" ? "Request this date" : "Send enquiry";
-  const ctaSub = instant ? (live ? "Confirmed straight away, paid by card on a secure page. You'll get the confirmation by email." : "Paid by card on a secure page and confirmed straight away. We send your booking details shortly.") : v.booking === "request" ? "We confirm availability first. Nothing is charged now." : "We reply within working hours. Nothing is charged now.";
+  const cta = L(instant ? "Book and pay" : v.booking === "request" ? "Request this date" : "Send enquiry");
+  const ctaSub = L(instant ? (live ? "Confirmed straight away, paid by card on a secure page. You'll get the confirmation by email." : "Paid by card on a secure page and confirmed straight away. We send your booking details shortly.") : v.booking === "request" ? "We confirm availability first. Nothing is charged now." : "We reply within working hours. Nothing is charged now.");
   const rate = v.rates ? `<div class="pf pf-rate" id="pf-rate"><span class="pf-l">Your rate</span><div class="rate-opts">
       <label class="rate-opt"><input type="radio" name="rate" value="visitor" checked><span><b>${esc(v.rates.visitor.label)}</b><small>${esc(v.rates.visitor.who)}</small></span></label>
       <label class="rate-opt"><input type="radio" name="rate" value="resident"><span><b>${esc(v.rates.resident.label)}</b><small>${esc(v.rates.resident.who)}</small></span></label>
@@ -557,45 +638,45 @@ function panel(v) {
   /* cruise guests: the question only opens when the guest asks for it (or the site already knows their port); residents never see it */
   /* a tour that picks up from the cruise ports takes the port in its pickup box; any other tour keeps the cruise question */
   const portPickups = (v.pickups || []).some((p) => (X.ports || []).some((pt) => pt.slug === p.key));
-  const cruiseLink = isFlight || portPickups || v.shipDay === false ? "" : `<button type="button" class="link-btn" id="cruise-link" hidden>Off a cruise ship?</button>`;
+  const cruiseLink = isFlight || portPickups || v.shipDay === false ? "" : `<button type="button" class="link-btn" id="cruise-link" hidden>${L("Off a cruise ship?")}</button>`;
   const date = isFlight
     ? `<div class="pf two"><label class="pf-f"><span class="pf-l" id="pf-date-l">Arrival date</span><span class="pf-in">${icon("calendar", 18)}<input type="date" id="pf-date" required></span></label><label class="pf-f" id="pf-date2-wrap"><span class="pf-l" id="pf-date2-l">Departure date</span><span class="pf-in">${icon("calendar", 18)}<input type="date" id="pf-date2"></span></label></div>
        <div class="pf two"><label class="pf-f" id="pf-flight-in-wrap"><span class="pf-l">Flight in</span><span class="pf-in">${icon("plane", 18)}<input type="text" id="pf-flight-in" placeholder="e.g. BA2263" autocapitalize="characters"></span></label><label class="pf-f" id="pf-flight-out-wrap"><span class="pf-l">Flight out</span><span class="pf-in">${icon("plane", 18)}<input type="text" id="pf-flight-out" placeholder="e.g. BA2262" autocapitalize="characters"></span></label></div>
        <p class="pf-hint" id="date-note" hidden></p>
        <p class="pf-hint">We check your flight and send the lounge details to your email and WhatsApp.</p>`
-    : `<div class="pf"><label class="pf-f"><span class="pf-l">Date</span><span class="pf-in">${icon("calendar", 18)}<input type="date" id="pf-date" required></span></label><p class="pf-hint" id="date-note" hidden></p>${cruiseLink}</div>`;
+    : `<div class="pf"><label class="pf-f"><span class="pf-l">${L("Date")}</span><span class="pf-in">${icon("calendar", 18)}<input type="date" id="pf-date" required></span></label><p class="pf-hint" id="date-note" hidden></p>${cruiseLink}</div>`;
   const anyTimes = v.products.some((p) => p.times && p.times.length);
-  const times = isTour || anyTimes ? `<div class="pf" id="pf-times-wrap"><span class="pf-l">${v.panel === "pass" ? "Entry time" : "Start time"}</span><div class="chip-row" id="pf-times"></div><p class="pf-hint" id="times-note" hidden></p></div>` : "";
-  const guests = `<div class="pf pf-guests"><span class="pf-l">Guests</span>
-      <div class="stepper"><span><b>Adults</b><small id="adult-unit"></small></span><span class="step-c"><button type="button" data-step="adults" data-d="-1" aria-label="Fewer adults">−</button><output id="adults">2</output><button type="button" data-step="adults" data-d="1" aria-label="More adults">+</button></span></div>
-      <div class="stepper" id="child-step"><span><b>Children</b><small id="child-unit"></small></span><span class="step-c"><button type="button" data-step="children" data-d="-1" aria-label="Fewer children">−</button><output id="children">0</output><button type="button" data-step="children" data-d="1" aria-label="More children">+</button></span></div>
+  const times = isTour || anyTimes ? `<div class="pf" id="pf-times-wrap"><span class="pf-l">${L(v.panel === "pass" ? "Entry time" : "Start time")}</span><div class="chip-row" id="pf-times"></div><p class="pf-hint" id="times-note" hidden></p></div>` : "";
+  const guests = `<div class="pf pf-guests"><span class="pf-l">${L("Guests")}</span>
+      <div class="stepper"><span><b>${L("Adults")}</b><small id="adult-unit"></small></span><span class="step-c"><button type="button" data-step="adults" data-d="-1" aria-label="${L("Fewer adults")}">−</button><output id="adults">2</output><button type="button" data-step="adults" data-d="1" aria-label="${L("More adults")}">+</button></span></div>
+      <div class="stepper" id="child-step"><span><b>${L("Children")}</b><small id="child-unit"></small></span><span class="step-c"><button type="button" data-step="children" data-d="-1" aria-label="${L("Fewer children")}">−</button><output id="children">0</output><button type="button" data-step="children" data-d="1" aria-label="${L("More children")}">+</button></span></div>
       <p class="pf-hint" id="child-note" hidden></p>
-      <p class="pf-hint" id="guests-note" hidden>Up to 16 guests here. More than 16? <a href="mailto:${esc(S.email)}?subject=${encodeURIComponent(`Group booking: ${v.name}`)}">Email us</a> and we'll price it.</p>
+      <p class="pf-hint" id="guests-note" hidden>${L("Up to 16 guests here. More than 16?")} <a href="mailto:${esc(S.email)}?subject=${encodeURIComponent(`${L("Group booking:")} ${v.name}`)}">${L("Email us")}</a> ${L("and we'll price it.")}</p>
     </div>`;
   /* tours without a bookable pickup say so where the pickup picker would sit, so nobody goes looking for it */
-  const noPickup = isTour && !v.pickups ? `<p class="pf-hint" id="no-pickup-note">${v.pickupPriced ? `Hotel pickup from ${esc(v.pickupPriced.where)} is priced by hotel. Ask us on WhatsApp and we add it to your booking.` : "No hotel pickup on this one. Ask us on WhatsApp if you need a ride."}</p>` : "";
+  const noPickup = isTour && !v.pickups ? `<p class="pf-hint" id="no-pickup-note">${v.pickupPriced ? Lf("Hotel pickup from {where} is priced by hotel. Ask us on WhatsApp and we add it to your booking.", { where: esc(v.pickupPriced.where) }) : L("No hotel pickup on this one. Ask us on WhatsApp if you need a ride.")}</p>` : "";
   /* pickup: the guest picks their hotel from the resort list (the area, and any transfer charge, follow from it);
      "somewhere else" opens a free-text line plus the area list; "my own way" skips pickup */
   const pickup = v.pickups ? `<div class="pf" id="pf-pickup-wrap">
-      <div class="hotel-q pf-f"><span class="pf-l">Pickup from</span>
-        <label class="pf-f hotel-f"><span class="pf-in">${icon("pin", 18)}<input type="search" id="pf-hotel-in" placeholder="Type your hotel, area or cruise port" autocomplete="off" autocapitalize="words" aria-label="Pickup hotel, area or cruise port"></span></label><ul class="hotel-list" id="pf-hotel-list" role="listbox" hidden></ul></div>
-      <label class="pf-f" id="pf-pickup-other-wrap" hidden><span class="pf-in">${icon("pin", 18)}<input type="text" id="pf-pickup-hotel" placeholder="Villa or hotel name, for the driver" autocomplete="off"></span></label>
-      <div class="chip-row pickup-alts"><button type="button" class="chip chip-sm" data-pick="own" aria-pressed="false">I'll make my own way</button></div>
-      <p class="pf-hint" id="pickup-note">${v.pickupNote ? esc(v.pickupNote) : v.pickups.some((p) => p.add) ? "Pickup from Negril hotels is included. Lucea and Montego Bay pickups are priced per person." : "Hotel pickup from Negril and Montego Bay is included."}</p>
+      <div class="hotel-q pf-f"><span class="pf-l">${L("Pickup from")}</span>
+        <label class="pf-f hotel-f"><span class="pf-in">${icon("pin", 18)}<input type="search" id="pf-hotel-in" placeholder="${L("Type your hotel, area or cruise port")}" autocomplete="off" autocapitalize="words" aria-label="${L("Pickup hotel, area or cruise port")}"></span></label><ul class="hotel-list" id="pf-hotel-list" role="listbox" hidden></ul></div>
+      <label class="pf-f" id="pf-pickup-other-wrap" hidden><span class="pf-in">${icon("pin", 18)}<input type="text" id="pf-pickup-hotel" placeholder="${L("Villa or hotel name, for the driver")}" autocomplete="off"></span></label>
+      <div class="chip-row pickup-alts"><button type="button" class="chip chip-sm" data-pick="own" aria-pressed="false">${L("I'll make my own way")}</button></div>
+      <p class="pf-hint" id="pickup-note">${v.pickupNote ? esc(v.pickupNote) : L(v.pickups.some((p) => p.add) ? "Pickup from Negril hotels is included. Lucea and Montego Bay pickups are priced per person." : "Hotel pickup from Negril and Montego Bay is included.")}</p>
     </div>` : "";
   /* ship day: the port chips open from the "Off a cruise ship?" link under the date, or on their own when the site already knows the port
      (picked on the hub, or arrived from a port page). Tours with a pickup picker take the port through that picker instead. */
-  const cruisePick = isFlight || portPickups ? "" : `<div class="pf" id="pf-cruise-wrap" hidden><span class="pf-l">Off a cruise ship?</span><div class="chip-row port-chips" id="pf-ports">${(X.ports || []).map((pt) => `<button type="button" class="chip chip-sm" data-port="${pt.slug}" aria-pressed="false">${esc(pt.name.replace(" cruise port", " port"))}</button>`).join("")}</div><p class="pf-hint">Tell us your port and we only show what gets you back to the pier in time.</p></div>`;
-  const aboard = v.panel === "flight" ? "" : `${cruisePick}<div class="pf" id="pf-aboard-wrap" hidden><span class="pf-l">All-aboard time</span><div class="chip-row aboard-chips" id="pf-aboard">${[["", "Not sure"], ["960", "4:00pm"], ["1020", "5:00pm"], ["1080", "6:00pm"], ["1140", "7:00pm or later"]].map(([m, l]) => `<button type="button" class="chip chip-sm" data-aboard="${m}" aria-pressed="${m === "" ? "true" : "false"}">${l}</button>`).join("")}</div><p class="pf-hint" id="ship-note"></p><button type="button" class="link-btn" id="ship-clear">Not off a ship today? Clear this</button></div>`;
-  const contact = `<div class="pf pf-contact" id="pf-contact"${instant ? "" : " hidden"}><span class="pf-l">Who's booking</span>
-      <div class="pf two"><label class="pf-f"><span class="pf-in"><input type="text" id="pf-first" placeholder="First name" autocomplete="given-name"></span></label><label class="pf-f"><span class="pf-in"><input type="text" id="pf-last" placeholder="Last name" autocomplete="family-name"></span></label></div>
-      <label class="pf-f"><span class="pf-in"><input type="email" id="pf-email" placeholder="Email for the confirmation" autocomplete="email"></span></label>
-      <label class="pf-f"><span class="pf-in"><input type="tel" id="pf-phone" placeholder="WhatsApp or phone" autocomplete="tel"></span></label>
-      <label class="pf-f" id="pf-ship-wrap"><span class="pf-in">${icon("ship", 18)}<input type="text" id="pf-ship" placeholder="On a cruise? Ship name"></span></label>
+  const cruisePick = isFlight || portPickups ? "" : `<div class="pf" id="pf-cruise-wrap" hidden><span class="pf-l">${L("Off a cruise ship?")}</span><div class="chip-row port-chips" id="pf-ports">${(X.ports || []).map((pt) => `<button type="button" class="chip chip-sm" data-port="${pt.slug}" aria-pressed="false">${esc(L(pt.name.replace(" cruise port", " port")))}</button>`).join("")}</div><p class="pf-hint">${L("Tell us your port and we only show what gets you back to the pier in time.")}</p></div>`;
+  const aboard = v.panel === "flight" ? "" : `${cruisePick}<div class="pf" id="pf-aboard-wrap" hidden><span class="pf-l">${L("All-aboard time")}</span><div class="chip-row aboard-chips" id="pf-aboard">${[["", "Not sure"], ["960", "4:00pm"], ["1020", "5:00pm"], ["1080", "6:00pm"], ["1140", "7:00pm or later"]].map(([m, l]) => `<button type="button" class="chip chip-sm" data-aboard="${m}" aria-pressed="${m === "" ? "true" : "false"}">${L(l)}</button>`).join("")}</div><p class="pf-hint" id="ship-note"></p><button type="button" class="link-btn" id="ship-clear">${L("Not off a ship today? Clear this")}</button></div>`;
+  const contact = `<div class="pf pf-contact" id="pf-contact"${instant ? "" : " hidden"}><span class="pf-l">${L("Who's booking")}</span>
+      <div class="pf two"><label class="pf-f"><span class="pf-in"><input type="text" id="pf-first" placeholder="${L("First name")}" autocomplete="given-name"></span></label><label class="pf-f"><span class="pf-in"><input type="text" id="pf-last" placeholder="${L("Last name")}" autocomplete="family-name"></span></label></div>
+      <label class="pf-f"><span class="pf-in"><input type="email" id="pf-email" placeholder="${L("Email for the confirmation")}" autocomplete="email"></span></label>
+      <label class="pf-f"><span class="pf-in"><input type="tel" id="pf-phone" placeholder="${L("WhatsApp or phone")}" autocomplete="tel"></span></label>
+      <label class="pf-f" id="pf-ship-wrap"><span class="pf-in">${icon("ship", 18)}<input type="text" id="pf-ship" placeholder="${L("On a cruise? Ship name")}"></span></label>
     </div>`;
   /* two steps: first the booking itself with its total (the guest settles on that), then their details and the payment */
   return `<aside class="panel" id="panel" data-panel="${v.panel}" data-booking="${v.booking}">
-    <div class="panel-head">${kicker(instant ? "Book on the spot" : v.booking === "request" ? "Request a date" : "Send an enquiry")}<div class="panel-total"><b id="total-lead">${usd(0)}</b><small id="total-sub"></small></div><p class="panel-caption" id="total-caption"></p></div>
+    <div class="panel-head">${kicker(L(instant ? "Book on the spot" : v.booking === "request" ? "Request a date" : "Send an enquiry"))}<div class="panel-total"><b id="total-lead">${usd(0)}</b><small id="total-sub"></small></div><p class="panel-caption" id="total-caption"></p></div>
     <form id="book" novalidate>
       <div class="bstep" id="step-1">
       ${rate}
@@ -605,19 +686,19 @@ function panel(v) {
       ${noPickup}
       ${pickup}
       ${aboard}
-      <button class="btn btn-black btn-lg btn-full" type="button" id="next"><span id="next-label">Continue</span>${icon("arrow", 18)}</button>
+      <button class="btn btn-black btn-lg btn-full" type="button" id="next"><span id="next-label">${L("Continue")}</span>${icon("arrow", 18)}</button>
       <p class="pf-sub" id="next-sub"></p>
       </div>
       <div class="bstep" id="step-2" hidden>
-      <button type="button" class="link-btn step-back" id="step-back">${icon("arrow", 14, 2.6)}Change the booking</button>
+      <button type="button" class="link-btn step-back" id="step-back">${icon("arrow", 14, 2.6)}${L("Change the booking")}</button>
       <div class="sum" id="sum"></div>
       ${contact}
-      ${/^jamwest/.test(v.slug) ? `<div class="pf pay-when" id="pay-when" hidden><span class="pf-l">How you'd like to pay</span><div class="pw-opts" role="radiogroup" aria-label="How you'd like to pay"><label class="pw"><input type="radio" name="paywhen" value="card" checked><span><b>Card now</b><small>On the secure card page</small></span></label><label class="pw"><input type="radio" name="paywhen" value="arrival"><span><b>Pay on arrival</b><small>Nothing charged now</small></span></label></div></div>` : ""}
-      <div class="pf pf-preview" id="pf-preview"${instant ? " hidden" : ""}><span class="pf-l">This is what we'll get</span><pre id="msg-preview"></pre></div>
+      ${/^jamwest/.test(v.slug) ? `<div class="pf pay-when" id="pay-when" hidden><span class="pf-l">${L("How you'd like to pay")}</span><div class="pw-opts" role="radiogroup" aria-label="${L("How you'd like to pay")}"><label class="pw"><input type="radio" name="paywhen" value="card" checked><span><b>${L("Card now")}</b><small>${L("On the secure card page")}</small></span></label><label class="pw"><input type="radio" name="paywhen" value="arrival"><span><b>${L("Pay on arrival")}</b><small>${L("Nothing charged now")}</small></span></label></div></div>` : ""}
+      <div class="pf pf-preview" id="pf-preview"${instant ? " hidden" : ""}><span class="pf-l">${L("This is what we'll get")}</span><pre id="msg-preview"></pre></div>
       <button class="btn btn-black btn-lg btn-full" type="submit" id="cta">${instant ? icon("card", 18) : icon("chat", 18)}<span id="cta-label">${cta}</span></button>
       <p class="pf-sub" id="cta-sub">${ctaSub}</p>
-      <p class="pf-alt" id="cta-alt"${instant ? "" : " hidden"}>Rather talk to a person first? <a href="#" id="cta-wa">Send this as a WhatsApp request instead</a>.</p>
-      <p class="pf-fine">Nothing is charged until you see the total. Tax and service included. A person reads every request.</p>
+      <p class="pf-alt" id="cta-alt"${instant ? "" : " hidden"}>${L("Rather talk to a person first?")} <a href="#" id="cta-wa">${L("Send this as a WhatsApp request instead")}</a>.</p>
+      <p class="pf-fine">${L("Nothing is charged until you see the total. Tax and service included. A person reads every request.")}</p>
       </div>
     </form>
   </aside>`;
@@ -625,13 +706,13 @@ function panel(v) {
 
 function venuePage(v) {
   const hero = v.photos[0];
-  const gallery = v.photos.slice(1, 5).map((p, i) => `<button type="button" class="gph lb-open" data-i="${i + 1}" aria-label="Open photo ${i + 2} of ${v.photos.length}">${pic(small(p.file), p.alt)}</button>`).join(""); // every photo opens the viewer at its own place; the hero is photo 1
+  const gallery = v.photos.slice(1, 5).map((p, i) => `<button type="button" class="gph lb-open" data-i="${i + 1}" aria-label="${Lf("Open photo {n} of {total}", { n: i + 2, total: v.photos.length })}">${pic(small(p.file), p.alt)}</button>`).join(""); // every photo opens the viewer at its own place; the hero is photo 1
   /* no count: "2 photos" tells a guest how few there are, which is worse than saying nothing */
-  const photosBtn = v.photos.length > 1 ? `<button type="button" class="tag tag-white photos-btn lb-open" data-i="0">${icon("photo", 14, 2.2)}See photos</button>` : "";
+  const photosBtn = v.photos.length > 1 ? `<button type="button" class="tag tag-white photos-btn lb-open" data-i="0">${icon("photo", 14, 2.2)}${L("See photos")}</button>` : "";
   // the hero is a strip of every photo: a swipe on a phone, arrows on a laptop, dots for where you are; the first one loads first, the rest lazily
   const slides = v.photos.map((p, i) => `<div class="hero-slide">${pic(p.file, p.alt, i === 0 ? ' loading="eager" fetchpriority="high" class="lb-open" data-i="0"' : ` class="lb-open" data-i="${i}"`)}</div>`).join("");
-  const dots = v.photos.length > 1 ? `<div class="hero-dots" role="tablist" aria-label="Which photo">${v.photos.map((p, i) => `<button type="button" role="tab" aria-selected="${i === 0 ? "true" : "false"}" aria-label="Photo ${i + 1} of ${v.photos.length}" data-i="${i}"></button>`).join("")}</div>` : "";
-  const arrows = v.photos.length > 1 ? `<button type="button" class="hero-arrow hero-prev" aria-label="Previous photo">${icon("arrow", 18, 2.4)}</button><button type="button" class="hero-arrow hero-next" aria-label="Next photo">${icon("arrow", 18, 2.4)}</button>` : "";
+  const dots = v.photos.length > 1 ? `<div class="hero-dots" role="tablist" aria-label="${L("Which photo")}">${v.photos.map((p, i) => `<button type="button" role="tab" aria-selected="${i === 0 ? "true" : "false"}" aria-label="${Lf("Photo {n} of {total}", { n: i + 1, total: v.photos.length })}" data-i="${i}"></button>`).join("")}</div>` : "";
+  const arrows = v.photos.length > 1 ? `<button type="button" class="hero-arrow hero-prev" aria-label="${L("Previous photo")}">${icon("arrow", 18, 2.4)}</button><button type="button" class="hero-arrow hero-next" aria-label="${L("Next photo")}">${icon("arrow", 18, 2.4)}</button>` : "";
   const groups = v.groups ? v.groups : [{ key: "all", label: "", sub: "" }];
   const onlyOne = v.products.filter(live).length === 1;
   const options = groups.map((g) => {
@@ -639,39 +720,47 @@ function venuePage(v) {
     const rows = ps.map((p, i) => optionRow(v, p, i === 0 && g === groups[0], onlyOne)).join("\n");
     return `${g.label ? `<div class="op-group"><b>${esc(g.label)}</b><small>${esc(noDash(g.sub))}</small></div>` : ""}${rows}`;
   }).join("\n");
-  const enquiries = v.enquiries ? `<div class="enq"><div class="enq-t">${kicker("Price on request")}<b class="hh">${esc(v.enquiries.title)}</b><p>${esc(v.enquiries.sub)}</p></div><ul class="enq-list">${v.enquiries.items.map(([t, d]) => `<li><b>${esc(t)}</b><span>${esc(noDash(d))}</span></li>`).join("")}</ul>${btn(v.enquiries.cta, wa(`Hi Golden Vacation! I'm interested in ${v.enquiries.title.toLowerCase()} at ${v.name}. Ref GV-EXP-ENQ`), "outline", "", "chat")}</div>` : "";
-  const often = (v.often || []).map((o) => { const t = venueBySlug[o.slug]; const fp = fromPrice(t); return `<a class="pair" href="${BASE}/${t.slug}"><span class="pair-img">${pic(small(t.photos[0].file), t.photos[0].alt)}</span><span class="pair-t"><b>${esc(t.name)}</b><small>${esc(o.why)}</small></span><span class="pair-p">${fp && fp.usd != null ? dual(fp.usd) : fp && fp.jmd ? jmd(fp.jmd) : ""}</span>${icon("arrow", 18, 2.4)}</a>`; }).join("");
+  const enquiries = v.enquiries ? `<div class="enq"><div class="enq-t">${kicker(L("Price on request"))}<b class="hh">${esc(v.enquiries.title)}</b><p>${esc(v.enquiries.sub)}</p></div><ul class="enq-list">${v.enquiries.items.map(([t, d]) => `<li><b>${esc(t)}</b><span>${esc(noDash(d))}</span></li>`).join("")}</ul>${btn(v.enquiries.cta, wa(LANG === "es" && v.enquiries.wa ? v.enquiries.wa : `Hi Golden Vacation! I'm interested in ${v.enquiries.title.toLowerCase()} at ${v.name}. Ref GV-EXP-ENQ`), "outline", "", "chat")}</div>` : "";
+  const often = (v.often || []).map((o) => { const t = venueBySlug[o.slug]; const fp = fromPrice(t); return `<a class="pair" href="${venueHref(t.slug)}"><span class="pair-img">${pic(small(t.photos[0].file), t.photos[0].alt)}</span><span class="pair-t"><b>${esc(t.name)}</b><small>${esc(o.why)}</small></span><span class="pair-p">${fp && fp.usd != null ? dual(fp.usd) : fp && fp.jmd ? jmd(fp.jmd) : ""}</span>${icon("arrow", 18, 2.4)}</a>`; }).join("");
   const facts = [
-    [ICONS.pin ? "pin" : "pin", `${AREAS[v.area]} · ${v.parish}`],
-    ["bolt", v.booking === "instant" ? (v.rates ? "Visitor rate: booked and paid on the spot" : "Booked and paid on the spot") : v.booking === "request" ? "We confirm availability, then you pay" : "We reply, confirm, then send a card link"],
-    v.adultsOnly ? ["id", "Adults only, 18+"] : null,
+    [ICONS.pin ? "pin" : "pin", `${areaName(v.area)} · ${v.parish}`],
+    ["bolt", L(v.booking === "instant" ? (v.rates ? "Visitor rate: booked and paid on the spot" : "Booked and paid on the spot") : v.booking === "request" ? "We confirm availability, then you pay" : "We reply, confirm, then send a card link")],
+    v.adultsOnly ? ["id", L("Adults only, 18+")] : null,
   ].filter(Boolean).map(([ic, t]) => `<span class="fact">${icon(ic, 16)}${esc(t)}</span>`).join("") + `<span class="fact fact-hotel" id="fact-hotel" hidden>${icon("car", 16)}<span id="fact-hotel-t"></span></span>`;
+  const es = LANG === "es", here = es ? `${ES_BASE}/${v.slug}` : `${BASE}/${v.slug}`; // this page's own address
   const jsonld = [
-    { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Golden Vacation & Travel", item: S.origin }, { "@type": "ListItem", position: 2, name: "Golden Experiences", item: `${S.origin}${BASE}/` }, { "@type": "ListItem", position: 3, name: v.name, item: `${S.origin}${BASE}/${v.slug}` }] },
-    { "@context": "https://schema.org", "@type": "TouristAttraction", name: v.name, description: v.blurb, url: `${S.origin}${BASE}/${v.slug}`, image: `${S.origin}${img(hero.file)}`, address: { "@type": "PostalAddress", addressRegion: v.parish, addressCountry: "JM" } },
-    ...v.products.filter(live).filter((p) => p.visitor).map((p) => ({ "@context": "https://schema.org", "@type": "Product", name: `${v.name}: ${p.name}`, description: p.desc, offers: { "@type": "Offer", price: p.visitor.usd, priceCurrency: "USD", availability: "https://schema.org/InStock", url: `${S.origin}${BASE}/${v.slug}`, seller: { "@type": "TravelAgency", name: "Golden Vacation & Travel" } } })),
+    { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Golden Vacation & Travel", item: S.origin }, es ? { "@type": "ListItem", position: 2, name: "Jamaica en español", item: `${S.origin}/jamaica/es/` } : { "@type": "ListItem", position: 2, name: "Golden Experiences", item: `${S.origin}${BASE}/` }, { "@type": "ListItem", position: 3, name: v.name, item: `${S.origin}${here}` }] },
+    { "@context": "https://schema.org", "@type": "TouristAttraction", name: v.name, description: v.blurb, url: `${S.origin}${here}`, image: `${S.origin}${img(hero.file)}`, address: { "@type": "PostalAddress", addressRegion: v.parish, addressCountry: "JM" } },
+    ...v.products.filter(live).filter((p) => p.visitor).map((p) => ({ "@context": "https://schema.org", "@type": "Product", name: `${v.name}: ${p.name}`, description: p.desc, offers: { "@type": "Offer", price: p.visitor.usd, priceCurrency: "USD", availability: "https://schema.org/InStock", url: `${S.origin}${here}`, seller: { "@type": "TravelAgency", name: "Golden Vacation & Travel" } } })),
   ];
+  /* Spanish pages: the browser gets the language, its strings, and the region and cruise-port names in Spanish */
+  const esCfg = es ? { lang: "es", t: ES.client || {}, booked: `${ES_BASE}/booked` } : {};
+  const regions = es ? Object.fromEntries(Object.entries(X.regions).map(([k, r]) => [k, { ...r, label: (ES.regions || {})[k] || r.label }])) : X.regions;
+  const portName = (h) => (es && h.port && (ES.ports || {})[h.slug]) || h.name;
   const cfg = {
-    page: "venue", whatsapp: S.whatsapp, origin: S.origin, jmdRate: S.jmdRate, today: TODAY,
-    hotels: HOTELS.map((h) => [h.name, h.slug, h.region, h.lat, h.lng, h.port ? 1 : 0, h.small ? 0 : 1]), regions: X.regions, shipDay: SHIP_CFG,
-    venue: { slug: v.slug, name: v.name, panel: v.panel, booking: v.booking, calendar: v.calendar || null, area: AREAS[v.area], adultsOnly: !!v.adultsOnly, blackout: v.blackout || [], closedWeekdays: v.closedWeekdays || [], ...(v.childDays ? { childDays: v.childDays, childDaysText: v.childDaysText || "" } : {}), rates: v.rates || null, pickups: v.pickups || null, pickupNote: v.pickupNote || "", pickupAreas: v.pickupAreas || "", pickupNotListed: v.pickupNotListed || "", lat: v.lat, lng: v.lng, drive: v.drive || {}, sd: v.shipDay === false ? 0 : 1,
+    page: "venue", whatsapp: S.whatsapp, origin: S.origin, jmdRate: S.jmdRate, today: TODAY, ...esCfg,
+    hotels: HOTELS.map((h) => [portName(h), h.slug, h.region, h.lat, h.lng, h.port ? 1 : 0, h.small ? 0 : 1]), regions, shipDay: SHIP_CFG,
+    venue: { slug: v.slug, name: v.name, panel: v.panel, booking: v.booking, calendar: v.calendar || null, area: areaName(v.area), adultsOnly: !!v.adultsOnly, blackout: v.blackout || [], closedWeekdays: v.closedWeekdays || [], ...(v.childDays ? { childDays: v.childDays, childDaysText: v.childDaysText || "" } : {}), rates: v.rates || null, pickups: v.pickups || null, pickupNote: v.pickupNote || "", pickupAreas: v.pickupAreas || "", pickupNotListed: v.pickupNotListed || "", lat: v.lat, lng: v.lng, drive: v.drive || {}, sd: v.shipDay === false ? 0 : 1,
       photos: v.photos.map((p) => [img(p.file), p.alt]), // the photo viewer: full-size file and caption, hero first
       products: v.products.filter(live).map((p) => ({ id: p.id, name: p.name, hours: p.hours, times: p.times || [], audience: p.audience, visitor: p.visitor || null, resident: p.resident || null, perParty: p.perParty || 0, choose: p.choose || null, legs: p.legs || null, request: !!p.request, until: p.until || null, sd: shipDayOf(p, v) })) },
   };
   // Bing wants titles under 70 characters and descriptions of 160 or less: fit() takes the first that fits,
   // so the extra categories go first, then the bracketed town, then ", Jamaica"; on descriptions the booked-by line shortens, then goes
   const cats = v.categories.map((c) => CATS[c]), where = AREAS[v.area], town = where.replace(/\s*\(.*\)$/, "");
-  const title = fit(69, `${v.name} | ${cats.join(", ")} in ${where}, Jamaica`, `${v.name} | ${cats[0]} in ${where}, Jamaica`, `${v.name} | ${cats[0]} in ${town}, Jamaica`, `${v.name} | ${cats[0]} in ${where}`, `${v.name} | ${cats[0]} in ${town}`, `${v.name} | ${cats[0]}, Jamaica`, `${v.name}, Jamaica`);
+  const esCats = es ? v.categories.map((c) => (ES.cats || {})[c] || CATS[c]) : null, esWhere = es ? areaName(v.area) : "", esTown = esWhere.replace(/\s*\(.*\)$/, "");
+  const esFrom = es && fromPrice(v) && fromPrice(v).usd != null ? ` Desde ${usd(fromPrice(v).usd)} por persona.` : "";
+  const title = es ? fit(69, `${v.name} | ${esCats.join(", ")} en ${esWhere}, Jamaica`, `${v.name} | ${esCats[0]} en ${esWhere}, Jamaica`, `${v.name} | ${esCats[0]} en ${esTown}, Jamaica`, `${v.name} | ${esCats[0]} en ${esTown}`, `${v.name}, Jamaica`) : fit(69, `${v.name} | ${cats.join(", ")} in ${where}, Jamaica`, `${v.name} | ${cats[0]} in ${where}, Jamaica`, `${v.name} | ${cats[0]} in ${town}, Jamaica`, `${v.name} | ${cats[0]} in ${where}`, `${v.name} | ${cats[0]} in ${town}`, `${v.name} | ${cats[0]}, Jamaica`, `${v.name}, Jamaica`);
   const fromLine = fromPrice(v) && fromPrice(v).usd != null ? ` From ${usd(fromPrice(v).usd)} per person.` : "";
-  const metaDesc = fit(160, `${v.blurb}${fromLine} Published prices in US$ and J$, booked by Golden Vacation & Travel, St Ann, Jamaica.`, `${v.blurb}${fromLine} Prices in US$ and J$, booked by Golden Vacation & Travel.`, `${v.blurb}${fromLine} Booked by Golden Vacation & Travel.`, `${v.blurb}${fromLine}`, `${clauses(v.blurb, 160 - fromLine.length)}${fromLine}`);
-  return `${head({ title, description: metaDesc, pathname: `${BASE}/${v.slug}`, image: hero.file, jsonld, bodyClass: "exp exp-venue", near: true })}
-${nav()}
+  const metaDesc = es ? fit(160, `${v.blurb}${esFrom} Reserva en español con Golden Vacation & Travel, St Ann, Jamaica.`, `${v.blurb}${esFrom} Reserva con Golden Vacation & Travel.`, `${v.blurb}${esFrom}`, `${clauses(v.blurb, 160 - esFrom.length)}${esFrom}`) : fit(160, `${v.blurb}${fromLine} Published prices in US$ and J$, booked by Golden Vacation & Travel, St Ann, Jamaica.`, `${v.blurb}${fromLine} Prices in US$ and J$, booked by Golden Vacation & Travel.`, `${v.blurb}${fromLine} Booked by Golden Vacation & Travel.`, `${v.blurb}${fromLine}`, `${clauses(v.blurb, 160 - fromLine.length)}${fromLine}`);
+  const alternates = hasEs(v.slug) ? [["en", `${BASE}/${v.slug}`], ["es", `${ES_BASE}/${v.slug}`]] : null;
+  return `${head({ title, description: metaDesc, pathname: here, image: hero.file, jsonld, bodyClass: "exp exp-venue", near: true, alternates })}
+${nav(langPill(v.slug))}
 <main class="venue" data-venue="${v.slug}">
-<nav class="crumbs wrap" aria-label="Breadcrumb"><a href="${BASE}/">Golden Experiences</a><span>/</span><span>${esc(v.short)}</span></nav>
+<nav class="crumbs wrap" aria-label="${es ? "Ruta" : "Breadcrumb"}">${es ? `<a href="/jamaica/es/#do">Excursiones</a>` : `<a href="${BASE}/">Golden Experiences</a>`}<span>/</span><span>${esc(v.short)}</span></nav>
 <section class="vhero wrap">
   <div class="vhero-photo${v.photos.length > 1 ? " has-slides" : ""}"><div class="hero-track" id="hero-track">${slides}</div><div class="hero-tags">${v.tags.slice(0, 1).map((t) => tag(t, "white")).join("")}</div>${photosBtn}${dots}${arrows}</div>
   <div class="vhero-t">
-    ${kicker(`${AREAS[v.area]} · ${v.parish}`)}
+    ${kicker(`${areaName(v.area)} · ${v.parish}`)}
     <h1 class="hh">${esc(v.name)}</h1>
     <p class="lead">${esc(noDash(v.blurb))}</p>
     <div class="facts">${facts}</div>
@@ -682,30 +771,30 @@ ${nav()}
 <section class="vbody wrap">
   <div class="vmain">
     <div class="opts-sec" id="options">
-      <div class="sec-head"><div><h2 class="hh">${onlyOne ? `What you get` : `Choose your ${esc(v.optionNoun)}`}</h2>${v.rates ? `<p class="sec-sub">Two rates, both printed. Visitor rate: ${esc(noDash(v.rates.visitor.note))} Resident rate: ${esc(noDash(v.rates.resident.note))}</p>` : ""}</div></div>
+      <div class="sec-head"><div><h2 class="hh">${onlyOne ? L("What you get") : Lf("Choose your {noun}", { noun: esc(v.optionNoun) })}</h2>${v.rates ? `<p class="sec-sub">Two rates, both printed. Visitor rate: ${esc(noDash(v.rates.visitor.note))} Resident rate: ${esc(noDash(v.rates.resident.note))}</p>` : ""}</div></div>
       <div class="ops" id="ops">
 ${options}
       </div>
     </div>
     ${enquiries}
     <div class="info-grid">
-      ${listBlock("What's included", v.included, "check", "inc")}
-      ${listBlock("Not included", v.notIncluded, "x", "exc")}
-      ${listBlock("Getting there", v.gettingThere, "pin", "go")}
-      ${listBlock("Before you book", v.before, "alert", "warn")}
+      ${listBlock(L("What's included"), v.included, "check", "inc")}
+      ${listBlock(L("Not included"), v.notIncluded, "x", "exc")}
+      ${listBlock(L("Getting there"), v.gettingThere, "pin", "go")}
+      ${listBlock(L("Before you book"), v.before, "alert", "warn")}
     </div>
-    ${often ? `<div class="often"><div class="sec-head"><b class="hh">Often booked with this</b><small>Only if it helps</small></div><div class="pairs">${often}</div></div>` : ""}
-    ${stayingNearby(v)}
+    ${often ? `<div class="often"><div class="sec-head"><b class="hh">${L("Often booked with this")}</b><small>${L("Only if it helps")}</small></div><div class="pairs">${often}</div></div>` : ""}
+    ${es ? "" : stayingNearby(v)}
   </div>
   ${panel(v)}
 </section>
 <div id="ta-sentinel" class="ta-sentinel" aria-hidden="true"></div>
-<section class="ta-sec" id="ta-sec" hidden aria-label="Reviews on Tripadvisor">
+<section class="ta-sec" id="ta-sec" hidden aria-label="${L("Reviews on Tripadvisor")}">
   <div class="wrap ta-in">
-    <div class="ta-head"><div>${kicker("Traveller reviews")}<h2 class="hh">What people say about <a id="ta-name" href="#" target="_blank" rel="noopener nofollow">${esc(v.name)}</a></h2></div><a class="ta-brand" id="ta-link" href="#" target="_blank" rel="noopener nofollow" aria-label="Tripadvisor"><img id="ta-logo" src="https://static.tacdn.com/img2/brand_refresh/Tripadvisor_lockup_horizontal_secondary_registered.svg" alt="Tripadvisor" width="160" height="32" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span class="ta-brand-txt">Tripadvisor</span></a></div>
+    <div class="ta-head"><div>${kicker(L("Traveller reviews"))}<h2 class="hh">${L("What people say about")} <a id="ta-name" href="#" target="_blank" rel="noopener nofollow">${esc(v.name)}</a></h2></div><a class="ta-brand" id="ta-link" href="#" target="_blank" rel="noopener nofollow" aria-label="Tripadvisor"><img id="ta-logo" src="https://static.tacdn.com/img2/brand_refresh/Tripadvisor_lockup_horizontal_secondary_registered.svg" alt="Tripadvisor" width="160" height="32" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span class="ta-brand-txt">Tripadvisor</span></a></div>
     <div class="ta-grid">
       <div class="ta-score">
-        <span class="lbl">Tripadvisor rating</span>
+        <span class="lbl">${L("Tripadvisor rating")}</span>
         <b id="ta-rating"></b>
         <img id="ta-bubbles" src="" alt="" width="120" height="22">
         <a id="ta-count" href="#" target="_blank" rel="noopener nofollow"></a>
@@ -714,10 +803,10 @@ ${options}
       </div>
       <div class="ta-reviews" id="ta-reviews"></div>
     </div>
-    <div class="ta-foot"><div class="ta-btns"><a class="btn btn-black btn-sm" id="ta-more" href="#" target="_blank" rel="noopener nofollow">More on Tripadvisor${icon("arrow", 16)}</a><a class="btn btn-outline btn-sm" id="ta-write" href="#" target="_blank" rel="noopener nofollow" hidden>Write a review</a></div><p>Reviews are written by Tripadvisor travellers about the tour, not about us. <span id="ta-sample" hidden>Sample data shown until the Tripadvisor key is in.</span></p></div>
+    <div class="ta-foot"><div class="ta-btns"><a class="btn btn-black btn-sm" id="ta-more" href="#" target="_blank" rel="noopener nofollow">${L("More on Tripadvisor")}${icon("arrow", 16)}</a><a class="btn btn-outline btn-sm" id="ta-write" href="#" target="_blank" rel="noopener nofollow" hidden>${L("Write a review")}</a></div><p>${L("Reviews are written by Tripadvisor travellers about the tour, not about us.")} <span id="ta-sample" hidden>${L("Sample data shown until the Tripadvisor key is in.")}</span></p></div>
   </div>
 </section>
-<div class="sticky-bar" id="sticky-bar"><div><b id="sticky-total">${usd(0)}</b><small id="sticky-sub">per person</small></div><button type="button" class="btn btn-black btn-sm" id="sticky-cta">${v.booking === "instant" ? "Book" : "Request"}${icon("arrow", 16)}</button></div>
+<div class="sticky-bar" id="sticky-bar"><div><b id="sticky-total">${usd(0)}</b><small id="sticky-sub">${L("per person")}</small></div><button type="button" class="btn btn-black btn-sm" id="sticky-cta">${L(v.booking === "instant" ? "Book" : "Request")}${icon("arrow", 16)}</button></div>
 </main>
 ${footer()}
 ${scripts(cfg)}
@@ -1161,6 +1250,7 @@ function stayingNearby(v) {
 
 /* ---------- booked page ---------- */
 function bookedPage(previewState = "") {
+  if (LANG === "es") return bookedPageEs();
   return `${head({ title: "Your booking | Golden Experiences", description: "Booking confirmation for your Golden Experiences day out in Jamaica.", pathname: `${BASE}/booked`, noindex: true, bodyClass: "exp exp-booked" })}
 ${nav()}
 <main class="booked wrap" id="booked" data-state="loading">
@@ -1181,6 +1271,25 @@ ${scripts({ page: "booked", whatsapp: S.whatsapp, ...(previewState ? { previewSt
 </body></html>`;
 }
 
+/* the Spanish booked page: the same states and ids as the English one (experiences.js fills them in Spanish), without the
+   hidden Netlify form definitions, which live on the English page */
+function bookedPageEs() {
+  return `${head({ title: "Tu reserva | Golden Experiences", description: "Confirmación de tu reserva de excursión en Jamaica con Golden Vacation & Travel.", pathname: `${ES_BASE}/booked`, noindex: true, bodyClass: "exp exp-booked" })}
+${nav()}
+<main class="booked wrap" id="booked" data-state="loading">
+  <div class="booked-card">
+    <div class="state" data-for="loading">${kicker("Un momento")}<h1 class="hh">Estamos confirmando tu reserva.</h1><p>El cobro a tu tarjeta ya se hizo y estamos confirmando la reserva. Tarda unos segundos.</p></div>
+    <div class="state" data-for="confirmed" hidden>${kicker("Reservado")}<h1 class="hh">¡Listo, ya tienes tu lugar!</h1><p>Tu reserva está confirmada. La confirmación y tu voucher van en camino a <b id="bk-email"></b>. Muéstralos en tu teléfono al llegar.</p><dl class="bk-dl" id="bk-details"></dl><p class="bk-order">Número de reserva <b id="bk-ref"></b><span id="bk-order-wrap"> · Pedido del parque <b id="bk-order"></b></span></p></div>
+    <div class="state" data-for="team" hidden>${kicker("Reservado")}<h1 class="hh">Reserva hecha. Los detalles van en camino.</h1><p>El pago pasó y tu lugar está confirmado. Uno de nuestros asesores de viaje te envía los detalles (boletos, punto de encuentro, horarios) a <b id="bk-email-t"></b> y a tu WhatsApp en breve, en horario de oficina. No tienes que hacer nada más.</p><dl class="bk-dl" id="bk-details-t"></dl><p class="bk-order">Número de reserva <b id="bk-ref-t"></b></p></div>
+    <div class="state" data-for="pending" hidden>${kicker("Pagado, en confirmación")}<h1 class="hh">El pago pasó. Estamos confirmando tus lugares a mano.</h1><p>El sistema del parque no respondió en el momento, así que uno de nuestros asesores de viaje está confirmando esta reserva ahora. Recibes la confirmación por WhatsApp o correo dentro de una hora, en horario de oficina. No tienes que hacer nada más.</p><dl class="bk-dl" id="bk-details-p"></dl><p class="bk-order">Número de reserva <b id="bk-ref-p"></b></p></div>
+    <div class="state" data-for="unknown" hidden>${kicker("Mmm")}<h1 class="hh">No encontramos esa reserva.</h1><p>Si acabas de pagar, espera un minuto y vuelve a cargar la página. Si cerraste la página de pago antes de pagar, no se cobró nada y puedes empezar de nuevo.</p></div>
+    <div class="bk-btns">${btn("Escríbenos por WhatsApp", wa("¡Hola Golden Vacation! Acabo de reservar una excursión en su sitio web y tengo una pregunta. Ref "), "outline", "", "chat", ' id="bk-wa"')}${btn("Ver más excursiones", "/jamaica/es/#do", "black")}</div>
+  </div>
+</main>
+${footer()}
+${scripts({ page: "booked", whatsapp: S.whatsapp, lang: "es", t: ES.client || {} })}
+</body></html>`;
+}
 
 /* ---------- tour partners: operators and people who run excursions send their details to be listed ---------- */
 const PT_CSS = `<style>
@@ -1301,6 +1410,14 @@ const pages = [
   ...NEAR_HOTELS.map((h) => [`public/experiences/near/${h.slug}.html`, nearPage(h), `near-${h.slug}`]),
   ...AREA_PAGES.map((a) => [`public/experiences/area/${a.slug}.html`, areaPage(a), `area-${a.slug}`]),
 ];
+/* the Spanish copies, written with LANG set to "es" (not in the single-file preview) */
+if (ES && !BUNDLE) {
+  LANG = "es";
+  try {
+    for (const v of X.venues.filter((x) => hasEs(x.slug))) pages.push([`public/experiences/es/${v.slug}.html`, venuePage(esVenue(v)), `es-${v.slug}`]);
+    pages.push(["public/experiences/es/booked.html", bookedPage(), "es-booked"]);
+  } finally { LANG = "en"; }
+}
 
 if (!BUNDLE) {
   for (const [rel, html] of pages) {
@@ -1318,6 +1435,8 @@ export const DATA = ${JSON.stringify(X)};
 export const REZDY_MAP = ${JSON.stringify(readJson("data/rezdy-map.json"))};
 export const TA_MAP = ${JSON.stringify(readJson("data/tripadvisor-map.json"))};
 /* ship days: the settings in minutes, each port's region, and the start/duration facts the build reads from every product's times and hours */
+/* the Spanish names the functions show a guest who booked on a Spanish page (the team's copies stay English) */
+export const ES_NAMES = ${JSON.stringify(Object.fromEntries([...ES_SLUGS].map((slug) => { const v = venueBySlug[slug], e = ES.venues[slug] || {}, ep = e.products || {}; return [slug, { products: Object.fromEntries(v.products.map((p) => [p.id, (ep[p.id] || {}).name || p.name])), choices: Object.assign({}, ...v.products.map((p) => ((ep[p.id] || {}).choose || {}).labels || {})), fixed: Object.fromEntries(v.products.filter((p) => p.choose && p.choose.fixed).map((p) => [p.id, ((ep[p.id] || {}).choose || {}).fixed || p.choose.fixed])), pickups: Object.fromEntries((v.pickups || []).map((pk) => [pk.key, (e.pickups || {})[pk.key] || pk.label])) }]; })))};
 export const SHIP = ${JSON.stringify({ settings: SHIP_CFG, ports: Object.fromEntries((X.ports || []).map((pt) => [pt.slug, { name: pt.name, region: pt.region }])), products: Object.fromEntries(X.venues.flatMap((v) => v.products.filter(live).map((p) => [`${v.slug}:${p.id}`, shipDayOf(p, v)]))), venues: Object.fromEntries(X.venues.map((v) => [v.slug, v.shipDay === false ? 0 : 1])) })};
 `;
   fs.writeFileSync(path.join(ROOT, "netlify/functions/_exp-data.mjs"), dataModule);
@@ -1326,7 +1445,7 @@ export const SHIP = ${JSON.stringify({ settings: SHIP_CFG, ports: Object.fromEnt
      place, so a missing marker can never double the list. The smaller hotels' near pages are not listed: they redirect. */
   const smPath = path.join(ROOT, "public/sitemap.xml");
   if (fs.existsSync(smPath)) {
-    const urls = [[`${BASE}/`, "0.8"], [`${BASE}/partners`, "0.4"], ...X.venues.map((v) => [`${BASE}/${v.slug}`, "0.7"]), ...AREA_PAGES.map((a) => [`${BASE}/area/${a.slug}`, "0.7"]), ...NEAR_HOTELS.map((h) => [`${BASE}/near/${h.slug}`, "0.6"])];
+    const urls = [[`${BASE}/`, "0.8"], [`${BASE}/partners`, "0.4"], ...X.venues.map((v) => [`${BASE}/${v.slug}`, "0.7"]), ...X.venues.filter((v) => hasEs(v.slug)).map((v) => [`${ES_BASE}/${v.slug}`, "0.6"]), ...AREA_PAGES.map((a) => [`${BASE}/area/${a.slug}`, "0.7"]), ...NEAR_HOTELS.map((h) => [`${BASE}/near/${h.slug}`, "0.6"])];
     const entries = urls.map(([u, pr]) => `<url>\n  <loc>${S.origin}${u}</loc>\n  <lastmod>${TODAY}T00:00:00+00:00</lastmod>\n  <priority>${pr}</priority>\n</url>`).join("\n\n");
     const block = `<!-- experiences -->\n${entries}\n<!-- /experiences -->\n`;
     const urlRe = new RegExp(`<url>\\s*<loc>${S.origin.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}${BASE}[/?][^<]*</loc>[\\s\\S]*?</url>\\s*`, "g");
@@ -1344,6 +1463,7 @@ export const SHIP = ${JSON.stringify({ settings: SHIP_CFG, ports: Object.fromEnt
     fs.writeFileSync(rdPath, `${rd}\n${block}`);
     console.log("redirects:", lines.length, "smaller hotels to their area pages");
   }
+  if (ES_MISSING.size) console.warn(`SPANISH TEXT MISSING (shown in English on the Spanish pages): ${[...ES_MISSING].join(" | ")}`);
   const missing = [...usedImages].filter((f) => !fs.existsSync(path.join(IMG_DIR, f)));
   if (missing.length) console.warn("MISSING IMAGES:", missing.join(", "));
   const expired = X.venues.flatMap((v) => v.products.filter((p) => !live(p)).map((p) => `${v.slug}/${p.id}`));

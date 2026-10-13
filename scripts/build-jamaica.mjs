@@ -13,6 +13,9 @@ const J = read("data/jamaica-pages.json");
 const R = Object.fromEntries(read("data/staycations-resorts.json").map((r) => [r.slug, r]));
 const S = read("data/getaways.json").site;
 const E = read("data/experiences.json");
+/* the tours with a Spanish page (data/experiences-es.json): the Spanish page links to those, at /experiences/es/<slug> */
+const ES_TOURS = new Set(fs.existsSync(path.join(ROOT, "data/experiences-es.json")) ? Object.keys(read("data/experiences-es.json").venues || {}) : []);
+const tourHref = (href, lang) => { if (lang !== "es") return href; const m = String(href).match(/^\/experiences\/([a-z0-9-]+)(\.html)?([?#].*)?$/); return m && ES_TOURS.has(m[1]) ? `/experiences/es/${m[1]}${m[2] || ""}${m[3] || ""}` : href; };
 const TR = read("data/transfer-rates.json");
 const TD = read("data/transfers.json");
 const DL = read("data/deals.json").deals || [];
@@ -168,7 +171,7 @@ function tourCard(slug, lang) {
   if (!v) throw new Error(`no venue ${slug}`);
   const text = lang === "es" ? J.tours.es[slug] || "" : (J.tours.en || {})[slug] || v.card;
   const area = J.tours.areas[v.area] || "";
-  return card({ href: `/experiences/${slug}.html`, img: `/jamaica/img/card-${slug}.jpg`, name: v.name, price: usd(venueFrom(v)), priceUsd: venueFrom(v), prefix: T.from, per: T.pp, sub: area, text, foot: "", go: T.see, lang, kind: "tour", track: `jam-tour-${slug}` });
+  return card({ href: tourHref(`/experiences/${slug}.html`, lang), img: `/jamaica/img/card-${slug}.jpg`, name: v.name, price: usd(venueFrom(v)), priceUsd: venueFrom(v), prefix: T.from, per: T.pp, sub: area, text, foot: "", go: T.see, lang, kind: "tour", track: `jam-tour-${slug}` });
 }
 
 /* airport pickups: the cheapest one-way car in a zone, straight from the live rates */
@@ -190,7 +193,7 @@ function dealsSection(pg) {
     const flags = [...(c.badge ? [[c.badge, "dc-offer"]] : []), ...(d.until ? [[`${T.ends} ${dayMonth(d.until, lang)}`, ""]] : [])];
     const [f0, f1 = ""] = (c.foot || "").split("{child}");
     const footHtml = esc(f0) + (child && (c.foot || "").includes("{child}") ? `<span class="money" data-usd="${child}">${usd(child)}</span>` : "") + esc(f1);
-    return card({ href: d.href, img: d.img, name: c.name, price: dealPrice(d), priceUsd: dealUsd(d), prefix: c.prefix, per: c.per, sub: c.sub, text: c.text, flags, footHtml, go: T.see, lang, kind: "deal", track: `jam-deal-${d.id}` });
+    return card({ href: tourHref(d.href, lang), img: d.img, name: c.name, price: dealPrice(d), priceUsd: dealUsd(d), prefix: c.prefix, per: c.per, sub: c.sub, text: c.text, flags, footHtml, go: T.see, lang, kind: "deal", track: `jam-deal-${d.id}` });
   }).join("");
   return `<section class="jsec jdeals" id="deals" aria-labelledby="deals-h"><div class="wrap">
   <div class="jsec-head"><span class="kicker">${esc(T.dealsKicker)}</span><h2 class="h2" id="deals-h">${esc(T.dealsTitle)}</h2></div>
