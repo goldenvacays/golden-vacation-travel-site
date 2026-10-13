@@ -68,6 +68,8 @@
      No name, no email, no phone: a code, a page and a time, so this needs nothing from the privacy page. */
   function waExit(d) {
     d = d || {};
+    /* every WhatsApp exit is a lead for GA4 (generate_lead), except the question link on a booked page: that one already booked */
+    if (!/^booked/.test(d.where || "")) track("generate_lead", { lead_source: "whatsapp", where: d.where || location.pathname });
     var body = new URLSearchParams({ "form-name": "wa-exits", visit: VISIT, ref: d.ref || "", page: location.pathname,
       where: d.where || "", total: d.total || "", context: String(d.context || "").slice(0, 400) }).toString();
     try {

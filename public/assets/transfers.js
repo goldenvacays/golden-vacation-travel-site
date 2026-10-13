@@ -40,6 +40,14 @@
   function farOut() { var p = todayISO().split("-"), d = new Date(Date.UTC(+p[0], +p[1] - 1 + 18, +p[2])); return d.toISOString().slice(0, 10); }
   function waUrl(text) { return "https://wa.me/" + WA + "?text=" + encodeURIComponent(text); }
   function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
+  /* GA4: purchase once per booking ref in this browser (same rule as experiences.js) */
+  function trackPurchase(d) {
+    if (!d || !d.ref || store("gv_ga_purchase_" + d.ref)) return;
+    var v = parseFloat(String(d.total == null ? "" : d.total).replace(/[^0-9.]/g, "")); if (!isFinite(v)) v = 0;
+    track("purchase", { transaction_id: d.ref, value: v, currency: "USD", payment_type: "card",
+      items: [{ item_name: d.product || "Airport transfer", item_category: "Transfers", price: v, quantity: 1 }] });
+    store("gv_ga_purchase_" + d.ref, "1");
+  }
   function session(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) { return null; } }
   var FLIGHT = /^[A-Z0-9]{2,3}\s?\d{1,4}[A-Z]?$/;
   var TIME = /^(1[0-2]|0?[1-9])(:[0-5]\d)?\s*(am|pm)$/i;
@@ -769,6 +777,7 @@
       var canEmbed = typeof window.Stripe === "function";
       var b = body(canEmbed ? "embedded" : "hosted");
       track("tr_checkout", { ride: String(tok.ride || ""), vehicle: b.vehicle, total: price, code: ref });
+      track("begin_checkout", { currency: "USD", value: Number(price) || 0, items: [{ item_id: String(b.vehicle || ""), item_name: String(tok.ride || "Airport transfer"), item_category: "Transfers", price: Number(price) || 0, quantity: 1 }] });
       fetch(FN + "tr-checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b) })
         .then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j || {} }; }); })
         .then(function (x) {
@@ -825,6 +834,7 @@
         if (dl) { dl.innerHTML = ""; [["Ride", data.product], ["When", data.when], ["People", data.guests], ["Where", data.pickup], ["Paid", data.total]].forEach(function (kv) { if (!kv[1]) return; var dt = document.createElement("dt"); dt.textContent = kv[0]; var dd = document.createElement("dd"); dd.textContent = kv[1]; dl.appendChild(dt); dl.appendChild(dd); }); }
         var r = $("#bk-ref" + sfx, main); if (r) r.textContent = data.ref || "";
         var emt = $("#bk-email-t", main); if (emt) emt.textContent = data.email || "your email";
+        if (!PREVIEW && (state === "team" || state === "pending")) trackPurchase(data);
         var w = $("#bk-wa", main); if (w && data.ref) { w.href = waUrl("Hi Golden Vacation! I've just booked an airport transfer on your website and I have a question. Ref " + data.ref); w.addEventListener("click", function () { if (window.GV_WA_EXIT) window.GV_WA_EXIT({ ref: data.ref, where: "booked", total: data.total || "" }); }); }
       }
     }

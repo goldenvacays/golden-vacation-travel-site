@@ -17,6 +17,19 @@
     try { if (typeof window.gtag === "function") window.gtag("event", name, params || {}); } catch (e) {}
     try { if (typeof window.plausible === "function") window.plausible(name, { props: params || {} }); } catch (e) {}
   }
+  /* GA4 bookings, in Google's own event names so GA4 and Google Ads count them: purchase when a booking is made
+     (card, or pay on arrival), once per booking ref in this browser, so reloading the booked page never counts it twice */
+  function money(v) { var n = parseFloat(String(v == null ? "" : v).replace(/[^0-9.]/g, "")); return isFinite(n) ? n : 0; }
+  function trackPurchase(d, extra) {
+    if (!d || !d.ref) return;
+    var key = "gv_ga_purchase_" + d.ref;
+    if (store(key)) return;
+    var v = money(d.total), p = { transaction_id: d.ref, value: v, currency: "USD",
+      items: [{ item_name: d.product || "Experience", item_brand: d.venue || "", item_category: "Experiences", price: v, quantity: 1 }] };
+    if (extra) Object.keys(extra).forEach(function (k) { p[k] = extra[k]; });
+    track("purchase", p);
+    store(key, "1");
+  }
   function ref() { return "GV-EXP-" + Math.random().toString(36).slice(2, 6).toUpperCase(); }
   var DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   function parseDate(s) { if (!s) return null; var p = s.split("-"); if (p.length !== 3) return null; return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])); }
@@ -928,6 +941,7 @@
       var body = { slug: V.slug, product: p.id, date: state.date, time: wantsTime ? state.time : "", date2: date2, flightIn: flightIn, flightOut: flightOut, adults: state.adults, children: state.children, pickup: state.pickup, pickupHotel: state.pickup === "own" ? "" : state.pickupHotel, choices: chosen(), ref: state.ref, ship: el.ship ? el.ship.value.trim() : "", port: cruise() && portOf() ? portOf().slug : "", aboard: cruise() ? (state.aboard || "") : "", customer: { first: el.first.value.trim(), last: el.last.value.trim(), email: el.email.value.trim(), phone: el.phone.value.trim() } };
       if (mode === "arrival") { reserve(body); return; }
       track("exp_checkout", { venue: V.slug, product: p.id, total: price().total, code: state.ref });
+      track("begin_checkout", { currency: price().cur || "USD", value: price().total, items: [{ item_id: p.id, item_name: p.name, item_brand: V.name, item_category: "Experiences", price: price().total, quantity: 1 }] });
       if (PREVIEW) { alertBox("In the live site this opens the secure card page for " + price().lead + ". After paying, " + (live ? "the booking is created with the park" : "the guest is confirmed and the team gets the booking to send the details") + ", and the guest lands on the confirmation page (see \"After paying\" in the page picker)."); return; }
       el.cta.disabled = true; $("#cta-label", el.cta).textContent = "Opening secure payment…";
       fetch(FN + "exp-checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
@@ -939,6 +953,7 @@
         .catch(function (e) { el.cta.disabled = false; render(); alertBox((e && e.message ? e.message : "Something went wrong.") + " You can send the same booking by WhatsApp and we'll confirm it by hand.", true); });
     }
     function reserve(body) {
+      var p0 = product() || {};
       track("exp_reserve", { venue: V.slug, product: body.product, total: price().total, code: state.ref });
       if (PREVIEW) { alertBox("In the live site this reserves the booking and the guest pays " + price().lead + " on arrival."); return; }
       el.cta.disabled = true; $("#cta-label", el.cta).textContent = "Reserving…";
@@ -946,6 +961,7 @@
         .then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); })
         .then(function (x) {
           if (!(x.j && x.j.ok)) throw new Error((x.j && x.j.error) || "That didn't go through.");
+          trackPurchase({ ref: x.j.ref || state.ref, total: price().total, product: p0.name, venue: V.name }, { payment_type: "pay on arrival" });
           var lead = price().lead, box = document.createElement("div");
           box.className = "reserved"; box.setAttribute("role", "status");
           box.innerHTML = '<span class="kicker">Reserved</span><h3 class="hh"></h3><p>Your reference is <b class="r-ref"></b>. The details are on their way to <b class="r-mail"></b>, and one of our travel professionals will send your pickup details shortly.</p>';
@@ -1075,6 +1091,7 @@
         var emt = $("#bk-email-t", main); if (emt) emt.textContent = data.email || "your email";
         var w = $("#bk-wa", main); if (w && data.ref) w.href = waUrl("Hi Golden Vacation! I've just booked an experience on your website and I have a question. Ref " + data.ref);
       }
+      if (!PREVIEW && data && (state === "confirmed" || state === "team" || state === "pending")) trackPurchase(data, { payment_type: "card" });
     }
     if (PREVIEW) {
       var X = window.GV_EXP || {};
