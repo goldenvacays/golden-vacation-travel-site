@@ -620,3 +620,13 @@
 .reserved { display: flex; flex-direction: column; gap: 10px; padding: 4px 2px 8px; }
 .reserved .hh { font-size: 24px; line-height: 1.1; }
 .reserved p { font-size: 15px; line-height: 1.5; color: var(--ink-2); }
+
+/* EN / ES on the tours that have a Spanish page: the currency pill's look, but links (each language has its own address).
+   On phones it stays in the bar, smaller, since the menu is where the currency switch goes. */
+.curr.lang a { display: inline-flex; align-items: center; justify-content: center; height: 30px; min-width: 42px; padding: 0 10px; border-radius: 999px; font-size: 13px; font-weight: 800; color: var(--muted); text-decoration: none; }
+.curr.lang a.on { background: var(--ink); color: #fff; }
+.curr.lang a:not(.on):hover { color: var(--ink); }
+@media (max-width: 899px) {
+  .nav .curr.lang { display: inline-flex; padding: 3px; }
+  .nav .curr.lang a { height: 28px; min-width: 34px; padding: 0 8px; font-size: 12px; }
+}

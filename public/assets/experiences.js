@@ -6,6 +6,11 @@
   var WA = CFG.whatsapp || "18763601567";
   var PREVIEW = !!CFG.preview;
   var FN = "/.netlify/functions/";
+  /* Spanish pages (/experiences/es/...): GV_EXP carries lang "es" and the Spanish strings from data/experiences-es.json
+     ("client"), keyed by the English text, so an English page never changes and a missing string shows in English */
+  var XL = window.GV_EXP || {}, LANG = XL.lang || "en", TT = XL.t || {};
+  function L(s) { return LANG !== "en" && TT[s] != null ? TT[s] : s; }
+  function Lf(s, o) { var t = L(s); Object.keys(o).forEach(function (k) { t = t.split("{" + k + "}").join(o[k]); }); return t; }
 
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
@@ -32,6 +37,26 @@
   }
   function ref() { return "GV-EXP-" + Math.random().toString(36).slice(2, 6).toUpperCase(); }
   var DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  var MONTHS_LONG = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], DOW = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+  var DAYS_PL_ES = ["domingos", "lunes", "martes", "miércoles", "jueves", "viernes", "sábados"];
+  if (LANG === "es") {
+    DAYS = ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"]; MONTHS = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+    MONTHS_LONG = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]; DOW = ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"];
+  }
+  /* "2 adults, 1 child" in the page's language (sep sits between the two) */
+  function guestsLine(a, c, sep) {
+    if (LANG === "es") return a + " adulto" + (a === 1 ? "" : "s") + (c ? sep + c + (c === 1 ? " niño" : " niños") : "");
+    return a + " adult" + (a === 1 ? "" : "s") + (c ? sep + c + " child" + (c === 1 ? "" : "ren") : "");
+  }
+  /* a start time as the guest reads it ("10:00am", or "10:00 a. m." in Spanish); the value sent to the checkout never changes */
+  function showTime(t) {
+    if (LANG !== "es") return t;
+    var m = String(t || "").trim().toLowerCase().match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm|noon|midnight)?$/); if (!m) return t;
+    var ap = m[3] === "noon" ? "pm" : m[3] === "midnight" ? "am" : m[3];
+    return m[1] + ":" + (m[2] || "00") + (ap ? (ap === "am" ? " a. m." : " p. m.") : "");
+  }
+  /* " at 10:00am"; in Spanish " a las 10:00 a. m.", and " a la 1:00 p. m." for one o'clock */
+  function atTime(t) { if (LANG !== "es") return " at " + t; var s = showTime(t); return (/^1:/.test(s) ? " a la " : " a las ") + s; }
   function parseDate(s) { if (!s) return null; var p = s.split("-"); if (p.length !== 3) return null; return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])); }
   function longDate(s) { var d = parseDate(s); if (!d) return ""; return DAYS[d.getUTCDay()] + " " + d.getUTCDate() + " " + MONTHS[d.getUTCMonth()] + " " + d.getUTCFullYear(); }
   /* today in Jamaica from the clock. The page also carries the day it was built (GV_EXP.today); that is only a floor,
@@ -55,7 +80,7 @@
     var nudge = Math.max(-20, Math.min(20, (kmBetween(hotel, venue) - kmBetween(centre, venue)) * 1.2));
     return Math.max(5, Math.round((anchor + nudge) / 5) * 5);
   }
-  function driveLabel(m) { if (m == null) return ""; if (m < 60) return "about " + m + " min"; var h = Math.floor(m / 60), r = m % 60; return "about " + h + " h" + (r ? " " + (r < 10 ? "0" + r : r) : ""); }
+  function driveLabel(m) { if (m == null) return ""; if (m < 60) return L("about ") + m + " min"; var h = Math.floor(m / 60), r = m % 60; return L("about ") + h + " h" + (r ? " " + (r < 10 ? "0" + r : r) : ""); }
   function hotelsOf(X) { return (X.hotels || []).map(function (h) { return { name: h[0], slug: h[1], region: h[2], lat: h[3], lng: h[4], port: !!h[5], resort: h[6] == null ? true : !!h[6] }; }); }
   /* ship days. A cruise guest is planned back at the pier by X.shipDay.backBy (3:30pm) or an hour before the all-aboard time they pick.
      The drive from their port puts a tour in a tier: ok (books on the spot), ask (WhatsApp first, we check it against the ship), no (not offered). */
@@ -66,7 +91,7 @@
     if (ap === "pm" && h < 12) h += 12; if (ap === "am" && h === 12) h = 0;
     return h * 60 + mi;
   }
-  function clockText(m) { var h = Math.floor(m / 60) % 24, mi = m % 60; return (h % 12 || 12) + ":" + (mi < 10 ? "0" : "") + mi + (h < 12 ? "am" : "pm"); }
+  function clockText(m) { var h = Math.floor(m / 60) % 24, mi = m % 60; return (h % 12 || 12) + ":" + (mi < 10 ? "0" : "") + mi + (LANG === "es" ? (h < 12 ? " a. m." : " p. m.") : (h < 12 ? "am" : "pm")); }
   function shipTier(SD, sdFlag, drive) { if (!SD) return "ok"; if (sdFlag === 0 || sdFlag === false) return "no"; if (drive == null) return "ok"; return drive > SD.askDrive ? "no" : drive > SD.okDrive ? "ask" : "ok"; }
   /* does one start (or an untimed visit) get them back in time from a port `drive` minutes away? */
   function shipSlotOk(SD, p, startMins, drive, backBy) {
@@ -321,11 +346,11 @@
     var SVG_ARROW = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>';
     function build() {
       box = document.createElement("div");
-      box.className = "lb"; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true"); box.setAttribute("aria-label", (V.name || "") + " photos"); box.hidden = true;
-      box.innerHTML = '<button type="button" class="lb-x" aria-label="Close the photos">' + SVG_X + '</button>' +
-        '<button type="button" class="lb-prev" aria-label="Previous photo">' + SVG_ARROW + '</button>' +
+      box.className = "lb"; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true"); box.setAttribute("aria-label", Lf("{name} photos", { name: V.name || "" })); box.hidden = true;
+      box.innerHTML = '<button type="button" class="lb-x" aria-label="' + L("Close the photos") + '">' + SVG_X + '</button>' +
+        '<button type="button" class="lb-prev" aria-label="' + L("Previous photo") + '">' + SVG_ARROW + '</button>' +
         '<figure class="lb-fig"><img class="lb-img" alt=""><figcaption class="lb-cap"><span class="lb-alt"></span><span class="lb-n"></span></figcaption></figure>' +
-        '<button type="button" class="lb-next" aria-label="Next photo">' + SVG_ARROW + '</button>';
+        '<button type="button" class="lb-next" aria-label="' + L("Next photo") + '">' + SVG_ARROW + '</button>';
       document.body.appendChild(box);
       if (photos.length < 2) { $(".lb-prev", box).hidden = true; $(".lb-next", box).hidden = true; $(".lb-n", box).hidden = true; }
       $(".lb-x", box).addEventListener("click", close);
@@ -431,11 +456,11 @@
     function shipText() { /* the line under the all-aboard chips, and the CTA note when the ship day decides the path */
       var pt = portOf(), d = portDrive(), tier = driveTier();
       if (V.sd === 0) return "Airport lounges are for flight days, not ship days.";
-      if (pt && tier === "no") { var w = portThatWorks(); return "Not on a ship day from " + pt.name + ": " + driveLabel(d) + " each way." + (w ? " It works from " + w.pt.name + " (" + driveLabel(w.d) + ")." : ""); }
-      if (pt && tier === "ask") return "A long day from " + pt.name + ", " + driveLabel(d) + " each way. We check it against your all-aboard time before anything is charged.";
+      if (pt && tier === "no") { var w = portThatWorks(); return Lf("Not on a ship day from {port}: {drive} each way.", { port: pt.name, drive: driveLabel(d) }) + (w ? Lf(" It works from {port} ({drive}).", { port: w.pt.name, drive: driveLabel(w.d) }) : ""); }
+      if (pt && tier === "ask") return Lf("A long day from {port}, {drive} each way. We check it against your all-aboard time before anything is charged.", { port: pt.name, drive: driveLabel(d) });
       var p = product();
-      if (p && !productOk(p)) return "This option can't get you back to the pier by " + clockText(backBy()) + (state.aboard ? "" : ". Later all-aboard? Pick it above") + ".";
-      return "Back at the pier by " + clockText(backBy()) + (state.aboard ? ", an hour before all-aboard" : " unless you tell us your all-aboard time") + (pt && d != null ? ", " + driveLabel(d) + " each way from " + pt.name : "") + ".";
+      if (p && !productOk(p)) return Lf("This option can't get you back to the pier by {time}", { time: clockText(backBy()) }) + (state.aboard ? "" : L(". Later all-aboard? Pick it above")) + ".";
+      return Lf("Back at the pier by {time}", { time: clockText(backBy()) }) + L(state.aboard ? ", an hour before all-aboard" : " unless you tell us your all-aboard time") + (pt && d != null ? Lf(", {drive} each way from {port}", { drive: driveLabel(d), port: pt.name }) : "") + ".";
     }
 
     /* expired seasonal products (belt and braces: the build already drops them) */
@@ -457,11 +482,12 @@
     function isRequest() { var p = product(); return V.booking === "request" || (p && p.request) || pickupByHand() || shipAsk() || shipBlock(); }
     function pickupOf() { if (!V.pickups) return null; for (var i = 0; i < V.pickups.length; i++) if (V.pickups[i].key === state.pickup) return V.pickups[i]; return V.pickups[0]; }
     function chosen() { var p = product(); if (!p || !p.choose) return []; return state.choices[p.id] || []; }
+    function choiceLabel(c) { var p = product(); return (p && p.choose && p.choose.labels && p.choose.labels[c]) || c; }
 
     function price() {
       var p = product(); if (!p) return { lead: usd(0), sub: "", total: 0, cur: "USD", note: "" };
       var r = rateOf(p), a = state.adults, c = state.children;
-      if (p.perParty) { return { lead: usd(p.visitor.usd), sub: "total for two people", total: p.visitor.usd, cur: "USD", note: "Priced for two people, not per person." }; }
+      if (p.perParty) { return { lead: usd(p.visitor.usd), sub: L("total for two people"), total: p.visitor.usd, cur: "USD", note: L("Priced for two people, not per person.") }; }
       if (r === "resident" && p.resident) {
         var childKnown = p.resident.jmdChild != null;
         var tot = a * p.resident.jmd + (childKnown ? c * p.resident.jmdChild : 0);
@@ -471,27 +497,27 @@
         var pk = state.pickupMode === "other" || (state.pickupMode === "hotel" && state.pickupHotel) ? pickupOf() : null, add = pk ? (pk.add || 0) : 0, addC = pk ? (pk.addChild != null ? pk.addChild : add) : 0;
         var childKnownV = p.visitor.usdChild != null;
         var totV = a * (p.visitor.usd + add) + (childKnownV ? c * (p.visitor.usdChild + addC) : 0);
-        return { lead: usd(totV), sub: "total for " + a + " adult" + (a === 1 ? "" : "s") + (c ? " + " + c + " child" + (c === 1 ? "" : "ren") : ""), total: totV, cur: "USD", note: !childKnownV && c ? "Children are priced when we confirm." : (add ? "Includes " + usd(add) + " per person for pickup." : "") };
+        return { lead: usd(totV), sub: L("total for ") + guestsLine(a, c, " + "), total: totV, cur: "USD", note: !childKnownV && c ? L("Children are priced when we confirm.") : (add ? Lf("Includes {amount} per person for pickup.", { amount: usd(add) }) : "") };
       }
-      return { lead: "Price on request", sub: "", total: 0, cur: "USD", note: "" };
+      return { lead: L("Price on request"), sub: "", total: 0, cur: "USD", note: "" };
     }
 
     function dateProblem(iso) {
       if (!iso) return "";
       var d = parseDate(iso); if (!d) return "";
-      if (iso < today) return "That date has passed.";
-      if (V.closedWeekdays && V.closedWeekdays.indexOf(d.getUTCDay()) >= 0) return V.name + " is closed on " + DAYS[d.getUTCDay()] + "days. Pick another day and we'll price the same thing.";
-      if (V.childDays && state.children > 0 && V.childDays.indexOf(d.getUTCDay()) < 0) return V.childDaysText || "Children sail on the family days only. Pick one of those, or book adults only.";
+      if (iso < today) return L("That date has passed.");
+      if (V.closedWeekdays && V.closedWeekdays.indexOf(d.getUTCDay()) >= 0) return Lf("{venue} is closed on {day}days. Pick another day and we'll price the same thing.", { venue: V.name, day: DAYS[d.getUTCDay()], days: DAYS_PL_ES[d.getUTCDay()] });
+      if (V.childDays && state.children > 0 && V.childDays.indexOf(d.getUTCDay()) < 0) return V.childDaysText || L("Children sail on the family days only. Pick one of those, or book adults only.");
       var md = iso.slice(5);
-      if (V.blackout && V.blackout.indexOf(md) >= 0) return "Closed on that date. Pick another day.";
-      var p = product(); if (p && p.until && iso > p.until) return "This offer ends on " + longDate(p.until) + ".";
+      if (V.blackout && V.blackout.indexOf(md) >= 0) return L("Closed on that date. Pick another day.");
+      var p = product(); if (p && p.until && iso > p.until) return Lf("This offer ends on {date}.", { date: longDate(p.until) });
       return "";
     }
 
     function message() {
       var p = product(); if (!p) return "";
       var pr = price(), lines = [];
-      lines.push("Golden Experiences " + (instant() && (!live || state.availOk !== false) ? "booking" : "request") + " " + state.ref);
+      lines.push(Lf("Golden Experiences {kind} {ref}", { kind: L(instant() && (!live || state.availOk !== false) ? "booking" : "request"), ref: state.ref }));
       lines.push(V.name);
       lines.push(p.name + (p.hours ? " (" + p.hours + ")" : ""));
       if (V.rates) lines.push("Rate: " + (rateOf(p) === "resident" ? "Resident, Jamaican ID at the gate" : "Visitor" + (V.pickups ? ", hotel pickup" : "")));
@@ -501,19 +527,19 @@
         if (legs !== "out") lines.push("Arrives: " + (d1 || "date to confirm") + " on " + (fi || "flight to confirm"));
         if (legs !== "in") lines.push("Departs: " + ((legs === "both" ? d2 : d1) || "date to confirm") + " on " + (fo || "flight to confirm"));
       } else {
-        lines.push("Date: " + (state.date ? longDate(state.date) : "flexible") + (state.time ? " at " + state.time : ""));
+        lines.push(L("Date: ") + (state.date ? longDate(state.date) : L("flexible")) + (state.time ? atTime(state.time) : ""));
       }
-      var g = state.adults + " adult" + (state.adults === 1 ? "" : "s") + (state.children ? ", " + state.children + " child" + (state.children === 1 ? "" : "ren") : "");
-      if (p.perParty) g = "2 people";
-      lines.push("Guests: " + g + (isFlight ? " (infants under 2 free)" : ""));
-      if (V.pickups && rateOf(p) === "visitor") { var pk = pickupOf(); if (pk) lines.push("Pickup: " + (pk.key === "own" ? "making my own way" : (state.pickupHotel && state.pickupHotel !== pk.label ? state.pickupHotel + " (" + pk.label + ")" : pk.label) + (pk.request ? ", transfer to be priced" : ""))); }
-      var ch = chosen(); if (ch.length) lines.push("Choice: " + (p.choose.fixed ? p.choose.fixed + " + " : "") + ch.join(" + "));
-      if (pr.total) lines.push("Total: " + pr.lead + (pr.alt ? " (" + pr.alt + ")" : "") + (pr.note ? ". " + pr.note : ""));
-      else lines.push("Total: to be priced");
+      var g = guestsLine(state.adults, state.children, ", ");
+      if (p.perParty) g = L("2 people");
+      lines.push(L("Guests: ") + g + (isFlight ? " (infants under 2 free)" : ""));
+      if (V.pickups && rateOf(p) === "visitor") { var pk = pickupOf(); if (pk) lines.push(L("Pickup: ") + (pk.key === "own" ? L("making my own way") : (state.pickupHotel && state.pickupHotel !== pk.label ? state.pickupHotel + " (" + pk.label + ")" : pk.label) + (pk.request ? L(", transfer to be priced") : ""))); }
+      var ch = chosen(); if (ch.length) lines.push(L("Choice: ") + (p.choose.fixed ? p.choose.fixed + " + " : "") + ch.map(choiceLabel).join(" + "));
+      if (pr.total) lines.push(L("Total: ") + pr.lead + (pr.alt ? " (" + pr.alt + ")" : "") + (pr.note ? ". " + pr.note : ""));
+      else lines.push(L("Total: ") + L("to be priced"));
       var nm = [el.first && el.first.value.trim(), el.last && el.last.value.trim()].filter(Boolean).join(" ");
-      if (nm) lines.push("Name: " + nm);
-      if (cruise()) { var pt0 = portOf(); lines.push("Cruise: " + [el.ship && el.ship.value.trim(), pt0 ? "from " + pt0.name : "", state.aboard ? "all-aboard " + clockText(state.aboard) : "all-aboard time not given"].filter(Boolean).join(", ") + (shipBlock() ? " (flagged: not on a ship day)" : shipAsk() ? " (long day, please check)" : "")); }
-      lines.push("Sent from goldenvacays.com/experiences/" + V.slug);
+      if (nm) lines.push(L("Name: ") + nm);
+      if (cruise()) { var pt0 = portOf(); lines.push(L("Cruise: ") + [el.ship && el.ship.value.trim(), pt0 ? L("from ") + pt0.name : "", state.aboard ? L("all-aboard ") + clockText(state.aboard) : L("all-aboard time not given")].filter(Boolean).join(", ") + L(shipBlock() ? " (flagged: not on a ship day)" : shipAsk() ? " (long day, please check)" : "")); }
+      lines.push(Lf("Sent from goldenvacays.com/experiences/{slug}", { slug: V.slug }));
       return lines.join("\n");
     }
 
@@ -528,18 +554,18 @@
       if (!state.time || !list.some(function (s) { return s.time === state.time && s.seats !== 0 && !late(s); })) { var firstOk = list.filter(function (s) { return s.seats !== 0 && !late(s); })[0]; state.time = firstOk ? firstOk.time : ""; }
       list.forEach(function (s) {
         var b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.setAttribute("data-time", s.time);
-        b.innerHTML = s.time + (s.seats != null && s.seats > 0 && s.seats < 6 ? "<small>" + s.seats + " left</small>" : "");
+        b.innerHTML = showTime(s.time) + (s.seats != null && s.seats > 0 && s.seats < 6 ? "<small>" + Lf("{n} left", { n: s.seats }) + "</small>" : "");
         if (s.seats === 0) { b.disabled = true; b.setAttribute("aria-disabled", "true"); }
-        else if (late(s)) { b.disabled = true; b.setAttribute("aria-disabled", "true"); b.classList.add("chip-late"); b.title = "Back after all-aboard"; b.innerHTML = s.time + "<small>after all-aboard</small>"; }
+        else if (late(s)) { b.disabled = true; b.setAttribute("aria-disabled", "true"); b.classList.add("chip-late"); b.title = L("Back after all-aboard"); b.innerHTML = showTime(s.time) + "<small>" + L("after all-aboard") + "</small>"; }
         b.setAttribute("aria-pressed", s.time === state.time ? "true" : "false");
         b.addEventListener("click", function () { state.time = s.time; renderTimes(); render(); });
         el.times.appendChild(b);
       });
       if (el.timesNote) {
-        if (cruise() && list.length && list.every(late)) { el.timesNote.hidden = false; el.timesNote.className = "pf-hint bad"; el.timesNote.textContent = "No start gets you back to the pier by " + clockText(backBy()) + (portOf() ? " from " + portOf().name : "") + "." + (state.aboard ? "" : " Later all-aboard? Pick it below."); }
-        else if (state.availOk === false) { el.timesNote.hidden = false; el.timesNote.className = "pf-hint"; el.timesNote.textContent = "Live availability is offline right now, so we'll confirm the time by WhatsApp."; }
-        else if (state.sessions && !state.sessions.length) { el.timesNote.hidden = false; el.timesNote.className = "pf-hint bad"; el.timesNote.textContent = "Nothing left on that date. Try another day, or ask us and we'll check with the park."; }
-        else if (state.sessions) { el.timesNote.hidden = false; el.timesNote.className = "pf-hint ok"; el.timesNote.textContent = "Live availability from the park for " + longDate(state.date) + "."; }
+        if (cruise() && list.length && list.every(late)) { el.timesNote.hidden = false; el.timesNote.className = "pf-hint bad"; el.timesNote.textContent = Lf("No start gets you back to the pier by {time}", { time: clockText(backBy()) }) + (portOf() ? Lf(" from {port}", { port: portOf().name }) : "") + "." + (state.aboard ? "" : L(" Later all-aboard? Pick it below.")); }
+        else if (state.availOk === false) { el.timesNote.hidden = false; el.timesNote.className = "pf-hint"; el.timesNote.textContent = L("Live availability is offline right now, so we'll confirm the time by WhatsApp."); }
+        else if (state.sessions && !state.sessions.length) { el.timesNote.hidden = false; el.timesNote.className = "pf-hint bad"; el.timesNote.textContent = L("Nothing left on that date. Try another day, or ask us and we'll check with the park."); }
+        else if (state.sessions) { el.timesNote.hidden = false; el.timesNote.className = "pf-hint ok"; el.timesNote.textContent = Lf("Live availability from the park for {date}.", { date: longDate(state.date) }); }
         else { el.timesNote.hidden = true; }
       }
     }
@@ -554,7 +580,7 @@
       clearTimeout(availTimer);
       availTimer = setTimeout(function () {
         var url = FN + "exp-availability?slug=" + encodeURIComponent(V.slug) + "&product=" + encodeURIComponent(p.id) + "&date=" + encodeURIComponent(state.date) + "&choice=" + encodeURIComponent(chosen().join("|"));
-        if (el.timesNote) { el.timesNote.hidden = false; el.timesNote.className = "pf-hint"; el.timesNote.textContent = "Checking availability with the park…"; }
+        if (el.timesNote) { el.timesNote.hidden = false; el.timesNote.className = "pf-hint"; el.timesNote.textContent = L("Checking availability with the park…"); }
         fetch(url).then(function (r) { return r.json(); }).then(function (j) {
           if (!j || !j.ok) { state.availOk = false; state.sessions = null; }
           else { state.availOk = true; state.sessions = j.sessions || []; }
@@ -570,7 +596,7 @@
       el.total.textContent = pr.lead; el.totalSub.textContent = pr.sub || "";
       el.caption.textContent = pr.alt ? pr.alt + (pr.note ? " · " + pr.note : "") : (pr.note || "");
       if (el.stickyTotal) el.stickyTotal.textContent = pr.lead;
-      if (el.stickySub) el.stickySub.textContent = pr.sub || (p.perParty ? "for two" : "per person");
+      if (el.stickySub) el.stickySub.textContent = pr.sub || L(p.perParty ? "for two" : "per person");
       /* rate radio visibility per product */
       var rateWrap = $("#pf-rate", root);
       if (rateWrap) { rateWrap.hidden = p.audience !== "everyone"; if (el.rateNote && V.rates) el.rateNote.textContent = V.rates[r === "resident" ? "resident" : "visitor"].note; }
@@ -579,10 +605,10 @@
       var childPrice = r === "resident" && p.resident ? p.resident.jmdChild : (p.visitor ? p.visitor.usdChild : null);
       if (el.childStep) {
         if (p.perParty) { $(".pf-guests", root).hidden = true; } else { $(".pf-guests", root).hidden = false; }
-        if (adultsOnly) { el.childStep.setAttribute("data-off", ""); state.children = 0; el.children.value = 0; el.childNote.hidden = false; el.childNote.textContent = "Adults only at this one."; $$("button", el.childStep).forEach(function (b) { b.disabled = true; }); }
-        else { el.childStep.removeAttribute("data-off"); $$("button", el.childStep).forEach(function (b) { b.disabled = false; }); el.childNote.hidden = !(childPrice == null && state.children > 0); el.childNote.textContent = childPrice == null ? "We price children when we confirm." : ""; }
-        el.childUnit.textContent = childPrice != null ? (r === "resident" ? jmd(childPrice) : usd(childPrice)) + " each" : (adultsOnly ? "" : "ask us");
-        el.adultUnit.textContent = p.perParty ? "" : (r === "resident" && p.resident ? jmd(p.resident.jmd) : p.visitor ? usd(p.visitor.usd + (pickupOf() && r === "visitor" ? (pickupOf().add || 0) : 0)) : "") + (p.visitor || p.resident ? " each" : "");
+        if (adultsOnly) { el.childStep.setAttribute("data-off", ""); state.children = 0; el.children.value = 0; el.childNote.hidden = false; el.childNote.textContent = L("Adults only at this one."); $$("button", el.childStep).forEach(function (b) { b.disabled = true; }); }
+        else { el.childStep.removeAttribute("data-off"); $$("button", el.childStep).forEach(function (b) { b.disabled = false; }); el.childNote.hidden = !(childPrice == null && state.children > 0); el.childNote.textContent = childPrice == null ? L("We price children when we confirm.") : ""; }
+        el.childUnit.textContent = childPrice != null ? (r === "resident" ? jmd(childPrice) : usd(childPrice)) + L(" each") : (adultsOnly ? "" : L("ask us"));
+        el.adultUnit.textContent = p.perParty ? "" : (r === "resident" && p.resident ? jmd(p.resident.jmd) : p.visitor ? usd(p.visitor.usd + (pickupOf() && r === "visitor" ? (pickupOf().add || 0) : 0)) : "") + (p.visitor || p.resident ? L(" each") : "");
       }
       $$("[data-step]", root).forEach(function (b) { var k = b.getAttribute("data-step"), d = +b.getAttribute("data-d"); var v = state[k]; if (k === "adults") b.disabled = (d < 0 && v <= 1) || (d > 0 && v >= MAX_GUESTS); if (k === "children" && !adultsOnly) b.disabled = (d < 0 && v <= 0) || (d > 0 && v >= MAX_GUESTS); });
       var gn = $("#guests-note", root); if (gn) gn.hidden = !(state.adults + state.children >= MAX_GUESTS);
@@ -604,7 +630,7 @@
         var ok = !isCruise || productOk(op), inp = $("input", o), badge = $(".op-badge-ship", o);
         o.classList.toggle("op-noship", !ok); if (inp) inp.disabled = !ok;
         if (!ok && !badge) { badge = document.createElement("span"); badge.className = "op-badge op-badge-ship"; var head = $(".op-head", o); if (head) head.appendChild(badge); }
-        if (!ok && badge) badge.textContent = (op.sd && op.sd.no) || driveTier() === "no" ? "Not on a ship day" : "Ends after all-aboard";
+        if (!ok && badge) badge.textContent = L((op.sd && op.sd.no) || driveTier() === "no" ? "Not on a ship day" : "Ends after all-aboard");
         else if (ok && badge) badge.remove();
       });
       if (isCruise && !productOk(p) && driveTier() !== "no" && V.sd !== 0) { var alt = V.products.filter(productOk)[0]; if (alt) { selectProduct(alt.id); return; } }
@@ -617,19 +643,19 @@
       $$("#pf-aboard .chip", root).forEach(function (b) { b.setAttribute("aria-pressed", (+b.getAttribute("data-aboard") || 0) === state.aboard ? "true" : "false"); });
       var pt1 = portOf(); $$("#pf-ports .chip", root).forEach(function (b) { b.setAttribute("aria-pressed", pt1 && pt1.slug === b.getAttribute("data-port") ? "true" : "false"); });
       var fh0 = $("#fact-hotel", root), fht0 = $("#fact-hotel-t", root);
-      if (fh0 && fht0 && myHotel && myHotel.port) { var dm = driveMin(myHotel, V, REGIONS), tr = shipTier(SD, V.sd, dm); fh0.hidden = dm == null && tr !== "no"; fht0.textContent = (dm != null ? driveLabel(dm) + " from " + myHotel.name : myHotel.name) + (tr === "no" || V.sd === 0 ? " · not on a ship day" : tr === "ask" ? " · a long day, we check it first" : " · fits a ship day"); }
+      if (fh0 && fht0 && myHotel && myHotel.port) { var dm = driveMin(myHotel, V, REGIONS), tr = shipTier(SD, V.sd, dm); fh0.hidden = dm == null && tr !== "no"; fht0.textContent = (dm != null ? Lf("{drive} from {place}", { drive: driveLabel(dm), place: myHotel.name }) : myHotel.name) + L(tr === "no" || V.sd === 0 ? " · not on a ship day" : tr === "ask" ? " · a long day, we check it first" : " · fits a ship day"); }
       /* contact + cta */
       if (el.contact) el.contact.hidden = !inst;
       var shipWrap = $("#pf-ship-wrap", root); if (shipWrap) shipWrap.hidden = V.slug.indexOf("club-") === 0;
       var liveOff = inst && live && state.availOk === false;
       var canPay = inst && !liveOff;
       el.cta.innerHTML = (canPay ? ICON_CARD : ICON_CHAT) + '<span id="cta-label"></span>';
-      $("#cta-label", el.cta).textContent = canPay ? "Book and pay " + pr.lead : shipBlock() ? "Ask us anyway" : (isRequest() ? "Request this date" : "Send enquiry");
+      $("#cta-label", el.cta).textContent = canPay ? Lf("Book and pay {total}", { total: pr.lead }) : L(shipBlock() ? "Ask us anyway" : (isRequest() ? "Request this date" : "Send enquiry"));
       if (el.payWhen) {
         el.payWhen.hidden = !arrivalOk();
-        if (payOnArrival()) { el.cta.innerHTML = ICON_CARD + '<span id="cta-label"></span>'; $("#cta-label", el.cta).textContent = "Reserve, pay " + pr.lead + " on arrival"; if (el.preview && el.preview.parentNode) el.preview.parentNode.hidden = true; if (el.ctaAlt) el.ctaAlt.hidden = true; }
+        if (payOnArrival()) { el.cta.innerHTML = ICON_CARD + '<span id="cta-label"></span>'; $("#cta-label", el.cta).textContent = Lf("Reserve, pay {total} on arrival", { total: pr.lead }); if (el.preview && el.preview.parentNode) el.preview.parentNode.hidden = true; if (el.ctaAlt) el.ctaAlt.hidden = true; }
       }
-      el.ctaSub.textContent = canPay ? (live ? "Confirmed straight away, paid by card on a secure page. You'll get the confirmation by email." : "Paid by card on a secure page and confirmed straight away. We send your booking details shortly by email and WhatsApp.") : liveOff ? "Live availability is offline, so this goes to us on WhatsApp and we confirm the time with the park. Nothing is charged now." : shipBlock() ? shipText() + " Ask us anyway and we'll suggest what fits your ship day. Nothing is charged now." : shipAsk() ? shipText() + " This goes to us on WhatsApp first. Nothing is charged now." : pickupByHand() ? "Pickup from the port is priced by hand, so this goes to us on WhatsApp first and we confirm the total. Nothing is charged now." : isRequest() ? "We confirm availability first, then send a secure card link. Nothing is charged now." : "We reply within working hours with a secure card link. Nothing is charged now.";
+      el.ctaSub.textContent = canPay ? L(live ? "Confirmed straight away, paid by card on a secure page. You'll get the confirmation by email." : "Paid by card on a secure page and confirmed straight away. We send your booking details shortly by email and WhatsApp.") : liveOff ? L("Live availability is offline, so this goes to us on WhatsApp and we confirm the time with the park. Nothing is charged now.") : shipBlock() ? shipText() + L(" Ask us anyway and we'll suggest what fits your ship day. Nothing is charged now.") : shipAsk() ? shipText() + L(" This goes to us on WhatsApp first. Nothing is charged now.") : L(pickupByHand() ? "Pickup from the port is priced by hand, so this goes to us on WhatsApp first and we confirm the total. Nothing is charged now." : isRequest() ? "We confirm availability first, then send a secure card link. Nothing is charged now." : "We reply within working hours with a secure card link. Nothing is charged now.");
       if (el.ctaAlt) el.ctaAlt.hidden = !canPay;
       if (el.previewWrap) el.previewWrap.hidden = canPay; // the WhatsApp text only matters when the booking goes by WhatsApp
       if (el.dateNote) { var prob = dateProblem(state.date); el.dateNote.hidden = !prob; el.dateNote.className = "pf-hint bad"; el.dateNote.textContent = prob; }
@@ -637,8 +663,8 @@
       /* two steps: the booking and its total first, then who's booking and the payment */
       if (el.step1) el.step1.hidden = state.step !== 1;
       if (el.step2) el.step2.hidden = state.step !== 2;
-      if (el.nextSub) el.nextSub.textContent = canPay ? "Next: your details, then a secure card page. Nothing is charged yet." : "Next: send it to us on WhatsApp. Nothing is charged now.";
-      if (el.stickyCta) el.stickyCta.firstChild.textContent = state.step === 1 ? "Continue" : (canPay ? "Book" : "Request");
+      if (el.nextSub) el.nextSub.textContent = L(canPay ? "Next: your details, then a secure card page. Nothing is charged yet." : "Next: send it to us on WhatsApp. Nothing is charged now.");
+      if (el.stickyCta) el.stickyCta.firstChild.textContent = L(state.step === 1 ? "Continue" : (canPay ? "Book" : "Request"));
       renderSummary(p, pr, r);
       syncSticky();
       cals.forEach(function (c) { c.refresh(); });
@@ -648,15 +674,15 @@
       el.sum.innerHTML = "";
       var lines = [];
       var ch = chosen();
-      lines.push(["b", p.name + (ch.length ? " · " + (p.choose && p.choose.fixed ? p.choose.fixed + " + " : "") + ch.join(" + ") : "")]);
+      lines.push(["b", p.name + (ch.length ? " · " + (p.choose && p.choose.fixed ? p.choose.fixed + " + " : "") + ch.map(choiceLabel).join(" + ") : "")]);
       if (isFlight) {
         var legs = p.legs || "both", fi = el.flightIn ? el.flightIn.value.trim().toUpperCase() : "", fo = el.flightOut ? el.flightOut.value.trim().toUpperCase() : "";
         if (legs !== "out") lines.push(["", "Arrives " + (state.date ? longDate(state.date) : "") + (fi ? " on " + fi : "")]);
         if (legs !== "in") lines.push(["", "Departs " + ((legs === "both" ? (el.date2 && el.date2.value ? longDate(el.date2.value) : "") : (state.date ? longDate(state.date) : ""))) + (fo ? " on " + fo : "")]);
-      } else lines.push(["", (state.date ? longDate(state.date) : "Date to confirm") + (state.time ? " at " + state.time : "")]);
-      lines.push(["", p.perParty ? "2 people" : state.adults + " adult" + (state.adults === 1 ? "" : "s") + (state.children ? ", " + state.children + " child" + (state.children === 1 ? "" : "ren") : "")]);
-      if (V.pickups && r === "visitor") { var pk = pickupOf(); if (pk) lines.push(["", pk.key === "own" ? "Making my own way" : "Pickup: " + (state.pickupHotel && state.pickupHotel !== pk.label ? state.pickupHotel : pk.label)]); }
-      if (cruise()) { var pt0 = portOf(); lines.push(["", "Off a ship" + (pt0 ? ", " + pt0.name : "") + (state.aboard ? ", all-aboard " + clockText(state.aboard) : "")]); }
+      } else lines.push(["", (state.date ? longDate(state.date) : L("Date to confirm")) + (state.time ? atTime(state.time) : "")]);
+      lines.push(["", p.perParty ? L("2 people") : guestsLine(state.adults, state.children, ", ")]);
+      if (V.pickups && r === "visitor") { var pk = pickupOf(); if (pk) lines.push(["", pk.key === "own" ? L("Making my own way") : L("Pickup: ") + (state.pickupHotel && state.pickupHotel !== pk.label ? state.pickupHotel : pk.label)]); }
+      if (cruise()) { var pt0 = portOf(); lines.push(["", L("Off a ship") + (pt0 ? ", " + pt0.name : "") + (state.aboard ? L(", all-aboard ") + clockText(state.aboard) : "")]); }
       if (r === "resident") lines.push(["", "Resident rate, Jamaican ID at the gate"]);
       lines.forEach(function (l) { var e = document.createElement(l[0] ? "b" : "span"); e.textContent = l[1]; el.sum.appendChild(e); });
     }
@@ -670,10 +696,10 @@
     /* what step one needs before the guest moves on (the same checks run again at payment) */
     function checkStep1() {
       var p = product(), prob = dateProblem(state.date), legs = p.legs || "both";
-      if (!state.date) { openDate(0); throw new Error(isFlight ? (legs === "out" ? "Pick your departure date first." : "Pick your arrival date first.") : "Pick a date first."); }
+      if (!state.date) { openDate(0); throw new Error(L(isFlight ? (legs === "out" ? "Pick your departure date first." : "Pick your arrival date first.") : "Pick a date first.")); }
       if (prob) throw new Error(prob);
       var wantsTime = (p.times && p.times.length) || (state.sessions && state.sessions.length);
-      if (wantsTime && !state.time) throw new Error("Pick a start time.");
+      if (wantsTime && !state.time) throw new Error(L("Pick a start time."));
       if (isFlight) {
         var flightIn = el.flightIn ? el.flightIn.value.trim().toUpperCase() : "", flightOut = el.flightOut ? el.flightOut.value.trim().toUpperCase() : "", date2 = el.date2 ? el.date2.value : "";
         var flightRe = /^[A-Z0-9]{2,3}\s?\d{1,4}[A-Z]?$/;
@@ -681,7 +707,7 @@
         if (legs !== "in" && !flightRe.test(flightOut)) { el.flightOut.focus(); throw new Error("We need the departing flight number, e.g. BA2262."); }
         if (legs === "both" && (!date2 || date2 < state.date)) { openDate(1); throw new Error("Pick the departure date too."); }
       }
-      if (V.pickups && rateOf(p) === "visitor" && state.pickup !== "own" && !state.pickupHotel && instant()) { if (el.hotelIn) el.hotelIn.focus(); throw new Error("Where should the driver collect you? Pick your hotel or area from the list, or choose I'll make my own way."); }
+      if (V.pickups && rateOf(p) === "visitor" && state.pickup !== "own" && !state.pickupHotel && instant()) { if (el.hotelIn) el.hotelIn.focus(); throw new Error(L("Where should the driver collect you? Pick your hotel or area from the list, or choose I'll make my own way.")); }
     }
     var ICON_CARD = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="M2 10h20"></path></svg>';
     var ICON_CHAT = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>';
@@ -732,18 +758,18 @@
       input.type = "hidden";
       var btn = document.createElement("button"); btn.type = "button"; btn.className = "date-btn"; btn.setAttribute("aria-haspopup", "dialog"); btn.setAttribute("aria-expanded", "false");
       wrap.appendChild(btn); wrap.classList.add("has-cal");
-      var pop = document.createElement("div"); pop.className = "cal"; pop.setAttribute("role", "dialog"); pop.setAttribute("aria-label", opts.label || "Pick a date"); pop.hidden = true;
+      var pop = document.createElement("div"); pop.className = "cal"; pop.setAttribute("role", "dialog"); pop.setAttribute("aria-label", opts.label || L("Pick a date")); pop.hidden = true;
       host.classList.add("cal-host"); host.appendChild(pop);
       var view = null; // first day of the month on show
       function iso(d) { return d.getUTCFullYear() + "-" + String(d.getUTCMonth() + 1).padStart(2, "0") + "-" + String(d.getUTCDate()).padStart(2, "0"); }
-      function label() { btn.textContent = input.value ? longDate(input.value) : (opts.placeholder || "Pick a date"); btn.classList.toggle("empty", !input.value); }
+      function label() { btn.textContent = input.value ? longDate(input.value) : (opts.placeholder || L("Pick a date")); btn.classList.toggle("empty", !input.value); }
       function paint() {
         var t = parseDate(today), sel = input.value ? parseDate(input.value) : null;
         if (!view) view = sel ? new Date(Date.UTC(sel.getUTCFullYear(), sel.getUTCMonth(), 1)) : new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), 1));
         var y = view.getUTCFullYear(), m = view.getUTCMonth(), first = new Date(Date.UTC(y, m, 1)), daysIn = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
         var canBack = new Date(Date.UTC(y, m, 1)) > new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), 1));
-        var h = (opts.title ? '<p class="cal-title">' + opts.title + "</p>" : "") + '<div class="cal-head"><button type="button" class="cal-nav" data-nav="-1" aria-label="Previous month"' + (canBack ? "" : " disabled") + '>&#8249;</button><b>' + ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][m] + " " + y + '</b><button type="button" class="cal-nav" data-nav="1" aria-label="Next month">&#8250;</button></div>';
-        h += '<div class="cal-grid cal-dow">' + ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map(function (d) { return "<span>" + d + "</span>"; }).join("") + "</div><div class=\"cal-grid\">";
+        var h = (opts.title ? '<p class="cal-title">' + opts.title + "</p>" : "") + '<div class="cal-head"><button type="button" class="cal-nav" data-nav="-1" aria-label="' + L("Previous month") + '"' + (canBack ? "" : " disabled") + '>&#8249;</button><b>' + MONTHS_LONG[m] + " " + y + '</b><button type="button" class="cal-nav" data-nav="1" aria-label="' + L("Next month") + '">&#8250;</button></div>';
+        h += '<div class="cal-grid cal-dow">' + DOW.map(function (d) { return "<span>" + d + "</span>"; }).join("") + "</div><div class=\"cal-grid\">";
         for (var i = 0; i < first.getUTCDay(); i++) h += "<span></span>";
         for (var d = 1; d <= daysIn; d++) {
           var ds = iso(new Date(Date.UTC(y, m, d))), why = opts.problem(ds), off = !!why, isSel = sel && ds === input.value, isToday = ds === today;
@@ -773,12 +799,13 @@
       var api = { refresh: function () { label(); if (!pop.hidden) paint(); }, close: close, open: open };
       label(); cals.push(api); return api;
     }
-    makeCal(el.date, { label: isFlight ? "Arrival date" : "Date", title: isFlight ? "Arrival date" : "", placeholder: "Pick a date", problem: function (ds) { return ds < today ? "That date has passed." : (isFlight ? "" : dateProblem(ds)); }, legend: function () {
+    function daysPl(n) { return LANG === "es" ? DAYS_PL_ES[n] : LONG_DAYS[n] + "s"; }
+    makeCal(el.date, { label: isFlight ? "Arrival date" : L("Date"), title: isFlight ? "Arrival date" : "", placeholder: L("Pick a date"), problem: function (ds) { return ds < today ? L("That date has passed.") : (isFlight ? "" : dateProblem(ds)); }, legend: function () {
       if (isFlight) return "";
       var bits = [];
-      if (V.closedWeekdays && V.closedWeekdays.length) bits.push("Closed on " + V.closedWeekdays.map(function (n) { return LONG_DAYS[n] + "s"; }).join(" and "));
-      if (V.childDays && state.children > 0) bits.push("With children: " + V.childDays.map(function (n) { return LONG_DAYS[n] + "s"; }).join(" and ") + " only");
-      var p = product(); if (p && p.until) bits.push("This offer ends " + longDate(p.until));
+      if (V.closedWeekdays && V.closedWeekdays.length) bits.push(Lf("Closed on {days}", { days: V.closedWeekdays.map(daysPl).join(L(" and ")) }));
+      if (V.childDays && state.children > 0) bits.push(Lf("With children: {days} only", { days: V.childDays.map(daysPl).join(L(" and ")) }));
+      var p = product(); if (p && p.until) bits.push(Lf("This offer ends {date}", { date: longDate(p.until) }));
       return bits.join(". ") + (bits.length ? "." : "");
     } });
     if (el.date2) makeCal(el.date2, { label: "Departure date", title: "Departure date", placeholder: "Pick a date", problem: function (ds) { return ds < today ? "That date has passed." : (state.date && ds < state.date ? "Before your arrival." : ""); } });
@@ -800,8 +827,8 @@
       if (!V.pickups) return [];
       var qq = normText(q);
       return V.pickups.filter(function (pk) { return pk.key !== "own" && !pk.request && !pk.resortsOnly && !HOTELS.some(function (hh) { return hh.port && hh.slug === pk.key; }); }).map(function (pk) {
-        var reg = REGIONS[pk.key], label = (reg ? reg.label : pk.label.replace(/ (area )?hotel$/i, "")) + ", villa or Airbnb";
-        return { area: true, key: pk.key, name: label, sub: pk.add ? "+" + usd(pk.add) + " each" : "pickup included", text: " " + label.toLowerCase() + " " + pk.label.toLowerCase() + " airbnb villa apartment guesthouse area " };
+        var reg = REGIONS[pk.key], label = (reg ? reg.label : pk.label.replace(/ (area )?hotel$/i, "")) + L(", villa or Airbnb");
+        return { area: true, key: pk.key, name: label, sub: pk.add ? "+" + usd(pk.add) + L(" each") : L("pickup included"), text: " " + label.toLowerCase() + " " + pk.label.toLowerCase() + " airbnb villa apartment guesthouse area " + (LANG === "es" ? "casa apartamento departamento zona " : "") };
       }).filter(function (a) { return !qq || textMatches(a.text, qq); });
     }
     function pickArea(a) {
@@ -817,10 +844,10 @@
       if (el.pickupOtherWrap) el.pickupOtherWrap.hidden = mode !== "other";
       if (el.pickupNote) {
         var t = "";
-        if (mode === "own") t = "No pickup. The meeting point comes with your details.";
-        else if (mode === "hotel" && state.pickupHotel && pk) t = pk.key === "own" ? "No pickup from " + state.pickupHotel + " on this one, so it's priced without pickup. Make your own way, or ask us on WhatsApp about a transfer." : pk.request ? "Pickup from " + pk.label + " is priced by hand, so this one goes to us on WhatsApp and we confirm the transfer price before anything is charged." : pk.label + (pk.add ? ", +" + usd(pk.add) + " per person" : ", pickup included") + ".";
-        else if (mode === "other" && pk) t = pk.label.replace(/ hotel$/i, "") + (pk.add ? ", +" + usd(pk.add) + " per person" : ", pickup included") + ". Give us the villa or Airbnb name and we confirm the pickup point.";
-        else t = V.pickupNote ? V.pickupNote : V.pickups.some(function (x) { return x.add; }) ? "Pickup from Negril hotels is included. Lucea and Montego Bay pickups are priced per person." : "Hotel pickup from Negril and Montego Bay is included.";
+        if (mode === "own") t = L("No pickup. The meeting point comes with your details.");
+        else if (mode === "hotel" && state.pickupHotel && pk) t = pk.key === "own" ? Lf("No pickup from {place} on this one, so it's priced without pickup. Make your own way, or ask us on WhatsApp about a transfer.", { place: state.pickupHotel }) : pk.request ? Lf("Pickup from {place} is priced by hand, so this one goes to us on WhatsApp and we confirm the transfer price before anything is charged.", { place: pk.label }) : pk.label + (pk.add ? Lf(", +{amount} per person", { amount: usd(pk.add) }) : L(", pickup included")) + ".";
+        else if (mode === "other" && pk) t = (LANG === "es" && REGIONS[pk.key] ? REGIONS[pk.key].label : pk.label.replace(/ hotel$/i, "")) + (pk.add ? Lf(", +{amount} per person", { amount: usd(pk.add) }) : L(", pickup included")) + L(". Give us the villa or Airbnb name and we confirm the pickup point.");
+        else t = V.pickupNote ? V.pickupNote : L(V.pickups.some(function (x) { return x.add; }) ? "Pickup from Negril hotels is included. Lucea and Montego Bay pickups are priced per person." : "Hotel pickup from Negril and Montego Bay is included.");
         el.pickupNote.textContent = t;
       }
     }
@@ -837,17 +864,17 @@
       var found = matchPlaces(HOTELS, q, { portsOnly: portsOnly }), hits = found.filter(function (hh) { return !hh.port || placeServed(hh); }); portsOnly = false; // only the cruise ports this tour picks up from
       var areas = areaRows(q);
       el.hotelList.innerHTML = ""; hCursor = -1;
-      if (!hits.length && !areas.length) { var li0 = document.createElement("li"); li0.className = "none"; li0.textContent = V.pickupNotListed || "Not on our list. Type your area (" + (V.pickupAreas || "Negril, Lucea or Montego Bay") + ") for a villa or Airbnb, or make your own way."; el.hotelList.appendChild(li0); }
-      else if (!hits.length) { var li1 = document.createElement("li"); li1.className = "none"; li1.textContent = "Not on our list? Pick your area for a villa or Airbnb:"; el.hotelList.appendChild(li1); }
+      if (!hits.length && !areas.length) { var li0 = document.createElement("li"); li0.className = "none"; li0.textContent = V.pickupNotListed || Lf("Not on our list. Type your area ({areas}) for a villa or Airbnb, or make your own way.", { areas: V.pickupAreas || L("Negril, Lucea or Montego Bay") }); el.hotelList.appendChild(li0); }
+      else if (!hits.length) { var li1 = document.createElement("li"); li1.className = "none"; li1.textContent = L("Not on our list? Pick your area for a villa or Airbnb:"); el.hotelList.appendChild(li1); }
       hits.forEach(function (hh) {
         var li = document.createElement("li"); li.setAttribute("role", "option"); li.innerHTML = "<span></span><small></small>";
         var sk = placeServed(hh), spk = sk && V.pickups.filter(function (x) { return x.key === sk; })[0];
-        li.firstChild.textContent = hh.name; li.lastChild.textContent = !sk ? "no pickup" : (spk && spk.request ? "priced by hand" : (hh.port ? "Cruise port" : (REGIONS[hh.region] ? REGIONS[hh.region].label : hh.region)));
+        li.firstChild.textContent = hh.name; li.lastChild.textContent = !sk ? L("no pickup") : (spk && spk.request ? L("priced by hand") : (hh.port ? L("Cruise port") : (REGIONS[hh.region] ? REGIONS[hh.region].label : hh.region)));
         li.addEventListener("mousedown", function (e) { e.preventDefault(); pickHotel(hh); });
         el.hotelList.appendChild(li);
       });
       /* only near misses for what they typed: their hotel may not be on the list, so say what to do then */
-      if (found.near && hits.length && !areas.length) { var li2 = document.createElement("li"); li2.className = "none"; li2.textContent = V.pickupNotListed || "Not the one? Type your area (" + (V.pickupAreas || "Negril, Lucea or Montego Bay") + ") for a villa or Airbnb, or make your own way."; el.hotelList.appendChild(li2); }
+      if (found.near && hits.length && !areas.length) { var li2 = document.createElement("li"); li2.className = "none"; li2.textContent = V.pickupNotListed || Lf("Not the one? Type your area ({areas}) for a villa or Airbnb, or make your own way.", { areas: V.pickupAreas || L("Negril, Lucea or Montego Bay") }); el.hotelList.appendChild(li2); }
       areas.forEach(function (a) {
         var li = document.createElement("li"); li.setAttribute("role", "option"); li.className = "area"; li.innerHTML = "<span></span><small></small>";
         li.firstChild.textContent = a.name; li.lastChild.textContent = a.sub;
@@ -856,7 +883,7 @@
       });
       /* the open list sits over the chip below it, so the same choice is offered as the last row */
       var liOwn = document.createElement("li"); liOwn.setAttribute("role", "option"); liOwn.className = "own"; liOwn.innerHTML = "<span></span><small></small>";
-      liOwn.firstChild.textContent = "I'll make my own way"; liOwn.lastChild.textContent = "no pickup";
+      liOwn.firstChild.textContent = L("I'll make my own way"); liOwn.lastChild.textContent = L("no pickup");
       liOwn.addEventListener("mousedown", function (e) { e.preventDefault(); setOwnWay(true); });
       el.hotelList.appendChild(liOwn);
       el.hotelList.hidden = false;
@@ -908,7 +935,7 @@
       if (PREVIEW) return;
       try {
         var p = product(), pr = price(), pk = V.pickups ? pickupOf() : null;
-        var body = new URLSearchParams({ "form-name": "exp-enquiries", ref: state.ref, venue: V.name, product: p ? p.name : "", rate: rateOf(p), when: (text.match(/^(Date|Arrives|Departs):.*$/m) || [""])[0], guests: state.adults + " adults" + (state.children ? ", " + state.children + " children" : ""), pickup: pk ? (pk.key === "own" ? "own way" : (state.pickupHotel || pk.label)) : "", total: pr.lead || "", hotel: (savedHotel(X) || {}).name || "", page: location.pathname, message: text });
+        var body = new URLSearchParams({ "form-name": "exp-enquiries", ref: state.ref, venue: V.name, product: p ? p.name : "", rate: rateOf(p), when: (text.match(/^(Date|Arrives|Departs|Fecha):.*$/m) || [""])[0], guests: state.adults + " adults" + (state.children ? ", " + state.children + " children" : ""), pickup: pk ? (pk.key === "own" ? "own way" : (state.pickupHotel || pk.label)) : "", total: pr.lead || "", hotel: (savedHotel(X) || {}).name || "", page: location.pathname, message: text });
         fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body.toString(), keepalive: true }).catch(function () {});
       } catch (e) {}
     }
@@ -922,10 +949,10 @@
     function need(field, msg) { if (!field || !field.value.trim()) { field && field.focus(); throw new Error(msg); } }
     function pay(mode) {
       var p = product(), prob = dateProblem(state.date), legs = p.legs || "both";
-      if (!state.date) { openDate(0); throw new Error(isFlight ? (legs === "out" ? "Pick your departure date first." : "Pick your arrival date first.") : "Pick a date first."); }
+      if (!state.date) { openDate(0); throw new Error(L(isFlight ? (legs === "out" ? "Pick your departure date first." : "Pick your arrival date first.") : "Pick a date first.")); }
       if (prob) throw new Error(prob);
       var wantsTime = (p.times && p.times.length) || (state.sessions && state.sessions.length);
-      if (wantsTime && !state.time) throw new Error("Pick a start time.");
+      if (wantsTime && !state.time) throw new Error(L("Pick a start time."));
       var flightIn = "", flightOut = "", date2 = "";
       if (isFlight) {
         flightIn = el.flightIn ? el.flightIn.value.trim().toUpperCase() : ""; flightOut = el.flightOut ? el.flightOut.value.trim().toUpperCase() : ""; date2 = el.date2 ? el.date2.value : "";
@@ -934,29 +961,30 @@
         if (legs !== "in" && !flightRe.test(flightOut)) { el.flightOut.focus(); throw new Error("We need the departing flight number, e.g. BA2262."); }
         if (legs === "both" && (!date2 || date2 < state.date)) { openDate(1); throw new Error("Pick the departure date too."); }
       }
-      need(el.first, "We need a first name for the booking."); need(el.last, "And a last name."); need(el.email, "The confirmation goes by email, so we need an address.");
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.email.value.trim())) { el.email.focus(); throw new Error("That email doesn't look right."); }
-      need(el.phone, "A WhatsApp or phone number, so we can send your details.");
-      if (V.pickups && rateOf(p) === "visitor" && state.pickup !== "own" && !state.pickupHotel) { if (el.hotelIn) el.hotelIn.focus(); throw new Error("Where should the driver collect you? Pick your hotel or area from the list, or choose I'll make my own way."); }
+      need(el.first, L("We need a first name for the booking.")); need(el.last, L("And a last name.")); need(el.email, L("The confirmation goes by email, so we need an address."));
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.email.value.trim())) { el.email.focus(); throw new Error(L("That email doesn't look right.")); }
+      need(el.phone, L("A WhatsApp or phone number, so we can send your details."));
+      if (V.pickups && rateOf(p) === "visitor" && state.pickup !== "own" && !state.pickupHotel) { if (el.hotelIn) el.hotelIn.focus(); throw new Error(L("Where should the driver collect you? Pick your hotel or area from the list, or choose I'll make my own way.")); }
       var body = { slug: V.slug, product: p.id, date: state.date, time: wantsTime ? state.time : "", date2: date2, flightIn: flightIn, flightOut: flightOut, adults: state.adults, children: state.children, pickup: state.pickup, pickupHotel: state.pickup === "own" ? "" : state.pickupHotel, choices: chosen(), ref: state.ref, ship: el.ship ? el.ship.value.trim() : "", port: cruise() && portOf() ? portOf().slug : "", aboard: cruise() ? (state.aboard || "") : "", customer: { first: el.first.value.trim(), last: el.last.value.trim(), email: el.email.value.trim(), phone: el.phone.value.trim() } };
+      if (LANG !== "en") body.lang = LANG; // the checkout sends a Spanish page's guest back to the Spanish booked page, in Spanish
       if (mode === "arrival") { reserve(body); return; }
       track("exp_checkout", { venue: V.slug, product: p.id, total: price().total, code: state.ref });
       track("begin_checkout", { currency: price().cur || "USD", value: price().total, items: [{ item_id: p.id, item_name: p.name, item_brand: V.name, item_category: "Experiences", price: price().total, quantity: 1 }] });
       if (PREVIEW) { alertBox("In the live site this opens the secure card page for " + price().lead + ". After paying, " + (live ? "the booking is created with the park" : "the guest is confirmed and the team gets the booking to send the details") + ", and the guest lands on the confirmation page (see \"After paying\" in the page picker)."); return; }
-      el.cta.disabled = true; $("#cta-label", el.cta).textContent = "Opening secure payment…";
+      el.cta.disabled = true; $("#cta-label", el.cta).textContent = L("Opening secure payment…");
       fetch(FN + "exp-checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
         .then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); })
         .then(function (x) {
           if (x.j && x.j.url) { window.location.href = x.j.url; return; }
           throw new Error((x.j && x.j.error) || "The payment page didn't open.");
         })
-        .catch(function (e) { el.cta.disabled = false; render(); alertBox((e && e.message ? e.message : "Something went wrong.") + " You can send the same booking by WhatsApp and we'll confirm it by hand.", true); });
+        .catch(function (e) { el.cta.disabled = false; render(); alertBox(L(e && e.message ? e.message : "Something went wrong.") + L(" You can send the same booking by WhatsApp and we'll confirm it by hand."), true); });
     }
     function reserve(body) {
       var p0 = product() || {};
       track("exp_reserve", { venue: V.slug, product: body.product, total: price().total, code: state.ref });
       if (PREVIEW) { alertBox("In the live site this reserves the booking and the guest pays " + price().lead + " on arrival."); return; }
-      el.cta.disabled = true; $("#cta-label", el.cta).textContent = "Reserving…";
+      el.cta.disabled = true; $("#cta-label", el.cta).textContent = L("Reserving…");
       fetch(FN + "exp-reserve", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
         .then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); })
         .then(function (x) {
@@ -964,12 +992,12 @@
           trackPurchase({ ref: x.j.ref || state.ref, total: price().total, product: p0.name, venue: V.name }, { payment_type: "pay on arrival" });
           var lead = price().lead, box = document.createElement("div");
           box.className = "reserved"; box.setAttribute("role", "status");
-          box.innerHTML = '<span class="kicker">Reserved</span><h3 class="hh"></h3><p>Your reference is <b class="r-ref"></b>. The details are on their way to <b class="r-mail"></b>, and one of our travel professionals will send your pickup details shortly.</p>';
-          $("h3", box).textContent = "You're booked in. You pay " + lead + " when you arrive.";
-          $(".r-ref", box).textContent = x.j.ref || state.ref; $(".r-mail", box).textContent = (body.customer && body.customer.email) || "your email";
+          box.innerHTML = L('<span class="kicker">Reserved</span><h3 class="hh"></h3><p>Your reference is <b class="r-ref"></b>. The details are on their way to <b class="r-mail"></b>, and one of our travel professionals will send your pickup details shortly.</p>');
+          $("h3", box).textContent = Lf("You're booked in. You pay {total} when you arrive.", { total: lead });
+          $(".r-ref", box).textContent = x.j.ref || state.ref; $(".r-mail", box).textContent = (body.customer && body.customer.email) || L("your email");
           el.step2.innerHTML = ""; el.step2.appendChild(box); box.scrollIntoView({ behavior: "smooth", block: "center" });
         })
-        .catch(function (e) { el.cta.disabled = false; render(); alertBox((e && e.message ? e.message : "Something went wrong.") + " You can send the same booking by WhatsApp and we'll confirm it by hand.", true); });
+        .catch(function (e) { el.cta.disabled = false; render(); alertBox(L(e && e.message ? e.message : "Something went wrong.") + L(" You can send the same booking by WhatsApp and we'll confirm it by hand."), true); });
     }
     function alertBox(text, offerWa) {
       var box = $("#exp-alert", root), anchor = stepBtn();
@@ -977,7 +1005,7 @@
       if (!box) { box = document.createElement("div"); box.id = "exp-alert"; box.className = "pf-hint bad"; box.setAttribute("role", "alert"); box.style.cssText = "padding:12px 14px;border-radius:12px;background:#FFF4E5;color:#8A6D12;font-size:13px;line-height:1.45"; anchor.parentNode.insertBefore(box, anchor); }
       box.innerHTML = "";
       box.appendChild(document.createTextNode(text + " "));
-      if (offerWa) { var a = document.createElement("a"); a.href = "#"; a.textContent = "Send by WhatsApp"; a.style.cssText = "text-decoration:underline;color:inherit;font-weight:800"; a.addEventListener("click", function (e) { e.preventDefault(); sendWhatsApp(); }); box.appendChild(a); }
+      if (offerWa) { var a = document.createElement("a"); a.href = "#"; a.textContent = L("Send by WhatsApp"); a.style.cssText = "text-decoration:underline;color:inherit;font-weight:800"; a.addEventListener("click", function (e) { e.preventDefault(); sendWhatsApp(); }); box.appendChild(a); }
       box.scrollIntoView({ behavior: "smooth", block: "center" });
     }
     if (el.payWhen) el.payWhen.addEventListener("change", function () { render(); });
@@ -997,7 +1025,7 @@
     if (myHotel) {
       var mins = driveMin(myHotel, V, X.regions || {});
       var fh = $("#fact-hotel", root), fht = $("#fact-hotel-t", root);
-      if (fh && fht && mins != null) { fh.hidden = false; fht.textContent = driveLabel(mins) + " from " + myHotel.name; }
+      if (fh && fht && mins != null) { fh.hidden = false; fht.textContent = Lf("{drive} from {place}", { drive: driveLabel(mins), place: myHotel.name }); }
       if (V.pickups && el.hotelIn) pickHotel(myHotel); else render();
     }
     /* all-aboard chips, and a way out for someone who picked a port earlier but isn't off a ship today */
@@ -1029,19 +1057,19 @@
       function paint(d, sample) {
         var name = $("#ta-name", root); name.textContent = d.name || V.name; setLink(name, d.url);
         setLink($("#ta-link", root), d.url); setLink($("#ta-more", root), d.url); setLink($("#ta-write", root), d.writeReview);
-        var bub = $("#ta-bubbles", root); if (d.ratingImage) { bub.src = d.ratingImage; bub.alt = d.rating + " of 5 bubbles"; bub.hidden = false; } else bub.hidden = true;
+        var bub = $("#ta-bubbles", root); if (d.ratingImage) { bub.src = d.ratingImage; bub.alt = Lf("{n} of 5 bubbles", { n: d.rating }); bub.hidden = false; } else bub.hidden = true;
         var aw = $("#ta-award", root); if (aw) { aw.innerHTML = ""; if (d.award && d.award.name) { if (d.award.image) { var ai = document.createElement("img"); ai.src = d.award.image; ai.alt = d.award.name + (d.award.year ? " " + d.award.year : ""); aw.appendChild(ai); } else { var at = document.createElement("span"); at.className = "tag tag-gold"; at.textContent = d.award.name + (d.award.year ? " " + d.award.year : ""); aw.appendChild(at); } aw.hidden = false; } else aw.hidden = true; }
         $("#ta-rating", root).textContent = d.rating ? Number(d.rating).toFixed(1) : "";
-        var cnt = $("#ta-count", root); cnt.textContent = d.count ? "from " + fmt(d.count) + " review" + (d.count === 1 ? "" : "s") : ""; setLink(cnt, d.url);
+        var cnt = $("#ta-count", root); cnt.textContent = d.count ? Lf(d.count === 1 ? "from {n} review" : "from {n} reviews", { n: fmt(d.count) }) : ""; setLink(cnt, d.url);
         $("#ta-ranking", root).textContent = d.ranking || "";
         var wrap = $("#ta-reviews", root); wrap.innerHTML = "";
         (d.reviews || []).slice(0, 3).forEach(function (r) {
           var el = document.createElement("article"); el.className = "ta-rev";
           var top = document.createElement("div"); top.className = "ta-rev-top";
-          if (r.ratingImage) { var im = document.createElement("img"); im.src = r.ratingImage; im.alt = r.rating + " of 5 bubbles"; top.appendChild(im); }
+          if (r.ratingImage) { var im = document.createElement("img"); im.src = r.ratingImage; im.alt = Lf("{n} of 5 bubbles", { n: r.rating }); top.appendChild(im); }
           var b = document.createElement("b"); b.textContent = esc(r.title); top.appendChild(b); el.appendChild(top);
           var p = document.createElement("p"); var txt = esc(r.text); var cut = txt.length > 320; p.textContent = cut ? txt.slice(0, 300).replace(/\s+\S*$/, "") + "…" : txt; el.appendChild(p);
-          if (cut && r.url) { var rm = document.createElement("a"); rm.className = "ta-read"; rm.href = r.url; rm.target = "_blank"; rm.rel = "noopener nofollow"; rm.textContent = "Read more on Tripadvisor"; el.appendChild(rm); }
+          if (cut && r.url) { var rm = document.createElement("a"); rm.className = "ta-read"; rm.href = r.url; rm.target = "_blank"; rm.rel = "noopener nofollow"; rm.textContent = L("Read more on Tripadvisor"); el.appendChild(rm); }
           var who = [r.user, r.userGeo].filter(Boolean).join(", ");
           var sm = document.createElement("small"); sm.textContent = [who, r.date ? longDate(r.date) : "", r.tripType ? r.tripType.toLowerCase() : ""].filter(Boolean).join(" · "); el.appendChild(sm);
           wrap.appendChild(el);
@@ -1084,12 +1112,12 @@
       if (data) {
         var sfx = state === "pending" ? "-p" : state === "team" ? "-t" : "";
         var dl = $("#bk-details" + sfx, main);
-        if (dl) { dl.innerHTML = ""; [["Tour", data.venue], ["Booked", data.product], ["When", data.when], ["Guests", data.guests], ["Pickup", data.pickup], ["Paid", data.total]].forEach(function (kv) { if (!kv[1]) return; var dt = document.createElement("dt"); dt.textContent = kv[0]; var dd = document.createElement("dd"); dd.textContent = kv[1]; dl.appendChild(dt); dl.appendChild(dd); }); }
+        if (dl) { dl.innerHTML = ""; [["Tour", data.venue], ["Booked", data.product], ["When", data.when], ["Guests", data.guests], ["Pickup", data.pickup], ["Paid", data.total]].forEach(function (kv) { if (!kv[1]) return; var dt = document.createElement("dt"); dt.textContent = L(kv[0]); var dd = document.createElement("dd"); dd.textContent = kv[1]; dl.appendChild(dt); dl.appendChild(dd); }); }
         var r = $("#bk-ref" + sfx, main); if (r) r.textContent = data.ref || "";
         var o = $("#bk-order", main), ow = $("#bk-order-wrap", main); if (o) o.textContent = data.order || ""; if (ow) ow.hidden = !data.order;
-        var em = $("#bk-email", main); if (em) em.textContent = data.email || "your email";
-        var emt = $("#bk-email-t", main); if (emt) emt.textContent = data.email || "your email";
-        var w = $("#bk-wa", main); if (w && data.ref) w.href = waUrl("Hi Golden Vacation! I've just booked an experience on your website and I have a question. Ref " + data.ref);
+        var em = $("#bk-email", main); if (em) em.textContent = data.email || L("your email");
+        var emt = $("#bk-email-t", main); if (emt) emt.textContent = data.email || L("your email");
+        var w = $("#bk-wa", main); if (w && data.ref) w.href = waUrl(L("Hi Golden Vacation! I've just booked an experience on your website and I have a question. Ref ") + data.ref);
       }
       if (!PREVIEW && data && (state === "confirmed" || state === "team" || state === "pending")) trackPurchase(data, { payment_type: "card" });
     }
