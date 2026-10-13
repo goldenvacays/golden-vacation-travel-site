@@ -3,7 +3,7 @@
    Same body and the same checks as exp-checkout (price worked out here, never taken from the page), but no card:
    the booking goes to the exp-bookings form marked PAY ON ARRIVAL (the team books it with JamWest and sends the details)
    and the guest gets a "Reserved" email. Body: {slug, product, date, time, adults, children, pickup, pickupHotel, choices[], ref, customer:{first,last,email,phone}} */
-import { netlifyForm, json, SITE, findVenue, findProduct, isLive, liveCalendar, isFlightPanel, dateProblem, visitorTotal, pickupOf, rezdyCodeFor, rezdySessions, timeToLocal, stripe, longDate, todayJamaica, shipDayProblem } from "./_exp-shared.mjs";
+import { netlifyForm, json, SITE, findVenue, findProduct, isLive, liveCalendar, isFlightPanel, dateProblem, visitorTotal, pickupOf, rezdyCodeFor, rezdySessions, timeToLocal, stripe, longDate, todayJamaica, shipDayProblem, ES_NAMES, timeEs, atEs, guestsEs } from "./_exp-shared.mjs";
 import { SHIP } from "./_exp-data.mjs";
 
 const clean = (s, n = 120) => String(s || "").replace(/[\u0000-\u001F\u007F]/g, " ").trim().slice(0, n);
@@ -81,9 +81,24 @@ export const handler = async (event) => {
   const total = `US$${priced.total}`;
   await netlifyForm("exp-bookings", { ref, venue: venue.name, product: product.name, when: whenDesc, guests, pickup: pickupText, customer: `${first} ${last}`, email, phone, total,
     status: "PAY ON ARRIVAL · nothing charged online · book it with JamWest as pay on arrival and send the guest their details",
-    order: code ? `Rezdy ${code}` : "", note: [choices.length ? choices.join(" + ") : "", "Guest pays on arrival"].filter(Boolean).join(" · ") });
+    order: code ? `Rezdy ${code}` : "", note: [b.lang === "es" ? "Booked on the Spanish page: write to the guest in Spanish" : "", choices.length ? choices.join(" + ") : "", "Guest pays on arrival"].filter(Boolean).join(" · ") });
   const key = process.env.RESEND_API_KEY;
-  if (key) {
+  /* booked on a Spanish page: the guest's email is in Spanish */
+  const es = b.lang === "es" && ES_NAMES[venue.slug] ? ES_NAMES[venue.slug] : null;
+  if (key && es) {
+    const esc = (x) => String(x ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const whenEs = `${longDate(b.date, "es")}${timeLabel ? ` ${atEs(timeLabel)}` : ""}`;
+    const pickEs = pk && pk.key !== "own" ? `${(es.pickups || {})[pk.key] || pk.label}: ${pickupHotel}` : "Llegas por tu cuenta";
+    const lines = [["Tour", `${venue.name}, ${(es.products || {})[product.id] || product.name}`], ["Cuándo", whenEs], ["Personas", guestsEs(priced.adults, priced.children)], ["Recogida", pickEs], ["Pagas al llegar", total]];
+    const text = [`Hola, ${first}:`, "", `Reserva hecha. Pagas ${total} al llegar. No se cobró nada en línea.`, "", ...lines.map(([k, v]) => `${k}: ${v}`), "",
+      `Tu número de reserva es ${ref}. Uno de nuestros asesores de viaje te enviará los datos de la recogida en breve.`, "¿Preguntas? WhatsApp +1 876 360 1567 o llama al 876 817 3467. Te atendemos en español.", "", "Golden Vacation & Travel"].join("\n");
+    const html = `<div style="font-family:Archivo,Helvetica,Arial,sans-serif;color:#0E0F0E;max-width:560px;line-height:1.5;font-size:16px"><p>Hola, ${esc(first)}:</p><p><b>Reserva hecha. Pagas ${esc(total)} al llegar.</b> No se cobró nada en línea.</p><table style="border-collapse:collapse;font-size:15px;margin:10px 0">${lines.map(([k, v]) => `<tr><td style="padding:6px 14px 6px 0;color:#5A5F57;vertical-align:top">${esc(k)}</td><td style="padding:6px 0;vertical-align:top">${esc(v)}</td></tr>`).join("")}</table><p>Tu número de reserva es <b style="background:#F2B93B;padding:2px 8px;border-radius:999px">${esc(ref)}</b>. Uno de nuestros asesores de viaje te enviará los datos de la recogida en breve.</p><p style="font-size:14px;margin-top:22px">¿Preguntas? WhatsApp +1 876 360 1567 o llama al 876 817 3467. Te atendemos en español.<br><b>Golden Vacation &amp; Travel</b></p></div>`;
+    try {
+      const r = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ from: process.env.EXP_FROM || "Golden Experiences <experiences@goldenvacays.com>", to: [email], reply_to: process.env.GROUPS_REPLY_TO || "goldentravellers@outlook.com", subject: `Reservado: ${venue.name}, ${whenEs} (${ref})`, text, html }) });
+      if (!r.ok) console.error("reserve email", r.status, await r.text());
+    } catch (e) { console.error("reserve email", e.message); }
+  } else if (key) {
     const esc = (x) => String(x ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     const lines = [["Tour", `${venue.name}, ${product.name}`], ["When", whenDesc], ["Guests", guests], ["Pickup", pickupText], ["You pay on arrival", total]];
     const text = [`Hi ${first},`, "", `You're booked in. You pay ${total} when you arrive. Nothing was charged online.`, "", ...lines.map(([k, v]) => `${k}: ${v}`), "",

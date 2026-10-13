@@ -3,7 +3,7 @@
    Prices are recomputed here from the catalogue; the browser's numbers are never trusted.
    JamWest (live calendar): re-checks seats with the park first. Every other instant venue ("team"): no seat check, the guest is
    confirmed on payment and the team books it with the operator by hand. Then opens a Stripe Checkout Session and returns {url}. */
-import { json, SITE, findVenue, findProduct, isLive, liveCalendar, isFlightPanel, dateProblem, visitorTotal, pickupOf, rezdyCodeFor, rezdySessions, timeToLocal, stripe, longDate, todayJamaica, shipDayProblem } from "./_exp-shared.mjs";
+import { json, SITE, findVenue, findProduct, isLive, liveCalendar, isFlightPanel, dateProblem, visitorTotal, pickupOf, rezdyCodeFor, rezdySessions, timeToLocal, stripe, longDate, todayJamaica, shipDayProblem, ES_NAMES, timeEs, atEs, guestsEs } from "./_exp-shared.mjs";
 import { SHIP } from "./_exp-data.mjs";
 
 const clean = (s, n = 120) => String(s || "").replace(/[\u0000-\u001F\u007F]/g, " ").trim().slice(0, n);
@@ -75,22 +75,28 @@ export const handler = async (event) => {
     ? [flightIn ? `arrives ${longDate(b.date)} on ${flightIn}` : "", flightOut ? `departs ${longDate(legs === "both" ? date2 : b.date)} on ${flightOut}` : ""].filter(Boolean).join(", ")
     : `${longDate(b.date)}${timeLabel ? ` at ${timeLabel}` : ""}`;
   const desc = `${product.name}, ${whenDesc}, ${priced.adults} adult${priced.adults === 1 ? "" : "s"}${priced.children ? `, ${priced.children} child${priced.children === 1 ? "" : "ren"}` : ""}${choices.length ? ` (${(product.choose && product.choose.fixed ? `${product.choose.fixed} + ` : "") + choices.join(" + ")})` : ""}`;
+  /* booked on a Spanish page (/experiences/es/...): Stripe's page, the line item and the way back are in Spanish; the team's copies stay English */
+  const es = b.lang === "es" && ES_NAMES[venue.slug] ? ES_NAMES[venue.slug] : null;
+  const esName = es ? (es.products || {})[product.id] || product.name : "";
+  const esDesc = es ? `${esName}, ${longDate(b.date, "es")}${timeLabel ? ` ${atEs(timeLabel)}` : ""}, ${guestsEs(priced.adults, priced.children)}${choices.length ? ` (${(product.choose && product.choose.fixed ? `${(es.fixed || {})[product.id] || product.choose.fixed} + ` : "") + choices.map((c) => (es.choices || {})[c] || c).join(" + ")})` : ""}` : "";
   const metadata = {
     ref, slug: venue.slug, product: product.id, venue_name: venue.name, product_name: product.name, confirm: live ? "live" : "team",
     date: b.date, time: timeLabel, date2, flight_in: flightIn, flight_out: flightOut, rezdy_code: code, rezdy_start: start,
     adults: String(priced.adults), children: String(priced.children), pickup: pk ? pk.key : "", pickup_label: pk ? pk.label : "", pickup_hotel: pickupHotel,
     choices: choices.join(" + "), ship: clean(b.ship, 120), port: portSlug, port_name: portSlug ? SHIP.ports[portSlug].name : "", aboard: aboard ? String(aboard) : "", first, last, email, phone, total_usd: String(priced.total), rezdy_status: "",
+    ...(es ? { lang: "es" } : {}),
   };
   try {
     const session = await stripe("/checkout/sessions", {
       mode: "payment",
       customer_email: email,
       client_reference_id: ref,
-      line_items: [{ quantity: 1, price_data: { currency: "usd", unit_amount: Math.round(priced.total * 100), product_data: { name: `${venue.name}: ${product.name}`, description: desc } } }],
+      line_items: [{ quantity: 1, price_data: { currency: "usd", unit_amount: Math.round(priced.total * 100), product_data: { name: `${venue.name}: ${es ? esName : product.name}`, description: es ? esDesc : desc } } }],
       metadata,
       payment_intent_data: { metadata, description: `${ref} ${venue.name}: ${desc}` },
-      success_url: `${SITE}/experiences/booked?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${SITE}/experiences/${venue.slug}?cancelled=1`,
+      success_url: es ? `${SITE}/experiences/es/booked?session_id={CHECKOUT_SESSION_ID}` : `${SITE}/experiences/booked?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: es ? `${SITE}/experiences/es/${venue.slug}?cancelled=1` : `${SITE}/experiences/${venue.slug}?cancelled=1`,
+      ...(es ? { locale: "es" } : {}),
       expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
       allow_promotion_codes: false,
       billing_address_collection: "auto",

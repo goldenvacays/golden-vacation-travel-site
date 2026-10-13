@@ -1,6 +1,6 @@
 /* GET /.netlify/functions/exp-status?session_id=cs_...
    What the confirmation page polls. Reads the Checkout Session and its PaymentIntent metadata; returns only what the guest needs. */
-import { json, stripe, bookingSummary } from "./_exp-shared.mjs";
+import { json, stripe, guestSummary } from "./_exp-shared.mjs";
 
 export const handler = async (event) => {
   const sid = (event.queryStringParameters || {}).session_id || "";
@@ -11,7 +11,7 @@ export const handler = async (event) => {
     const m = s.metadata || {};
     const pim = (s.payment_intent && s.payment_intent.metadata) || {};
     const status = pim.rezdy_status || "PROCESSING";
-    const summary = bookingSummary(m);
+    const summary = guestSummary(m); // Spanish when the booking was made on a Spanish page
     return json(200, { ok: true, status, order: pim.rezdy_order || "", ...summary, confirm: pim.confirm || m.confirm || "live" });
   } catch (e) {
     console.warn("status", e.message);
