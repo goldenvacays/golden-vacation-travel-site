@@ -128,7 +128,7 @@
   }
   form.addEventListener("change", sync); form.addEventListener("input", sync);
   if (whos.length) drawAll(); else sync();
-  $("#j-wa").addEventListener("click", function () { track("jamaica_whatsapp", { page: form.getAttribute("data-ref") }); });
+  $("#j-wa").addEventListener("click", function () { track("jamaica_whatsapp", { page: form.getAttribute("data-ref") }); track("generate_lead", { lead_source: "whatsapp", where: "jamaica-form" }); });
   form.addEventListener("submit", function (e) {
     var miss = [];
     $$("[data-req]", form).forEach(function (el) {
@@ -140,6 +140,6 @@
     if (val("checkin") && val("checkout") && val("checkout") <= val("checkin")) miss.push(F.errOrder);
     var err = $(".form-err", form);
     if (miss.length) { e.preventDefault(); err.textContent = F.errPre + miss.join(", ") + "."; err.classList.add("show"); err.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
-    err.classList.remove("show"); sync(); track("jamaica_submit", { page: form.getAttribute("data-ref") });
+    err.classList.remove("show"); sync(); track("jamaica_submit", { page: form.getAttribute("data-ref") }); track("generate_lead", { lead_source: "jamaica_form", where: form.getAttribute("data-ref") || "" });
   });
 })();
