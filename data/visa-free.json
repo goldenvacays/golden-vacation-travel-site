@@ -1,0 +1,1453 @@
+{
+ "_about": "Visa-free countries for Jamaican passport holders: the page at /getaways/visa-free-countries/, built by scripts/build-visa.mjs. Checked 13 Oct 2026: the places Jamaicans travel to most against each government's own rules (official sources marked), the rest from Jamaica's Ministry of Foreign Affairs list and published references. Re-check before changing asOf. Guyana stays off the site; places under do-not-travel advisories are left out.",
+ "asOf": "2026-10-13",
+ "title": "Visa-free countries for Jamaican passport holders (Oct 2026)",
+ "description": "",
+ "kicker": "Visa-free travel",
+ "h1": "Visa-free countries for Jamaican passport holders",
+ "sell": [
+  {
+   "slug": "panama",
+   "country": "Panama",
+   "stay": "Up to 90 days",
+   "needs": "Passport valid 3 months past your trip (we suggest 6). Carry your return ticket and proof of funds; US$500 is the usual figure.",
+   "src": "https://embassyofpanama.org/visas-1"
+  },
+  {
+   "slug": "medellin",
+   "country": "Colombia",
+   "stay": "Up to 90 days",
+   "needs": "Extendable to 180 days a year. No paid work.",
+   "src": "https://www.cancilleria.gov.co/sites/default/files/2022-12/resolucion_minrelaciones_5488_2022.pdf"
+  },
+  {
+   "slug": "lima",
+   "country": "Peru",
+   "stay": "Up to 90 days",
+   "needs": "The officer sets your stay when you land.",
+   "src": "https://embwashington.mfaft.gov.jm/pdf/Country-Listing-March-3-2025.pdf"
+  },
+  {
+   "slug": "punta-cana",
+   "country": "Dominican Republic",
+   "stay": "Up to 30 days",
+   "needs": "The US$10 tourist card is in your air fare. Fill in the free e-Ticket online before you fly. Passport valid 6 months.",
+   "src": "https://dgii.gov.do/sobreTarjetaTurista/Paginas/preguntasFrecuentes.aspx"
+  }
+ ],
+ "alsoFree": "Mexico (Cancún) and Brazil are visa-free too, up to 180 and 90 days. We quote both on request.",
+ "changed": [
+  [
+   "Thailand, 15 Sep 2026",
+   "Jamaica is not on Thailand's new visa-exemption list, so you now need a Thai e-Visa before you fly.",
+   "https://www.tatnews.org/2026/09/thailand-introduces-new-30-day-and-15-day-visa-exemption-rules-from-15-september/"
+  ],
+  [
+   "Kenya, 2025",
+   "Jamaicans no longer need Kenya's online eTA for visits of up to 90 days.",
+   "https://www.etakenya.go.ke/how-to-apply"
+  ],
+  [
+   "Costa Rica, 17 Nov 2025",
+   "A US or Canadian multiple-entry visa now needs only 1 day of validity left, and Schengen visas and UK or EU residence now count too.",
+   "https://www.embajadadecostarica.org/wp-content/uploads/2025/12/Directrices-Generales-de-Visas-Noviembre-2025-Alcance-148-Gaceta-N%C2%B0-216-17-11-2025.pdf"
+  ],
+  [
+   "Israel, 1 Jan 2025",
+   "Visa-free visitors, Jamaicans included, must get the ETA-IL online before flying.",
+   "https://embassies.gov.il/dublin/ConsularServices/Documents/VisaRequirementsTourists.pdf"
+  ],
+  [
+   "Cuba, 2025",
+   "Paper tourist cards are gone. Get the tourist e-Visa online before you travel.",
+   "https://www.exteriores.gob.es/Embajadas/lahabana/es/ViajarA/Paginas/Documentaci%C3%B3n-y-tr%C3%A1mites.aspx"
+  ]
+ ],
+ "faq": [
+  [
+   "Do Jamaicans need a visa for Panama?",
+   "No. Panama lists Jamaica as visa-free, for stays of up to 3 months. Bring a passport valid at least 3 months past your trip (we suggest 6), your return ticket and proof of funds, usually US$500. The flight from Kingston or Montego Bay is direct, so there is no US transit."
+  ],
+  [
+   "Can Jamaicans go to Mexico without a visa?",
+   "Yes. Mexico lists Jamaica among the countries that need no visa. The officer sets your stay on arrival, up to 180 days, and you fill in the FMM migration form."
+  ],
+  [
+   "Do Jamaicans need a visa for the Dominican Republic?",
+   "No. You need a US$10 tourist card, and it is already in your air fare. Fill in the free e-Ticket form online before you fly. Stays are up to 30 days, and your passport should be valid 6 months."
+  ],
+  [
+   "Do Jamaicans need a visa for Colombia or Peru?",
+   "No. Both are visa-free for Jamaican passports. Colombia allows up to 90 days, extendable to 180 days a year. In Peru the officer sets your stay on arrival, usually up to 90 days."
+  ],
+  [
+   "Can I use my US visa to travel without another visa?",
+   "In some places, yes. Costa Rica, the Cayman Islands, Turks and Caicos, Aruba, the British Virgin Islands, Bermuda and Guatemala let Jamaicans in with a valid US visa (and some also accept UK, Canadian or Schengen visas). Each has its own conditions, such as multiple entry, months left on the visa or flying in from the US. They are in the table above."
+  ],
+  [
+   "Do Jamaicans need a visa for Thailand now?",
+   "Yes. Since 15 September 2026 Jamaica is not on Thailand's visa-exemption list, so you need a Thai e-Visa before you travel."
+  ],
+  [
+   "How long should my passport be valid?",
+   "Panama asks for 3 months; the Dominican Republic, Costa Rica, Kenya and many others ask for 6. To be safe, travel on a passport valid 6 months past your return date. Booking with us? We check it before we ticket anything."
+  ],
+  [
+   "Is this list official?",
+   "We checked the places Jamaicans travel to most against each government's own rules on 13 October 2026; each row links its source. The rest come from Jamaica's Ministry of Foreign Affairs list and published references. Rules change, so confirm with the embassy or ask us before you book."
+  ]
+ ],
+ "sources": [
+  [
+   "Jamaica Ministry of Foreign Affairs and Foreign Trade: visa requirements by country (March 2025)",
+   "https://embwashington.mfaft.gov.jm/pdf/Country-Listing-March-3-2025.pdf"
+  ],
+  [
+   "Wikipedia: Visa requirements for Jamaican citizens",
+   "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens"
+  ]
+ ],
+ "free": [
+  {
+   "country": "Antigua and Barbuda",
+   "region": "Caribbean",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "6 months",
+   "note": "CARICOM: up to 6 months.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Bahamas",
+   "region": "Caribbean",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "Up to 8 months",
+   "note": "Return or onward ticket needed. The officer sets your stay.",
+   "src": "https://www.immigration.gov.bs/?p=4007",
+   "official": true
+  },
+  {
+   "country": "Barbados",
+   "region": "Caribbean",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "6 months",
+   "note": "CARICOM: up to 6 months.",
+   "src": "https://www.foreign.gov.bb/wp-content/uploads/2022/08/Updated-visa-list-August-2022.pdf",
+   "official": true
+  },
+  {
+   "country": "Cuba",
+   "region": "Caribbean",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "Up to 90 days",
+   "note": "Get the tourist e-Visa online at evisacuba.cu before you fly. Passport valid 6 months, travel medical insurance, and the D’Viajeros form.",
+   "src": "https://www.exteriores.gob.es/Embajadas/lahabana/es/ViajarA/Paginas/Documentaci%C3%B3n-y-tr%C3%A1mites.aspx",
+   "official": true
+  },
+  {
+   "country": "Curaçao (Netherlands)",
+   "region": "Caribbean",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "30 days at a time",
+   "note": "Curaçao only. Aruba, Sint Maarten and Bonaire have their own rules.",
+   "src": "https://www.curacao.com/en/questions/customs-and-immigration/do-i-need-a-visa-to-visit-curacao",
+   "official": true
+  },
+  {
+   "country": "Dominica",
+   "region": "Caribbean",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "6 months",
+   "note": "CARICOM: up to 6 months.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Dominican Republic",
+   "region": "Caribbean",
+   "entry": "Visa-free",
+   "kind": "tourist card",
+   "stay": "Up to 30 days",
+   "note": "No visa. The US$10 tourist card is in your air fare; fill in the free e-Ticket online before you fly. Passport valid 6 months.",
+   "src": "https://dgii.gov.do/sobreTarjetaTurista/Paginas/preguntasFrecuentes.aspx",
+   "official": true
+  },
+  {
+   "country": "Grenada",
+   "region": "Caribbean",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "6 months",
+   "note": "CARICOM: up to 6 months.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Montserrat (UK)",
+   "region": "Caribbean",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Saint Kitts and Nevis",
+   "region": "Caribbean",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "6 months",
+   "note": "CARICOM: up to 6 months.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Saint Lucia",
+   "region": "Caribbean",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "6 months",
+   "note": "CARICOM: up to 6 months.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Saint Vincent and the Grenadines",
+   "region": "Caribbean",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "6 months",
+   "note": "CARICOM: up to 6 months.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Trinidad and Tobago",
+   "region": "Caribbean",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "6 months",
+   "note": "CARICOM: up to 6 months.",
+   "src": "https://tntairports.com/travel/before-you-fly/visa-requirements/",
+   "official": true
+  },
+  {
+   "country": "Belize",
+   "region": "Mexico and Central America",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "6 months",
+   "note": "CARICOM: up to 6 months.",
+   "src": "https://embwashington.mfaft.gov.jm/pdf/Country-Listing-March-3-2025.pdf",
+   "official": true
+  },
+  {
+   "country": "El Salvador",
+   "region": "Mexico and Central America",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "Apply online before you fly.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Nicaragua",
+   "region": "Mexico and Central America",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "90 days",
+   "note": "Visa issued at the border or airport.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Panama",
+   "region": "Mexico and Central America",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "Up to 90 days",
+   "note": "Passport valid 3 months past your trip (we suggest 6), a return ticket and proof of funds, usually US$500.",
+   "src": "https://embassyofpanama.org/visas-1",
+   "official": true
+  },
+  {
+   "country": "Mexico",
+   "region": "Mexico and Central America",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "Up to 180 days",
+   "note": "Fill in the FMM migration form. Passport valid for your whole stay.",
+   "src": "https://consulmex.sre.gob.mx/vancouver/index.php/es/country-no-visa",
+   "official": true
+  },
+  {
+   "country": "Argentina",
+   "region": "South America",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "30 days",
+   "note": "Shorter than most nationalities get.",
+   "src": "https://esuec.cancilleria.gob.ar/userfiles/v7/Visa%20requirements%20for%20regular%20passports_0.pdf",
+   "official": true
+  },
+  {
+   "country": "Bolivia",
+   "region": "South America",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "90 days",
+   "note": "eVisa or visa on arrival.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Brazil",
+   "region": "South America",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "90 days",
+   "note": "",
+   "src": "https://cop30.br/pt-br/servicos-da-cop30/visto/2025-04_quadrogeral-regime-de-vistos_pt.pdf/@@download/file",
+   "official": true
+  },
+  {
+   "country": "Chile",
+   "region": "South America",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "Up to 90 days",
+   "note": "Proof of funds may be asked for.",
+   "src": "https://embwashington.mfaft.gov.jm/pdf/Country-Listing-March-3-2025.pdf",
+   "official": true
+  },
+  {
+   "country": "Colombia",
+   "region": "South America",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "Up to 90 days",
+   "note": "Extendable to 180 days a year. No paid work.",
+   "src": "https://www.cancilleria.gov.co/sites/default/files/2022-12/resolucion_minrelaciones_5488_2022.pdf",
+   "official": true
+  },
+  {
+   "country": "Ecuador",
+   "region": "South America",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "Up to 90 days",
+   "note": "90 days in any 12 months, extendable once.",
+   "src": "https://www.gob.ec/mremh/tramites/concesion-visa-visitante-temporal-turista-90-dias",
+   "official": true
+  },
+  {
+   "country": "Peru",
+   "region": "South America",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "Up to 90 days",
+   "note": "The officer sets your stay on arrival.",
+   "src": "https://embwashington.mfaft.gov.jm/pdf/Country-Listing-March-3-2025.pdf",
+   "official": true
+  },
+  {
+   "country": "Suriname",
+   "region": "South America",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "6 months",
+   "note": "CARICOM: up to 6 months.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Uruguay",
+   "region": "South America",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "90 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Albania",
+   "region": "Europe",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Moldova",
+   "region": "Europe",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Russia",
+   "region": "Europe",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "90 days a year",
+   "note": "",
+   "src": "https://www.dvitex.ru/news/vstupilo-v-silu-soglashenie-mezhdu-pravitelstvom-rossiyskoy-federatsii-i-pravitelstvom-yamayki-o-vza/",
+   "official": false
+  },
+  {
+   "country": "Serbia",
+   "region": "Europe",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "30 days a year",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Turkey",
+   "region": "Europe",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "Up to 3 months",
+   "note": "Get the e-Visa at evisa.gov.tr, multiple entry.",
+   "src": "https://www.mfa.gov.tr/visa-information-for-foreigners.en.mfa",
+   "official": true
+  },
+  {
+   "country": "Angola",
+   "region": "Africa",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "30 days",
+   "note": "30 days per visit, up to 90 days a year.",
+   "src": "https://angolaembassy.hu/en/vizummentesseg_ismerje_meg_a_98_orszag_listajat_amelyek_mentesulnek_a_turisztikai_vizum_alol_angol_89",
+   "official": true
+  },
+  {
+   "country": "Ascension Island (UK)",
+   "region": "Africa",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "3 months within any year",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Benin",
+   "region": "Africa",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "30 days",
+   "note": "Yellow fever certificate needed.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Botswana",
+   "region": "Africa",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "90 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Burundi",
+   "region": "Africa",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Cameroon",
+   "region": "Africa",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Cape Verde",
+   "region": "Africa",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "",
+   "note": "Register online at least 5 days before you fly.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Chad",
+   "region": "Africa",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Comoros",
+   "region": "Africa",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "45 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Cote d'Ivoire",
+   "region": "Africa",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Djibouti",
+   "region": "Africa",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "31 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Egypt",
+   "region": "Africa",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "30 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Equatorial Guinea",
+   "region": "Africa",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Eswatini",
+   "region": "Africa",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "30 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Ethiopia",
+   "region": "Africa",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "Up to 90 days",
+   "note": "Arrive through Addis Ababa airport.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Gabon",
+   "region": "Africa",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "Arrive through Libreville airport.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Gambia",
+   "region": "Africa",
+   "entry": "Online travel pass",
+   "kind": "ETA",
+   "stay": "90 days",
+   "note": "Entry clearance needed before you travel.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Ghana",
+   "region": "Africa",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "",
+   "note": "Visa-free for all Jamaican passports.",
+   "src": "https://www.graphic.com.gh/news/general-news/foreign-affairs-ministry-releases-full-list-of-nations-with-visa-free-entry-to-ghana.html",
+   "official": false
+  },
+  {
+   "country": "Guinea",
+   "region": "Africa",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Guinea-Bissau",
+   "region": "Africa",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Kenya",
+   "region": "Africa",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "Up to 90 days",
+   "note": "No eTA needed for Jamaicans since 2025. Passport valid 6 months with a blank page.",
+   "src": "https://www.etakenya.go.ke/how-to-apply",
+   "official": true
+  },
+  {
+   "country": "Lesotho",
+   "region": "Africa",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "90 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Liberia",
+   "region": "Africa",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Madagascar",
+   "region": "Africa",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "90 days",
+   "note": "eVisa also available.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Malawi",
+   "region": "Africa",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "90 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Mauritania",
+   "region": "Africa",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Mauritius",
+   "region": "Africa",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "90 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Mozambique",
+   "region": "Africa",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "30 days",
+   "note": "eVisa also available.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Namibia",
+   "region": "Africa",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "Up to 90 days",
+   "note": "Passport valid 6 months with 3 blank pages.",
+   "src": "https://eservices.mhaiss.gov.na/form/FactSheetVisaRequirementstoNamibia.pdf",
+   "official": true
+  },
+  {
+   "country": "Nigeria",
+   "region": "Africa",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Rwanda",
+   "region": "Africa",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "30 days",
+   "note": "eVisa also available.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Saint Helena (UK)",
+   "region": "Africa",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Sao Tome and Principe",
+   "region": "Africa",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Senegal",
+   "region": "Africa",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "90 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Seychelles",
+   "region": "Africa",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "3 months",
+   "note": "Visitor’s permit on arrival.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Sierra Leone",
+   "region": "Africa",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "1 month",
+   "note": "eVisa or on arrival.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "South Africa",
+   "region": "Africa",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "90 days",
+   "note": "",
+   "src": "https://dirco.gov.za/paris/wp-content/uploads/sites/6/2024/12/COUNTRIES-EXEMPT-FROM-VISAS.pdf",
+   "official": true
+  },
+  {
+   "country": "Tanzania",
+   "region": "Africa",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "3 months",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Togo",
+   "region": "Africa",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "15 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Uganda",
+   "region": "Africa",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "90 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Zambia",
+   "region": "Africa",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "90 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Zimbabwe",
+   "region": "Africa",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "3 months",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Armenia",
+   "region": "Asia",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "120 days",
+   "note": "eVisa also available.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Azerbaijan",
+   "region": "Asia",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "30 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Bangladesh",
+   "region": "Asia",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Bhutan",
+   "region": "Asia",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "Up to 90 days",
+   "note": "US$40 visa fee plus a daily Sustainable Development Fee.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Cambodia",
+   "region": "Asia",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "30 days",
+   "note": "eVisa also available.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Georgia",
+   "region": "Asia",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "30 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Hong Kong (China)",
+   "region": "Asia",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "90 days",
+   "note": "",
+   "src": "https://www.immd.gov.hk/eng/services/visas/visit-transit/visit-visa-entry-permit.html",
+   "official": true
+  },
+  {
+   "country": "India",
+   "region": "Asia",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "60 days",
+   "note": "e-Tourist visa, up to two a year.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Indonesia",
+   "region": "Asia",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "30 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Kazakhstan",
+   "region": "Asia",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Kyrgyzstan",
+   "region": "Asia",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Laos",
+   "region": "Asia",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "30 days",
+   "note": "eVisa also available; set border points only.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Macau (China)",
+   "region": "Asia",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Malaysia",
+   "region": "Asia",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "Up to 30 days",
+   "note": "For holidays and social visits.",
+   "src": "https://www.mida.gov.my/wp-content/uploads/2020/07/Chapter-4-Immigration-Procedures.pdf",
+   "official": true
+  },
+  {
+   "country": "Maldives",
+   "region": "Asia",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "30 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Mongolia",
+   "region": "Asia",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Nepal",
+   "region": "Asia",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "30 days",
+   "note": "eVisa also available.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Pakistan",
+   "region": "Asia",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Philippines",
+   "region": "Asia",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "30 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Singapore",
+   "region": "Asia",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "Up to 30 days",
+   "note": "Fill in the free SG Arrival Card before you land.",
+   "src": "https://www.ica.gov.sg/enter-transit-depart/entering-singapore/visa_requirements",
+   "official": true
+  },
+  {
+   "country": "South Korea",
+   "region": "Asia",
+   "entry": "Online travel pass",
+   "kind": "ETA",
+   "stay": "90 days",
+   "note": "Apply for a K-ETA online before you fly.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Sri Lanka",
+   "region": "Asia",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "30 days",
+   "note": "eVisa also available; return ticket needed.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Tajikistan",
+   "region": "Asia",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "30 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Timor-Leste",
+   "region": "Asia",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "30 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Uzbekistan",
+   "region": "Asia",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "30 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Vietnam",
+   "region": "Asia",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "90 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Bahrain",
+   "region": "Middle East",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Israel",
+   "region": "Middle East",
+   "entry": "Online travel pass",
+   "kind": "ETA",
+   "stay": "Up to 90 days",
+   "note": "Get the ETA-IL online before you fly. Check travel advisories.",
+   "src": "https://embassies.gov.il/dublin/ConsularServices/Documents/VisaRequirementsTourists.pdf",
+   "official": true
+  },
+  {
+   "country": "Jordan",
+   "region": "Middle East",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "30 days",
+   "note": "eVisa also available.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Oman",
+   "region": "Middle East",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "30 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Qatar",
+   "region": "Middle East",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "United Arab Emirates",
+   "region": "Middle East",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "Usually 30 days",
+   "note": "Arrange the visit visa before you travel; there is no visa on arrival for Jamaicans.",
+   "src": "https://fujairah.ae/en/Pages/CitizensResidentsVisa.aspx",
+   "official": true
+  },
+  {
+   "country": "Cook Islands (NZ)",
+   "region": "Oceania",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "31 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Fiji",
+   "region": "Oceania",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "120 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Kiribati",
+   "region": "Oceania",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "90 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Micronesia",
+   "region": "Oceania",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "30 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Niue (NZ)",
+   "region": "Oceania",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "30 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Palau",
+   "region": "Oceania",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "30 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Papua New Guinea",
+   "region": "Oceania",
+   "entry": "eVisa online",
+   "kind": "eVisa",
+   "stay": "30 days",
+   "note": "Easy Visitor Permit, online.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Pitcairn Islands (UK)",
+   "region": "Oceania",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "14 days",
+   "note": "Landing fee applies.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Samoa",
+   "region": "Oceania",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "60 days",
+   "note": "Entry permit on arrival.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Tuvalu",
+   "region": "Oceania",
+   "entry": "Visa on arrival",
+   "kind": "visa on arrival",
+   "stay": "1 month",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "Vanuatu",
+   "region": "Oceania",
+   "entry": "Visa-free",
+   "kind": "visa-free",
+   "stay": "30 days",
+   "note": "",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  }
+ ],
+ "unless": [
+  {
+   "country": "Cayman Islands (UK)",
+   "region": "Caribbean",
+   "with": "A valid US, UK or Canadian visa, if you fly in directly from that country. Also exempt: under 15s, over 70s, and Jamaicans living in the US, Canada or UK flying in from there.",
+   "stay": "Up to 30 days",
+   "note": "Return ticket needed.",
+   "src": "https://www.cbc.gov.ky/index.php/travel/visas/visitors-visa/jamaican-and-honduran-nationals",
+   "official": true
+  },
+  {
+   "country": "Aruba (Netherlands)",
+   "region": "Caribbean",
+   "with": "A valid multiple-entry US, Canadian, UK, Irish or Schengen visa, or residence in the US, Canada, UK, Ireland or the Schengen area.",
+   "stay": "Up to 30 days",
+   "note": "Approved ED card before you fly and a return ticket.",
+   "src": "https://www.aruba.com/uk/plan-your-visit-today/getting-to-aruba/immigration-regulations",
+   "official": true
+  },
+  {
+   "country": "Turks and Caicos Islands (UK)",
+   "region": "Caribbean",
+   "with": "A valid US, UK or Canadian visa, or residence in one of those countries.",
+   "stay": "Set on arrival",
+   "note": "Passport valid 6 months.",
+   "src": "https://borderforce.gov.tc/entry-requirements",
+   "official": true
+  },
+  {
+   "country": "Bermuda (UK)",
+   "region": "Caribbean",
+   "with": "Only with valid permission to enter and re-enter Canada, the UK or the US (a multiple-entry visa or residence), valid 45 days past your stay. Bermuda gives no visitor visas to Jamaicans.",
+   "stay": "Set on arrival",
+   "note": "",
+   "src": "https://www.gov.bm/news/update-bermuda-immigration-and-protection-prohibition-entry-order-2025",
+   "official": true
+  },
+  {
+   "country": "British Virgin Islands (UK)",
+   "region": "Caribbean",
+   "with": "A valid UK, US or Canadian visa with more than 6 months left on it.",
+   "stay": "Under 6 months",
+   "note": "Not for work.",
+   "src": "https://bvi.gov.vg/media-centre/bvi-visa-exemption-programme-go-effect-september-1",
+   "official": true
+  },
+  {
+   "country": "Costa Rica",
+   "region": "Mexico and Central America",
+   "with": "A multiple-entry US or Canadian visa or residence (not a transit visa), or a multiple-entry Schengen C or D visa, valid at least 1 day on arrival; or UK, EU, Swiss, Norwegian or Icelandic residence.",
+   "stay": "Up to 30 days, extendable to 90",
+   "note": "Passport valid 180 days, US$100 a month in funds and a return ticket.",
+   "src": "https://www.embajadadecostarica.org/wp-content/uploads/2025/12/Directrices-Generales-de-Visas-Noviembre-2025-Alcance-148-Gaceta-N%C2%B0-216-17-11-2025.pdf",
+   "official": true
+  },
+  {
+   "country": "Guatemala",
+   "region": "Mexico and Central America",
+   "with": "A valid US, Canadian, Mexican or Schengen visa. A green card alone may not be enough.",
+   "stay": "Up to 90 days",
+   "note": "",
+   "src": "https://livinginguatemala.com/visas-to-guatemala/guatemala-visa-by-nationality/",
+   "official": false
+  },
+  {
+   "country": "Honduras",
+   "region": "Mexico and Central America",
+   "with": "A valid US visa, according to Jamaica’s Ministry of Foreign Affairs list.",
+   "stay": "Set on arrival",
+   "note": "",
+   "src": "https://embwashington.mfaft.gov.jm/pdf/Country-Listing-March-3-2025.pdf",
+   "official": true
+  },
+  {
+   "country": "Canada",
+   "region": "North America",
+   "with": "A US green card. Everyone else needs a Canadian visitor visa.",
+   "stay": "Set on arrival",
+   "note": "",
+   "src": "https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada/entry-requirements-country.html",
+   "official": true
+  },
+  {
+   "country": "Cyprus",
+   "region": "Europe",
+   "with": "A valid multiple-entry Schengen visa, according to Jamaica’s Ministry of Foreign Affairs list.",
+   "stay": "Set on arrival",
+   "note": "Cyprus is not in the Schengen area.",
+   "src": "https://embwashington.mfaft.gov.jm/pdf/Country-Listing-March-3-2025.pdf",
+   "official": true
+  }
+ ],
+ "need": [
+  {
+   "country": "Anguilla (UK)",
+   "region": "Caribbean",
+   "note": "Apply before you travel.",
+   "src": "https://gov.ai/document/immigration/Visa%20Requirements%20for%20Anguilla%20Revised%20August%202018.pdf",
+   "official": true
+  },
+  {
+   "country": "French West Indies (Guadeloupe, Martinique, Saint-Martin, Saint-Barthelemy)",
+   "region": "Caribbean",
+   "note": "French overseas visa needed.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "United States",
+   "region": "North America",
+   "note": "B1/B2 visitor visa, US$185 to apply. Puerto Rico and the US Virgin Islands follow the same rules.",
+   "src": "https://travel.state.gov/content/travel/en/us-visas/tourism-visit/visa-waiver-program.html",
+   "official": true
+  },
+  {
+   "country": "Schengen area (most of Europe)",
+   "region": "Europe",
+   "note": "One visa covers most of Europe, 90 days in any 180. €90 for adults. Fingerprints and photo at the border since Oct 2025.",
+   "src": "https://exteriores.gob.es/Embajadas/kingston/en/ServiciosConsulares/Paginas/Consular/Visados-Schengen.aspx",
+   "official": true
+  },
+  {
+   "country": "United Kingdom",
+   "region": "Europe",
+   "note": "Standard Visitor visa, £135.",
+   "src": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-visitor-visa-national-list",
+   "official": true
+  },
+  {
+   "country": "Ireland",
+   "region": "Europe",
+   "note": "Separate from the UK and Schengen visas.",
+   "src": "https://en.wikipedia.org/wiki/Visa_requirements_for_Jamaican_citizens",
+   "official": false
+  },
+  {
+   "country": "China",
+   "region": "Asia",
+   "note": "Apply before you travel.",
+   "src": "https://embwashington.mfaft.gov.jm/pdf/Country-Listing-March-3-2025.pdf",
+   "official": true
+  },
+  {
+   "country": "Japan",
+   "region": "Asia",
+   "note": "Apply at the Embassy of Japan in Kingston. Jamaicans living in the US, Canada or UK can use Japan’s eVISA.",
+   "src": "https://www.mofa.go.jp/j_info/visit/visa/visaonline.html",
+   "official": true
+  },
+  {
+   "country": "Thailand",
+   "region": "Asia",
+   "note": "New since 15 Sep 2026: Jamaica is not on Thailand's new visa-exemption list. Get a Thai e-Visa before you fly.",
+   "src": "https://www.tatnews.org/2026/09/thailand-introduces-new-30-day-and-15-day-visa-exemption-rules-from-15-september/",
+   "official": true
+  },
+  {
+   "country": "Australia",
+   "region": "Oceania",
+   "note": "Visitor visa, apply online.",
+   "src": "https://embwashington.mfaft.gov.jm/pdf/Country-Listing-March-3-2025.pdf",
+   "official": true
+  },
+  {
+   "country": "New Zealand",
+   "region": "Oceania",
+   "note": "Visitor visa, apply online.",
+   "src": "https://embwashington.mfaft.gov.jm/pdf/Country-Listing-March-3-2025.pdf",
+   "official": true
+  }
+ ]
+}

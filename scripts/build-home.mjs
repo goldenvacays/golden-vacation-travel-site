@@ -563,8 +563,71 @@ ${scripts()}
   return head({ title: "Page not found | Golden Vacation & Travel", description: "This page isn't on goldenvacays.com any more. Find getaways, Jamaica resorts, tours and airport transfers here.", pathname: "/404.html", image: H.meta.ogImage, noindex: true, bodyClass: "legal-page" }) + body;
 }
 
+/* ---------- about us ----------
+   Who we are, what we book, how paying works and how to reach us, from data/home.json "about". Customer copy says
+   "St Ann"; the full address stays in the footer. The page's structured data points at the TravelAgency on the
+   front page, so search engines and AI answers tie the facts here to the business. */
+function aboutPage() {
+  const A = H.about, url = `${S.origin}/about/`, code = S.iata.replace(/\D/g, "");
+  const email = H.footer.email;
+  const facts = A.facts.map(([b, t]) => `<div class="ab-fact"><b class="hh">${esc(b)}</b><span>${esc(t.replace("IATA_CODE", code))}</span></div>`).join("");
+  const book = A.book.map(([t, x, h]) => `<a class="ab-row" href="${h}"><span><b>${esc(t)}</b><small>${esc(x)}</small></span>${icon("arrow", 20, 2.4)}</a>`).join("");
+  const steps = H.how.steps.map(([t, x], i) => `<li><span class="ab-n">${i + 1}</span><span><b>${esc(t)}</b><small>${esc(x)}</small></span></li>`).join("");
+  const body = `
+${nav()}
+<main class="legal about wrap">
+  ${kicker(A.kicker)}
+  <h1 class="hh">${esc(A.h1)}</h1>
+  <p class="ab-lead">${esc(A.lead)}</p>
+  <div class="ab-facts">${facts}</div>
+  <h2 class="hh">Who we are</h2>
+  ${A.who.map((t) => `<p>${esc(t)}</p>`).join("")}
+  <h2 class="hh">What we book</h2>
+  <div class="ab-list">${book}</div>
+  <h2 class="hh">How booking works</h2>
+  <ol class="ab-steps">${steps}</ol>
+  <h2 class="hh">How paying works</h2>
+  <ul>${A.pay.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>
+  <h2 class="hh">Talk to us</h2>
+  <p>${esc(S.replyLine)}</p>
+  <ul class="ab-contact"><li>WhatsApp <a href="${waHome}">${esc(S.whatsappDisplay)}</a></li><li>Call <a href="tel:${S.phoneTel}">${esc(S.phone)}</a></li><li>Email <a href="mailto:${email}">${esc(email)}</a></li><li>Instagram and Facebook: <a href="${S.instagram}" rel="noopener">@goldenvacays</a></li></ul>
+  <p class="ab-cta">${btn("Message us on WhatsApp", waHome, "black", "", "chat", ' data-where="about"')}</p>
+  <h2 class="hh">${esc(A.reviewTitle)}</h2>
+  <p>${esc(A.reviewText)} <a href="${A.reviewHref}" rel="noopener" target="_blank">Leave a Google review</a></p>
+</main>
+<style>
+.about .ab-lead { font-size: 19px; line-height: 1.5; font-weight: 600; color: var(--ink); }
+.about .ab-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 6px 0 4px; }
+.about .ab-fact { display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; border-radius: 16px; background: var(--gold); color: var(--ink); }
+.about .ab-fact b { font-size: 18px; }
+.about .ab-fact span { font-size: 13px; }
+.about .ab-list { display: flex; flex-direction: column; }
+.about .ab-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 0; border-bottom: 2px solid var(--line); text-decoration: none; color: var(--ink); }
+.about .ab-row span { display: flex; flex-direction: column; gap: 2px; }
+.about .ab-row b { font-size: 16px; }
+.about .ab-row small { font-size: 14px; color: var(--ink-3, #63685F); }
+.about .ab-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.about .ab-steps li { display: flex; gap: 12px; align-items: flex-start; }
+.about .ab-steps li span:last-child { display: flex; flex-direction: column; gap: 2px; }
+.about .ab-steps small { font-size: 14px; line-height: 1.5; color: var(--ink-3, #63685F); }
+.about .ab-steps b, .about .ab-list b { color: var(--ink); }
+.about .ab-n { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 13px; font-weight: 800; flex: none; }
+.about .ab-contact { list-style: none; padding: 0; }
+.legal .ab-cta a.btn { color: #fff; text-decoration: none; } .legal .ab-cta a.btn:hover { color: var(--gold); }
+@media (min-width: 900px) { .about .ab-facts { grid-template-columns: repeat(4, 1fr); } .about .ab-lead { font-size: 22px; } }
+</style>
+${footer()}
+${scripts()}
+</body></html>`;
+  const jsonld = [
+    { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: `${S.origin}/` }, { "@type": "ListItem", position: 2, name: "About us", item: url }] },
+    { "@context": "https://schema.org", "@type": "AboutPage", "@id": `${url}#webpage`, url, name: A.h1, description: A.description, inLanguage: "en", isPartOf: { "@id": `${S.origin}/#website` }, mainEntity: { "@id": `${S.origin}/#organization` }, publisher: { "@id": `${S.origin}/#organization` } },
+  ];
+  return head({ title: A.title, description: A.description, pathname: "/about/", image: H.meta.ogImage, jsonld, bodyClass: "legal-page" }) + body;
+}
+
 /* ---------- write ---------- */
-const pages = [["index.html", homePage()], ["public/privacy/index.html", legalPage("privacy")], ["public/terms/index.html", legalPage("terms")], ["public/quote/index.html", quotePage()], ["public/404.html", notFoundPage()]];
+const pages = [["index.html", homePage()], ["public/about/index.html", aboutPage()], ["public/privacy/index.html", legalPage("privacy")], ["public/terms/index.html", legalPage("terms")], ["public/quote/index.html", quotePage()], ["public/404.html", notFoundPage()]];
 
 if (!BUNDLE) {
   for (const [rel, html] of pages) {
@@ -572,6 +635,17 @@ if (!BUNDLE) {
     fs.mkdirSync(path.dirname(f), { recursive: true });
     fs.writeFileSync(f, html);
     console.log("wrote", rel, `${(html.length / 1024).toFixed(0)}K`);
+  }
+  /* sitemap: the about page in its own marked block (privacy and terms were listed by hand before this) */
+  const smPath = path.join(ROOT, "public/sitemap.xml");
+  if (fs.existsSync(smPath)) {
+    const loc = `${S.origin}/about/`;
+    const entry = `<!-- about -->\n<url>\n  <loc>${loc}</loc>\n  <lastmod>${new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10)}T00:00:00+00:00</lastmod>\n  <priority>0.5</priority>\n</url>\n<!-- /about -->\n`;
+    const re = new RegExp(`<url>\\s*<loc>${loc.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}</loc>[\\s\\S]*?</url>\\s*`, "g");
+    let smx = fs.readFileSync(smPath, "utf8").replace(/\n*<!-- about -->[\s\S]*?<!-- \/about -->\n*/, "\n").replace(re, "");
+    smx = smx.replace(/\s*<\/urlset>\s*$/, `\n\n${entry}\n</urlset>\n`);
+    fs.writeFileSync(smPath, smx);
+    console.log("sitemap: about page listed");
   }
   fs.mkdirSync(IMG_OUT, { recursive: true });
   const missing = [];

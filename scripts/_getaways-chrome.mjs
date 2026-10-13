@@ -132,7 +132,7 @@ export function footer() {
     <div class="foot-brand"><a class="wordmark hh" href="/">GOLDEN VACATION</a><p>${esc(S.footerAddress)}<br>WhatsApp ${esc(S.whatsappDisplay)} · Call ${esc(S.phone)}<br>${esc(S.iata)}</p></div>
     ${col("Destinations", [...DATA.destinations.map((d) => [d.name, `${BASE}/${d.slug}/`]), ["Cancún · Brazil, on request", `${BASE}/quote/`]])}
     ${col("Two countries", DATA.combos.map((c) => [c.name, `${BASE}/${c.slug}/`]))}
-    ${col("Also from Golden", [["Jamaica hotels & staycations", "/"], ["What's open in Jamaica", "/hotel-status/"], ["Resort map", "/hotel-status-map"]])}
+    ${col("Also from Golden", [["Visa-free countries", `${BASE}/visa-free-countries/`], ["Jamaica hotels & staycations", "/"], ["What's open in Jamaica", "/hotel-status/"], ["Resort map", "/hotel-status-map"]])}
   </div>
   <div class="foot-bot"><span>© 2026 Golden Vacation &amp; Travel Limited · St Ann, Jamaica</span><span><a href="${S.instagram}" rel="noopener">Instagram</a> · <a href="${S.facebook}" rel="noopener">Facebook</a></span></div>
 </div></footer>`;

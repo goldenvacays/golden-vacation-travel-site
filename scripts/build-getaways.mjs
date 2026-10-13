@@ -89,6 +89,7 @@ function hubPage() {
   const need = `<section class="sec wrap sec-tight">
     <div class="sec-head"><div>${kicker("Before you go")}<h2 class="hh">${esc(H.needTitle)}</h2></div></div>
     <div class="need-grid">${H.need.map(([ic, t, x]) => `<div class="why">${icon(ic, 22)}<div><b class="h">${esc(t)}</b><p>${esc(x)}</p></div></div>`).join("")}</div>
+    ${H.needLink ? biglink(H.needLink[0], H.needLink[1]) : ""}
   </section>`;
 
   const faqs = `<section id="questions" class="faqs"><div class="wrap faqs-grid">

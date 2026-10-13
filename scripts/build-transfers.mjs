@@ -564,7 +564,9 @@ export const TR = ${JSON.stringify({ airports: T.airports, trips: T.trips, vehic
   const smPath = path.join(ROOT, "public/sitemap.xml");
   if (fs.existsSync(smPath)) {
     const entries = `<url>\n  <loc>${S.origin}${HUB}</loc>\n  <lastmod>${TODAY}T00:00:00+00:00</lastmod>\n  <priority>0.8</priority>\n</url>`;
-    let sm = fs.readFileSync(smPath, "utf8").replace(/\n*<!-- transfers -->[\s\S]*?<!-- \/transfers -->\n*/, "\n");
+    /* drop the marked block and any loose copy of the hub's entry, so the sitemap never lists /transfers/ twice */
+    const hubRe = new RegExp(`<url>\\s*<loc>${(S.origin + HUB).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}</loc>[\\s\\S]*?</url>\\s*`, "g");
+    let sm = fs.readFileSync(smPath, "utf8").replace(/\n*<!-- transfers -->[\s\S]*?<!-- \/transfers -->\n*/, "\n").replace(hubRe, "");
     sm = sm.replace(/\s*<\/urlset>\s*$/, `\n\n<!-- transfers -->\n${entries}\n<!-- /transfers -->\n\n</urlset>\n`);
     fs.writeFileSync(smPath, sm);
     console.log("sitemap: transfers url added");

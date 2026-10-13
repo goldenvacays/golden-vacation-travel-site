@@ -492,6 +492,10 @@
     ],
     "help": [
       [
+        "About us",
+        "/about/"
+      ],
+      [
         "Resort status",
         "/hotel-status/"
       ],
@@ -537,5 +541,79 @@
       "go": "Search transfers"
     },
     "note": "Resorts across the island are on the list. Don't see your villa or hotel? Type in the area."
+  },
+  "about": {
+    "title": "About Golden Vacation & Travel | IATA travel agency in St Ann",
+    "description": "Golden Vacation & Travel is a Jamaican travel agency in St Ann, IATA-accredited since 2021: who we are, what we book, how paying works and how to reach us.",
+    "kicker": "About us",
+    "h1": "About Golden Vacation & Travel",
+    "lead": "We're a Jamaican travel agency in St Ann, IATA-accredited since 2021. Real people, in Jamaica: we travel just like you.",
+    "facts": [
+      [
+        "IATA-accredited",
+        "Agency code IATA_CODE"
+      ],
+      [
+        "Since 2021",
+        "Thousands of travellers"
+      ],
+      [
+        "Jamaica and Florida",
+        "Our offices"
+      ],
+      [
+        "J$ or US$",
+        "Card link or bank transfer"
+      ]
+    ],
+    "who": [
+      "Golden Vacation and Travel Limited is a Jamaican company with its office in St Ann. Our travel professionals work across St Ann, Kingston, Ocho Rios and Hanover, and we have a sister company in Florida.",
+      "We're experts: we've done thousands of trips, and every week we have guests flying in and out of the island."
+    ],
+    "book": [
+      [
+        "Getaways from Jamaica",
+        "Visa-free trips to Panama, Medellín, Lima and Punta Cana: flights, hotel and transfers in one price.",
+        "/getaways/"
+      ],
+      [
+        "Jamaica hotels and staycations",
+        "Resorts across the island, priced in J$.",
+        "/#staycations"
+      ],
+      [
+        "Coming to Jamaica",
+        "From the USA, the UK and Canada, and en español.",
+        "/jamaica/"
+      ],
+      [
+        "Golden Experiences",
+        "Tours and resort day passes, with published prices.",
+        "/experiences/"
+      ],
+      [
+        "Airport transfers",
+        "Private rides from Montego Bay, Kingston and Ocho Rios, paid by card.",
+        "/transfers/"
+      ],
+      [
+        "Group travel",
+        "Rooms and trips for ten or more.",
+        "/groups/"
+      ],
+      [
+        "Resort status",
+        "Which Jamaica resorts are open, closed or reopening, kept up to date.",
+        "/hotel-status/"
+      ]
+    ],
+    "pay": [
+      "Getaways: a deposit holds your flights and hotel, usually US$500 (US$450 on Punta Cana); your quote gives the exact figure. The balance is due 30 days before you fly, in J$ or US$, by card link or bank transfer. Payment plan available.",
+      "Tours and airport transfers: you pay by card on the site. Your card is handled by Stripe on its own secure payment page, and we never see or store your card number.",
+      "Prices on the site are guide prices. We confirm the exact price for your dates before you pay."
+    ],
+    "reviewTitle": "Travelled with us?",
+    "reviewText": "Tell other travellers how it went. A Google review takes a minute and helps people find us.",
+    "reviewHref": "https://g.page/r/CfN6fme0tuU1EBM/review"
   }
 }
