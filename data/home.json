@@ -31,7 +31,7 @@
     ],
     [
       "Resort status",
-      "/hotel-status"
+      "/hotel-status/"
     ]
   ],
   "hero": {
@@ -264,7 +264,7 @@
     "title": "Enjoy Jamaica.",
     "sub": "A weekend away without going away. Jamaica's resorts, priced and paid in J$, and we check what's open before we quote.",
     "all": "All staycations",
-    "allHref": "/hotel-status",
+    "allHref": "/hotel-status/",
     "feature": {
       "kicker": "Heroes Weekend · 17 to 19 Oct",
       "title": "Long weekend, sorted.",
@@ -453,7 +453,7 @@
       ],
       [
         "Jamaica resorts, what's open",
-        "/hotel-status"
+        "/hotel-status/"
       ],
       [
         "Golden Experiences",
@@ -493,7 +493,7 @@
     "help": [
       [
         "Resort status",
-        "/hotel-status"
+        "/hotel-status/"
       ],
       [
         "Resort map",
@@ -511,7 +511,8 @@
     "email": "goldentravellers@outlook.com"
   },
   "legal": {
-    "effective": "7 September 2026"
+    "effective": "7 September 2026",
+    "privacyUpdated": "13 October 2026"
   },
   "transfers": {
     "kicker": "Airport transfers",

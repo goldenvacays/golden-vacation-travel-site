@@ -42,9 +42,23 @@ const shortDrive = (s) => String(s || "").replace(/\(.*?\)/g, "").replace(/;.*$/
   .replace(/(\d+)\s*hours?\s+(\d+)\s*minutes?/i, "$1 h $2").replace(/(\d+)\s*hours?/i, "$1 h").replace(/(\d+)\s*minutes?/i, "$1 min");
 const fromMbj = (drv, lang) => (drv ? (lang === "es" ? `a ${drv.replace(/^(\d+ h \d+)$/, "$1 min")} de MBJ` : `${drv} from MBJ`) : "");
 
+/* ---------- structured data: breadcrumb, the page itself, and its questions ---------- */
+const crumbName = (title) => String(title).replace(/\s*\|\s*Golden Vacation & Travel\s*$/, "");
+function pageLd({ title, description, pathname, lang = "en", faq = [], parent = null }) {
+  const url = `${S.origin}${pathname}`, name = crumbName(title);
+  const crumbs = [["Home", `${S.origin}/`], ...(parent ? [parent] : []), [name, url]];
+  const ld = [
+    { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: crumbs.map(([n, u], i) => ({ "@type": "ListItem", position: i + 1, name: n, item: u })) },
+    { "@context": "https://schema.org", "@type": "WebPage", "@id": `${url}#webpage`, url, name, description, inLanguage: lang, isPartOf: { "@id": `${S.origin}/#website` }, publisher: { "@id": `${S.origin}/#organization` } },
+  ];
+  if (faq.length) ld.push({ "@context": "https://schema.org", "@type": "FAQPage", inLanguage: lang, mainEntity: faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) });
+  return ld;
+}
+
 /* ---------- head, nav, footer ---------- */
-function head({ title, description, pathname, image, lang = "en", alts = {}, noindex = false }) {
+function head({ title, description, pathname, image, lang = "en", alts = {}, noindex = false, jsonld = [] }) {
   const url = `${S.origin}${pathname}`;
+  const ld = jsonld.map((o) => `<script type="application/ld+json">${JSON.stringify(o)}</script>`).join("\n");
   const og = `${S.origin}${image}`;
   const hl = Object.keys(alts).length ? [`<link rel="alternate" hreflang="${lang}" href="${url}">`, ...Object.entries(alts).map(([l, p]) => `<link rel="alternate" hreflang="${l}" href="${S.origin}${p}">`)].join("\n") : "";
   const ga = S.ga4 ? `<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${S.ga4}');
@@ -75,6 +89,7 @@ ${hl}
 <link rel="stylesheet" href="/groups/assets/groups.css">
 <link rel="stylesheet" href="/jamaica/assets/stay.css">
 <link rel="stylesheet" href="${BASE}/assets/jamaica.css">
+${ld}
 ${ga}
 </head>`;
 }
@@ -203,7 +218,7 @@ function landSection(pg) {
 }
 
 const linkify = (s, lang) => esc(s)
-  .replace(lang === "es" ? "página de estado de los resorts" : "resort status page", (m) => `<a href="/hotel-status">${m}</a>`)
+  .replace(lang === "es" ? "página de estado de los resorts" : "resort status page", (m) => `<a href="/hotel-status/">${m}</a>`)
   .replace(lang === "es" ? "página de Grupos" : "Groups page", (m) => `<a href="/groups/">${m}</a>`);
 
 function whoPicker(lang, id) {
@@ -262,7 +277,7 @@ function page(pg) {
   const curSwitch = CURS ? `<div class="cur-switch" role="group" aria-label="Prices in"><span>Prices in</span>${CURS.map((c, i) => `<button type="button" data-cur="${c}" aria-pressed="${i === 0}">${J.currency.symbols[c]}</button>`).join("")}</div>` : "";
   const cfg = { cur: CURS ? { def: CURS[0], rates: J.currency.rates, symbols: J.currency.symbols, labels: J.currency.labels } : null, lang, picker: T.picker, form: T.form, months: MONTHS[lang], labels: lang === "es" ? { dates: "Fechas", who: "Quién viaja", needs: "Necesito", area: "Zona", occasion: "Ocasión", currency: "Moneda", notes: "Notas" } : { dates: "Dates", who: "Who", needs: "I need", area: "Area", occasion: "Occasion", currency: "Quote in", notes: "Notes" } };
   const special = pg.special;
-  return `${head({ title: pg.meta.title, description: pg.meta.description, pathname: pg.path, image: H.img, lang, alts: pg.alt || {} })}
+  return `${head({ title: pg.meta.title, description: pg.meta.description, pathname: pg.path, image: H.img, lang, alts: pg.alt || {}, jsonld: pageLd({ title: pg.meta.title, description: pg.meta.description, pathname: pg.path, lang, faq: pg.faq || [], parent: [crumbName(J.chooser.meta.title), `${S.origin}${J.chooser.path}`] }) })}
 <body class="groups stay jam">
 ${nav(lang, pg.path)}
 <main>
@@ -281,7 +296,7 @@ ${nav(lang, pg.path)}
 ${dealsSection(pg)}
 ${landSection(pg)}
 <section class="jsec jsec-gold" id="stay" aria-labelledby="stay-h"><div class="wrap">
-  <div class="jsec-head"><span class="kicker">${esc(pg.stay.kicker)}</span><h2 class="h2" id="stay-h">${esc(pg.stay.title)}</h2><p class="lead">${esc(pg.stay.sub)} <a class="inline-link" href="/hotel-status">${esc(T.status)}</a></p>${curSwitch}</div>
+  <div class="jsec-head"><span class="kicker">${esc(pg.stay.kicker)}</span><h2 class="h2" id="stay-h">${esc(pg.stay.title)}</h2><p class="lead">${esc(pg.stay.sub)} <a class="inline-link" href="/hotel-status/">${esc(T.status)}</a></p>${curSwitch}</div>
   <div class="dgrid dgrid-4">${pg.stay.order.map((s) => resortCard(s, pg)).join("")}</div>
 </div></section>
 <section class="jsec" id="special" aria-labelledby="special-h"><div class="wrap">
@@ -314,7 +329,7 @@ ${footer(lang)}
 function chooser() {
   const C = J.chooser, H = C.hero, T = J.i18n.en;
   const doors = C.doors.map((d) => card({ href: `${BASE}/${d.key}/`, img: d.img, name: d.title, price: false, sub: "", text: d.text, foot: "", go: d.key === "es" ? "Ver" : T.see, lang: "en", kind: "door", track: `jam-door-${d.key}` }));
-  return `${head({ title: C.meta.title, description: C.meta.description, pathname: C.path, image: H.img })}
+  return `${head({ title: C.meta.title, description: C.meta.description, pathname: C.path, image: H.img, jsonld: pageLd({ title: C.meta.title, description: C.meta.description, pathname: C.path }) })}
 <body class="groups stay jam">
 ${nav("en", C.path, false)}
 <main>

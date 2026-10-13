@@ -1220,7 +1220,12 @@ function partnersPage() {
   const chipSet = (name, items, type = "checkbox") => `<div class="pt-chips">${items.map((t) => `<label class="pt-chip"><input type="${type}" name="${name}" value="${esc(t)}"><span>${esc(t)}</span></label>`).join("")}</div>`;
   const q = (label, name, items, type) => `<div class="pt-q" role="group" aria-label="${esc(label)}"><span class="pt-l">${esc(label)}</span>${chipSet(name, items, type)}</div>`;
   const field = (label, name, attrs = "", hint = "") => `<label class="pt-f"><span>${esc(label)}${hint ? ` <small>${esc(hint)}</small>` : ""}</span><input name="${name}" ${attrs}></label>`;
-  return `${head({ title: "List your tours with Golden Experiences | Jamaica tour operators", description: "Run tours, boat trips or an attraction in Jamaica? Send us your details to be listed on Golden Experiences and sold to visitors, cruise passengers and locals.", pathname: `${BASE}/partners`, image: X.venues[0].photos[0].file, bodyClass: "exp exp-partners" })}
+  const ptDesc = "Run tours, boat trips or an attraction in Jamaica? Send us your details to be listed on Golden Experiences and sold to visitors, cruise passengers and locals.", ptUrl = `${S.origin}${BASE}/partners`;
+  const ptLd = [
+    { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: `${S.origin}/` }, { "@type": "ListItem", position: 2, name: "Golden Experiences", item: `${S.origin}${BASE}/` }, { "@type": "ListItem", position: 3, name: "List your tours", item: ptUrl }] },
+    { "@context": "https://schema.org", "@type": "WebPage", "@id": `${ptUrl}#webpage`, url: ptUrl, name: "List your tours with Golden Experiences", description: ptDesc, inLanguage: "en", isPartOf: { "@id": `${S.origin}/#website` }, publisher: { "@id": `${S.origin}/#organization` } },
+  ];
+  return `${head({ title: "List your tours with Golden Experiences | Jamaica tour operators", description: ptDesc, pathname: `${BASE}/partners`, image: X.venues[0].photos[0].file, jsonld: ptLd, bodyClass: "exp exp-partners" })}
 ${PT_CSS}
 ${nav()}
 <main class="partners wrap">

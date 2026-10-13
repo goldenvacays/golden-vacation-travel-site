@@ -387,11 +387,11 @@ function homePage() {
     <h2 id="status-h" class="hh">${esc(H.status.title)}</h2>
     <div class="stats"><div class="stat ok"><b>${counts.open}</b><span>Open</span></div><div class="stat re"><b>${counts.reopening}</b><span>Reopening</span></div><div class="stat all"><b>${counts.tracked}</b><span>Tracked</span></div></div>
     <p class="status-text">${esc(fill(H.status.text))}</p>
-    <div class="status-btns desk">${btn(fill(H.status.seeAll), "/hotel-status")}${btn(H.status.map, "/hotel-status-map", "outline", "", "map")}</div>
+    <div class="status-btns desk">${btn(fill(H.status.seeAll), "/hotel-status/")}${btn(H.status.map, "/hotel-status-map", "outline", "", "map")}</div>
   </div>
   <div>
     <div class="status-card">${rows}</div>
-    <div class="status-btns mob" style="margin-top:16px">${btn(fill(H.status.seeAllMobile), "/hotel-status")}</div>
+    <div class="status-btns mob" style="margin-top:16px">${btn(fill(H.status.seeAllMobile), "/hotel-status/")}</div>
   </div>
 </section>`;
 
@@ -404,12 +404,26 @@ function homePage() {
   const jsonld = [
     {
       "@context": "https://schema.org", "@type": "TravelAgency", "@id": `${S.origin}/#organization`,
-      name: "Golden Vacation and Travel", legalName: "Golden Vacation and Travel Limited", url: S.origin, telephone: S.phoneTel,
+      name: "Golden Vacation and Travel", alternateName: ["Golden Vacation & Travel", "Golden Vacays"], legalName: "Golden Vacation and Travel Limited", url: S.origin,
+      logo: { "@type": "ImageObject", url: `${S.origin}/android-chrome-512x512.png`, width: 512, height: 512 },
+      image: `${S.origin}${img(H.meta.ogImage)}`,
+      telephone: S.phoneTel, email: H.footer.email,
       description: H.meta.description,
-      address: { "@type": "PostalAddress", streetAddress: "Shop 3, Enfield Plaza", addressLocality: "Brown's Town", addressRegion: "St Ann", addressCountry: "JM" },
+      /* the business address in full (the NAP on the Google and Bing listings); customer copy keeps saying "St Ann" */
+      address: { "@type": "PostalAddress", streetAddress: "Shop 3, Enfield Plaza, Lot 31 Enfield", addressLocality: "Brown's Town", addressRegion: "Saint Ann", addressCountry: "JM" },
+      /* office hours are for search engines only: the pages themselves just say "within working hours" */
+      openingHoursSpecification: [
+        { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "08:00", closes: "17:00" },
+        { "@type": "OpeningHoursSpecification", dayOfWeek: ["Saturday", "Sunday"], opens: "08:00", closes: "12:00" },
+      ],
+      identifier: { "@type": "PropertyValue", propertyID: "IATA", name: "IATA agency code", value: S.iata.replace(/\D/g, "") },
+      hasCredential: { "@type": "EducationalOccupationalCredential", credentialCategory: "accreditation", name: "IATA accredited travel agency", recognizedBy: { "@type": "Organization", name: "International Air Transport Association (IATA)", url: "https://www.iata.org/" } },
       areaServed: [{ "@type": "Country", name: "Jamaica" }, { "@type": "Country", name: "United States" }, { "@type": "Country", name: "United Kingdom" }, { "@type": "Country", name: "Canada" }],
       sameAs: [S.instagram, S.facebook, "https://x.com/goldenvacays"],
-      contactPoint: { "@type": "ContactPoint", telephone: S.phoneTel, contactType: "reservations", areaServed: ["JM", "US", "GB", "CA"], availableLanguage: ["en", "es"] },
+      contactPoint: [
+        { "@type": "ContactPoint", telephone: S.phoneTel, contactType: "reservations", areaServed: ["JM", "US", "GB", "CA"], availableLanguage: ["en", "es"] },
+        { "@type": "ContactPoint", telephone: `+${S.whatsapp}`, contactType: "customer service", description: "WhatsApp", areaServed: ["JM", "US", "GB", "CA"], availableLanguage: ["en", "es"] },
+      ],
     },
     { "@context": "https://schema.org", "@type": "WebSite", "@id": `${S.origin}/#website`, url: S.origin, name: "Golden Vacation & Travel", publisher: { "@id": `${S.origin}/#organization` } },
   ];
@@ -434,7 +448,7 @@ ${scripts()}
 function legalPage(kind) {
   const eff = H.legal.effective;
   const email = H.footer.email;
-  const privacy = `<h1 class="hh">Privacy policy</h1><p class="muted">Effective ${esc(eff)}</p>
+  const privacy = `<h1 class="hh">Privacy policy</h1><p class="muted">Effective ${esc(eff)}${H.legal.privacyUpdated ? ` · updated ${esc(H.legal.privacyUpdated)}` : ""}</p>
 <p>We respect your privacy. This policy explains what we collect, why we collect it, and how we protect it.</p>
 <h2 class="h">Information we collect</h2>
 <ul><li><strong>Contact details</strong> you share with us (name, email, phone).</li><li><strong>Trip details</strong> relevant to bookings (dates, destination, preferences).</li><li><strong>Messages</strong> sent via WhatsApp, email, or our forms.</li><li><strong>Usage data</strong> (analytics like page views) to improve the site.</li></ul>
@@ -444,6 +458,7 @@ function legalPage(kind) {
 <h2 class="h">WhatsApp</h2><p>Clicking our WhatsApp buttons opens WhatsApp (or WhatsApp Web). Your messages are governed by WhatsApp's own terms and privacy policy.</p>
 <h2 class="h">Card payments on the site</h2><p>When you book a Golden Experience on this site, your card is handled by Stripe on Stripe's own secure payment page. We never see or store your card number. Stripe's privacy policy applies to the payment itself.</p>
 <h2 class="h">Reviews from Tripadvisor</h2><p>Experience pages show a tour's Tripadvisor rating and its most recent Tripadvisor reviews, including the reviewer's Tripadvisor username. That content is fetched from Tripadvisor each time the page is opened and is not stored by us. It is written by Tripadvisor travellers about the venue and is governed by Tripadvisor's terms.</p>
+<h2 class="h">Cookies and advertising</h2><p>We use Google Analytics and Google Ads, which set cookies, to see how people use the site and to measure which of our ads lead to bookings and enquiries. They record things like the pages you visit, your device and browser, and your approximate location. They never see your card details. Google may also use this to show you our ads on other sites and apps. You can block or delete cookies in your browser settings, and turn off personalised Google ads at <a href="https://myadcenter.google.com" rel="noopener">myadcenter.google.com</a>.</p>
 <h2 class="h">Data security and retention</h2><p>We use reasonable technical and organisational measures to safeguard data. We keep records only as long as needed for bookings and legal requirements.</p>
 <h2 class="h">Your rights</h2><p>You may request access, correction, or deletion of your personal data. Contact us at <a href="mailto:${email}">${email}</a>.</p>
 <h2 class="h">Contact</h2><p>Golden Vacation and Travel Limited, ${esc(S.footerAddress)}. Email <a href="mailto:${email}">${email}</a>.</p>`;
@@ -466,7 +481,12 @@ ${scripts()}
 </body></html>`;
   const title = kind === "privacy" ? "Privacy policy | Golden Vacation & Travel" : "Terms and conditions | Golden Vacation & Travel";
   const description = kind === "privacy" ? "What Golden Vacation and Travel collects, why, and how we protect it. We don't sell your data, and you can ask us to see, correct or delete what we hold." : "Booking terms for Golden Vacation and Travel: quotes, deposits and payments, cancellations and changes, group rates, travel documents and our role as an agent.";
-  return head({ title, description, pathname: `/${kind}/`, image: H.meta.ogImage, bodyClass: "legal-page" }) + body;
+  const name = kind === "privacy" ? "Privacy policy" : "Terms and conditions", url = `${S.origin}/${kind}/`;
+  const jsonld = [
+    { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: `${S.origin}/` }, { "@type": "ListItem", position: 2, name, item: url }] },
+    { "@context": "https://schema.org", "@type": "WebPage", "@id": `${url}#webpage`, url, name, description, inLanguage: "en", isPartOf: { "@id": `${S.origin}/#website` }, publisher: { "@id": `${S.origin}/#organization` } },
+  ];
+  return head({ title, description, pathname: `/${kind}/`, image: H.meta.ogImage, jsonld, bodyClass: "legal-page" }) + body;
 }
 
 /* ---------- the Jamaica quote page ----------

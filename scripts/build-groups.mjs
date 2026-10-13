@@ -261,7 +261,12 @@ function enquire() {
   const who = f.who.map((w, i) => `<label class="radio-card who hidden-input"><input type="radio" name="branch" value="${w.value}" data-label="${esc(w.title)}"${i === 0 ? " checked" : ""}><span class="rc"><b>${esc(w.title)}</b><span>${esc(w.sub)}</span></span></label>`).join("");
   const tripHotels = G.trips.destinations.map((d) => `<div data-hotels-for="${esc(d.name)}" hidden>${row("Hotel", `<div class="stack">${d.hotels.map((ht) => `<label class="radio-card"><input type="radio" name="hotel" value="${esc(ht.name)}" data-label="${esc(ht.name)}">${thumb(ht.img, ht.alt)}<span class="rc"><b>${esc(ht.name)}</b><span>${d.nights} nights, ${d.board.toLowerCase()} · starting at ${money(ht.usd)} per person</span></span></label>`).join("")}<label class="radio-card"><input type="radio" name="hotel" value="Pick one for me" data-label="pick one for me"><span class="rc"><b>Pick one for me</b><span>Tell us what you want and we choose.</span></span></label></div>`, { req: true })}</div>`).join("");
   const wizNav = (n, last) => `<p class="form-err" role="alert"></p><div class="wiz-nav">${n > 1 ? `<button type="button" class="btn btn-outline" data-back>Back</button>` : `<span></span>`}${last ? `<button type="submit" class="btn">${esc(f.submit)}</button>` : `<button type="button" class="btn" data-next>Next</button>`}</div>`;
-  return `${head({ title: "Get a group quote | Golden Vacation & Travel", description: `Four short screens: hotel rooms, a group coming to Jamaica or an international group trip. Your quote lands by email within ${G.turnaround}.`, pathname: `${BASE}/enquire/`, image: "rooms-resort" })}
+  const desc = `Four short screens: hotel rooms, a group coming to Jamaica or an international group trip. Your quote lands by email within ${G.turnaround}.`, url = `${S.origin}${BASE}/enquire/`;
+  const ld = [
+    { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: `${S.origin}/` }, { "@type": "ListItem", position: 2, name: "Groups", item: `${S.origin}${BASE}/` }, { "@type": "ListItem", position: 3, name: "Get a group quote", item: url }] },
+    { "@context": "https://schema.org", "@type": "WebPage", "@id": `${url}#webpage`, url, name: "Get a group quote", description: desc, inLanguage: "en", isPartOf: { "@id": `${S.origin}/#website` }, publisher: { "@id": `${S.origin}/#organization` } },
+  ];
+  return `${head({ title: "Get a group quote | Golden Vacation & Travel", description: desc, pathname: `${BASE}/enquire/`, image: "rooms-resort", jsonld: ld })}
 <body class="groups groups-form">
 ${nav({ here: false, back: true })}
 <main class="wrap">

@@ -26,8 +26,8 @@
    "text": "<strong>Is RIU Palace Jamaica open?</strong> RIU Palace Jamaica is currently <b>closed for refurbishment and reopening 12 Dec 2026</b> in Montego Bay, Jamaica."
   },
   "Coyaba Beach Resort": {
-   "status": "Reopening",
-   "text": "<strong>Is Zoetry Montego Bay open?</strong> Not yet. Zoetry Montego Bay is <b>closed and reopening under its original name, Coyaba Beach Resort</b>, in Montego Bay, Jamaica. The reopening date is not confirmed yet."
+   "status": "Open",
+   "text": "<strong>Is Zoetry Montego Bay open?</strong> Yes. Zoetry Montego Bay is back under its original name, <b>Coyaba Beach Resort</b>, and is <b>open</b> and welcoming guests in Montego Bay, Jamaica."
   },
   "Catalonia Montego Bay": {
    "status": "Closed",
@@ -64,6 +64,10 @@
   "Oasis at Sunset Beach / Sunset Beach Resort": {
    "status": "Closed",
    "text": "<strong>Is Oasis at Sunset Beach open?</strong> (formerly Sunscape Splash &amp; Sunscape Cove Montego Bay · Sunset Beach Resort, Spa &amp; Waterpark) Oasis at Sunset Beach is currently <b>closed</b> in Montego Bay, Jamaica."
+  },
+  "Beaches Ocho Rios": {
+   "status": "Reopening",
+   "text": "<strong>Is Beaches Ocho Rios open?</strong> Not yet. Beaches Ocho Rios has been <b>closed since 31 May 2025 for a major renovation</b> and is expected to <b>reopen in late 2029</b>, in Ocho Rios, Jamaica."
   }
  }
 }

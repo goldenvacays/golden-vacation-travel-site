@@ -103,7 +103,7 @@
     ],
     [
      "Resort status",
-     "/hotel-status"
+     "/hotel-status/"
     ]
    ],
    "why": [
@@ -265,7 +265,7 @@
     ],
     [
      "Estado de los resorts",
-     "/hotel-status"
+     "/hotel-status/"
     ]
    ],
    "why": [
