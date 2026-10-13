@@ -721,12 +721,6 @@
 </url>
 
 <url>
-  <loc>https://goldenvacays.com/transfers/</loc>
-  <lastmod>2026-10-13T00:00:00+00:00</lastmod>
-  <priority>0.8</priority>
-</url>
-
-<url>
   <loc>https://goldenvacays.com/jamaica/</loc>
   <lastmod>2026-10-13T00:00:00+00:00</lastmod>
   <priority>0.8</priority>
@@ -769,5 +763,21 @@
   <priority>0.8</priority>
 </url>
 <!-- /transfers -->
+
+<!-- visa -->
+<url>
+  <loc>https://goldenvacays.com/getaways/visa-free-countries/</loc>
+  <lastmod>2026-10-13T00:00:00+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
+<!-- /visa -->
+
+<!-- about -->
+<url>
+  <loc>https://goldenvacays.com/about/</loc>
+  <lastmod>2026-10-13T00:00:00+00:00</lastmod>
+  <priority>0.5</priority>
+</url>
+<!-- /about -->
 
 </urlset>
