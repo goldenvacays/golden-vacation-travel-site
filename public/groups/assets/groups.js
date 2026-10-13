@@ -484,6 +484,7 @@
           sstore("gv_groups_brief", JSON.stringify(briefNow));
           try { sessionStorage.removeItem("gv_groups_ref"); localStorage.removeItem(SAVE_KEY); } catch (x) {}
           track("groups_submit", { branch: briefNow.branch });
+          track("generate_lead", { lead_source: "groups_form", where: String(briefNow.branch || "") });
           location.href = CFG.base + "/sent/?ref=" + encodeURIComponent(ref);
         })
         .catch(function () {
