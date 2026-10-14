@@ -65,6 +65,8 @@ swap(/<script type="application\/ld\+json">\{"@context":"https:\/\/schema\.org",
 swap(/As of \d{1,2} [A-Z][a-z]+ \d{4}, \d+ of the \d+ resorts we track are open now and \d+ are reopening/g, () => `As of ${longDate}, ${open} of the ${listed.length} resorts we track are open now and ${reopening} are reopening`, "the FAQ counts");
 swap(/\b\d+ Jamaica all-inclusives are open and booking now/g, () => `${open} Jamaica all-inclusives are open and booking now`, "the open count");
 swap(/<span>Updated \d{1,2} [A-Z][a-z]{2} \d{4} · <span id="trk">\d+<\/span> resorts tracked<\/span>/, () => `<span>Updated ${shortDate} · <span id="trk">${listed.length}</span> resorts tracked</span>`, "the Updated pill");
+/* the note under the list carries the same date, so the page never shows two */
+swap(/(booking agent \(hopefully, that.s us\)\. Updated )\d{1,2} [A-Z][a-z]{2} \d{4}\./, (m, a) => `${a}${shortDate}.`, "the note's Updated date");
 /* 5. reopening dates at a glance: every resort that isn't open now, soonest first, as a plain table that search
    engines and AI answers can read (the list at the top of the page is drawn by the page script) */
 const NOT_OPEN = { Reopening: "Reopening", "Closing soon": "Closing for renovation", "Coming soon": "Coming soon", New: "New resort", Closed: "Closed" };
