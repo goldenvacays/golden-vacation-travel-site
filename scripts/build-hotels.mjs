@@ -20,6 +20,18 @@ const fit = (max, ...c) => c.find((s) => s && s.length <= max) || c[c.length - 1
 
 const HOTELS = JSON.parse(fs.readFileSync(path.join(ROOT, "data/hotels.json"), "utf8")).hotels;
 const COPY = JSON.parse(fs.readFileSync(path.join(ROOT, "data/hotels-copy.json"), "utf8"));
+/* our own travellers' words, approved from the /review survey (data/reviews.json): a hotel shows them once it has three.
+   Words only, never the scores, and always with who said it: first name, nights, airport, month. */
+const REVIEWS = (() => { try { return JSON.parse(fs.readFileSync(path.join(ROOT, "data/reviews.json"), "utf8")).reviews || []; } catch (e) { return []; } })();
+const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const AIRPORT_NAMES = { KIN: "Kingston", MBJ: "Montego Bay" };
+function saidSection(slug) {
+  const rs = REVIEWS.filter((r) => r.hotel === slug && String(r.text || "").trim()).sort((a, b) => String(b.month).localeCompare(String(a.month)));
+  if (rs.length < 3) return "";
+  const who = (r) => { const [y, m] = String(r.month || "").split("-"), n = Number(r.nights) || 0;
+    return [r.name, n ? `${n} night${n === 1 ? "" : "s"}${AIRPORT_NAMES[r.airport] ? ` from ${AIRPORT_NAMES[r.airport]}` : ""}` : "", MONTH_NAMES[Number(m) - 1] ? `${MONTH_NAMES[Number(m) - 1]} ${y}` : ""].filter(Boolean).join(", "); };
+  return `<section class="hp-sec hp-said"><div>${kicker("Our travellers said")}</div>${rs.slice(0, 6).map((r) => `<figure class="hp-quote"><blockquote>${esc(r.text)}</blockquote><figcaption>${esc(who(r))}</figcaption></figure>`).join("")}</section>`;
+}
 const CSS_HOTELS = `${BASE}/assets/hotels.css`;
 
 /* trade notes never reach a page: any sentence with one of these is dropped from a sheet field */
@@ -237,7 +249,7 @@ ${hero}
   <div class="dest-main">
     ${rooms}
     ${about}
-    ${where}
+    ${where}${saidSection(hotel.slug)}
     ${faq}
   </div>
 </div>

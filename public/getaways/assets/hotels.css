@@ -134,3 +134,7 @@ button.hp-room-img:focus-visible { outline: 3px solid var(--gold); outline-offse
   .lb-prev { left: 24px; } .lb-next { right: 24px; }
 }
 @media (prefers-reduced-motion: reduce) { .hero-track { scroll-behavior: auto; } .hero-dots button, .hero-arrow { transition: none; } }
+/* "Our travellers said": approved words from the /review survey, shown once a hotel has three (scripts/build-hotels.mjs) */
+.hp-quote { margin: 0; padding: 16px 18px; background: var(--alt); border-radius: 16px; display: flex; flex-direction: column; gap: 8px; }
+.hp-quote blockquote { margin: 0; font-size: 16px; line-height: 1.5; }
+.hp-quote figcaption { font-size: 13px; font-weight: 700; color: var(--muted); }

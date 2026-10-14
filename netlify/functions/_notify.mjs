@@ -204,6 +204,26 @@ function build(form, d) {
       return { kind: "New tour partner", headline: d.business || "A tour operator sent their details", who: d.name, ref: d.ref,
         rows: [["Runs", d.offers], ["Where", d.areas], ["Their tours", d.tours], ["Hotel pickup", d.pickup], ["TPDCo licence", d.tpdco], ["Insurance", d.insurance], ["Works with agents", d.rates], ["Booking system", d.system], ["Website", d.website], ["Phone", d.phone], ["Email", d.email]],
         todo: "Reply to set up their listing", phone: d.phone, email: d.email, firstName: first(d.name), mailSubject: `Listing ${d.business || "your tours"} on Golden Experiences` };
+    case "trip-review": {
+      /* the after-trip survey at /review (scripts/build-review.mjs) */
+      const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      const [y, mm] = String(d.month || "").split("-"), month = y && MONTHS[Number(mm) - 1] ? `${MONTHS[Number(mm) - 1]} ${y}` : "";
+      const getaway = d.kind === "getaway";
+      const scores = (pairs, extra = []) => [...pairs.map(([k, l]) => (d[k] ? `${l} ${d[k]}` : "")), ...extra].filter(Boolean).join(", ");
+      const hotelScores = scores([["hotel_room", "room"], ["hotel_clean", "cleanliness"], ["hotel_location", "location"], ["hotel_food", "food"], ["hotel_staff", "staff"], ["hotel_value", "value"]], [d.hotel_food_skip ? "didn't eat there" : ""]);
+      const placeScores = scores([["place_getting_around", "getting around"], ["place_food", "eating out"], ["place_safety", "safety"], ["place_value", "value"]]);
+      const photo = d.photo && typeof d.photo === "object" ? d.photo.url || d.photo.filename || "" : d.photo || "";
+      const hotel = d.hotel_name || d.where_stayed || String(d.hotel || "").replace(/-/g, " ") || "A hotel";
+      const yes = d.consent === "yes";
+      return { kind: "Trip review", headline: `${hotel}${getaway && d.place ? `, ${d.place}` : ""}`, who: d.first_name, ref: d.booking,
+        rows: [["Trip", [month, Number(d.nights) ? `${d.nights} night${Number(d.nights) === 1 ? "" : "s"}` : "", getaway && d.airport ? `from ${{ KIN: "Kingston", MBJ: "Montego Bay" }[d.airport] || d.airport}` : ""].filter(Boolean).join(", ")],
+          ["How we did", d.golden_service ? `${d.golden_service} of 5` : ""], ["The hotel, out of 5", hotelScores], ["Stay there again", d.hotel_again],
+          [getaway ? `${d.place || "The place"}, out of 5` : "", getaway ? placeScores : ""], ["Go back", getaway ? d.place_again : ""],
+          ["About the hotel", d.hotel_words], ["What they did", d.tours], ["Tip for a first-timer", d.place_tip], ["Photo", photo],
+          ["OK to show on our site", yes ? "Yes, with their first name and the month" : "No, keep it for our notes"]],
+        todo: yes && (d.hotel_words || photo) ? "Read it, then approve it for the hotel page or not. Nothing goes up by itself" : "",
+        note: "The scores are for us. Only their words and photo can go on a page, and only when they said yes." };
+    }
     case "exp-alerts":
       return { kind: "Needs attention", loud: true, headline: d.error || "A booking needs a look", ref: d.ref,
         rows: [["Tour", [d.venue, d.product].filter(Boolean).join(", ")], ["When", d.when], ["Guest", d.customer], ["Total", d.total]] };

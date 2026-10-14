@@ -1,0 +1,4 @@
+{
+  "note": "Guest reviews approved for the site, from the /review survey or a WhatsApp chat. Add one only when the guest said yes to showing it and someone at Golden has read it. Keep their words as written (trim with ... if it is long, never change the meaning). hotel is the slug from the review link (riu-plaza, riu-ocho-rios); name is the first name only; month is YYYY-MM; nights and airport (KIN or MBJ) are optional; photo is a path under public/ or null. A hotel page shows its reviews once it has three. The scores never go on a page. Read by scripts/build-hotels.mjs, and meant for the Jamaica hotel pages too.",
+  "reviews": []
+}
