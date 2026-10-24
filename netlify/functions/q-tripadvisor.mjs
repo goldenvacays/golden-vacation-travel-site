@@ -9,7 +9,9 @@
    until the hotel's locationId is pinned below (the log line says which ID to pin).
    Photos: pictures of the hotel itself, from the hotel's own uploads, at 1000px; logos, small images, menus and
    people shots are left out (see usable()). ?why=1 lists every photo Tripadvisor sent with its id, so a hotel can
-   get "photos: [ids]" (shown first, in that order) or "skipPhotos: [ids]" in HOTELS below. */
+   get "photos: [ids]" (shown first, in that order) or "skipPhotos: [ids]" in HOTELS below.
+   Star ratings: Tripadvisor sent no accommodation.star_rating for these hotels (October 2026; ?why=1 shows what it
+   sends now), so each quote page prints the hotel class itself. */
 import { json } from "./_exp-shared.mjs";
 
 const BASE = process.env.TRIPADVISOR_API_BASE || "https://terra.tripadvisor.com/api";
@@ -33,27 +35,37 @@ let pausedUntil = 0;
 
 /* Discover allows 10 calls a second. A 429 no longer fails the card: the call waits a moment and tries once more, and
    other calls from the same instance wait out that moment instead of piling in. A server error or a dropped connection
-   also gets one more try, half a second later. */
-async function ta(path, params = {}) {
+   also gets one more try, half a second later.
+   Time: Netlify stops a function at 10 seconds, and Tripadvisor sometimes sits on a call for several. Each try gets at
+   most 4 seconds and everything has to finish by `until` (7.5 seconds after the page asked), so a slow call is cut
+   short and the answer goes back as partial, which the page asks for once more, instead of the whole card failing. */
+const TRY_MS = 4000;
+async function ta(path, params = {}, until = Date.now() + 7500) {
   const key = process.env.TRIPADVISOR_API_KEY;
   if (!key) throw new Error("TRIPADVISOR_API_KEY is not set");
-  if (Date.now() < pausedUntil) await sleep(pausedUntil - Date.now());
+  if (Date.now() < pausedUntil) await sleep(Math.max(0, Math.min(pausedUntil, until - 1500) - Date.now()));
   const q = new URLSearchParams();
   if (VERSION && !path.startsWith("/catalog/")) q.set("version", VERSION);
   for (const [k, v] of Object.entries(params)) if (v != null && v !== "") q.set(k, String(v));
   const go = async () => {
+    const left = until - Date.now();
+    if (left < 700) return { res: { ok: false, status: 0 }, body: { message: "no time left for Tripadvisor" } };
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), Math.min(TRY_MS, left));
     try {
-      const res = await fetch(`${BASE}${path}?${q}`, { headers: { "X-API-Key": key, Accept: "application/json" } });
-      const body = await res.json().catch(() => ({}));
+      const res = await fetch(`${BASE}${path}?${q}`, { headers: { "X-API-Key": key, Accept: "application/json" }, signal: ctl.signal });
+      let body = {};
+      try { body = await res.json(); } catch (err) { if (ctl.signal.aborted) throw err; } // a body cut off by the clock is a failure, not an empty answer
       return { res, body };
-    } catch (err) { return { res: { ok: false, status: 0 }, body: { message: `connection: ${(err && err.message) || err}` } }; }
+    } catch (err) {
+      return { res: { ok: false, status: 0 }, body: { message: ctl.signal.aborted ? `Tripadvisor did not answer within ${Math.round(Math.min(TRY_MS, left) / 100) / 10}s` : `connection: ${(err && err.message) || err}` } };
+    } finally { clearTimeout(timer); }
   };
   let { res, body } = await go();
   if (res.status === 429 || res.status === 0 || res.status >= 500) {
     const wait = res.status === 429 ? 1200 + Math.round(Math.random() * 400) : 500;
     if (res.status === 429) pausedUntil = Math.max(pausedUntil, Date.now() + wait);
-    await sleep(wait);
-    ({ res, body } = await go());
+    if (until - Date.now() > wait + 1000) { await sleep(wait); ({ res, body } = await go()); }
   }
   if (!res.ok && res.status === 400 && q.has("version") && /version/i.test(JSON.stringify(body))) { q.delete("version"); ({ res, body } = await go()); }
   if (res.ok) return body;
@@ -69,10 +81,10 @@ function pick(v) {
   return (v.find((t) => t && t.primary && isEn(t) && t.value) || v.find((t) => t && t.primary && t.value) || v.find((t) => t && isEn(t) && t.value) || v.find((t) => t && t.value) || {}).value || "";
 }
 
-async function locationIdFor(slug, h) {
+async function locationIdFor(slug, h, until) {
   if (h.locationId) return String(h.locationId);
   if (idCache[slug]) return idCache[slug];
-  const body = await ta("/catalog/locations/search", { query: h.search, search_type: "NAME", country_code: h.country, category: "HOTEL", size: 3 });
+  const body = await ta("/catalog/locations/search", { query: h.search, search_type: "NAME", country_code: h.country, category: "HOTEL", size: 3 }, until);
   const hits = (body.data || []).map((x) => x.location || x).filter((l) => l && l.id);
   if (!hits.length) return null;
   hits.sort((a, b) => km(a.coordinates, h) - km(b.coordinates, h));
@@ -85,10 +97,8 @@ function summary(loc) {
   const overall = (loc.traveler_ratings && loc.traveler_ratings.overall) || loc.overall_rating || {};
   const rank = (loc.rankings || []).find((r) => r && r.display_text) || {};
   const urls = (loc.urls && loc.urls.tripadvisor) || {};
-  const stars = Number((loc.accommodation && loc.accommodation.star_rating) || 0); // the official star rating, 1 to 5
   return { name: pick(loc.names), rating: Number(overall.rating || 0), count: Number(overall.count || 0), ratingImage: overall.icon_url || "",
-           ranking: rank.display_text || "", url: urls.main || "", writeReview: urls.write_review || "",
-           stars: stars >= 1 && stars <= 5 ? stars : 0 };
+           ranking: rank.display_text || "", url: urls.main || "", writeReview: urls.write_review || "" };
 }
 
 const TRIP = { BUSINESS: "Business", COUPLES: "Couples", FAMILY: "Family", FRIENDS: "Friends", SOLO: "Solo" };
@@ -156,7 +166,7 @@ function choosePhotos(list, h, max = 6) {
 }
 
 // The photos endpoint gives 5 photos per hotel (asking for more, or for page 1, brought nothing new), so one call of 5.
-const photosFor = (id) => ta(`/locations/${id}/photos`, { locale: "en-US", size: 5 });
+const photosFor = (id, until) => ta(`/locations/${id}/photos`, { locale: "en-US", size: 5 }, until);
 
 export const handler = async (event) => {
   const qs = event.queryStringParameters || {};
@@ -164,17 +174,18 @@ export const handler = async (event) => {
   const why = qs.why === "1";
   const h = HOTELS[slug];
   if (!h) return json(404, { ok: false });
+  const until = Date.now() + 7500; // everything Tripadvisor has to say, inside Netlify's 10 seconds
   try {
-    const id = await locationIdFor(slug, h);
+    const id = await locationIdFor(slug, h, until);
     if (!id) return json(200, { ok: false, reason: "not found" });
     // 150ms apart rather than all three at once, so a page of hotels never bursts past the per-second limit
     const [detailsR, reviewsR, photosR] = await Promise.allSettled([
-      ta(`/locations/${id}`, { locale: "en-US" }),
-      sleep(150).then(() => ta(`/locations/${id}/reviews`, { language: "en", sort_by: "MOST_RECENT", size: 3 })),
-      sleep(300).then(() => photosFor(id)),
+      ta(`/locations/${id}`, { locale: "en-US" }, until),
+      sleep(150).then(() => ta(`/locations/${id}/reviews`, { language: "en", sort_by: "MOST_RECENT", size: 3 }, until)),
+      sleep(300).then(() => photosFor(id, until)),
     ]);
     let loc = detailsR.status === "fulfilled" ? detailsR.value : null;
-    if (!loc) loc = await ta(`/catalog/locations/${id}`, { locale: "en-US" }).catch(() => null);
+    if (!loc && until - Date.now() > 1500) loc = await ta(`/catalog/locations/${id}`, { locale: "en-US" }, until).catch(() => null);
     const s = loc ? summary(loc) : {};
     const reviews = reviewsR.status === "fulfilled" ? (reviewsR.value.data || []).slice(0, 3).map(review) : [];
     const picked = choosePhotos(photosR.status === "fulfilled" ? photosR.value.data || [] : [], h);
@@ -184,10 +195,12 @@ export const handler = async (event) => {
     const showRating = s.rating && s.count >= 5;
     return json(200, {
       ok: Boolean(showRating || photos.length), id,
-      ...(showRating ? s : { name: s.name || "", url: s.url || "", stars: s.stars || 0 }),
+      ...(showRating ? s : { name: s.name || "", url: s.url || "" }),
       reviews: showRating ? reviews : [], photos,
       ...([detailsR, reviewsR, photosR].some((r) => r.status === "rejected") ? { partial: true } : {}), // the page asks once more
       ...(why ? { why: [detailsR, reviewsR, photosR].filter((r) => r.status === "rejected").map((r) => r.reason && r.reason.message).join(" | "),
+                  ms: 7500 - (until - Date.now()),
+                  starRating: !loc ? "no details" : loc.accommodation ? (loc.accommodation.star_rating ?? "none sent") : "no accommodation block",
                   pool: picked.all.map((p) => [p.id, p.owner ? "hotel" : "traveler", p.scene || "-", p.score ? p.score.toFixed(2) : "-", `${p.w}x${p.h}`,
                     picked.chosen.includes(p) ? "SHOWN" : "", p.caption.slice(0, 50)].join(" · ")) } : {}),
     });

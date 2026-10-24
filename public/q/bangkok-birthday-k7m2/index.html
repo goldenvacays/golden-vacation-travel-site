@@ -526,6 +526,7 @@ html.pv-open{overflow:hidden}
     <div class="hotel-body">
       <span class="chip">Lowest price</span>
       <h3 class="hotel-name">Ramada Plaza by Wyndham Menam Riverside</h3>
+      <div class="stars"><span class="stars-i" aria-hidden="true">★★★★★</span><span>5-star hotel</span></div>
       <div class="area">Charoen Krung, near Asiatique</div>
       <div class="chips"><span class="chip">River views</span><span class="chip">Big breakfast</span><span class="chip">Free boat to the Skytrain</span></div>
       <p class="desc">Comfortable river-view rooms and an easy free boat to Sathorn Pier and the Skytrain.</p>
@@ -545,6 +546,7 @@ html.pv-open{overflow:hidden}
     <div class="hotel-body">
       <span class="chip quoted">Our pick for five</span>
       <h3 class="hotel-name">Chatrium Hotel Riverside</h3>
+      <div class="stars"><span class="stars-i" aria-hidden="true">★★★★★</span><span>5-star hotel</span></div>
       <div class="area">Charoen Krung, near Asiatique</div>
       <div class="chips"><span class="chip">Two-bedroom suite</span><span class="chip">Free boat to the Skytrain</span><span class="chip">Walk to Asiatique</span></div>
       <p class="desc">A big two-bedroom suite with a kitchenette, so the five of you stay together. Free boat to Sathorn Pier every half hour and to ICONSIAM, and the Asiatique night market is a short walk.</p>
@@ -564,6 +566,7 @@ html.pv-open{overflow:hidden}
     <div class="hotel-body">
       <span class="chip">Prettiest pool</span>
       <h3 class="hotel-name">Avani+ Riverside</h3>
+      <div class="stars"><span class="stars-i" aria-hidden="true">★★★★★</span><span>5-star hotel</span></div>
       <div class="area">Thonburi riverside</div>
       <div class="chips"><span class="chip">Rooftop infinity pool</span><span class="chip">SEEN rooftop restaurant</span><span class="chip">Free shuttle boat</span></div>
       <p class="desc">Modern river-view rooms and the prettiest pool on the list. The rooftop restaurant could host the birthday dinner.</p>
@@ -595,6 +598,7 @@ html.pv-open{overflow:hidden}
     <div class="hotel-body">
       <span class="chip">Best location</span>
       <h3 class="hotel-name">Shangri-La Bangkok</h3>
+      <div class="stars"><span class="stars-i" aria-hidden="true">★★★★★</span><span>5-star hotel</span></div>
       <div class="area">Bang Rak, by Saphan Taksin</div>
       <div class="chips"><span class="chip">Next to the Skytrain</span><span class="chip">Riverside gardens</span><span class="chip">Two pools</span></div>
       <p class="desc">Classic riverside luxury, steps from the Skytrain and Sathorn Pier, so every plan is easy.</p>
@@ -620,6 +624,7 @@ html.pv-open{overflow:hidden}
     <div class="hotel-body">
       <span class="chip">Best views</span>
       <h3 class="hotel-name">lebua at State Tower</h3>
+      <div class="stars"><span class="stars-i" aria-hidden="true">★★★★★</span><span>5-star hotel</span></div>
       <div class="area">Silom, by Saphan Taksin</div>
       <div class="chips"><span class="chip">Two-bedroom suite</span><span class="chip">Sky Bar upstairs</span><span class="chip">City and river views</span></div>
       <p class="desc">An all-suite tower with the big views. Sky Bar and Sirocco are upstairs for the birthday night.</p>
@@ -752,12 +757,6 @@ html.pv-open{overflow:hidden}
         openViewer(imgs, imgs.indexOf(im), nm ? nm.textContent : (d.name || 'the hotel'), d.url, im);
       });
       if (tile) tile.parentNode.replaceChild(box, tile);
-    }
-    if (d.stars >= 1 && d.stars <= 5) {
-      var hn = card.querySelector('.hotel-name'), sv = Math.round(d.stars * 2) / 2;
-      var st = el('div', 'stars'), si = el('span', 'stars-i', new Array(Math.floor(sv) + 1).join('\u2605'));
-      si.setAttribute('aria-hidden', 'true'); st.appendChild(si); st.appendChild(el('span', null, sv + '-star hotel'));
-      if (hn) hn.parentNode.insertBefore(st, hn.nextSibling);
     }
     if (d.rating) {
       var area = card.querySelector('.area'), row = el('div', 'ta-mini');
