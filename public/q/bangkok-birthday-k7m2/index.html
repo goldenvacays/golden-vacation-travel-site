@@ -116,6 +116,7 @@ button{font-family:inherit}
 .route-panel + .route-panel{border-left:1px solid var(--line);padding-left:28px}
 .route figcaption{font-size:13px;font-weight:800;color:var(--gold-deep);margin-bottom:4px}
 .route svg{display:block;width:100%;height:auto}
+.route svg.route-m{display:none} /* the phone-sized map, drawn top to bottom */
 .route text{font-family:var(--font);fill:var(--ink)}
 .route .lbl{font-size:17px;font-weight:800}
 .route .sub{font-size:13.5px;font-weight:600;fill:var(--muted)}
@@ -183,10 +184,10 @@ button{font-family:inherit}
 .results{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;align-items:start}
 .main{display:grid;gap:14px;min-width:0}
 .hotel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:box-shadow .2s ease}
-.hotel.pick{box-shadow:inset 0 0 0 1px var(--gold)}
-.hotel.chosen{box-shadow:inset 0 0 0 3px var(--gold)}
+.hotel.pick{outline:1px solid var(--gold);outline-offset:-1px}
+.hotel.chosen{outline:3px solid var(--gold);outline-offset:-3px}
 .hotel-head{display:flex;gap:18px;padding:16px}
-.tile{position:relative;text-decoration:none;width:320px;height:214px;flex-shrink:0;border-radius:10px;background:var(--paper);color:var(--gold-deep);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.tile{position:relative;text-decoration:none;width:384px;height:256px;flex-shrink:0;border-radius:10px;background:var(--paper);color:var(--gold-deep);display:flex;align-items:center;justify-content:center;overflow:hidden}
 .tile svg{width:100%;height:100%}
 .tile-cta{position:absolute;left:10px;bottom:10px;background:#FFFFFF;color:#1A1D21;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;border:1px solid #E3E5E9}
 .tile:hover .tile-cta{background:#1A1D21;color:#FFFFFF;border-color:#1A1D21}
@@ -266,8 +267,9 @@ footer strong{color:var(--ink)}
   .rate-row.fl .room,.rate-row.fl .dur{grid-column:1 / -1}
   .rate-row.fl small{display:block;font-size:12px;color:var(--muted);font-weight:600}
   .rate-row.fl .dur small{display:inline;margin-right:6px}
-  .hotel-head{flex-direction:column;padding:14px}
-  .tile{width:100%;height:58vw;max-height:340px}
+  .hotel-head{flex-direction:column;padding:0 0 14px;gap:14px}
+  .hotel-body{padding:0 14px}
+  .tile{width:100%;height:74vw;max-height:520px;border-radius:0}
   .rate-row.ht{grid-template-columns:1fr 1fr;padding:12px 14px}
   .rate-row.ht small{display:block;font-size:12px;color:var(--muted);font-weight:600}
   .rate-row.ht .choose{justify-self:stretch}
@@ -275,7 +277,7 @@ footer strong{color:var(--ink)}
   .two{grid-template-columns:1fr}
   .route{padding:16px 14px}
   .route svg{display:none}
-  .route-v{display:grid}
+  .route svg.route-m{display:block;max-width:380px;margin:0 auto}
   .side .pickcard{display:none}
   .bar{display:flex;align-items:center;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));background:var(--card);border-top:1px solid var(--line)}
   .bar .bar-pick{flex:1;min-width:0;font-size:13px;line-height:1.3}
@@ -378,6 +380,22 @@ footer strong{color:var(--ink)}
             <text class="lbl" x="430" y="84" text-anchor="middle">Doha</text><text class="sub" x="430" y="138" text-anchor="middle">Fri, 3h 10m stop</text>
             <text class="lbl" x="610" y="80" text-anchor="middle">Bangkok</text><text class="sub" x="610" y="142" text-anchor="middle">Sat 6:15 am</text>
           </svg>
+          <svg class="route-m" viewBox="0 0 320 330" role="img" aria-label="The Kingston three fly to Miami, the Florida two join them there, and everyone flies Miami to Doha to Bangkok together.">
+            <path class="ln" d="M80 62 C 80 110, 160 104, 160 150"/>
+            <path class="ln" d="M240 62 C 240 110, 160 104, 160 150"/>
+            <path class="ln" d="M160 150 V 300"/>
+            <circle class="dot" cx="80" cy="62" r="6"/>
+            <circle class="dot" cx="240" cy="62" r="6"/>
+            <circle class="dot big" cx="160" cy="150" r="8"/>
+            <circle class="dot" cx="160" cy="228" r="6"/>
+            <circle class="dot end" cx="160" cy="300" r="10"/>
+            <path class="arw" d="M153 183l7 7 7-7"/>
+            <text class="lbl" x="80" y="24" text-anchor="middle">Kingston</text><text class="sub" x="80" y="43" text-anchor="middle">3 travelers, 6:50 am</text>
+            <text class="lbl" x="240" y="24" text-anchor="middle">Florida</text><text class="sub" x="240" y="43" text-anchor="middle">2 travelers</text>
+            <text class="lbl" x="184" y="155">Miami</text><text class="sub" x="184" y="174">Thu 7:15 pm, all five</text>
+            <text class="lbl" x="184" y="233">Doha</text><text class="sub" x="184" y="252">Fri, 3h 10m stop</text>
+            <text class="lbl" x="184" y="305">Bangkok</text><text class="sub" x="184" y="324">Sat 6:15 am</text>
+          </svg>
           <ol class="route-v">
             <li><b>Kingston</b>3 travelers, Thu 6:50 am</li>
             <li><b>Miami</b>The Florida two join here, Thu 7:15 pm</li>
@@ -402,6 +420,22 @@ footer strong{color:var(--ink)}
             <text class="lbl" x="470" y="30" text-anchor="middle">New York</text><text class="sub" x="470" y="80" text-anchor="middle">2h 48m stop</text>
             <text class="lbl" x="620" y="30" text-anchor="middle">Kingston</text><text class="sub" x="652" y="80" text-anchor="end">9:58 pm, 3 travelers</text>
             <text class="lbl" x="620" y="192" text-anchor="middle">Miami</text><text class="sub" x="652" y="140" text-anchor="end">4:30 pm, 2 travelers</text>
+          </svg>
+          <svg class="route-m" viewBox="0 0 320 334" role="img" aria-label="Everyone flies Bangkok to Doha together. In Doha the Kingston three continue via New York to Kingston, and the Florida two fly to Miami.">
+            <path class="ln" d="M160 24 V 110"/>
+            <path class="ln" d="M160 110 C 160 160, 80 150, 80 200 V 280"/>
+            <path class="ln" d="M160 110 C 160 160, 240 150, 240 200 V 280"/>
+            <circle class="dot end" cx="160" cy="24" r="10"/>
+            <circle class="dot big" cx="160" cy="110" r="8"/>
+            <circle class="dot" cx="80" cy="200" r="6"/>
+            <circle class="dot big" cx="80" cy="280" r="8"/>
+            <circle class="dot big" cx="240" cy="280" r="8"/>
+            <path class="arw" d="M153 72l7 7 7-7"/>
+            <text class="lbl" x="184" y="29">Bangkok</text><text class="sub" x="184" y="48">Thu 3:00 am,</text><text class="sub" x="184" y="65">night of Wed 27th</text>
+            <text class="lbl" x="186" y="115">Doha</text><text class="sub" x="186" y="134">You split up here</text>
+            <text class="lbl" x="96" y="205">New York</text><text class="sub" x="96" y="224">2h 48m stop</text>
+            <text class="lbl" x="80" y="310" text-anchor="middle">Kingston</text><text class="sub" x="80" y="328" text-anchor="middle">9:58 pm, 3 travelers</text>
+            <text class="lbl" x="240" y="310" text-anchor="middle">Miami</text><text class="sub" x="240" y="328" text-anchor="middle">4:30 pm, 2 travelers</text>
           </svg>
           <ol class="route-v">
             <li class="start"><b>Bangkok</b>Thu 3:00 am, the night of Wed 27th</li>
@@ -450,7 +484,7 @@ footer strong{color:var(--ink)}
 
 
   <section aria-labelledby="stay-h">
-    <div class="sec-head"><h2 id="stay-h">Pick your base</h2><p>Prices are per person, flights and hotel together, taxes included. Rates are subject to change until a deposit is paid.</p></div>
+    <div class="sec-head"><h2 id="stay-h">Pick your hotel</h2><p>Prices are per person, flights and hotel together, taxes included. Rates are subject to change until a deposit is paid.</p></div>
     <div class="results">
       <div class="main">
         <article class="hotel" id="h-ramada" data-ta="ramada-menam">
