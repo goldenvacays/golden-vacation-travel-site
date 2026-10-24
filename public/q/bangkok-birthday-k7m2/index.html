@@ -753,6 +753,7 @@ html.pv-open{overflow:hidden}
   function addPhoto(g, p){
     var im = img(p.src, p.alt); im.loading = g.strip.querySelector('img') ? 'lazy' : 'eager'; im.decoding = 'async';
     if (p.room) im.setAttribute('data-room', p.room);
+    if (p.cap) im.setAttribute('data-cap', p.cap);
     if (p.ta) im.setAttribute('data-ta-photo', '1');
     im.onerror = function(){ // a photo that will not load drops out; if none is left, the drawing comes back
       if (im.parentNode) im.parentNode.removeChild(im);
@@ -770,14 +771,14 @@ html.pv-open{overflow:hidden}
   function sync(g){
     var imgs = g.strip.querySelectorAll('img'), all = imgs.length;
     var k = Math.max(0, Math.min(Math.round(g.strip.scrollLeft / (g.strip.clientWidth || 1)), all - 1)), cur = imgs[k];
-    var room = cur ? cur.getAttribute('data-room') : '';
+    var room = cur ? cur.getAttribute('data-cap') || cur.getAttribute('data-room') : '';
     g.n.textContent = (k + 1) + '/' + all; g.n.style.display = all > 1 ? '' : 'none';
     g.label.textContent = room || ''; g.label.style.display = room ? '' : 'none';
     g.credit.style.display = cur && cur.getAttribute('data-ta-photo') ? '' : 'none';
   }
   function item(im){
     var s = im.currentSrc || im.src, ta = im.getAttribute('data-ta-photo') === '1';
-    return { small: s, big: ta ? bigUrl(s) : s, cap: im.getAttribute('data-room') || im.alt, ta: ta };
+    return { small: s, big: ta ? bigUrl(s) : s, cap: im.getAttribute('data-cap') || im.getAttribute('data-room') || im.alt, ta: ta };
   }
   function paint(card, d){
     if (d.photos && d.photos.length) {
@@ -888,17 +889,27 @@ html.pv-open{overflow:hidden}
 
   var cards = Array.prototype.slice.call(document.querySelectorAll('.hotel[data-ta]'));
 
-  /* Room photos Hana has the right to use (from her supplier or the hotel), kept with this page in rooms/:
-     { room, src } with room = the room exactly as its row names it, after the hotel's name, and src from the site root
-     (/q/bangkok-birthday-k7m2/rooms/...). They lead the hotel's photos, labelled with the room, and the room's row
+  /* Room photos Hana has the right to use (she sent them on 23 Oct 2026), kept with this page in rooms/:
+     { room, note?, src } with room = the room exactly as its row names it, after the hotel's name, note = what the
+     photo shows, and src from the site root. They lead the hotel's photos, labelled with the room, and the room's row
      gets a "See photos" button that opens just that room's photos. */
+  var R = '/q/bangkok-birthday-k7m2/rooms/';
   var ROOMS = {
+    'ramada-menam': [
+      { room: 'Deluxe Double Room', src: R + 'ramada-deluxe-room.jpg' },
+      { room: 'Deluxe Double Room', note: 'bathroom', src: R + 'ramada-deluxe-bathroom.jpg' }
+    ],
+    'chatrium-riverside': [
+      { room: '2-Bedroom Standard Suite, city view', note: 'living room', src: R + 'chatrium-2br-suite-living.jpg' },
+      { room: '2-Bedroom Standard Suite, city view', note: 'bedroom', src: R + 'chatrium-2br-suite-bedroom.jpg' }
+    ]
   };
+  function roomCap(r){ return r.room + (r.note ? ' · ' + r.note : ''); }
   var CAM = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
   cards.forEach(function(card){
     var list = ROOMS[card.getAttribute('data-ta')] || [], name = hotelName(card), g = list.length ? gallery(card) : null;
     if (!g) return;
-    list.forEach(function(r){ addPhoto(g, { src: r.src, alt: r.room + ', ' + name, room: r.room }); });
+    list.forEach(function(r){ addPhoto(g, { src: r.src, alt: roomCap(r) + ', ' + name, room: r.room, cap: roomCap(r) }); });
     Array.prototype.forEach.call(card.querySelectorAll('.rate-row'), function(row){
       var b = row.querySelector('.choose'), full = (b && b.getAttribute('data-hotel')) || '', cell = row.querySelector('.room');
       if (!cell || full.indexOf(name + ', ') !== 0) return;
@@ -908,7 +919,7 @@ html.pv-open{overflow:hidden}
       btn.appendChild(document.createTextNode('See photos (' + mine.length + ')'));
       btn.setAttribute('aria-label', 'See photos of the ' + room + ' at ' + name);
       btn.addEventListener('click', function(){
-        openViewer(mine.map(function(r){ return { small: r.src, big: r.src, cap: r.room, ta: false }; }), 0, name + ', ' + room, '', btn);
+        openViewer(mine.map(function(r){ return { small: r.src, big: r.src, cap: roomCap(r), ta: false }; }), 0, name + ', ' + room, '', btn);
       });
       cell.appendChild(btn);
     });
