@@ -19,7 +19,8 @@ const VERSION = process.env.TRIPADVISOR_API_VERSION || "2";
 const HOTELS = {
   "chatrium-riverside": { search: "Chatrium Hotel Riverside Bangkok", country: "TH", lat: 13.7069, lng: 100.5101, locationId: null },
   "lebua-state-tower": { search: "lebua at State Tower", country: "TH", lat: 13.72156, lng: 100.51692, locationId: null },
-  "shangri-la-bangkok": { search: "Shangri-La Bangkok", country: "TH", lat: 13.72143, lng: 100.51424, locationId: null },
+  "shangri-la-bangkok": { search: "Shangri-La Bangkok", country: "TH", lat: 13.72143, lng: 100.51424, locationId: null,
+    skipPhotos: [459681138] }, // a member of staff greeting a guest: people, not the hotel
   "avani-riverside": { search: "Avani+ Riverside Bangkok Hotel", country: "TH", lat: 13.70522, lng: 100.49111, locationId: null },
   "ramada-menam": { search: "Ramada Plaza by Wyndham Bangkok Menam Riverside", country: "TH", lat: 13.70757, lng: 100.50597, locationId: null },
 };
@@ -112,7 +113,7 @@ function photo(p) {
 }
 
 // Pictures of the hotel itself: big enough for the card, no logos, menus or people shots.
-function usable(p, h, minW = 600) {
+function usable(p, h, minW = 800) {
   if (!p || !p.url) return false;
   if ((h.skipPhotos || []).includes(p.id)) return false;
   if (p.w && p.w < minW) return false;                         // logos and thumbnails are small
