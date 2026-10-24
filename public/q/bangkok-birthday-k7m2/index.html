@@ -116,7 +116,9 @@ button{font-family:inherit}
 .route-panel + .route-panel{border-left:1px solid var(--line);padding-left:28px}
 .route figcaption{font-size:13px;font-weight:800;color:var(--gold-deep);margin-bottom:4px}
 .route svg{display:block;width:100%;height:auto}
-.route svg.route-m{display:none} /* the phone-sized map, drawn top to bottom */
+.route svg.route-m{display:none} /* the phone-sized map, left to right with bigger type */
+.route .route-m .lbl{font-size:15px}
+.route .route-m .sub{font-size:12.5px}
 .route text{font-family:var(--font);fill:var(--ink)}
 .route .lbl{font-size:17px;font-weight:800}
 .route .sub{font-size:13.5px;font-weight:600;fill:var(--muted)}
@@ -380,21 +382,21 @@ footer strong{color:var(--ink)}
             <text class="lbl" x="430" y="84" text-anchor="middle">Doha</text><text class="sub" x="430" y="138" text-anchor="middle">Fri, 3h 10m stop</text>
             <text class="lbl" x="610" y="80" text-anchor="middle">Bangkok</text><text class="sub" x="610" y="142" text-anchor="middle">Sat 6:15 am</text>
           </svg>
-          <svg class="route-m" viewBox="0 0 320 330" role="img" aria-label="The Kingston three fly to Miami, the Florida two join them there, and everyone flies Miami to Doha to Bangkok together.">
-            <path class="ln" d="M80 62 C 80 110, 160 104, 160 150"/>
-            <path class="ln" d="M240 62 C 240 110, 160 104, 160 150"/>
-            <path class="ln" d="M160 150 V 300"/>
-            <circle class="dot" cx="80" cy="62" r="6"/>
-            <circle class="dot" cx="240" cy="62" r="6"/>
-            <circle class="dot big" cx="160" cy="150" r="8"/>
-            <circle class="dot" cx="160" cy="228" r="6"/>
-            <circle class="dot end" cx="160" cy="300" r="10"/>
-            <path class="arw" d="M153 183l7 7 7-7"/>
-            <text class="lbl" x="80" y="24" text-anchor="middle">Kingston</text><text class="sub" x="80" y="43" text-anchor="middle">3 travelers, 6:50 am</text>
-            <text class="lbl" x="240" y="24" text-anchor="middle">Florida</text><text class="sub" x="240" y="43" text-anchor="middle">2 travelers</text>
-            <text class="lbl" x="184" y="155">Miami</text><text class="sub" x="184" y="174">Thu 7:15 pm, all five</text>
-            <text class="lbl" x="184" y="233">Doha</text><text class="sub" x="184" y="252">Fri, 3h 10m stop</text>
-            <text class="lbl" x="184" y="305">Bangkok</text><text class="sub" x="184" y="324">Sat 6:15 am</text>
+          <svg class="route-m" viewBox="0 0 340 200" role="img" aria-label="The Kingston three fly to Miami, the Florida two join them there, and everyone flies Miami to Doha to Bangkok together.">
+            <path class="ln" d="M16 52 C 70 52, 84 100, 130 100"/>
+            <path class="ln" d="M16 148 C 70 148, 84 100, 130 100"/>
+            <path class="ln" d="M130 100 H 322"/>
+            <circle class="dot" cx="16" cy="52" r="5"/>
+            <circle class="dot" cx="16" cy="148" r="5"/>
+            <circle class="dot big" cx="130" cy="100" r="7"/>
+            <circle class="dot" cx="222" cy="100" r="5"/>
+            <circle class="dot end" cx="322" cy="100" r="8"/>
+            <path class="arw" d="M172 93l7 7-7 7"/>
+            <text class="lbl" x="4" y="20">Kingston</text><text class="sub" x="4" y="36">3 travelers, 6:50 am</text>
+            <text class="lbl" x="4" y="176">Florida</text><text class="sub" x="4" y="192">2 travelers</text>
+            <text class="lbl" x="130" y="80" text-anchor="middle">Miami</text><text class="sub" x="130" y="128" text-anchor="middle">Thu 7:15 pm</text>
+            <text class="lbl" x="222" y="80" text-anchor="middle">Doha</text><text class="sub" x="222" y="128" text-anchor="middle">3h 10m</text>
+            <text class="lbl" x="338" y="80" text-anchor="end">Bangkok</text><text class="sub" x="338" y="128" text-anchor="end">Sat 6:15 am</text>
           </svg>
           <ol class="route-v">
             <li><b>Kingston</b>3 travelers, Thu 6:50 am</li>
@@ -421,21 +423,21 @@ footer strong{color:var(--ink)}
             <text class="lbl" x="620" y="30" text-anchor="middle">Kingston</text><text class="sub" x="652" y="80" text-anchor="end">9:58 pm, 3 travelers</text>
             <text class="lbl" x="620" y="192" text-anchor="middle">Miami</text><text class="sub" x="652" y="140" text-anchor="end">4:30 pm, 2 travelers</text>
           </svg>
-          <svg class="route-m" viewBox="0 0 320 334" role="img" aria-label="Everyone flies Bangkok to Doha together. In Doha the Kingston three continue via New York to Kingston, and the Florida two fly to Miami.">
-            <path class="ln" d="M160 24 V 110"/>
-            <path class="ln" d="M160 110 C 160 160, 80 150, 80 200 V 280"/>
-            <path class="ln" d="M160 110 C 160 160, 240 150, 240 200 V 280"/>
-            <circle class="dot end" cx="160" cy="24" r="10"/>
-            <circle class="dot big" cx="160" cy="110" r="8"/>
-            <circle class="dot" cx="80" cy="200" r="6"/>
-            <circle class="dot big" cx="80" cy="280" r="8"/>
-            <circle class="dot big" cx="240" cy="280" r="8"/>
-            <path class="arw" d="M153 72l7 7 7-7"/>
-            <text class="lbl" x="184" y="29">Bangkok</text><text class="sub" x="184" y="48">Thu 3:00 am,</text><text class="sub" x="184" y="65">night of Wed 27th</text>
-            <text class="lbl" x="186" y="115">Doha</text><text class="sub" x="186" y="134">You split up here</text>
-            <text class="lbl" x="96" y="205">New York</text><text class="sub" x="96" y="224">2h 48m stop</text>
-            <text class="lbl" x="80" y="310" text-anchor="middle">Kingston</text><text class="sub" x="80" y="328" text-anchor="middle">9:58 pm, 3 travelers</text>
-            <text class="lbl" x="240" y="310" text-anchor="middle">Miami</text><text class="sub" x="240" y="328" text-anchor="middle">4:30 pm, 2 travelers</text>
+          <svg class="route-m" viewBox="0 0 340 200" role="img" aria-label="Everyone flies Bangkok to Doha together. In Doha the Kingston three continue via New York to Kingston, and the Florida two fly to Miami.">
+            <path class="ln" d="M14 100 H 160"/>
+            <path class="ln" d="M160 100 C 190 100, 196 52, 226 52 H 322"/>
+            <path class="ln" d="M160 100 C 190 100, 196 148, 226 148 H 322"/>
+            <circle class="dot end" cx="14" cy="100" r="8"/>
+            <circle class="dot big" cx="118" cy="100" r="7"/>
+            <circle class="dot" cx="262" cy="52" r="5"/>
+            <circle class="dot big" cx="322" cy="52" r="7"/>
+            <circle class="dot big" cx="322" cy="148" r="7"/>
+            <path class="arw" d="M58 93l7 7-7 7"/>
+            <text class="lbl" x="4" y="78">Bangkok</text><text class="sub" x="4" y="128">Thu 3:00 am</text>
+            <text class="lbl" x="118" y="62" text-anchor="middle">Doha</text><text class="sub" x="118" y="78" text-anchor="middle">split up here</text>
+            <text class="lbl" x="262" y="78" text-anchor="middle">New York</text><text class="sub" x="262" y="94" text-anchor="middle">2h 48m stop</text>
+            <text class="lbl" x="338" y="20" text-anchor="end">Kingston</text><text class="sub" x="338" y="36" text-anchor="end">9:58 pm, 3 travelers</text>
+            <text class="lbl" x="338" y="176" text-anchor="end">Miami</text><text class="sub" x="338" y="192" text-anchor="end">4:30 pm, 2 travelers</text>
           </svg>
           <ol class="route-v">
             <li class="start"><b>Bangkok</b>Thu 3:00 am, the night of Wed 27th</li>
