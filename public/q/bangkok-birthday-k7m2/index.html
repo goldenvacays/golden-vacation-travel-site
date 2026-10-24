@@ -306,6 +306,10 @@ footer strong{color:var(--ink)}
 .tp-nav.prev{left:8px}.tp-nav.next{right:8px}
 .tile-photos:hover .tp-nav,.tp-nav:focus-visible{opacity:1}
 @media (hover:none){.tp-nav{opacity:.9}}
+.tp-room{max-width:calc(100% - 70px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700}
+.room-pics{display:flex;align-items:center;gap:6px;width:max-content;margin-top:7px;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
+.room-pics svg{color:var(--gold-deep)}
+.room-pics:hover{border-color:var(--gold)}
 .stars{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--muted)}
 .stars-i{color:var(--gold);font-size:15px;letter-spacing:1px}
 /* Photo viewer: tap a photo to see it big, swipe or use the arrows to go through them */
@@ -729,34 +733,59 @@ html.pv-open{overflow:hidden}
   function out(href, c, x){ var a = el('a', c, x); a.href = href; a.target = '_blank'; a.rel = 'noopener nofollow'; return a; }
   function img(src, alt, hgt){ var i = document.createElement('img'); i.src = src; i.alt = alt; if (hgt) i.height = hgt; return i; }
   function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  /* A hotel's photos: its own room photos first (ROOMS, further down), then Tripadvisor's. The pill at the bottom
+     says what the photo on show is: the room's name, or "Photos from Tripadvisor" with the link back they ask for. */
+  function hotelName(card){ var h = card.querySelector('.hotel-name'); return h ? h.textContent : 'the hotel'; }
+  function gallery(card){
+    if (card._g) return card._g;
+    var tile = card.querySelector('.tile'); if (!tile) return null;
+    var g = card._g = { tile: tile, box: el('div', 'tile tile-photos'), strip: el('div', 'tp-strip'), n: el('span', 'tp-count'), navs: false,
+      credit: out('https://www.tripadvisor.com/', 'tp-credit', 'Photos from Tripadvisor'), label: el('span', 'tp-credit tp-room') };
+    g.box.appendChild(g.strip); g.box.appendChild(g.credit); g.box.appendChild(g.label); g.box.appendChild(g.n);
+    g.strip.addEventListener('scroll', function(){ sync(g); }, { passive: true });
+    g.strip.addEventListener('click', function(e){
+      var im = e.target.closest ? e.target.closest('img') : null; if (!im) return;
+      var imgs = Array.prototype.slice.call(g.strip.querySelectorAll('img'));
+      openViewer(imgs.map(item), imgs.indexOf(im), hotelName(card), g.credit.href, im);
+    });
+    return g;
+  }
+  function addPhoto(g, p){
+    var im = img(p.src, p.alt); im.loading = g.strip.querySelector('img') ? 'lazy' : 'eager'; im.decoding = 'async';
+    if (p.room) im.setAttribute('data-room', p.room);
+    if (p.ta) im.setAttribute('data-ta-photo', '1');
+    im.onerror = function(){ // a photo that will not load drops out; if none is left, the drawing comes back
+      if (im.parentNode) im.parentNode.removeChild(im);
+      if (g.strip.querySelector('img')) sync(g); else if (g.box.parentNode) g.box.parentNode.replaceChild(g.tile, g.box);
+    };
+    g.strip.appendChild(im);
+    if (!g.box.parentNode && g.tile.parentNode) g.tile.parentNode.replaceChild(g.box, g.tile);
+    if (!g.navs && g.strip.querySelectorAll('img').length > 1) {
+      g.navs = true;
+      g.box.appendChild(navBtn('tp-nav prev', 'Previous photo', -1, function(){ g.strip.scrollBy({ left: -g.strip.clientWidth, behavior: 'smooth' }); }));
+      g.box.appendChild(navBtn('tp-nav next', 'Next photo', 1, function(){ g.strip.scrollBy({ left: g.strip.clientWidth, behavior: 'smooth' }); }));
+    }
+    sync(g);
+  }
+  function sync(g){
+    var imgs = g.strip.querySelectorAll('img'), all = imgs.length;
+    var k = Math.max(0, Math.min(Math.round(g.strip.scrollLeft / (g.strip.clientWidth || 1)), all - 1)), cur = imgs[k];
+    var room = cur ? cur.getAttribute('data-room') : '';
+    g.n.textContent = (k + 1) + '/' + all; g.n.style.display = all > 1 ? '' : 'none';
+    g.label.textContent = room || ''; g.label.style.display = room ? '' : 'none';
+    g.credit.style.display = cur && cur.getAttribute('data-ta-photo') ? '' : 'none';
+  }
+  function item(im){
+    var s = im.currentSrc || im.src, ta = im.getAttribute('data-ta-photo') === '1';
+    return { small: s, big: ta ? bigUrl(s) : s, cap: im.getAttribute('data-room') || im.alt, ta: ta };
+  }
   function paint(card, d){
     if (d.photos && d.photos.length) {
-      var tile = card.querySelector('.tile');
-      var box = el('div', 'tile tile-photos'), strip = el('div', 'tp-strip'), n = el('span', 'tp-count');
-      var count = function(){ var all = strip.querySelectorAll('img').length; n.textContent = Math.min(Math.round(strip.scrollLeft / (strip.clientWidth || 1)) + 1, all) + '/' + all; n.style.display = all > 1 ? '' : 'none'; };
-      d.photos.forEach(function(p, i){
-        var im = img(p.url, p.caption || ((d.name || 'Hotel') + ', photo ' + (i + 1))); im.loading = i ? 'lazy' : 'eager'; im.decoding = 'async';
-        im.onerror = function(){ // a photo that will not load drops out; if none is left, the drawing comes back
-          if (im.parentNode) im.parentNode.removeChild(im);
-          if (strip.querySelector('img')) count(); else if (tile && box.parentNode) box.parentNode.replaceChild(tile, box);
-        };
-        strip.appendChild(im);
-      });
-      box.appendChild(strip);
-      box.appendChild(out(d.url || 'https://www.tripadvisor.com/', 'tp-credit', 'Photos from Tripadvisor'));
-      box.appendChild(n); count();
-      strip.addEventListener('scroll', count, { passive: true });
-      if (d.photos.length > 1) {
-        box.appendChild(navBtn('tp-nav prev', 'Previous photo', -1, function(){ strip.scrollBy({ left: -strip.clientWidth, behavior: 'smooth' }); }));
-        box.appendChild(navBtn('tp-nav next', 'Next photo', 1, function(){ strip.scrollBy({ left: strip.clientWidth, behavior: 'smooth' }); }));
+      var g = gallery(card);
+      if (g) {
+        g.credit.href = d.url || 'https://www.tripadvisor.com/';
+        d.photos.forEach(function(p, i){ addPhoto(g, { src: p.url, alt: p.caption || (hotelName(card) + ', photo ' + (i + 1)), ta: true }); });
       }
-      strip.addEventListener('click', function(e){
-        var im = e.target.closest ? e.target.closest('img') : null; if (!im) return;
-        var imgs = Array.prototype.slice.call(strip.querySelectorAll('img'));
-        var nm = card.querySelector('.hotel-name');
-        openViewer(imgs, imgs.indexOf(im), nm ? nm.textContent : (d.name || 'the hotel'), d.url, im);
-      });
-      if (tile) tile.parentNode.replaceChild(box, tile);
     }
     if (d.rating) {
       var area = card.querySelector('.area'), row = el('div', 'ta-mini');
@@ -831,31 +860,59 @@ html.pv-open{overflow:hidden}
   function loadPic(k){ var it = V.items[k]; if (it && !it.img.getAttribute('src')) it.img.src = it.src; }
   function show(){
     var it = V.items[V.i]; if (!it) return;
-    V.count.textContent = (V.i + 1) + ' / ' + V.items.length; V.cap.textContent = it.alt || '';
+    V.count.textContent = (V.i + 1) + ' / ' + V.items.length; V.cap.textContent = it.cap;
+    V.credit.style.display = it.ta ? '' : 'none'; // the Tripadvisor credit only on Tripadvisor's photos
     loadPic(V.i); loadPic(V.i + 1); loadPic(V.i - 1);
     V.prev.disabled = V.i === 0; V.next.disabled = V.i === V.items.length - 1;
     V.prev.style.display = V.next.style.display = V.items.length > 1 ? '' : 'none';
   }
   function shut(){ if (!V) return; V.box.hidden = true; document.documentElement.classList.remove('pv-open'); if (V.back && V.back.focus) V.back.focus(); }
-  function openViewer(imgs, start, name, url, back){
+  // list: [{ small, big, cap, ta }] — ta marks Tripadvisor's photos, which carry their credit
+  function openViewer(list, start, name, url, back){
     var v = viewer();
     v.track.innerHTML = '';
-    v.items = imgs.map(function(im){
-      var slide = el('div', 'pv-slide'), pic = document.createElement('img'), small = im.currentSrc || im.src;
-      pic.alt = im.alt; pic.decoding = 'async';
-      pic.onerror = function(){ if (pic.getAttribute('src') !== small) pic.src = small; }; // the card's size if the big one will not load
+    v.items = list.map(function(it){
+      var slide = el('div', 'pv-slide'), pic = document.createElement('img');
+      pic.alt = it.cap || name; pic.decoding = 'async';
+      pic.onerror = function(){ if (it.small && pic.getAttribute('src') !== it.small) pic.src = it.small; }; // the card's size if the big one will not load
       slide.appendChild(pic); v.track.appendChild(slide);
-      return { src: bigUrl(small), alt: im.alt, img: pic };
+      return { src: it.big || it.small, cap: it.cap || '', ta: !!it.ta, img: pic };
     });
     v.box.setAttribute('aria-label', 'Photos of ' + name);
     v.credit.href = url || 'https://www.tripadvisor.com/';
-    v.back = back; if (back && !back.hasAttribute('tabindex')) back.setAttribute('tabindex', '-1');
+    v.back = back; if (back && back.tagName === 'IMG' && !back.hasAttribute('tabindex')) back.setAttribute('tabindex', '-1'); // so focus can return to the photo
     v.box.hidden = false; document.documentElement.classList.add('pv-open');
     v.i = Math.max(0, start); v.track.scrollLeft = v.i * v.track.clientWidth; show();
     v.box.querySelector('.pv-close').focus();
   }
 
   var cards = Array.prototype.slice.call(document.querySelectorAll('.hotel[data-ta]'));
+
+  /* Room photos Hana has the right to use (from her supplier or the hotel), kept with this page in rooms/:
+     { room, src } with room = the room exactly as its row names it, after the hotel's name, and src from the site root
+     (/q/bangkok-birthday-k7m2/rooms/...). They lead the hotel's photos, labelled with the room, and the room's row
+     gets a "See photos" button that opens just that room's photos. */
+  var ROOMS = {
+  };
+  var CAM = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+  cards.forEach(function(card){
+    var list = ROOMS[card.getAttribute('data-ta')] || [], name = hotelName(card), g = list.length ? gallery(card) : null;
+    if (!g) return;
+    list.forEach(function(r){ addPhoto(g, { src: r.src, alt: r.room + ', ' + name, room: r.room }); });
+    Array.prototype.forEach.call(card.querySelectorAll('.rate-row'), function(row){
+      var b = row.querySelector('.choose'), full = (b && b.getAttribute('data-hotel')) || '', cell = row.querySelector('.room');
+      if (!cell || full.indexOf(name + ', ') !== 0) return;
+      var room = full.slice(name.length + 2), mine = list.filter(function(r){ return r.room === room; });
+      if (!mine.length) return;
+      var btn = el('button', 'room-pics'); btn.type = 'button'; btn.innerHTML = CAM;
+      btn.appendChild(document.createTextNode('See photos (' + mine.length + ')'));
+      btn.setAttribute('aria-label', 'See photos of the ' + room + ' at ' + name);
+      btn.addEventListener('click', function(){
+        openViewer(mine.map(function(r){ return { small: r.src, big: r.src, cap: r.room, ta: false }; }), 0, name + ', ' + room, '', btn);
+      });
+      cell.appendChild(btn);
+    });
+  });
   /* One hotel at a time, at least 600ms apart: Tripadvisor allows 10 calls a second and each hotel takes 3.
      A hotel that comes back offline or only partly (no photos or reviews) is asked once more, 2.5 seconds later,
      and the fuller of the two answers is shown. */

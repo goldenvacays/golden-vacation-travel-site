@@ -21,7 +21,8 @@ const VERSION = process.env.TRIPADVISOR_API_VERSION || "2";
 // endpoints only allow 1 call a second, so a page of unpinned hotels runs into Tripadvisor's limit).
 const HOTELS = {
   "chatrium-riverside": { search: "Chatrium Hotel Riverside Bangkok", country: "TH", lat: 13.7069, lng: 100.5101, locationId: 1315544 },
-  "lebua-state-tower": { search: "lebua at State Tower", country: "TH", lat: 13.72156, lng: 100.51692, locationId: 301007 },
+  "lebua-state-tower": { search: "lebua at State Tower", country: "TH", lat: 13.72156, lng: 100.51692, locationId: 301007,
+    skipPhotos: [710859943, 710859945] }, // a 3-bedroom suite and an unnamed suite: the quote is for the 2-bedroom suite
   "shangri-la-bangkok": { search: "Shangri-La Bangkok", country: "TH", lat: 13.72143, lng: 100.51424, locationId: 307155,
     skipPhotos: [459681138] }, // a member of staff greeting a guest: people, not the hotel
   "avani-riverside": { search: "Avani+ Riverside Bangkok Hotel", country: "TH", lat: 13.70522, lng: 100.49111, locationId: 8822150 },
