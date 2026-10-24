@@ -713,9 +713,19 @@ footer strong{color:var(--ink)}
   }
   var cards = Array.prototype.slice.call(document.querySelectorAll('.hotel[data-ta]'));
   /* One hotel at a time, at least 600ms apart: Tripadvisor allows 10 calls a second and each hotel takes 3.
-     A hotel that comes back offline (rate limit, timeout) is asked once more, 2.5 seconds later. */
+     A hotel that comes back offline or only partly (no photos or reviews) is asked once more, 2.5 seconds later,
+     and the fuller of the two answers is shown. */
   var queue = [], busy = false, last = 0;
-  function retry(job){ if (!job.again) setTimeout(function(){ queue.push({ card: job.card, again: true }); pump(); }, 2500); }
+  function score(d){ return d && d.ok ? (d.photos || []).length * 2 + (d.reviews || []).length + (d.rating ? 1 : 0) : -1; }
+  function done(job, d){
+    if (!job.again && (!d || d.partial || (!d.ok && d.reason === 'offline'))) {
+      setTimeout(function(){ queue.push({ card: job.card, again: true, prev: d }); pump(); }, 2500);
+      return;
+    }
+    var best = score(job.prev) > score(d) ? job.prev : d;
+    if (best && best.ok) { try { paint(job.card, best); } catch (e) {} }
+  }
+  function next(){ busy = false; pump(); }
   function pump(){
     if (busy || !queue.length) return;
     busy = true;
@@ -724,9 +734,8 @@ footer strong{color:var(--ink)}
       last = Date.now();
       fetch(FN + encodeURIComponent(job.card.getAttribute('data-ta')), { cache: 'no-store' })
         .then(function(r){ return r.json(); })
-        .then(function(d){ if (d && d.ok) { try { paint(job.card, d); } catch (e) {} } else if (d && d.reason === 'offline') retry(job); })
-        .catch(function(){ retry(job); })
-        .then(function(){ busy = false; pump(); });
+        .then(function(d){ done(job, d); }, function(){ done(job, null); })
+        .then(next, next);
     }, Math.max(0, last + 600 - Date.now()));
   }
   function load(card){

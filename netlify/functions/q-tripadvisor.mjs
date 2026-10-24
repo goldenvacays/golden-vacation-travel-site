@@ -31,7 +31,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let pausedUntil = 0;
 
 /* Discover allows 10 calls a second. A 429 no longer fails the card: the call waits a moment and tries once more, and
-   other calls from the same instance wait out that moment instead of piling in. */
+   other calls from the same instance wait out that moment instead of piling in. A server error or a dropped connection
+   also gets one more try, half a second later. */
 async function ta(path, params = {}) {
   const key = process.env.TRIPADVISOR_API_KEY;
   if (!key) throw new Error("TRIPADVISOR_API_KEY is not set");
@@ -40,14 +41,16 @@ async function ta(path, params = {}) {
   if (VERSION && !path.startsWith("/catalog/")) q.set("version", VERSION);
   for (const [k, v] of Object.entries(params)) if (v != null && v !== "") q.set(k, String(v));
   const go = async () => {
-    const res = await fetch(`${BASE}${path}?${q}`, { headers: { "X-API-Key": key, Accept: "application/json" } });
-    const body = await res.json().catch(() => ({}));
-    return { res, body };
+    try {
+      const res = await fetch(`${BASE}${path}?${q}`, { headers: { "X-API-Key": key, Accept: "application/json" } });
+      const body = await res.json().catch(() => ({}));
+      return { res, body };
+    } catch (err) { return { res: { ok: false, status: 0 }, body: { message: `connection: ${(err && err.message) || err}` } }; }
   };
   let { res, body } = await go();
-  if (res.status === 429) {
-    const wait = 1200 + Math.round(Math.random() * 400);
-    pausedUntil = Math.max(pausedUntil, Date.now() + wait);
+  if (res.status === 429 || res.status === 0 || res.status >= 500) {
+    const wait = res.status === 429 ? 1200 + Math.round(Math.random() * 400) : 500;
+    if (res.status === 429) pausedUntil = Math.max(pausedUntil, Date.now() + wait);
     await sleep(wait);
     ({ res, body } = await go());
   }
@@ -179,6 +182,7 @@ export const handler = async (event) => {
       ok: Boolean(showRating || photos.length), id,
       ...(showRating ? s : { name: s.name || "", url: s.url || "" }),
       reviews: showRating ? reviews : [], photos,
+      ...([detailsR, reviewsR, photosR].some((r) => r.status === "rejected") ? { partial: true } : {}), // the page asks once more
       ...(why ? { why: [detailsR, reviewsR, photosR].filter((r) => r.status === "rejected").map((r) => r.reason && r.reason.message).join(" | "),
                   pool: picked.all.map((p) => [p.id, p.owner ? "hotel" : "traveler", p.scene || "-", p.score ? p.score.toFixed(2) : "-", `${p.w}x${p.h}`,
                     picked.chosen.includes(p) ? "SHOWN" : "", p.caption.slice(0, 50)].join(" · ")) } : {}),
