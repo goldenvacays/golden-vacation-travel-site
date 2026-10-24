@@ -153,8 +153,7 @@ function choosePhotos(list, h, max = 6) {
   return { chosen: pinned.concat(rest).slice(0, max), all };
 }
 
-// The photos endpoint sends 5 at a time (asking for more still brought 5), so one call of 5; the handler asks for
-// the next 5 when fewer than 3 of these are usable.
+// The photos endpoint gives 5 photos per hotel (asking for more, or for page 1, brought nothing new), so one call of 5.
 const photosFor = (id) => ta(`/locations/${id}/photos`, { locale: "en-US", size: 5 });
 
 export const handler = async (event) => {
@@ -176,14 +175,7 @@ export const handler = async (event) => {
     if (!loc) loc = await ta(`/catalog/locations/${id}`, { locale: "en-US" }).catch(() => null);
     const s = loc ? summary(loc) : {};
     const reviews = reviewsR.status === "fulfilled" ? (reviewsR.value.data || []).slice(0, 3).map(review) : [];
-    let list = photosR.status === "fulfilled" ? photosR.value.data || [] : [];
-    let picked = choosePhotos(list, h);
-    if (photosR.status === "fulfilled" && picked.chosen.length < 3 && list.length >= 5) {
-      // the newest five were mostly unusable (people, logos): look one page further back
-      const more = await ta(`/locations/${id}/photos`, { locale: "en-US", size: 5, page: 1 }).catch(() => null);
-      const extra = ((more && more.data) || []).filter((p) => p && !list.some((q) => q.id === p.id));
-      if (extra.length) { list = list.concat(extra); picked = choosePhotos(list, h); }
-    }
+    const picked = choosePhotos(photosR.status === "fulfilled" ? photosR.value.data || [] : [], h);
     const photos = picked.chosen.map((p) => ({ url: p.url, caption: p.caption, owner: p.owner }));
     if (photosR.status === "rejected") console.warn("tripadvisor photos", slug, photosR.reason && photosR.reason.message);
     if (reviewsR.status === "rejected") console.warn("tripadvisor reviews", slug, reviewsR.reason && reviewsR.reason.message);
