@@ -211,6 +211,11 @@ button{font-family:inherit}
 .pp b{font-size:18px;font-weight:800}
 .pp em{display:block;font-style:normal;font-size:12px;color:var(--muted)}
 .choose{min-width:112px}
+.add-tour[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#000}
+.add-tour[aria-pressed="true"]::before{content:"✓";font-weight:800}
+.pick-tours{list-style:none;margin:0 0 6px;padding:0;font-size:14px;font-weight:600;line-height:1.35}
+.pick-tours li{padding-left:14px;text-indent:-14px}
+.pick-tours li::before{content:"+";display:inline-block;width:14px;text-indent:0;color:var(--gold-deep);font-weight:800}
 .choose[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#000}
 .choose[aria-pressed="true"]::before{content:"✓";font-weight:800}
 
@@ -310,6 +315,10 @@ footer strong{color:var(--ink)}
 .tour-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:auto;padding:12px 14px 14px;border-top:1px solid var(--line)}
 .tour-foot .pp small{display:block;font-size:12px;color:var(--muted)}
 .tour-extra{display:block;font-style:normal;font-size:12px;color:var(--muted)}
+.tours-send{display:flex;align-items:center;justify-content:space-between;gap:12px 16px;flex-wrap:wrap;margin-top:16px;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius)}
+.ts-pick{min-width:0;font-size:13px;color:var(--muted);line-height:1.3}
+.ts-pick b{display:block;color:var(--ink);font-size:15px}
+@media (max-width:720px){.tours-send{display:none}}
 .stars{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--muted)}
 .stars-i{color:var(--gold);font-size:15px;letter-spacing:1px}
 /* Photo viewer: tap a photo to see it big, swipe or use the arrows to go through them */
@@ -355,7 +364,7 @@ html.pv-open{overflow:hidden}
 
 <header class="topbar">
   <a class="wordmark" href="/" aria-label="Golden Vacation"><strong>GOLDEN</strong><span class="pill">vacation</span></a>
-  <a class="btn gold sm" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%E2%80%99m%20looking%20at%20my%20Bangkok%20birthday%20quote%20%2821%E2%80%9328%20Jan%202027%29." target="_blank" rel="noopener" aria-label="Reply on WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><span>Reply on WhatsApp</span></a>
+  <a class="btn gold sm" id="top-wa" href="https://wa.me/18768173467?text=Hi%20Golden%20Vacation%21%20I%E2%80%99m%20looking%20at%20my%20Bangkok%20birthday%20quote%20%2821%E2%80%9328%20Jan%202027%29." target="_blank" rel="noopener" aria-label="Reply on WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><span>Reply on WhatsApp</span></a>
 </header>
 
 <section class="hero">
@@ -648,8 +657,9 @@ html.pv-open{overflow:hidden}
         <section class="card pickcard" aria-live="polite">
           <h2>Your pick</h2>
           <p class="pick-name" id="pick-name">No hotel chosen yet</p>
-          <p class="pick-hint" id="pick-hint">Tap Choose on a hotel, then send it to us.</p>
-          <a class="btn gold" id="pick-wa" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%E2%80%99m%20looking%20at%20my%20Bangkok%20birthday%20quote%20%2821%E2%80%9328%20Jan%202027%29." target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Send on WhatsApp</a>
+          <ul class="pick-tours" id="pick-tours" hidden></ul>
+          <p class="pick-hint" id="pick-hint">Choose a hotel and add any tours, then send it all to us.</p>
+          <a class="btn gold" id="pick-wa" href="https://wa.me/18768173467?text=Hi%20Golden%20Vacation%21%20I%E2%80%99m%20looking%20at%20my%20Bangkok%20birthday%20quote%20%2821%E2%80%9328%20Jan%202027%29." target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Send on WhatsApp</a>
           <small>Rates are subject to change until a deposit is paid, and seats at this fare are limited. Pay by card or bank transfer, in US$ or J$.</small>
         </section>
       </aside>
@@ -672,7 +682,7 @@ html.pv-open{overflow:hidden}
         </div>
         <div class="tour-foot">
           <span class="pp"><small>From</small><b>US$47</b><em>per person</em></span>
-          <a class="btn sm" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20For%20my%20Bangkok%20birthday%20trip%20%2821%E2%80%9328%20Jan%202027%29%2C%20I%E2%80%99d%20like%20to%20add%20the%20Chao%20Phraya%20dinner%20cruise." target="_blank" rel="noopener">Add to my trip</a>
+          <button type="button" class="btn sm add-tour" aria-pressed="false" data-tour="Chao Phraya dinner cruise">Add to my trip</button>
         </div>
       </article>
       <article class="hotel tour" id="t-market" data-ta="floating-market">
@@ -688,7 +698,7 @@ html.pv-open{overflow:hidden}
         </div>
         <div class="tour-foot">
           <span class="pp"><small>From</small><b>US$26</b><em>per person</em></span>
-          <a class="btn sm" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20For%20my%20Bangkok%20birthday%20trip%20%2821%E2%80%9328%20Jan%202027%29%2C%20I%E2%80%99d%20like%20to%20add%20the%20floating%20market%20and%20railway%20market%20tour." target="_blank" rel="noopener">Add to my trip</a>
+          <button type="button" class="btn sm add-tour" aria-pressed="false" data-tour="Floating market and railway market">Add to my trip</button>
         </div>
       </article>
       <article class="hotel tour" id="t-temples" data-ta="grand-palace">
@@ -704,7 +714,7 @@ html.pv-open{overflow:hidden}
         </div>
         <div class="tour-foot">
           <span class="pp"><small>From</small><b>US$13</b><em>per person</em><em class="tour-extra">Entry tickets about US$30 extra</em></span>
-          <a class="btn sm" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20For%20my%20Bangkok%20birthday%20trip%20%2821%E2%80%9328%20Jan%202027%29%2C%20I%E2%80%99d%20like%20to%20add%20the%20Grand%20Palace%2C%20Wat%20Pho%20and%20Wat%20Arun%20tour." target="_blank" rel="noopener">Add to my trip</a>
+          <button type="button" class="btn sm add-tour" aria-pressed="false" data-tour="Grand Palace, Wat Pho and Wat Arun">Add to my trip</button>
         </div>
       </article>
       <article class="hotel tour" id="t-ayutthaya" data-ta="ayutthaya">
@@ -720,9 +730,13 @@ html.pv-open{overflow:hidden}
         </div>
         <div class="tour-foot">
           <span class="pp"><small>From</small><b>US$34</b><em>per person</em></span>
-          <a class="btn sm" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20For%20my%20Bangkok%20birthday%20trip%20%2821%E2%80%9328%20Jan%202027%29%2C%20I%E2%80%99d%20like%20to%20add%20the%20Ayutthaya%20day%20trip." target="_blank" rel="noopener">Add to my trip</a>
+          <button type="button" class="btn sm add-tour" aria-pressed="false" data-tour="Ayutthaya day trip">Add to my trip</button>
         </div>
       </article>
+    </div>
+    <div class="tours-send">
+      <div class="ts-pick" aria-live="polite"><span>Your pick</span><b id="ts-pick">Choose a hotel above</b></div>
+      <a class="btn gold" id="ts-wa" href="https://wa.me/18768173467?text=Hi%20Golden%20Vacation%21%20I%E2%80%99m%20looking%20at%20my%20Bangkok%20birthday%20quote%20%2821%E2%80%9328%20Jan%202027%29." target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Send on WhatsApp</a>
     </div>
   </section>
 
@@ -735,8 +749,8 @@ html.pv-open{overflow:hidden}
 </footer>
 
 <div class="bar">
-  <div class="bar-pick" aria-live="polite"><span>Your pick</span><b id="bar-pick">Choose a hotel above</b></div>
-  <a class="btn gold" id="bar-wa" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%E2%80%99m%20looking%20at%20my%20Bangkok%20birthday%20quote%20%2821%E2%80%9328%20Jan%202027%29." target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Send</a>
+  <div class="bar-pick" aria-live="polite"><span id="bar-label">Your pick</span><b id="bar-pick">Choose a hotel above</b></div>
+  <a class="btn gold" id="bar-wa" href="https://wa.me/18768173467?text=Hi%20Golden%20Vacation%21%20I%E2%80%99m%20looking%20at%20my%20Bangkok%20birthday%20quote%20%2821%E2%80%9328%20Jan%202027%29." target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Send</a>
 </div>
 
 <script>
@@ -748,10 +762,38 @@ html.pv-open{overflow:hidden}
   else if (days === 1) { dEl.textContent = '1'; lEl.textContent = 'day to go'; }
   else { document.getElementById('stub').classList.add('done'); dEl.textContent = 'Enjoy'; lEl.textContent = 'Bangkok'; }
 
-  var base = 'https://wa.me/18763601567?text=';
-  function link(h){ return base + encodeURIComponent('Hi Golden Vacation! For my Bangkok birthday trip (21–28 Jan 2027), I’d like ' + h + '.'); }
+  /* Your pick: one hotel (Choose) and any tours (Add to my trip), sent together in one WhatsApp message to the
+     876 817 3467 line from any WhatsApp button on the page. Both are remembered in this browser. */
+  var base = 'https://wa.me/18768173467?text=';
+  var pick = '', tours = [];
   var btns = Array.prototype.slice.call(document.querySelectorAll('.choose'));
+  var tbtns = Array.prototype.slice.call(document.querySelectorAll('.add-tour'));
+  function message(){
+    var lines = [];
+    if (pick) lines.push('• Hotel: ' + pick);
+    tours.forEach(function(t){ lines.push('• Tour: ' + t); });
+    if (!lines.length) return 'Hi Golden Vacation! I’m looking at my Bangkok birthday quote (21–28 Jan 2027).';
+    return 'Hi Golden Vacation! For my Bangkok birthday trip (21–28 Jan 2027), I’d like:\n' + lines.join('\n');
+  }
+  function refresh(){
+    var href = base + encodeURIComponent(message()), n = tours.length, nt = n + ' tour' + (n > 1 ? 's' : '');
+    ['top-wa', 'pick-wa', 'bar-wa', 'ts-wa'].forEach(function(id){ var a = document.getElementById(id); if (a) a.href = href; });
+    document.getElementById('pick-name').textContent = pick || 'No hotel chosen yet';
+    var pt = document.getElementById('pick-tours');
+    pt.textContent = '';
+    tours.forEach(function(t){ var li = document.createElement('li'); li.textContent = t; pt.appendChild(li); });
+    pt.hidden = !n;
+    document.getElementById('pick-hint').textContent = pick && n ? 'Send it to us and we’ll hold it all.' : pick ? 'Send it to us and we’ll hold the rooms.'
+      : n ? 'Choose a hotel too, or send the tours on their own.' : 'Choose a hotel and add any tours, then send it all to us.';
+    var sum = pick ? pick + (n ? ' + ' + nt : '') : n ? nt + ' added' : 'Choose a hotel above';
+    document.getElementById('ts-pick').textContent = sum;
+    // phone bar: the hotel name can be cut short, so the tour count sits on the label line
+    document.getElementById('bar-label').textContent = pick && n ? 'Your pick + ' + nt : 'Your pick';
+    document.getElementById('bar-pick').textContent = pick || (n ? nt + ' added' : 'Choose a hotel above');
+  }
+  function save(){ try { localStorage.setItem('bkk-birthday-pick-v2', pick); localStorage.setItem('bkk-birthday-tours-v1', JSON.stringify(tours)); } catch (e) {} }
   function choose(h){
+    pick = h;
     Array.prototype.forEach.call(document.querySelectorAll('.hotel.chosen'), function(c){ c.classList.remove('chosen'); });
     btns.forEach(function(b){
       var on = b.getAttribute('data-hotel') === h;
@@ -759,15 +801,29 @@ html.pv-open{overflow:hidden}
       b.textContent = on ? 'Chosen' : 'Choose';
       if (on) b.closest('.hotel').classList.add('chosen');
     });
-    document.getElementById('pick-name').textContent = h;
-    document.getElementById('pick-hint').textContent = 'Send it to us and we’ll hold the rooms.';
-    document.getElementById('pick-wa').href = link(h);
-    document.getElementById('bar-wa').href = link(h);
-    document.getElementById('bar-pick').textContent = h;
-    try { localStorage.setItem('bkk-birthday-pick-v2', h); } catch (e) {}
+    refresh();
   }
-  btns.forEach(function(b){ b.addEventListener('click', function(){ choose(b.getAttribute('data-hotel')); }); });
-  try { var saved = localStorage.getItem('bkk-birthday-pick-v2'); if (saved && btns.some(function(b){ return b.getAttribute('data-hotel') === saved; })) choose(saved); } catch (e) {}
+  function setTours(list){
+    tours = tbtns.map(function(b){ return b.getAttribute('data-tour'); }).filter(function(t){ return list.indexOf(t) >= 0; }); // page order
+    tbtns.forEach(function(b){
+      var on = tours.indexOf(b.getAttribute('data-tour')) >= 0;
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.textContent = on ? 'Added' : 'Add to my trip';
+    });
+    refresh();
+  }
+  btns.forEach(function(b){ b.addEventListener('click', function(){ choose(b.getAttribute('data-hotel')); save(); }); });
+  tbtns.forEach(function(b){ b.addEventListener('click', function(){
+    var t = b.getAttribute('data-tour');
+    setTours(tours.indexOf(t) >= 0 ? tours.filter(function(x){ return x !== t; }) : tours.concat(t)); save();
+  }); });
+  try {
+    var saved = localStorage.getItem('bkk-birthday-pick-v2');
+    if (saved && btns.some(function(b){ return b.getAttribute('data-hotel') === saved; })) choose(saved);
+    var st = JSON.parse(localStorage.getItem('bkk-birthday-tours-v1') || '[]');
+    if (Array.isArray(st) && st.length) setTours(st);
+  } catch (e) {}
+  refresh();
 
 })();
 </script>
