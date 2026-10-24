@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<title>Your birthday in Bangkok – Golden Vacation</title>
+<style>
+:root{
+  --bg:#FFFFFF; --paper:#F4F5F7; --card:#FFFFFF; --ink:#1A1D21; --muted:#5F6670; --line:#E3E5E9;
+  --gold:#C9A227; --gold-hi:#F2B93B; --gold-soft:#FFF1C2; --gold-deep:#8F6F12; --black:#000000;
+  --chip:#EEF0F3; --chip-ink:#3F4650;
+  --night:#0D1B2E; --night-ink:#F5F3EC; --night-muted:#AEB9CB; --pass:#F8F5EC; --pass-ink:#1F1D18;
+  --radius:14px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#111316; --paper:#1E2228; --card:#181B20; --ink:#F1F2F4; --muted:#A7AEB8; --line:#2A2F36;
+    --gold:#C9A227; --gold-hi:#F2B93B; --gold-soft:#4A3D10; --gold-deep:#E0BE55;
+    --chip:#262B32; --chip-ink:#DDE1E6;
+    --night:#0A1524; --night-ink:#F5F3EC; --night-muted:#A9B4C6; --pass:#F3EFE3; --pass-ink:#1F1D18;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111316; --paper:#1E2228; --card:#181B20; --ink:#F1F2F4; --muted:#A7AEB8; --line:#2A2F36;
+  --gold:#C9A227; --gold-hi:#F2B93B; --gold-soft:#4A3D10; --gold-deep:#E0BE55;
+  --chip:#262B32; --chip-ink:#DDE1E6;
+  --night:#0A1524; --night-ink:#F5F3EC; --night-muted:#A9B4C6; --pass:#F3EFE3; --pass-ink:#1F1D18;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;font-family:var(--font);font-size:15px;line-height:1.5;font-weight:400;font-variant-numeric:tabular-nums;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+a{color:inherit}
+h1,h2,h3{margin:0;line-height:1.15;font-weight:700;letter-spacing:-.01em}
+button{font-family:inherit}
+
+.topbar{background:var(--black);color:#fff;height:54px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.wordmark{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:#fff}
+.wordmark strong{font-weight:800;letter-spacing:.14em;font-size:15px}
+.pill{background:var(--gold);color:#000;font-weight:800;font-size:12px;padding:3px 9px;border-radius:999px;letter-spacing:.04em}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--black);color:#fff;border:1px solid var(--black);padding:11px 20px;border-radius:999px;font-weight:700;font-size:15px;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:active{transform:scale(.98)}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#000}
+.btn.gold:hover{background:#d8b23a}
+.btn.sm{padding:8px 14px;font-size:13px}
+.btn:focus-visible,a:focus-visible,summary:focus-visible,button:focus-visible{outline:3px solid var(--gold-hi);outline-offset:2px}
+.chip{display:inline-block;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--chip);color:var(--chip-ink);white-space:nowrap}
+.chip.quoted{background:var(--gold-soft);color:var(--gold-deep)}
+.chips{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+
+/* Hero with boarding pass */
+.hero{background:var(--bg);color:var(--ink);position:relative;overflow:hidden}
+.hero-in{max-width:1240px;margin:0 auto;padding:44px 24px 60px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,520px);gap:40px;align-items:center;position:relative;z-index:1}
+.hero .chip{background:var(--gold);color:#000}
+.hero h1{font-size:clamp(34px,5vw,54px);line-height:1.08;font-weight:700;letter-spacing:-.02em;margin:14px 0 14px;text-wrap:balance}
+.hero p{color:var(--muted);font-size:17px;max-width:40ch;margin:0}
+.hero .made{color:var(--muted);font-size:13px;margin-top:20px}
+
+.pass{display:grid;grid-template-columns:minmax(0,1fr) 118px;background:var(--paper);color:var(--ink);border-radius:18px;position:relative;border:1px solid var(--line)}
+.pass::before,.pass::after{content:"";position:absolute;right:118px;width:22px;height:22px;margin-right:-11px;border-radius:50%;background:var(--bg)}
+.pass::before{top:-11px}.pass::after{bottom:-11px}
+.pass-main{padding:22px 22px 20px}
+.pass-route{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.code{font-size:28px;font-weight:800;letter-spacing:0;line-height:1}
+.code-sm{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-top:4px}
+.amp{font-weight:700;color:var(--gold-deep);font-size:18px;margin:0 2px}
+.fly{flex:1;display:flex;align-items:center;gap:6px;color:var(--gold-deep);min-width:40px}
+.fly i{flex:1;height:0;border-top:2px dashed var(--line)}
+.pass-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 14px;margin:0}
+.pass-grid dt{font-size:12px;color:var(--muted);font-weight:600}
+.pass-grid dd{margin:2px 0 0;font-weight:800;font-size:15px}
+.stub{background:var(--gold);color:#000;border-radius:0 18px 18px 0;border-left:2px dashed rgba(0,0,0,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14px 10px;gap:4px}
+.stub .days{font-size:42px;font-weight:800;line-height:.95;letter-spacing:-.01em}
+.stub span{font-size:12px;font-weight:800}
+.stub.done .days{font-size:22px}
+
+/* Page */
+.content{max-width:1240px;margin:0 auto;padding:36px 24px 44px;display:grid;grid-template-columns:minmax(0,1fr);gap:40px}
+.content > section{min-width:0}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.sec-head h2{font-size:26px;font-weight:700;letter-spacing:-.01em}
+.sec-head p{color:var(--muted);margin:0}
+
+/* Five days */
+.days-row{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.days-row li{background:var(--card);border-radius:var(--radius);padding:16px 16px 18px;display:flex;flex-direction:column;gap:4px;border-top:4px solid var(--line)}
+.days-row .d{font-size:13px;font-weight:800;color:var(--muted)}
+.days-row b{font-size:18px;font-weight:800;letter-spacing:-.01em;line-height:1.2}
+.days-row .t{color:var(--muted);font-size:14px}
+.days-row li.bday{background:var(--night);color:var(--night-ink);border-top-color:var(--gold-hi);position:relative;overflow:hidden}
+.days-row li.bday .d{color:var(--gold-hi)}
+.days-row li.bday .t{color:var(--night-muted)}
+.spark{position:absolute;right:10px;top:10px;color:var(--gold-hi)}
+
+/* Dark flight band */
+.fl-band{background:#102C54;color:#F4F2EC;padding:40px 0 44px;
+  --card:#163A6B; --ink:#F4F2EC; --muted:#B6C4DA; --line:#2A4F82; --paper:#13325F;
+  --chip:#21487D; --chip-ink:#E6EDF7; --gold-deep:#F2C75C}
+.fl-band .wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+.fl-band .note{border:1px solid #24497C}
+
+/* Branch diagram */
+.route{background:var(--card);border:1px solid #24497C;border-radius:var(--radius);padding:18px 22px;margin-bottom:12px}
+.route-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px 28px}
+.route-panel{margin:0;min-width:0}
+.route-panel + .route-panel{border-left:1px solid var(--line);padding-left:28px}
+.route figcaption{font-size:13px;font-weight:800;color:var(--gold-deep);margin-bottom:4px}
+.route svg{display:block;width:100%;height:auto}
+.route text{font-family:var(--font);fill:var(--ink)}
+.route .lbl{font-size:17px;font-weight:800}
+.route .sub{font-size:13.5px;font-weight:600;fill:var(--muted)}
+.route .ln{fill:none;stroke:var(--gold);stroke-width:2.4;stroke-linecap:round}
+.route .dot{fill:var(--card);stroke:var(--gold);stroke-width:2.2}
+.route .dot.big{stroke-width:2.6}
+.route .dot.end{fill:var(--gold);stroke:none}
+.route .arw{fill:none;stroke:var(--gold);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.route-v{display:none;list-style:none;margin:0;padding:2px 0 2px 4px;gap:16px}
+.route-v li{position:relative;padding-left:28px;color:var(--muted);font-size:13px}
+.route-v li b{display:block;color:var(--ink);font-size:16px;font-weight:800}
+.route-v li::before{content:"";position:absolute;left:0;top:4px;width:14px;height:14px;border-radius:50%;border:2px solid var(--gold);background:var(--card);z-index:1}
+.route-v li.end::before,.route-v li.start::before{background:var(--gold)}
+.route-v li:not(:last-child)::after{content:"";position:absolute;left:6px;top:20px;bottom:-18px;width:2px;background:var(--gold)}
+.route-v li.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* Flight times toggle and white strips */
+.fl-times{margin-top:4px}
+.fl-times > summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:10px;background:#FFFFFF;color:#1F1D18;border-radius:999px;padding:10px 18px;font-weight:700;font-size:14px}
+.fl-times > summary::-webkit-details-marker{display:none}
+.fl-times > summary::after{content:"+";font-size:17px;line-height:1}
+.fl-times[open] > summary::after{content:"−"}
+.fl-times .o{display:none}
+.fl-times[open] .o{display:inline}
+.fl-times[open] .c{display:none}
+.fl-times .gv-fl-list{margin-top:12px}
+.fl-band .gv-fl{--card:#FFFFFF; --ink:#1A1D21; --muted:#5F6670; --line:#E3E5E9; --paper:#F4F5F7;
+  --chip:#EEF0F3; --chip-ink:#3F4650; --gold-deep:#8F6F12; background:#FFFFFF; color:var(--ink); border:0}
+
+/* Flight strips */
+.gv-fl-list{display:flex;flex-direction:column;gap:12px}
+.gv-fl{background:var(--card);border-radius:var(--radius);padding:16px 20px;display:grid;grid-template-columns:170px minmax(0,1fr);gap:10px 18px;align-items:center;margin:0}
+.gv-fl-air strong{display:block;font-size:16px;font-weight:800;letter-spacing:-.01em;margin-bottom:6px}
+.gv-fl-slices{display:flex;flex-direction:column;gap:14px;min-width:0}
+.gv-fl-slice{display:grid;grid-template-columns:96px minmax(0,1fr) 96px;gap:10px;align-items:center}
+.gv-fl-time{display:flex;flex-direction:column;align-items:center;text-align:center}
+.gv-fl-time strong{font-size:18px;font-weight:800;}
+.gv-fl-time sup{font-size:11px;color:var(--gold-deep);margin-left:2px}
+.gv-fl-time span{font-size:12px;color:var(--muted);white-space:nowrap}
+.gv-fl-mid{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:var(--muted);min-width:0}
+.gv-fl-mid .mid-top{font-weight:700;color:var(--ink)}
+.gv-fl-line{display:block;width:100%;height:1px;background:var(--line);position:relative}
+.gv-fl-line i{position:absolute;top:-3px;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--card);border:1.5px solid var(--gold)}
+.gv-fl-price{display:flex;flex-direction:column;align-items:flex-end;gap:2px;text-align:right}
+.gv-fl-price strong{font-size:20px;font-weight:800;letter-spacing:-.02em}
+.gv-fl-price span{font-size:12px;color:var(--muted)}
+.gv-fl-more{grid-column:1 / -1;border-top:1px solid var(--line);padding-top:8px}
+.gv-fl-more summary{cursor:pointer;font-weight:700;font-size:13px;color:var(--gold-deep);list-style:none;display:inline-flex;gap:6px;align-items:center}
+.gv-fl-more summary::-webkit-details-marker{display:none}
+.gv-fl-more summary::after{content:"+";font-size:15px;line-height:1}
+.gv-fl-more[open] summary::after{content:"−"}
+.rates-head{font-size:12px;font-weight:600;color:var(--muted);padding:8px 0}
+.rate-row{display:grid;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.rates-head.fl,.rate-row.fl{display:grid;grid-template-columns:minmax(0,1.5fr) 1fr 1fr 90px;gap:10px}
+.rate-row .room{font-weight:700}
+.rate-row .room b{color:var(--muted);font-weight:700;font-size:13px}
+.rate-row.fl small{display:none}
+.dur{color:var(--muted)}
+.leg-label{font-size:13px;font-weight:800;color:var(--gold-deep);padding:10px 0 4px}
+.wait{font-size:13px;color:var(--muted);padding:6px 0 6px 14px;border-top:1px dashed var(--line);position:relative}
+.wait::before{content:"";position:absolute;left:2px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:var(--gold)}
+.note{margin:0;padding:12px 14px;border-radius:10px;background:var(--card);font-size:14px;border-left:3px solid var(--gold)}
+
+/* Hotels */
+.results{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;align-items:start}
+.main{display:grid;gap:14px;min-width:0}
+.hotel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:box-shadow .2s ease}
+.hotel.pick{box-shadow:inset 0 0 0 1px var(--gold)}
+.hotel.chosen{box-shadow:inset 0 0 0 3px var(--gold)}
+.hotel-head{display:flex;gap:18px;padding:16px}
+.tile{position:relative;text-decoration:none;width:210px;height:148px;flex-shrink:0;border-radius:10px;background:var(--paper);color:var(--gold-deep);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.tile svg{width:100%;height:100%}
+.tile-cta{position:absolute;left:10px;bottom:10px;background:#FFFFFF;color:#1A1D21;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;border:1px solid #E3E5E9}
+.tile:hover .tile-cta{background:#1A1D21;color:#FFFFFF;border-color:#1A1D21}
+.tile img{width:100%;height:100%;object-fit:cover}
+.hotel-body{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0;align-items:flex-start}
+.hotel-name{font-size:20px;font-weight:800;letter-spacing:-.015em;line-height:1.2}
+.area{color:var(--muted);font-size:13px}
+.desc{margin:2px 0 0;max-width:60ch}
+.rates-head.ht,.rate-row.ht{display:grid;grid-template-columns:minmax(0,1.6fr) 1fr 1fr 124px;gap:12px;padding-left:16px;padding-right:16px}
+.rates-head.ht{border-top:1px solid var(--line);padding-top:8px;padding-bottom:8px}
+.rate-row.ht{padding-top:12px;padding-bottom:12px}
+.rate-row.ht small{display:none}
+.rate-row.ht .room em{display:block;font-style:normal;font-weight:500;color:var(--muted);font-size:13px}
+.rate-row.ht .choose{justify-self:end}
+.pp b{font-size:18px;font-weight:800}
+.pp em{display:block;font-style:normal;font-size:12px;color:var(--muted)}
+.choose{min-width:112px}
+.choose[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#000}
+.choose[aria-pressed="true"]::before{content:"✓";font-weight:800}
+
+.side{display:grid;gap:14px;position:sticky;top:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px}
+.side h2{font-size:16px;letter-spacing:-.01em;margin-bottom:8px}
+.pick-name{font-size:20px;font-weight:800;letter-spacing:-.015em;margin:0 0 4px;line-height:1.2}
+.pick-hint{color:var(--muted);margin:0 0 14px;font-size:14px}
+.pickcard .btn{width:100%}
+.pickcard small{display:block;margin-top:10px;color:var(--muted);font-size:12px}
+.dots{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.dots li{position:relative;padding-left:18px}
+.dots li::before{content:"";position:absolute;left:0;top:.5em;width:8px;height:8px;border-radius:50%;background:var(--gold)}
+.dots span{display:block;color:var(--muted);font-size:13px}
+
+/* Birthday night */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.opt{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;display:grid;grid-template-columns:72px minmax(0,1fr);gap:16px;align-items:center}
+.opt .ic{width:72px;height:72px;border-radius:50%;background:var(--paper);color:var(--gold-deep);display:flex;align-items:center;justify-content:center}
+.opt h3{font-size:19px;margin-bottom:4px}
+.opt p{margin:0;color:var(--muted)}
+
+footer{max-width:1240px;margin:0 auto;padding:0 24px 40px;color:var(--muted);font-size:13px;line-height:1.6}
+footer strong{color:var(--ink)}
+.bar{display:none}
+
+@media (max-width:1060px){
+  .hero-in{grid-template-columns:1fr;gap:28px}
+  .pass{max-width:560px}
+  .days-row{grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:minmax(220px,1fr);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px}
+  .days-row li{scroll-snap-align:start}
+  .results{grid-template-columns:1fr}
+  .side{position:static}
+  .route-grid{grid-template-columns:minmax(0,1fr)}
+  .route-panel + .route-panel{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:14px}
+  .route svg{max-width:780px;margin:0 auto}
+  .gv-fl{grid-template-columns:1fr}
+  .gv-fl-price{text-align:left;flex-direction:row;gap:8px;align-items:baseline}
+}
+@media (max-width:720px){
+  .topbar .btn span{display:none}
+  .hero-in{padding:28px 16px 40px}
+  .hero p{font-size:16px}
+  .pass{grid-template-columns:minmax(0,1fr) 88px}
+  .pass::before,.pass::after{right:88px}
+  .pass-main{padding:18px 16px}
+  .code{font-size:24px}
+  .pass-grid{grid-template-columns:1fr 1fr}
+  .stub .days{font-size:36px}
+  .content{padding:28px 14px 30px;gap:34px}
+  .fl-band{padding:28px 0 30px}
+  .fl-band .wrap{padding:0 14px}
+  .sec-head h2{font-size:24px}
+  .days-row{grid-auto-columns:78%}
+  .gv-fl{padding:14px}
+  .gv-fl-slice{grid-template-columns:78px minmax(0,1fr) 78px;gap:6px}
+  .gv-fl-time strong{font-size:17px}
+  .rates-head{display:none !important}
+  .rate-row.fl{grid-template-columns:1fr 1fr;gap:4px 12px}
+  .rate-row.fl .room,.rate-row.fl .dur{grid-column:1 / -1}
+  .rate-row.fl small{display:block;font-size:12px;color:var(--muted);font-weight:600}
+  .rate-row.fl .dur small{display:inline;margin-right:6px}
+  .hotel-head{flex-direction:column;padding:14px}
+  .tile{width:100%;height:170px}
+  .rate-row.ht{grid-template-columns:1fr 1fr;padding:12px 14px}
+  .rate-row.ht small{display:block;font-size:12px;color:var(--muted);font-weight:600}
+  .rate-row.ht .choose{justify-self:stretch}
+  .rate-row.ht .room,.rate-row.ht .choose{grid-column:1 / -1}
+  .two{grid-template-columns:1fr}
+  .route{padding:16px 14px}
+  .route svg{display:none}
+  .route-v{display:grid}
+  .side .pickcard{display:none}
+  .bar{display:flex;align-items:center;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));background:var(--card);border-top:1px solid var(--line)}
+  .bar .bar-pick{flex:1;min-width:0;font-size:13px;line-height:1.3}
+  .bar .bar-pick b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bar .btn{padding:10px 16px}
+  body{padding-bottom:80px}
+}
+@media (prefers-reduced-motion:reduce){
+  .hotel{transition:none}
+}
+
+/* Tripadvisor photos, rating and reviews (loaded live, never stored) */
+.tile-photos{position:relative;overflow:hidden;background:var(--paper)}
+.tp-strip{display:flex;width:100%;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.tp-strip::-webkit-scrollbar{display:none}
+.tp-strip img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:start}
+.tp-credit{position:absolute;left:8px;bottom:8px;background:rgba(255,255,255,.94);color:#1A1D21;font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px;text-decoration:none}
+.tp-count{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px}
+.ta-mini{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ta-score{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--ink);font-size:13px}
+.ta-score span{color:var(--muted)}
+.ta-score img,.ta-rev-top img{background:#fff;border-radius:4px;padding:1px 3px}
+.ta-logo{height:20px;width:auto;display:block}
+.ta-logo-txt{font-size:13px;font-weight:700}
+.ta-revs{border-top:1px solid var(--line);padding:10px 16px}
+.ta-revs > summary{cursor:pointer;font-weight:700;font-size:13px;color:var(--gold-deep);list-style:none}
+.ta-revs > summary::-webkit-details-marker{display:none}
+.ta-revs > summary::after{content:" +"}
+.ta-revs[open] > summary::after{content:" −"}
+.ta-list{display:grid;gap:14px;margin:12px 0}
+.ta-rev{border-left:3px solid var(--line);padding-left:12px}
+.ta-rev-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ta-q{margin:6px 0 4px}
+.ta-read{font-size:13px;font-weight:600;color:var(--gold-deep)}
+.ta-by{margin:0;color:var(--muted);font-size:12px}
+.ta-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-bottom:4px}
+.ta-foot p{margin:0;color:var(--muted);font-size:12px;flex-basis:100%}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="wordmark" href="/" aria-label="Golden Vacation"><strong>GOLDEN</strong><span class="pill">vacation</span></a>
+  <a class="btn gold sm" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%E2%80%99m%20looking%20at%20my%20Bangkok%20birthday%20quote%20%2821%E2%80%9328%20Jan%202027%29." target="_blank" rel="noopener" aria-label="Reply on WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><span>Reply on WhatsApp</span></a>
+</header>
+
+<section class="hero">
+  <div class="hero-in">
+    <div>
+      <span class="chip">Birthday trip quote</span>
+      <h1>Your birthday in Bangkok</h1>
+      <p>Five of you, one river city, and a birthday dinner on Tuesday 26 January. Here’s how it all comes together.</p>
+      <div class="made">Quote prepared 23 October 2026</div>
+    </div>
+
+    <div class="pass" role="group" aria-label="Trip summary">
+      <div class="pass-main">
+        <div class="pass-route">
+          <div><span class="code">KIN</span><span class="code-sm">Kingston</span></div>
+          <span class="amp">&amp;</span>
+          <div><span class="code">MIA</span><span class="code-sm">Miami</span></div>
+          <span class="fly" aria-hidden="true"><i></i><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z" transform="rotate(90 12 12)"/></svg><i></i></span>
+          <div><span class="code">BKK</span><span class="code-sm">Bangkok</span></div>
+        </div>
+        <dl class="pass-grid">
+          <div><dt>Leaving</dt><dd>Thu 21 Jan</dd></div>
+          <div><dt>Home</dt><dd>Thu 28 Jan</dd></div>
+          <div><dt>Travelers</dt><dd>5</dd></div>
+          <div><dt>In Bangkok</dt><dd>5 nights</dd></div>
+          <div><dt>Birthday</dt><dd>Tue 26 Jan</dd></div>
+          <div><dt>Cabin</dt><dd>Economy</dd></div>
+        </dl>
+      </div>
+      <div class="stub" id="stub"><span class="days" id="days">90</span><span id="days-l">days to go</span></div>
+    </div>
+  </div>
+
+</section>
+
+<section class="fl-band" aria-labelledby="fl-h">
+  <div class="wrap">
+    <div class="sec-head"><h2 id="fl-h">Flights</h2><p>Going, everyone meets in Miami. Coming home, you split up in Doha.</p></div>
+    <div class="route">
+      <div class="route-grid">
+        <figure class="route-panel">
+          <figcaption>Going, Thursday 21 January</figcaption>
+          <svg viewBox="0 0 660 200" role="img" aria-label="The Kingston three fly to Miami, the Florida two join them there, and everyone flies Miami to Doha to Bangkok together.">
+            <path class="ln" d="M40 60 C 120 60, 140 110, 220 110"/>
+            <path class="ln" d="M40 160 C 120 160, 140 110, 220 110"/>
+            <path class="ln" d="M220 110 H 610"/>
+            <circle class="dot" cx="40" cy="60" r="6"/>
+            <circle class="dot" cx="40" cy="160" r="6"/>
+            <circle class="dot big" cx="220" cy="110" r="8"/>
+            <circle class="dot" cx="430" cy="110" r="6"/>
+            <circle class="dot end" cx="610" cy="110" r="10"/>
+            <path class="arw" d="M316 110h18M327 103l7 7-7 7"/>
+            <text class="lbl" x="32" y="30">Kingston</text><text class="sub" x="32" y="50">3 travelers, 6:50 am</text>
+            <text class="lbl" x="32" y="190">Florida</text><text class="sub" x="100" y="190">2 travelers, join in Miami</text>
+            <text class="lbl" x="220" y="84" text-anchor="middle">Miami</text><text class="sub" x="220" y="138" text-anchor="middle">Thu 7:15 pm</text>
+            <text class="lbl" x="430" y="84" text-anchor="middle">Doha</text><text class="sub" x="430" y="138" text-anchor="middle">Fri, 3h 10m stop</text>
+            <text class="lbl" x="610" y="80" text-anchor="middle">Bangkok</text><text class="sub" x="610" y="142" text-anchor="middle">Sat 6:15 am</text>
+          </svg>
+          <ol class="route-v">
+            <li><b>Kingston</b>3 travelers, Thu 6:50 am</li>
+            <li><b>Miami</b>The Florida two join here, Thu 7:15 pm</li>
+            <li><b>Doha</b>Fri, 3h 10m stop</li>
+            <li class="end"><b>Bangkok</b>Sat 6:15 am</li>
+          </ol>
+        </figure>
+        <figure class="route-panel">
+          <figcaption>Coming home, Thursday 28 January</figcaption>
+          <svg viewBox="0 0 660 200" role="img" aria-label="Everyone flies Bangkok to Doha together. In Doha the Kingston three continue via New York to Kingston, and the Florida two fly to Miami.">
+            <path class="ln" d="M40 100 H 250"/>
+            <path class="ln" d="M250 100 C 320 100, 340 52, 420 52 H 620"/>
+            <path class="ln" d="M250 100 C 320 100, 340 160, 420 160 H 620"/>
+            <circle class="dot end" cx="40" cy="100" r="10"/>
+            <circle class="dot big" cx="250" cy="100" r="8"/>
+            <circle class="dot" cx="470" cy="52" r="6"/>
+            <circle class="dot big" cx="620" cy="52" r="8"/>
+            <circle class="dot big" cx="620" cy="160" r="8"/>
+            <path class="arw" d="M136 100h18M147 93l7 7-7 7"/>
+            <text class="lbl" x="28" y="74">Bangkok</text><text class="sub" x="28" y="134">Thu 3:00 am</text>
+            <text class="lbl" x="250" y="74" text-anchor="middle">Doha</text><text class="sub" x="250" y="134" text-anchor="middle">You split up here</text>
+            <text class="lbl" x="470" y="30" text-anchor="middle">New York</text><text class="sub" x="470" y="80" text-anchor="middle">2h 48m stop</text>
+            <text class="lbl" x="620" y="30" text-anchor="middle">Kingston</text><text class="sub" x="652" y="80" text-anchor="end">9:58 pm, 3 travelers</text>
+            <text class="lbl" x="620" y="192" text-anchor="middle">Miami</text><text class="sub" x="652" y="140" text-anchor="end">4:30 pm, 2 travelers</text>
+          </svg>
+          <ol class="route-v">
+            <li class="start"><b>Bangkok</b>Thu 3:00 am, the night of Wed 27th</li>
+            <li><b>Doha</b>6:20 am, you split up here</li>
+            <li class="end split"><span><b>Kingston</b>The Kingston three, via New York, home 9:58 pm</span><span><b>Miami</b>The Florida two, home 4:30 pm</span></li>
+          </ol>
+        </figure>
+      </div>
+    </div>
+    <details class="fl-times">
+      <summary><span class="c">See flight times</span><span class="o">Hide flight times</span></summary>
+      <div class="gv-fl-list">
+      <article class="gv-fl">
+  <div class="gv-fl-air"><div><strong>From Kingston</strong><div class="chips"><span class="chip">3 travelers</span><span class="chip">Economy</span></div></div></div>
+  <div class="gv-fl-slices"><div class="gv-fl-slice" role="group" aria-label="Going: leaves Kingston 06:50 Thursday 21 January, lands Bangkok 06:15 Saturday 23 January, 2 stops">
+      <div class="gv-fl-time"><strong>06:50</strong><span>KIN, Thu 21 Jan</span></div>
+      <div class="gv-fl-mid"><span class="mid-top">Going, 35h 25m</span><span class="gv-fl-line"><i style="left:33%"></i><i style="left:67%"></i></span><span class="mid-bot">2 stops: MIA, DOH</span></div>
+      <div class="gv-fl-time"><strong>06:15<sup>+2</sup></strong><span>BKK, Sat 23 Jan</span></div>
+    </div><div class="gv-fl-slice" role="group" aria-label="Coming home: leaves Bangkok 03:00 Thursday 28 January, lands Kingston 21:58 the same day, 2 stops">
+      <div class="gv-fl-time"><strong>03:00</strong><span>BKK, Thu 28 Jan</span></div>
+      <div class="gv-fl-mid"><span class="mid-top">Home, 30h 58m</span><span class="gv-fl-line"><i style="left:33%"></i><i style="left:67%"></i></span><span class="mid-bot">2 stops: DOH, JFK</span></div>
+      <div class="gv-fl-time"><strong>21:58</strong><span>KIN, Thu 28 Jan</span></div>
+    </div></div>
+  <details class="gv-fl-more"><summary>Flight details</summary><div class="rates-head fl"><span>Flight</span><span>Departs</span><span>Arrives</span><span>Flight time</span></div><div class="leg-label">Going</div><div class="rate-row fl"><span class="room">Kingston <b>KIN</b> to Miami <b>MIA</b></span><span><small>Departs</small>Thu 21 Jan, 06:50</span><span><small>Arrives</small>Thu 21 Jan, 08:51</span><span class="dur"><small>Flight time</small>2h 01m</span></div><div class="wait">Wait in Miami, 10h 24m</div><div class="rate-row fl"><span class="room">Miami <b>MIA</b> to Doha <b>DOH</b></span><span><small>Departs</small>Thu 21 Jan, 19:15</span><span><small>Arrives</small>Fri 22 Jan, 16:50</span><span class="dur"><small>Flight time</small>13h 35m</span></div><div class="wait">Wait in Doha, 3h 10m</div><div class="rate-row fl"><span class="room">Doha <b>DOH</b> to Bangkok <b>BKK</b></span><span><small>Departs</small>Fri 22 Jan, 20:00</span><span><small>Arrives</small>Sat 23 Jan, 06:15</span><span class="dur"><small>Flight time</small>6h 15m</span></div><div class="leg-label">Coming home</div><div class="rate-row fl"><span class="room">Bangkok <b>BKK</b> to Doha <b>DOH</b></span><span><small>Departs</small>Thu 28 Jan, 03:00</span><span><small>Arrives</small>Thu 28 Jan, 06:20</span><span class="dur"><small>Flight time</small>7h 20m</span></div><div class="wait">Wait in Doha, 1h 55m</div><div class="rate-row fl"><span class="room">Doha <b>DOH</b> to New York <b>JFK</b></span><span><small>Departs</small>Thu 28 Jan, 08:15</span><span><small>Arrives</small>Thu 28 Jan, 15:00</span><span class="dur"><small>Flight time</small>14h 45m</span></div><div class="wait">Wait in New York, 2h 48m</div><div class="rate-row fl"><span class="room">New York <b>JFK</b> to Kingston <b>KIN</b></span><span><small>Departs</small>Thu 28 Jan, 17:48</span><span><small>Arrives</small>Thu 28 Jan, 21:58</span><span class="dur"><small>Flight time</small>4h 10m</span></div></details>
+</article>
+      <article class="gv-fl">
+  <div class="gv-fl-air"><div><strong>From Miami</strong><div class="chips"><span class="chip">2 travelers</span><span class="chip">Economy</span></div></div></div>
+  <div class="gv-fl-slices"><div class="gv-fl-slice" role="group" aria-label="Going: leaves Miami 19:15 Thursday 21 January, lands Bangkok 06:15 Saturday 23 January, 1 stop">
+      <div class="gv-fl-time"><strong>19:15</strong><span>MIA, Thu 21 Jan</span></div>
+      <div class="gv-fl-mid"><span class="mid-top">Going, 23h 00m</span><span class="gv-fl-line"><i style="left:50%"></i></span><span class="mid-bot">1 stop: DOH</span></div>
+      <div class="gv-fl-time"><strong>06:15<sup>+2</sup></strong><span>BKK, Sat 23 Jan</span></div>
+    </div><div class="gv-fl-slice" role="group" aria-label="Coming home: leaves Bangkok 03:00 Thursday 28 January, lands Miami 16:30 the same day, 1 stop">
+      <div class="gv-fl-time"><strong>03:00</strong><span>BKK, Thu 28 Jan</span></div>
+      <div class="gv-fl-mid"><span class="mid-top">Home, 25h 30m</span><span class="gv-fl-line"><i style="left:50%"></i></span><span class="mid-bot">1 stop: DOH</span></div>
+      <div class="gv-fl-time"><strong>16:30</strong><span>MIA, Thu 28 Jan</span></div>
+    </div></div>
+  <details class="gv-fl-more"><summary>Flight details</summary><div class="rates-head fl"><span>Flight</span><span>Departs</span><span>Arrives</span><span>Flight time</span></div><div class="leg-label">Going</div><div class="rate-row fl"><span class="room">Miami <b>MIA</b> to Doha <b>DOH</b></span><span><small>Departs</small>Thu 21 Jan, 19:15</span><span><small>Arrives</small>Fri 22 Jan, 16:50</span><span class="dur"><small>Flight time</small>13h 35m</span></div><div class="wait">Wait in Doha, 3h 10m</div><div class="rate-row fl"><span class="room">Doha <b>DOH</b> to Bangkok <b>BKK</b></span><span><small>Departs</small>Fri 22 Jan, 20:00</span><span><small>Arrives</small>Sat 23 Jan, 06:15</span><span class="dur"><small>Flight time</small>6h 15m</span></div><div class="leg-label">Coming home</div><div class="rate-row fl"><span class="room">Bangkok <b>BKK</b> to Doha <b>DOH</b></span><span><small>Departs</small>Thu 28 Jan, 03:00</span><span><small>Arrives</small>Thu 28 Jan, 06:20</span><span class="dur"><small>Flight time</small>7h 20m</span></div><div class="wait">Wait in Doha, 1h 40m</div><div class="rate-row fl"><span class="room">Doha <b>DOH</b> to Miami <b>MIA</b></span><span><small>Departs</small>Thu 28 Jan, 08:00</span><span><small>Arrives</small>Thu 28 Jan, 16:30</span><span class="dur"><small>Flight time</small>16h 30m</span></div></details>
+</article>
+      <p class="note">The flight home leaves at 3:00 am on Thursday 28 January, which is the night of Wednesday the 27th. Plan to leave the hotel around midnight.</p>
+      </div>
+    </details>
+    </div>
+</section>
+
+<div class="content">
+
+
+  <section aria-labelledby="stay-h">
+    <div class="sec-head"><h2 id="stay-h">Pick your base</h2><p>Prices are per person, flights and hotel together, taxes included. Rates are subject to change until a deposit is paid.</p></div>
+    <div class="results">
+      <div class="main">
+        <article class="hotel" id="h-ramada" data-ta="ramada-menam">
+  <div class="hotel-head">
+    <a class="tile" data-photo="ramada" href="https://maps.google.com/?cid=16856010113687437132" target="_blank" rel="noopener" aria-label="See photos of Ramada Plaza by Wyndham Menam Riverside on Google Maps"><svg viewBox="0 0 200 140" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M0 112h200"/><path d="M28 122h44M112 126h52" opacity=".5"/><rect x="118" y="38" width="46" height="74"/><path d="M126 50h30M126 62h30M126 74h30M126 86h30M126 98h30" opacity=".6"/><path d="M18 106q22 9 48 0M28 103h24M66 106l14-6"/><circle cx="56" cy="34" r="9"/></svg><span class="tile-cta">See photos on Google Maps</span></a>
+    <div class="hotel-body">
+      <span class="chip">Lowest price</span>
+      <h3 class="hotel-name">Ramada Plaza by Wyndham Menam Riverside</h3>
+      <div class="area">Charoen Krung, near Asiatique</div>
+      <div class="chips"><span class="chip">River views</span><span class="chip">Big breakfast</span><span class="chip">Free boat to the Skytrain</span></div>
+      <p class="desc">Comfortable river-view rooms and an easy free boat to Sathorn Pier and the Skytrain.</p>
+    </div>
+  </div>
+  <div class="rates-head ht"><span>Room</span><span>Kingston travelers</span><span>Miami travelers</span><span></span></div>
+  <div class="rate-row ht">
+    <span class="room"><small>Room</small>Deluxe Double Room<em>2 rooms</em></span>
+    <span class="pp"><small>Kingston travelers</small><b>US$2,101</b><em>per person</em></span>
+    <span class="pp"><small>Miami travelers</small><b>US$1,690</b><em>per person</em></span>
+    <button type="button" class="btn choose" aria-pressed="false" data-hotel="Ramada Plaza by Wyndham Menam Riverside, Deluxe Double Room">Choose</button>
+  </div>
+</article>
+<article class="hotel pick" id="h-chatrium" data-ta="chatrium-riverside">
+  <div class="hotel-head">
+    <a class="tile" data-photo="chatrium" href="https://www.google.com/maps/search/?api=1&amp;query=Chatrium%20Hotel%20Riverside%20Bangkok" target="_blank" rel="noopener" aria-label="See photos of Chatrium Hotel Riverside on Google Maps"><svg viewBox="0 0 200 140" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M0 118h200"/><path d="M80 118V22h40v96"/><path d="M80 34h40M80 46h40M80 58h40M80 70h40M80 82h40M80 94h40M80 106h40" opacity=".6"/><path d="M120 34h6M120 58h6M120 82h6M74 46h6M74 70h6M74 94h6"/><path d="M30 128h40M130 130h40" opacity=".5"/><circle cx="160" cy="30" r="8"/></svg><span class="tile-cta">See photos on Google Maps</span></a>
+    <div class="hotel-body">
+      <span class="chip quoted">Our pick for five</span>
+      <h3 class="hotel-name">Chatrium Hotel Riverside</h3>
+      <div class="area">Charoen Krung, near Asiatique</div>
+      <div class="chips"><span class="chip">Two-bedroom suite</span><span class="chip">Free boat to the Skytrain</span><span class="chip">Walk to Asiatique</span></div>
+      <p class="desc">A big two-bedroom suite with a kitchenette, so the five of you stay together. Free boat to Sathorn Pier every half hour and to ICONSIAM, and the Asiatique night market is a short walk.</p>
+    </div>
+  </div>
+  <div class="rates-head ht"><span>Room</span><span>Kingston travelers</span><span>Miami travelers</span><span></span></div>
+  <div class="rate-row ht">
+    <span class="room"><small>Room</small>2-Bedroom Standard Suite, city view<em>All five together</em></span>
+    <span class="pp"><small>Kingston travelers</small><b>US$2,225</b><em>per person</em></span>
+    <span class="pp"><small>Miami travelers</small><b>US$1,814</b><em>per person</em></span>
+    <button type="button" class="btn choose" aria-pressed="false" data-hotel="Chatrium Hotel Riverside, 2-Bedroom Standard Suite, city view">Choose</button>
+  </div>
+</article>
+<article class="hotel" id="h-avani" data-ta="avani-riverside">
+  <div class="hotel-head">
+    <a class="tile" data-photo="avani" href="https://maps.google.com/?cid=2588869881114686872" target="_blank" rel="noopener" aria-label="See photos of Avani+ Riverside on Google Maps"><svg viewBox="0 0 200 140" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 112V70h22v42M40 112V54h18v58M150 112V60h20v52M174 112V76h16v36" opacity=".45"/><path d="M62 112V64h82v48"/><path d="M58 64h90"/><path d="M66 58q8-5 16 0t16 0 16 0 16 0 12 0"/><path d="M70 78h64M70 90h64" opacity=".5"/><circle cx="168" cy="30" r="8"/><path d="M0 112h200"/></svg><span class="tile-cta">See photos on Google Maps</span></a>
+    <div class="hotel-body">
+      <span class="chip">Prettiest pool</span>
+      <h3 class="hotel-name">Avani+ Riverside</h3>
+      <div class="area">Thonburi riverside</div>
+      <div class="chips"><span class="chip">Rooftop infinity pool</span><span class="chip">SEEN rooftop restaurant</span><span class="chip">Free shuttle boat</span></div>
+      <p class="desc">Modern river-view rooms and the prettiest pool on the list. The rooftop restaurant could host the birthday dinner.</p>
+    </div>
+  </div>
+  <div class="rates-head ht"><span>Room</span><span>Kingston travelers</span><span>Miami travelers</span><span></span></div>
+  <div class="rate-row ht">
+    <span class="room"><small>Room</small>Standard Room, river view<em>2 rooms</em></span>
+    <span class="pp"><small>Kingston travelers</small><b>US$2,250</b><em>per person</em></span>
+    <span class="pp"><small>Miami travelers</small><b>US$1,840</b><em>per person</em></span>
+    <button type="button" class="btn choose" aria-pressed="false" data-hotel="Avani+ Riverside, Standard Room, river view">Choose</button>
+  </div>
+  <div class="rate-row ht">
+    <span class="room"><small>Room</small>Skyline King Room, river view<em>2 rooms</em></span>
+    <span class="pp"><small>Kingston travelers</small><b>US$2,335</b><em>per person</em></span>
+    <span class="pp"><small>Miami travelers</small><b>US$1,924</b><em>per person</em></span>
+    <button type="button" class="btn choose" aria-pressed="false" data-hotel="Avani+ Riverside, Skyline King Room, river view">Choose</button>
+  </div>
+  <div class="rate-row ht">
+    <span class="room"><small>Room</small>3-Bedroom Avani Suite, river view<em>All five together</em></span>
+    <span class="pp"><small>Kingston travelers</small><b>US$2,565</b><em>per person</em></span>
+    <span class="pp"><small>Miami travelers</small><b>US$2,154</b><em>per person</em></span>
+    <button type="button" class="btn choose" aria-pressed="false" data-hotel="Avani+ Riverside, 3-Bedroom Avani Suite, river view">Choose</button>
+  </div>
+</article>
+<article class="hotel" id="h-shangrila" data-ta="shangri-la-bangkok">
+  <div class="hotel-head">
+    <a class="tile" data-photo="shangrila" href="https://maps.google.com/?cid=7492278184318549116" target="_blank" rel="noopener" aria-label="See photos of Shangri-La Bangkok on Google Maps"><svg viewBox="0 0 200 140" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M0 116h200"/><path d="M58 116q6-38-2-72"/><path d="M56 44q-22-6-34 6M56 44q-4-20-22-24M56 44q14-16 34-10M56 44q22 2 28 20M56 44q-14 10-18 28"/><ellipse cx="128" cy="100" rx="44" ry="9"/><path d="M98 100q10-4 20 0t20 0 20 0" opacity=".6"/><path d="M24 126h40M120 128h50" opacity=".5"/></svg><span class="tile-cta">See photos on Google Maps</span></a>
+    <div class="hotel-body">
+      <span class="chip">Best location</span>
+      <h3 class="hotel-name">Shangri-La Bangkok</h3>
+      <div class="area">Bang Rak, by Saphan Taksin</div>
+      <div class="chips"><span class="chip">Next to the Skytrain</span><span class="chip">Riverside gardens</span><span class="chip">Two pools</span></div>
+      <p class="desc">Classic riverside luxury, steps from the Skytrain and Sathorn Pier, so every plan is easy.</p>
+    </div>
+  </div>
+  <div class="rates-head ht"><span>Room</span><span>Kingston travelers</span><span>Miami travelers</span><span></span></div>
+  <div class="rate-row ht">
+    <span class="room"><small>Room</small>Deluxe Room<em>2 rooms</em></span>
+    <span class="pp"><small>Kingston travelers</small><b>US$2,335</b><em>per person</em></span>
+    <span class="pp"><small>Miami travelers</small><b>US$1,924</b><em>per person</em></span>
+    <button type="button" class="btn choose" aria-pressed="false" data-hotel="Shangri-La Bangkok, Deluxe Room">Choose</button>
+  </div>
+  <div class="rate-row ht">
+    <span class="room"><small>Room</small>Deluxe Room, river view<em>2 rooms</em></span>
+    <span class="pp"><small>Kingston travelers</small><b>US$2,375</b><em>per person</em></span>
+    <span class="pp"><small>Miami travelers</small><b>US$1,964</b><em>per person</em></span>
+    <button type="button" class="btn choose" aria-pressed="false" data-hotel="Shangri-La Bangkok, Deluxe Room, river view">Choose</button>
+  </div>
+</article>
+<article class="hotel" id="h-lebua" data-ta="lebua-state-tower">
+  <div class="hotel-head">
+    <a class="tile" data-photo="lebua" href="https://www.google.com/maps/search/?api=1&amp;query=lebua%20at%20State%20Tower%20Bangkok" target="_blank" rel="noopener" aria-label="See photos of lebua at State Tower on Google Maps"><svg viewBox="0 0 200 140" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M0 124h200"/><path d="M82 124V46h36v78"/><path d="M82 46q18-30 36 0"/><path d="M100 16v-0M100 22V8"/><path d="M82 58h36M82 70h36M82 82h36M82 94h36M82 106h36" opacity=".6"/><path d="M46 124V80h22v44M132 124V70h24v54" opacity=".45"/><circle cx="34" cy="28" r="1.6"/><circle cx="160" cy="22" r="1.6"/><circle cx="176" cy="44" r="1.2"/><circle cx="24" cy="54" r="1.2"/><circle cx="148" cy="40" r="1"/></svg><span class="tile-cta">See photos on Google Maps</span></a>
+    <div class="hotel-body">
+      <span class="chip">Best views</span>
+      <h3 class="hotel-name">lebua at State Tower</h3>
+      <div class="area">Silom, by Saphan Taksin</div>
+      <div class="chips"><span class="chip">Two-bedroom suite</span><span class="chip">Sky Bar upstairs</span><span class="chip">City and river views</span></div>
+      <p class="desc">An all-suite tower with the big views. Sky Bar and Sirocco are upstairs for the birthday night.</p>
+    </div>
+  </div>
+  <div class="rates-head ht"><span>Room</span><span>Kingston travelers</span><span>Miami travelers</span><span></span></div>
+  <div class="rate-row ht">
+    <span class="room"><small>Room</small>2-Bedroom Standard Suite<em>All five together</em></span>
+    <span class="pp"><small>Kingston travelers</small><b>US$2,335</b><em>per person</em></span>
+    <span class="pp"><small>Miami travelers</small><b>US$1,924</b><em>per person</em></span>
+    <button type="button" class="btn choose" aria-pressed="false" data-hotel="lebua at State Tower, 2-Bedroom Standard Suite">Choose</button>
+  </div>
+</article>
+      </div>
+      <aside class="side">
+        <section class="card pickcard" aria-live="polite">
+          <h2>Your pick</h2>
+          <p class="pick-name" id="pick-name">No hotel chosen yet</p>
+          <p class="pick-hint" id="pick-hint">Tap Choose on a hotel, then send it to us.</p>
+          <a class="btn gold" id="pick-wa" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%E2%80%99m%20looking%20at%20my%20Bangkok%20birthday%20quote%20%2821%E2%80%9328%20Jan%202027%29." target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Send on WhatsApp</a>
+          <small>Rates are subject to change until a deposit is paid, and seats at this fare are limited. Pay by card or bank transfer, in US$ or J$.</small>
+        </section>
+        <section class="card">
+          <h2>Before you go</h2>
+          <ul class="dots">
+            <li>Thai e-Visa<span>Needed for Jamaican passports. Apply at thaievisa.go.th once booked and allow two weeks.</span></li>
+            <li>US visa<span>For the connections in Miami and New York.</span></li>
+            <li>Passports<span>Valid six months after you travel.</span></li>
+            <li>Arrival card<span>Thailand Digital Arrival Card, online in the three days before you land.</span></li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+  </section>
+
+  <section aria-labelledby="bd-h">
+    <div class="sec-head"><h2 id="bd-h">The birthday night</h2><p>Tuesday 26 January. Two ways to do it.</p></div>
+    <div class="two">
+      <article class="opt">
+        <span class="ic"><svg width="38" height="38" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 30h36l-5 8H11z"/><path d="M12 30v-8h24v8M16 22v-5h16v5"/><path d="M4 42q5 3 10 0t10 0 10 0 10 0"/></svg></span>
+        <div><h3>Dinner cruise</h3><p>Dinner on the Chao Phraya, with the temples lit up as you float past.</p></div>
+      </article>
+      <article class="opt">
+        <span class="ic"><svg width="38" height="38" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 42V24h8v18M20 42V12h10v30M34 42V20h7v22"/><path d="M4 42h40"/><path d="M38 8l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/></svg></span>
+        <div><h3>Rooftop table</h3><p>Bangkok’s lights from above, at Sirocco by lebua or SEEN at Avani+.</p></div>
+      </article>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <strong>Golden Vacation &amp; Travel Limited</strong><br>
+  IATA-accredited travel agency in Brown’s Town, St. Ann, Jamaica<br>
+  <a href="/">goldenvacays.com</a>
+</footer>
+
+<div class="bar">
+  <div class="bar-pick" aria-live="polite"><span>Your pick</span><b id="bar-pick">Choose a hotel above</b></div>
+  <a class="btn gold" id="bar-wa" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%E2%80%99m%20looking%20at%20my%20Bangkok%20birthday%20quote%20%2821%E2%80%9328%20Jan%202027%29." target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Send</a>
+</div>
+
+<script>
+(function(){
+  var leave = new Date(2027, 0, 21);
+  var days = Math.ceil((leave - new Date()) / 86400000);
+  var dEl = document.getElementById('days'), lEl = document.getElementById('days-l');
+  if (days > 1) { dEl.textContent = days; }
+  else if (days === 1) { dEl.textContent = '1'; lEl.textContent = 'day to go'; }
+  else { document.getElementById('stub').classList.add('done'); dEl.textContent = 'Enjoy'; lEl.textContent = 'Bangkok'; }
+
+  var base = 'https://wa.me/18763601567?text=';
+  function link(h){ return base + encodeURIComponent('Hi Golden Vacation! For my Bangkok birthday trip (21–28 Jan 2027), I’d like ' + h + '.'); }
+  var btns = Array.prototype.slice.call(document.querySelectorAll('.choose'));
+  function choose(h){
+    Array.prototype.forEach.call(document.querySelectorAll('.hotel.chosen'), function(c){ c.classList.remove('chosen'); });
+    btns.forEach(function(b){
+      var on = b.getAttribute('data-hotel') === h;
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.textContent = on ? 'Chosen' : 'Choose';
+      if (on) b.closest('.hotel').classList.add('chosen');
+    });
+    document.getElementById('pick-name').textContent = h;
+    document.getElementById('pick-hint').textContent = 'Send it to us and we’ll hold the rooms.';
+    document.getElementById('pick-wa').href = link(h);
+    document.getElementById('bar-wa').href = link(h);
+    document.getElementById('bar-pick').textContent = h;
+    try { localStorage.setItem('bkk-birthday-pick-v2', h); } catch (e) {}
+  }
+  btns.forEach(function(b){ b.addEventListener('click', function(){ choose(b.getAttribute('data-hotel')); }); });
+  try { var saved = localStorage.getItem('bkk-birthday-pick-v2'); if (saved && btns.some(function(b){ return b.getAttribute('data-hotel') === saved; })) choose(saved); } catch (e) {}
+
+})();
+</script>
+<script>
+/* Tripadvisor: photos, rating and three latest reviews per hotel, fetched live when the card is near the screen.
+   Nothing is stored. If the call fails, the card keeps its drawing and the Google Maps link. */
+(function(){
+  var FN = '/.netlify/functions/q-tripadvisor?hotel=';
+  var LOGO = 'https://static.tacdn.com/img2/brand_refresh/Tripadvisor_lockup_horizontal_secondary_registered.svg';
+  function el(t, c, x){ var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
+  function out(href, c, x){ var a = el('a', c, x); a.href = href; a.target = '_blank'; a.rel = 'noopener nofollow'; return a; }
+  function img(src, alt, hgt){ var i = document.createElement('img'); i.src = src; i.alt = alt; if (hgt) i.height = hgt; return i; }
+  function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  function paint(card, d){
+    if (d.photos && d.photos.length) {
+      var tile = card.querySelector('.tile');
+      var box = el('div', 'tile tile-photos'), strip = el('div', 'tp-strip');
+      d.photos.forEach(function(p, i){ var im = img(p.url, p.caption || ((d.name || 'Hotel') + ', photo ' + (i + 1))); im.loading = i ? 'lazy' : 'eager'; im.decoding = 'async'; strip.appendChild(im); });
+      box.appendChild(strip);
+      box.appendChild(out(d.url || 'https://www.tripadvisor.com/', 'tp-credit', 'Photos from Tripadvisor'));
+      if (d.photos.length > 1) {
+        var n = el('span', 'tp-count', '1/' + d.photos.length); box.appendChild(n);
+        strip.addEventListener('scroll', function(){ n.textContent = (Math.round(strip.scrollLeft / strip.clientWidth) + 1) + '/' + d.photos.length; }, { passive: true });
+      }
+      if (tile) tile.parentNode.replaceChild(box, tile);
+    }
+    if (d.rating) {
+      var area = card.querySelector('.area'), row = el('div', 'ta-mini');
+      var sc = out(d.url || 'https://www.tripadvisor.com/', 'ta-score', '');
+      if (d.ratingImage) sc.appendChild(img(d.ratingImage, d.rating + ' of 5 bubbles', 16));
+      sc.appendChild(el('span', null, fmt(d.count) + ' reviews'));
+      row.appendChild(sc);
+      var lg = img(LOGO, 'Tripadvisor', 20); lg.className = 'ta-logo';
+      lg.onerror = function(){ if (lg.parentNode) lg.parentNode.replaceChild(el('span', 'ta-logo-txt', 'Tripadvisor'), lg); };
+      row.appendChild(lg);
+      if (area) area.parentNode.insertBefore(row, area.nextSibling);
+    }
+    if (d.reviews && d.reviews.length) {
+      var det = el('details', 'ta-revs'); det.appendChild(el('summary', null, 'Recent reviews on Tripadvisor'));
+      var list = el('div', 'ta-list');
+      d.reviews.forEach(function(r){
+        var it = el('article', 'ta-rev'), top = el('div', 'ta-rev-top');
+        if (r.ratingImage) top.appendChild(img(r.ratingImage, r.rating + ' of 5 bubbles', 14));
+        if (r.title) top.appendChild(el('b', null, r.title));
+        it.appendChild(top);
+        var t = r.text || '', cut = t.length > 260, shown = cut ? t.slice(0, Math.max(t.lastIndexOf(' ', 250), 200)) + '…' : t;
+        it.appendChild(el('p', 'ta-q', '“' + shown + '”'));
+        if (cut && r.url) it.appendChild(out(r.url, 'ta-read', 'Read more on Tripadvisor'));
+        var by = [r.user, r.tripType, r.date].filter(Boolean).join(', ');
+        if (by) it.appendChild(el('p', 'ta-by', by));
+        list.appendChild(it);
+      });
+      det.appendChild(list);
+      var foot = el('div', 'ta-foot');
+      if (d.url) foot.appendChild(out(d.url, 'btn sm', 'More on Tripadvisor'));
+      if (d.writeReview) foot.appendChild(out(d.writeReview, 'btn quiet sm', 'Write a review'));
+      foot.appendChild(el('p', null, 'Reviews are written by Tripadvisor travelers about the hotel, not about us.'));
+      det.appendChild(foot);
+      card.insertBefore(det, card.querySelector('.rates-head'));
+    }
+  }
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.hotel[data-ta]'));
+  function load(card){
+    if (card.getAttribute('data-ta-done')) return; card.setAttribute('data-ta-done', '1');
+    fetch(FN + encodeURIComponent(card.getAttribute('data-ta')), { cache: 'no-store' })
+      .then(function(r){ return r.json(); }).then(function(d){ if (d && d.ok) paint(card, d); }).catch(function(){});
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { load(e.target); io.unobserve(e.target); } }); }, { rootMargin: '400px 0px' });
+    cards.forEach(function(c){ io.observe(c); });
+  } else cards.forEach(load);
+})();
+</script>
+</body>
+</html>
