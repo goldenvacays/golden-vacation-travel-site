@@ -219,17 +219,6 @@ button{font-family:inherit}
 .pick-hint{color:var(--muted);margin:0 0 14px;font-size:14px}
 .pickcard .btn{width:100%}
 .pickcard small{display:block;margin-top:10px;color:var(--muted);font-size:12px}
-.dots{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-.dots li{position:relative;padding-left:18px}
-.dots li::before{content:"";position:absolute;left:0;top:.5em;width:8px;height:8px;border-radius:50%;background:var(--gold)}
-.dots span{display:block;color:var(--muted);font-size:13px}
-
-/* Birthday night */
-.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.opt{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;display:grid;grid-template-columns:72px minmax(0,1fr);gap:16px;align-items:center}
-.opt .ic{width:72px;height:72px;border-radius:50%;background:var(--paper);color:var(--gold-deep);display:flex;align-items:center;justify-content:center}
-.opt h3{font-size:19px;margin-bottom:4px}
-.opt p{margin:0;color:var(--muted)}
 
 footer{max-width:1240px;margin:0 auto;padding:0 24px 40px;color:var(--muted);font-size:13px;line-height:1.6}
 footer strong{color:var(--ink)}
@@ -278,7 +267,6 @@ footer strong{color:var(--ink)}
   .rate-row.ht small{display:block;font-size:12px;color:var(--muted);font-weight:600}
   .rate-row.ht .choose{justify-self:stretch}
   .rate-row.ht .room,.rate-row.ht .choose{grid-column:1 / -1}
-  .two{grid-template-columns:1fr}
   .route{padding:16px 14px}
   .route-grid{display:none}
   .route-round{display:block}
@@ -651,30 +639,7 @@ html.pv-open{overflow:hidden}
           <a class="btn gold" id="pick-wa" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%E2%80%99m%20looking%20at%20my%20Bangkok%20birthday%20quote%20%2821%E2%80%9328%20Jan%202027%29." target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Send on WhatsApp</a>
           <small>Rates are subject to change until a deposit is paid, and seats at this fare are limited. Pay by card or bank transfer, in US$ or J$.</small>
         </section>
-        <section class="card">
-          <h2>Before you go</h2>
-          <ul class="dots">
-            <li>Thai e-Visa<span>Needed for Jamaican passports. Apply at thaievisa.go.th once booked and allow two weeks.</span></li>
-            <li>US visa<span>For the connections in Miami and New York.</span></li>
-            <li>Passports<span>Valid six months after you travel.</span></li>
-            <li>Arrival card<span>Thailand Digital Arrival Card, online in the three days before you land.</span></li>
-          </ul>
-        </section>
       </aside>
-    </div>
-  </section>
-
-  <section aria-labelledby="bd-h">
-    <div class="sec-head"><h2 id="bd-h">The birthday night</h2><p>Tuesday 26 January. Two ways to do it.</p></div>
-    <div class="two">
-      <article class="opt">
-        <span class="ic"><svg width="38" height="38" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 30h36l-5 8H11z"/><path d="M12 30v-8h24v8M16 22v-5h16v5"/><path d="M4 42q5 3 10 0t10 0 10 0 10 0"/></svg></span>
-        <div><h3>Dinner cruise</h3><p>Dinner on the Chao Phraya, with the temples lit up as you float past.</p></div>
-      </article>
-      <article class="opt">
-        <span class="ic"><svg width="38" height="38" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 42V24h8v18M20 42V12h10v30M34 42V20h7v22"/><path d="M4 42h40"/><path d="M38 8l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/></svg></span>
-        <div><h3>Rooftop table</h3><p>Bangkok’s lights from above, at Sirocco by lebua or SEEN at Avani+.</p></div>
-      </article>
     </div>
   </section>
 
@@ -733,7 +698,7 @@ html.pv-open{overflow:hidden}
   function out(href, c, x){ var a = el('a', c, x); a.href = href; a.target = '_blank'; a.rel = 'noopener nofollow'; return a; }
   function img(src, alt, hgt){ var i = document.createElement('img'); i.src = src; i.alt = alt; if (hgt) i.height = hgt; return i; }
   function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
-  /* A hotel's photos: its own room photos first (ROOMS, further down), then Tripadvisor's. The pill at the bottom
+  /* A hotel's photos: Tripadvisor's first, then the room photos (ROOMS, further down). The pill at the bottom
      says what the photo on show is: the room's name, or "Photos from Tripadvisor" with the link back they ask for. */
   function hotelName(card){ var h = card.querySelector('.hotel-name'); return h ? h.textContent : 'the hotel'; }
   function gallery(card){
@@ -891,8 +856,8 @@ html.pv-open{overflow:hidden}
 
   /* Room photos Hana has the right to use (she sent them on 23 Oct 2026), kept with this page in rooms/:
      { room, note?, src } with room = the room exactly as its row names it, after the hotel's name, note = what the
-     photo shows, and src from the site root. They lead the hotel's photos, labelled with the room, and the room's row
-     gets a "See photos" button that opens just that room's photos. */
+     photo shows, and src from the site root. They follow Tripadvisor's photos in the card, labelled with the room, and
+     the room's row gets a "See photos" button that opens just that room's photos. */
   var R = '/q/bangkok-birthday-k7m2/rooms/';
   var ROOMS = {
     'ramada-menam': [
@@ -921,10 +886,15 @@ html.pv-open{overflow:hidden}
   };
   function roomCap(r){ return r.room + (r.note ? ' · ' + r.note : ''); }
   var CAM = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
-  cards.forEach(function(card){
+  // In the card the room photos come after Tripadvisor's: they go in once the hotel's Tripadvisor answer is in, or has failed.
+  function addRooms(card){
+    if (card._roomsIn) return; card._roomsIn = true;
     var list = ROOMS[card.getAttribute('data-ta')] || [], name = hotelName(card), g = list.length ? gallery(card) : null;
-    if (!g) return;
-    list.forEach(function(r){ addPhoto(g, { src: r.src, alt: roomCap(r) + ', ' + name, room: r.room, cap: roomCap(r) }); });
+    if (g) list.forEach(function(r){ addPhoto(g, { src: r.src, alt: roomCap(r) + ', ' + name, room: r.room, cap: roomCap(r) }); });
+  }
+  cards.forEach(function(card){
+    var list = ROOMS[card.getAttribute('data-ta')] || [], name = hotelName(card);
+    if (!list.length) return;
     Array.prototype.forEach.call(card.querySelectorAll('.rate-row'), function(row){
       var b = row.querySelector('.choose'), full = (b && b.getAttribute('data-hotel')) || '', cell = row.querySelector('.room');
       if (!cell || full.indexOf(name + ', ') !== 0) return;
@@ -951,6 +921,7 @@ html.pv-open{overflow:hidden}
     }
     var best = score(job.prev) > score(d) ? job.prev : d;
     if (best && best.ok) { try { paint(job.card, best); } catch (e) {} }
+    addRooms(job.card);
   }
   function next(){ busy = false; pump(); }
   function pump(){
