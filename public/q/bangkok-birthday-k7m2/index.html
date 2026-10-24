@@ -116,9 +116,11 @@ button{font-family:inherit}
 .route-panel + .route-panel{border-left:1px solid var(--line);padding-left:28px}
 .route figcaption{font-size:13px;font-weight:800;color:var(--gold-deep);margin-bottom:4px}
 .route svg{display:block;width:100%;height:auto}
-.route svg.route-m{display:none} /* the phone-sized map, left to right with bigger type */
-.route .route-m .lbl{font-size:15px}
-.route .route-m .sub{font-size:12.5px}
+.route-round{display:none;margin:0} /* phones: the whole trip in one drawing, out along the top and home along the bottom */
+.route .route-round .lbl{font-size:15px}
+.route .route-round .sub{font-size:12.5px}
+.route .route-round .cap{font-size:12.5px;font-weight:800;fill:var(--gold-deep)}
+.route .route-round .stay{stroke-dasharray:2 6;opacity:.8}
 .route text{font-family:var(--font);fill:var(--ink)}
 .route .lbl{font-size:17px;font-weight:800}
 .route .sub{font-size:13.5px;font-weight:600;fill:var(--muted)}
@@ -278,8 +280,9 @@ footer strong{color:var(--ink)}
   .rate-row.ht .room,.rate-row.ht .choose{grid-column:1 / -1}
   .two{grid-template-columns:1fr}
   .route{padding:16px 14px}
-  .route svg{display:none}
-  .route svg.route-m{display:block;max-width:380px;margin:0 auto}
+  .route-grid{display:none}
+  .route-round{display:block}
+  .route .route-round svg{max-width:380px;margin:0 auto}
   .side .pickcard{display:none}
   .bar{display:flex;align-items:center;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));background:var(--card);border-top:1px solid var(--line)}
   .bar .bar-pick{flex:1;min-width:0;font-size:13px;line-height:1.3}
@@ -298,6 +301,31 @@ footer strong{color:var(--ink)}
 .tp-strip img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:start}
 .tp-credit{position:absolute;left:8px;bottom:8px;background:rgba(255,255,255,.94);color:#1A1D21;font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px;text-decoration:none}
 .tp-count{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px}
+.tp-strip img{cursor:zoom-in}
+.tp-nav{position:absolute;top:50%;margin-top:-17px;width:34px;height:34px;border-radius:50%;border:0;padding:0;background:rgba(255,255,255,.92);color:#1A1D21;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.25);opacity:0;transition:opacity .15s ease}
+.tp-nav.prev{left:8px}.tp-nav.next{right:8px}
+.tile-photos:hover .tp-nav,.tp-nav:focus-visible{opacity:1}
+@media (hover:none){.tp-nav{opacity:.9}}
+.stars{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--muted)}
+.stars-i{color:var(--gold);font-size:15px;letter-spacing:1px}
+/* Photo viewer: tap a photo to see it big, swipe or use the arrows to go through them */
+html.pv-open{overflow:hidden}
+.pv{position:fixed;inset:0;z-index:100;background:#0B0D11;display:flex;flex-direction:column;color:#E8EAED}
+.pv[hidden]{display:none}
+.pv-track{flex:1;min-height:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior:contain}
+.pv-track::-webkit-scrollbar{display:none}
+.pv-slide{flex:0 0 100%;min-width:0;display:flex;align-items:center;justify-content:center;scroll-snap-align:center;padding:calc(60px + env(safe-area-inset-top,0px)) 12px 8px}
+.pv-slide img{max-width:100%;max-height:100%;object-fit:contain;border-radius:6px}
+.pv-close{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:12px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font-size:30px;line-height:1;cursor:pointer}
+.pv-nav{position:absolute;top:50%;margin-top:-24px;width:48px;height:48px;border-radius:50%;border:0;padding:0;background:rgba(255,255,255,.16);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.pv-nav.prev{left:12px}.pv-nav.next{right:12px}
+.pv-nav:disabled{opacity:.25;cursor:default}
+.pv-bar{display:flex;align-items:baseline;gap:6px 14px;flex-wrap:wrap;font-size:13px;padding:10px 16px calc(14px + env(safe-area-inset-bottom,0px))}
+.pv-count{font-weight:800;color:#fff}
+.pv-cap{flex:1;min-width:0;color:#B8BEC7}
+.pv-credit{color:#fff;font-weight:700}
+.pv button:focus-visible,.pv a:focus-visible{outline:3px solid var(--gold-hi);outline-offset:2px}
+@media (max-width:720px){.pv-nav{width:40px;height:40px;margin-top:-20px;background:rgba(0,0,0,.45)}.pv-nav.prev{left:6px}.pv-nav.next{right:6px}}
 .ta-mini{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .ta-score{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--ink);font-size:13px}
 .ta-score span{color:var(--muted)}
@@ -382,22 +410,6 @@ footer strong{color:var(--ink)}
             <text class="lbl" x="430" y="84" text-anchor="middle">Doha</text><text class="sub" x="430" y="138" text-anchor="middle">Fri, 3h 10m stop</text>
             <text class="lbl" x="610" y="80" text-anchor="middle">Bangkok</text><text class="sub" x="610" y="142" text-anchor="middle">Sat 6:15 am</text>
           </svg>
-          <svg class="route-m" viewBox="0 0 340 200" role="img" aria-label="The Kingston three fly to Miami, the Florida two join them there, and everyone flies Miami to Doha to Bangkok together.">
-            <path class="ln" d="M16 52 C 70 52, 84 100, 130 100"/>
-            <path class="ln" d="M16 148 C 70 148, 84 100, 130 100"/>
-            <path class="ln" d="M130 100 H 322"/>
-            <circle class="dot" cx="16" cy="52" r="5"/>
-            <circle class="dot" cx="16" cy="148" r="5"/>
-            <circle class="dot big" cx="130" cy="100" r="7"/>
-            <circle class="dot" cx="222" cy="100" r="5"/>
-            <circle class="dot end" cx="322" cy="100" r="8"/>
-            <path class="arw" d="M172 93l7 7-7 7"/>
-            <text class="lbl" x="4" y="20">Kingston</text><text class="sub" x="4" y="36">3 travelers, 6:50 am</text>
-            <text class="lbl" x="4" y="176">Florida</text><text class="sub" x="4" y="192">2 travelers</text>
-            <text class="lbl" x="130" y="80" text-anchor="middle">Miami</text><text class="sub" x="130" y="128" text-anchor="middle">Thu 7:15 pm</text>
-            <text class="lbl" x="222" y="80" text-anchor="middle">Doha</text><text class="sub" x="222" y="128" text-anchor="middle">3h 10m</text>
-            <text class="lbl" x="338" y="80" text-anchor="end">Bangkok</text><text class="sub" x="338" y="128" text-anchor="end">Sat 6:15 am</text>
-          </svg>
           <ol class="route-v">
             <li><b>Kingston</b>3 travelers, Thu 6:50 am</li>
             <li><b>Miami</b>The Florida two join here, Thu 7:15 pm</li>
@@ -423,22 +435,6 @@ footer strong{color:var(--ink)}
             <text class="lbl" x="620" y="30" text-anchor="middle">Kingston</text><text class="sub" x="652" y="80" text-anchor="end">9:58 pm, 3 travelers</text>
             <text class="lbl" x="620" y="192" text-anchor="middle">Miami</text><text class="sub" x="652" y="140" text-anchor="end">4:30 pm, 2 travelers</text>
           </svg>
-          <svg class="route-m" viewBox="0 0 340 200" role="img" aria-label="Everyone flies Bangkok to Doha together. In Doha the Kingston three continue via New York to Kingston, and the Florida two fly to Miami.">
-            <path class="ln" d="M14 100 H 160"/>
-            <path class="ln" d="M160 100 C 190 100, 196 52, 226 52 H 322"/>
-            <path class="ln" d="M160 100 C 190 100, 196 148, 226 148 H 322"/>
-            <circle class="dot end" cx="14" cy="100" r="8"/>
-            <circle class="dot big" cx="118" cy="100" r="7"/>
-            <circle class="dot" cx="262" cy="52" r="5"/>
-            <circle class="dot big" cx="322" cy="52" r="7"/>
-            <circle class="dot big" cx="322" cy="148" r="7"/>
-            <path class="arw" d="M58 93l7 7-7 7"/>
-            <text class="lbl" x="4" y="78">Bangkok</text><text class="sub" x="4" y="128">Thu 3:00 am</text>
-            <text class="lbl" x="118" y="62" text-anchor="middle">Doha</text><text class="sub" x="118" y="78" text-anchor="middle">split up here</text>
-            <text class="lbl" x="262" y="78" text-anchor="middle">New York</text><text class="sub" x="262" y="94" text-anchor="middle">2h 48m stop</text>
-            <text class="lbl" x="338" y="20" text-anchor="end">Kingston</text><text class="sub" x="338" y="36" text-anchor="end">9:58 pm, 3 travelers</text>
-            <text class="lbl" x="338" y="176" text-anchor="end">Miami</text><text class="sub" x="338" y="192" text-anchor="end">4:30 pm, 2 travelers</text>
-          </svg>
           <ol class="route-v">
             <li class="start"><b>Bangkok</b>Thu 3:00 am, the night of Wed 27th</li>
             <li><b>Doha</b>6:20 am, you split up here</li>
@@ -446,6 +442,41 @@ footer strong{color:var(--ink)}
           </ol>
         </figure>
       </div>
+      <figure class="route-round">
+        <svg viewBox="0 0 340 360" role="img" aria-label="Going on Thursday 21 January: the Kingston three fly to Miami, the Florida two join them there, and everyone flies Miami to Doha to Bangkok, landing Saturday at 6:15 am. Five nights in Bangkok. Coming home on Thursday 28 January at 3:00 am, the night of Wednesday the 27th: everyone flies to Doha, where you split up. The Kingston three continue via New York, home at 9:58 pm, and the Florida two fly to Miami, home at 4:30 pm.">
+          <text class="cap" x="4" y="12">Going · Thu 21 Jan</text>
+          <path class="ln" d="M16 62 C 70 62, 84 96, 130 96"/>
+          <path class="ln" d="M16 130 C 70 130, 84 96, 130 96"/>
+          <path class="ln" d="M130 96 H 322"/>
+          <path class="ln stay" d="M322 132 V 272"/>
+          <path class="ln" d="M322 282 H 176 C 146 282, 146 250, 116 250 H 16"/>
+          <path class="ln" d="M176 282 C 146 282, 146 314, 116 314 H 16"/>
+          <circle class="dot" cx="16" cy="62" r="5"/>
+          <circle class="dot" cx="16" cy="130" r="5"/>
+          <circle class="dot big" cx="130" cy="96" r="7"/>
+          <circle class="dot" cx="222" cy="96" r="5"/>
+          <circle class="dot end" cx="322" cy="96" r="8"/>
+          <circle class="dot end" cx="322" cy="282" r="8"/>
+          <circle class="dot big" cx="206" cy="282" r="7"/>
+          <circle class="dot" cx="70" cy="250" r="5"/>
+          <circle class="dot big" cx="16" cy="250" r="7"/>
+          <circle class="dot big" cx="16" cy="314" r="7"/>
+          <path class="arw" d="M172 89l7 7-7 7"/>
+          <path class="arw" d="M268 275l-7 7 7 7"/>
+          <text class="lbl" x="4" y="34">Kingston</text><text class="sub" x="4" y="49">3 travelers, 6:50 am</text>
+          <text class="lbl" x="4" y="156">Florida</text><text class="sub" x="4" y="171">2 travelers</text>
+          <text class="lbl" x="130" y="78" text-anchor="middle">Miami</text><text class="sub" x="130" y="122" text-anchor="middle">Thu 7:15 pm</text>
+          <text class="lbl" x="222" y="78" text-anchor="middle">Doha</text><text class="sub" x="222" y="122" text-anchor="middle">3h 10m</text>
+          <text class="lbl" x="338" y="78" text-anchor="end">Bangkok</text><text class="sub" x="338" y="122" text-anchor="end">Sat 6:15 am</text>
+          <text class="sub" x="312" y="170" text-anchor="end">5 nights in Bangkok</text>
+          <text class="cap" x="4" y="200">Coming home · Thu 28 Jan</text>
+          <text class="lbl" x="4" y="220">Kingston</text><text class="sub" x="4" y="235">9:58 pm, 3 travelers</text>
+          <text class="lbl" x="70" y="272" text-anchor="middle">New York</text><text class="sub" x="70" y="287" text-anchor="middle">2h 48m stop</text>
+          <text class="lbl" x="206" y="264" text-anchor="middle">Doha</text><text class="sub" x="206" y="306" text-anchor="middle">split up here</text>
+          <text class="sub" x="338" y="306" text-anchor="end">Thu 3:00 am</text><text class="sub" x="338" y="321" text-anchor="end">night of Wed 27th</text>
+          <text class="lbl" x="4" y="338">Miami</text><text class="sub" x="4" y="353">4:30 pm, 2 travelers</text>
+        </svg>
+      </figure>
     </div>
     <details class="fl-times">
       <summary><span class="c">See flight times</span><span class="o">Hide flight times</span></summary>
@@ -710,7 +741,23 @@ footer strong{color:var(--ink)}
       box.appendChild(out(d.url || 'https://www.tripadvisor.com/', 'tp-credit', 'Photos from Tripadvisor'));
       box.appendChild(n); count();
       strip.addEventListener('scroll', count, { passive: true });
+      if (d.photos.length > 1) {
+        box.appendChild(navBtn('tp-nav prev', 'Previous photo', -1, function(){ strip.scrollBy({ left: -strip.clientWidth, behavior: 'smooth' }); }));
+        box.appendChild(navBtn('tp-nav next', 'Next photo', 1, function(){ strip.scrollBy({ left: strip.clientWidth, behavior: 'smooth' }); }));
+      }
+      strip.addEventListener('click', function(e){
+        var im = e.target.closest ? e.target.closest('img') : null; if (!im) return;
+        var imgs = Array.prototype.slice.call(strip.querySelectorAll('img'));
+        var nm = card.querySelector('.hotel-name');
+        openViewer(imgs, imgs.indexOf(im), nm ? nm.textContent : (d.name || 'the hotel'), d.url, im);
+      });
       if (tile) tile.parentNode.replaceChild(box, tile);
+    }
+    if (d.stars >= 1 && d.stars <= 5) {
+      var hn = card.querySelector('.hotel-name'), sv = Math.round(d.stars * 2) / 2;
+      var st = el('div', 'stars'), si = el('span', 'stars-i', new Array(Math.floor(sv) + 1).join('\u2605'));
+      si.setAttribute('aria-hidden', 'true'); st.appendChild(si); st.appendChild(el('span', null, sv + '-star hotel'));
+      if (hn) hn.parentNode.insertBefore(st, hn.nextSibling);
     }
     if (d.rating) {
       var area = card.querySelector('.area'), row = el('div', 'ta-mini');
@@ -747,6 +794,68 @@ footer strong{color:var(--ink)}
       card.insertBefore(det, card.querySelector('.rates-head'));
     }
   }
+  var CHEV = { '-1': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
+               '1': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>' };
+  function navBtn(cls, label, dir, fn){ var b = el('button', cls); b.type = 'button'; b.setAttribute('aria-label', label); b.innerHTML = CHEV[String(dir)]; b.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); fn(); }); return b; }
+
+  /* Photo viewer: the photo big, on its own, with the others a swipe or an arrow away. Esc, the cross or a tap on the
+     dark area closes it. Pictures come from the same Tripadvisor address at the screen's size (the CDN takes round
+     widths and never enlarges), loading one ahead and one behind. */
+  var V = null;
+  function bigUrl(src){
+    try { var u = new URL(src), px = (window.innerWidth || 1000) * (window.devicePixelRatio || 1);
+      u.searchParams.set('w', String(Math.min(2000, Math.max(1000, Math.ceil(px / 100) * 100)))); return u.toString(); } catch (e) { return src; }
+  }
+  function viewer(){
+    if (V) return V;
+    var box = el('div', 'pv'), track = el('div', 'pv-track'), bar = el('div', 'pv-bar');
+    box.hidden = true; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
+    var close = el('button', 'pv-close', '\u00d7'); close.type = 'button'; close.setAttribute('aria-label', 'Close photos');
+    V = { box: box, track: track, items: [], i: 0, back: null, count: el('span', 'pv-count'), cap: el('span', 'pv-cap'),
+          credit: out('https://www.tripadvisor.com/', 'pv-credit', 'Photos from Tripadvisor') };
+    V.prev = navBtn('pv-nav prev', 'Previous photo', -1, function(){ go(V.i - 1); });
+    V.next = navBtn('pv-nav next', 'Next photo', 1, function(){ go(V.i + 1); });
+    bar.appendChild(V.count); bar.appendChild(V.cap); bar.appendChild(V.credit);
+    box.appendChild(track); box.appendChild(V.prev); box.appendChild(V.next); box.appendChild(close); box.appendChild(bar);
+    document.body.appendChild(box);
+    close.addEventListener('click', shut);
+    box.addEventListener('click', function(e){ if (e.target === box || e.target === track || (e.target.classList && e.target.classList.contains('pv-slide'))) shut(); });
+    track.addEventListener('scroll', function(){ var k = Math.round(track.scrollLeft / (track.clientWidth || 1)); if (k !== V.i && V.items[k]) { V.i = k; show(); } }, { passive: true });
+    document.addEventListener('keydown', function(e){
+      if (box.hidden) return;
+      if (e.key === 'Escape') { e.preventDefault(); shut(); } else if (e.key === 'ArrowLeft') { e.preventDefault(); go(V.i - 1); } else if (e.key === 'ArrowRight') { e.preventDefault(); go(V.i + 1); }
+    });
+    window.addEventListener('resize', function(){ if (!box.hidden) track.scrollLeft = V.i * track.clientWidth; });
+    return V;
+  }
+  function go(k){ if (!V || !V.items.length) return; k = Math.max(0, Math.min(V.items.length - 1, k)); V.track.scrollTo({ left: k * V.track.clientWidth, behavior: 'smooth' }); }
+  function loadPic(k){ var it = V.items[k]; if (it && !it.img.getAttribute('src')) it.img.src = it.src; }
+  function show(){
+    var it = V.items[V.i]; if (!it) return;
+    V.count.textContent = (V.i + 1) + ' / ' + V.items.length; V.cap.textContent = it.alt || '';
+    loadPic(V.i); loadPic(V.i + 1); loadPic(V.i - 1);
+    V.prev.disabled = V.i === 0; V.next.disabled = V.i === V.items.length - 1;
+    V.prev.style.display = V.next.style.display = V.items.length > 1 ? '' : 'none';
+  }
+  function shut(){ if (!V) return; V.box.hidden = true; document.documentElement.classList.remove('pv-open'); if (V.back && V.back.focus) V.back.focus(); }
+  function openViewer(imgs, start, name, url, back){
+    var v = viewer();
+    v.track.innerHTML = '';
+    v.items = imgs.map(function(im){
+      var slide = el('div', 'pv-slide'), pic = document.createElement('img'), small = im.currentSrc || im.src;
+      pic.alt = im.alt; pic.decoding = 'async';
+      pic.onerror = function(){ if (pic.getAttribute('src') !== small) pic.src = small; }; // the card's size if the big one will not load
+      slide.appendChild(pic); v.track.appendChild(slide);
+      return { src: bigUrl(small), alt: im.alt, img: pic };
+    });
+    v.box.setAttribute('aria-label', 'Photos of ' + name);
+    v.credit.href = url || 'https://www.tripadvisor.com/';
+    v.back = back; if (back && !back.hasAttribute('tabindex')) back.setAttribute('tabindex', '-1');
+    v.box.hidden = false; document.documentElement.classList.add('pv-open');
+    v.i = Math.max(0, start); v.track.scrollLeft = v.i * v.track.clientWidth; show();
+    v.box.querySelector('.pv-close').focus();
+  }
+
   var cards = Array.prototype.slice.call(document.querySelectorAll('.hotel[data-ta]'));
   /* One hotel at a time, at least 600ms apart: Tripadvisor allows 10 calls a second and each hotel takes 3.
      A hotel that comes back offline or only partly (no photos or reviews) is asked once more, 2.5 seconds later,

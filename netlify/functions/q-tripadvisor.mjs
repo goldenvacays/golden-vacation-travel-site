@@ -85,8 +85,10 @@ function summary(loc) {
   const overall = (loc.traveler_ratings && loc.traveler_ratings.overall) || loc.overall_rating || {};
   const rank = (loc.rankings || []).find((r) => r && r.display_text) || {};
   const urls = (loc.urls && loc.urls.tripadvisor) || {};
+  const stars = Number((loc.accommodation && loc.accommodation.star_rating) || 0); // the official star rating, 1 to 5
   return { name: pick(loc.names), rating: Number(overall.rating || 0), count: Number(overall.count || 0), ratingImage: overall.icon_url || "",
-           ranking: rank.display_text || "", url: urls.main || "", writeReview: urls.write_review || "" };
+           ranking: rank.display_text || "", url: urls.main || "", writeReview: urls.write_review || "",
+           stars: stars >= 1 && stars <= 5 ? stars : 0 };
 }
 
 const TRIP = { BUSINESS: "Business", COUPLES: "Couples", FAMILY: "Family", FRIENDS: "Friends", SOLO: "Solo" };
@@ -182,7 +184,7 @@ export const handler = async (event) => {
     const showRating = s.rating && s.count >= 5;
     return json(200, {
       ok: Boolean(showRating || photos.length), id,
-      ...(showRating ? s : { name: s.name || "", url: s.url || "" }),
+      ...(showRating ? s : { name: s.name || "", url: s.url || "", stars: s.stars || 0 }),
       reviews: showRating ? reviews : [], photos,
       ...([detailsR, reviewsR, photosR].some((r) => r.status === "rejected") ? { partial: true } : {}), // the page asks once more
       ...(why ? { why: [detailsR, reviewsR, photosR].filter((r) => r.status === "rejected").map((r) => r.reason && r.reason.message).join(" | "),
