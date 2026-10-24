@@ -6,7 +6,10 @@
      - the response carries Tripadvisor's own rating icons and the links back their linking policy asks for;
      - robots.txt already disallows /.netlify/functions/, and the quote pages are noindex.
    Billing (Discover): details 1 + reviews 1 + photos 1 per hotel load, plus up to 3 for a catalog search
-   until the hotel's locationId is pinned below (the log line says which ID to pin). */
+   until the hotel's locationId is pinned below (the log line says which ID to pin).
+   Photos: pictures of the hotel itself, from the hotel's own uploads, at 1000px; logos, small images, menus and
+   people shots are left out (see usable()). ?why=1 lists every photo Tripadvisor sent with its id, so a hotel can
+   get "photos: [ids]" (shown first, in that order) or "skipPhotos: [ids]" in HOTELS below. */
 import { json } from "./_exp-shared.mjs";
 
 const BASE = process.env.TRIPADVISOR_API_BASE || "https://terra.tripadvisor.com/api";
@@ -79,19 +82,65 @@ const review = (r) => ({
   user: (r.user && r.user.username) || "", tripType: TRIP[r.trip_type] || "", url: r.url || "",
 });
 
-// A photo object can carry several sizes; take the one nearest 1000px wide.
-function photo(p) {
-  const found = [];
-  (function walk(o, d) {
-    if (!o || typeof o !== "object" || d > 4) return;
-    if (typeof o.url === "string" && /^https:\/\//.test(o.url)) found.push({ url: o.url, w: Number(o.width || 0) });
-    for (const k of Object.keys(o)) if (o[k] && typeof o[k] === "object") walk(o[k], d + 1);
-  })(p, 0);
-  if (!found.length) return null;
-  found.sort((a, b) => Math.abs((a.w || 1000) - 1000) - Math.abs((b.w || 1000) - 1000));
-  const owner = /MANAGEMENT|OWNER|PROFESSIONAL/i.test(JSON.stringify(p.source || p.type || p.photo_type || ""));
-  return { url: found[0].url, caption: pick(p.caption || p.captions), by: (p.user && p.user.username) || "", owner };
+/* A Terra photo is { id, caption, photo: { original_size_url, original_width, original_height }, source: { name:
+   "Management" | "Traveler" }, user: { username, avatar_url: { url } }, cv_metadata?: { scene, attractiveness_score } }.
+   Only photo.original_size_url is the picture: user.avatar_url is the uploader's profile picture (a selfie, a logo or
+   Tripadvisor's default art) and is never shown. The CDN resizes with ?w=<px>&h=-1 (the height follows the width). */
+const PHOTO_W = 1000;
+const GOOD_SCENES = ["exterior", "view", "pool", "room", "common_area", "interior", "beach", "dining", "spa", "bathroom"];
+const NOT_THE_HOTEL = /\b(logos?|awards?|certificates?|certified|menus?|staff|team|chefs?|managers?|selfie|portrait|bride|groom|wedding)\b/i;
+const HOTEL_SHOT = /\b(exterior|facade|façade|building|tower|views?|river|riverside|skyline|pool|suites?|rooms?|bedroom|balcony|terrace|lobby|rooftop|garden|night)\b/i;
+
+function sized(url, w) {
+  try { const u = new URL(url); u.searchParams.set("w", String(w)); u.searchParams.set("h", "-1"); u.searchParams.set("s", "1"); return u.toString(); }
+  catch { return ""; }
 }
+
+function photo(p) {
+  const info = (p && p.photo) || {};
+  const src = typeof info.original_size_url === "string" ? info.original_size_url : "";
+  if (!/^https:\/\//.test(src) || /avatar/i.test(src)) return null;
+  const w = Number(info.original_width || 0), h = Number(info.original_height || 0);
+  const cv = p.cv_metadata || {};
+  return {
+    id: p.id, w, h, caption: pick(p.caption),
+    owner: /^management$/i.test(String((p.source && p.source.name) || "")),
+    scene: String(cv.scene || "").toLowerCase(), score: Number(cv.attractiveness_score || 0),
+    url: sized(src, w ? Math.min(PHOTO_W, w) : PHOTO_W),
+  };
+}
+
+// Pictures of the hotel itself: big enough for the card, no logos, menus or people shots.
+function usable(p, h, minW = 600) {
+  if (!p || !p.url) return false;
+  if ((h.skipPhotos || []).includes(p.id)) return false;
+  if (p.w && p.w < minW) return false;                         // logos and thumbnails are small
+  if (NOT_THE_HOTEL.test(p.caption)) return false;
+  if (p.scene && !GOOD_SCENES.includes(p.scene)) return false; // Tripadvisor's own label says it is not the hotel ("other", "food", "menu"...)
+  return true;
+}
+
+// Lower comes first: the building, views, pool and rooms lead, bathrooms, gyms and meeting rooms go last, and tall
+// shots (which crop badly in the landscape card) come after the wide ones; ties keep Tripadvisor's order (newest first).
+const BACK_ROOM = /\b(bath(room)?|toilet|shower|gym|fitness|meeting|conference|business|ballroom|corridor|hallway|elevator|lift)\b/i;
+const rank = (p) => (p.scene ? GOOD_SCENES.indexOf(p.scene) * 10 - p.score * 5 : HOTEL_SHOT.test(p.caption) ? 20 : BACK_ROOM.test(p.caption) ? 60 : 50)
+  + (p.w && p.h > p.w * 1.25 ? 100 : 0);
+
+function choosePhotos(list, h, max = 6) {
+  const all = list.map(photo).filter(Boolean);
+  const ok = all.filter((p) => usable(p, h));
+  let pool = ok.filter((p) => p.owner);                                   // the hotel's own photos
+  if (!pool.length) pool = all.filter((p) => p.owner && usable(p, h, 400) && p.w && Math.abs(p.w - p.h) > p.w * 0.1); // older, smaller ones, never square (logos are)
+  if (!pool.length) pool = ok.filter((p) => !p.owner && p.scene);         // travelers' only when the hotel has none, and only scenes Tripadvisor has labelled
+  const pinned = (h.photos || []).map((id) => all.find((p) => p.id === id)).filter(Boolean);
+  const rest = pool.filter((p) => !pinned.includes(p)).map((p, i) => ({ p, i }))
+    .sort((a, b) => rank(a.p) - rank(b.p) || a.i - b.i).map((x) => x.p);
+  return { chosen: pinned.concat(rest).slice(0, max), all };
+}
+
+// Enough photos to choose from; if the API turns the page size down, ask again for fewer.
+const photosFor = (id) => ta(`/locations/${id}/photos`, { locale: "en-US", size: 30 })
+  .catch((e) => (e.status === 400 ? ta(`/locations/${id}/photos`, { locale: "en-US", size: 10 }) : Promise.reject(e)));
 
 export const handler = async (event) => {
   const qs = event.queryStringParameters || {};
@@ -105,14 +154,14 @@ export const handler = async (event) => {
     const [detailsR, reviewsR, photosR] = await Promise.allSettled([
       ta(`/locations/${id}`, { locale: "en-US" }),
       ta(`/locations/${id}/reviews`, { language: "en", sort_by: "MOST_RECENT", size: 3 }),
-      ta(`/locations/${id}/photos`, { locale: "en-US", size: 5 }),
+      photosFor(id),
     ]);
     let loc = detailsR.status === "fulfilled" ? detailsR.value : null;
     if (!loc) loc = await ta(`/catalog/locations/${id}`, { locale: "en-US" }).catch(() => null);
     const s = loc ? summary(loc) : {};
     const reviews = reviewsR.status === "fulfilled" ? (reviewsR.value.data || []).slice(0, 3).map(review) : [];
-    let photos = photosR.status === "fulfilled" ? (photosR.value.data || []).map(photo).filter(Boolean) : [];
-    photos = photos.filter((p) => p.owner).concat(photos.filter((p) => !p.owner)).slice(0, 5); // the hotel's own photos first
+    const picked = photosR.status === "fulfilled" ? choosePhotos(photosR.value.data || [], h) : { chosen: [], all: [] };
+    const photos = picked.chosen.map((p) => ({ url: p.url, caption: p.caption, owner: p.owner }));
     if (photosR.status === "rejected") console.warn("tripadvisor photos", slug, photosR.reason && photosR.reason.message);
     if (reviewsR.status === "rejected") console.warn("tripadvisor reviews", slug, reviewsR.reason && reviewsR.reason.message);
     const showRating = s.rating && s.count >= 5;
@@ -120,7 +169,9 @@ export const handler = async (event) => {
       ok: Boolean(showRating || photos.length), id,
       ...(showRating ? s : { name: s.name || "", url: s.url || "" }),
       reviews: showRating ? reviews : [], photos,
-      ...(why ? { why: [detailsR, reviewsR, photosR].filter((r) => r.status === "rejected").map((r) => r.reason && r.reason.message).join(" | ") } : {}),
+      ...(why ? { why: [detailsR, reviewsR, photosR].filter((r) => r.status === "rejected").map((r) => r.reason && r.reason.message).join(" | "),
+                  pool: picked.all.map((p) => [p.id, p.owner ? "hotel" : "traveler", p.scene || "-", p.score ? p.score.toFixed(2) : "-", `${p.w}x${p.h}`,
+                    picked.chosen.includes(p) ? "SHOWN" : "", p.caption.slice(0, 50)].join(" · ")) } : {}),
     });
   } catch (e) {
     console.warn("tripadvisor", slug, e.status || "", e.message);
