@@ -29,13 +29,17 @@ const HOTELS = {
   "ramada-menam": { search: "Ramada Plaza Bangkok Menam Riverside", country: "TH", lat: 13.70757, lng: 100.50597, locationId: 305711,
     skipPhotos: [460450652, 460449226, 460449215, 460449250] }, // the 2020 hygiene set: masked staff cleaning rooms and at check-in
 
-  // Things to do on the quote pages: Tripadvisor's listing for each place, for its photos, rating and reviews. Landmarks
-  // have no owner's photos, so travelers' photos are allowed (travelerPhotos), minus the ones of people (see usable()).
-  "chaophraya-cruise": { search: "The Chaophraya Cruise", country: "TH", category: "ATTRACTION", locationId: 3181688, travelerPhotos: true },
-  "floating-market": { search: "Damnoen Saduak Floating Market", country: "TH", category: "ATTRACTION", locationId: 317729, travelerPhotos: true },
-  "grand-palace": { search: "The Grand Palace", country: "TH", category: "ATTRACTION", locationId: 317603, travelerPhotos: true },
-  "ayutthaya": { search: "Historic City of Ayutthaya", country: "TH", category: "ATTRACTION", locationId: 549787, travelerPhotos: true },
-  "ayutthaya-park": { search: "Ayutthaya Historical Park", country: "TH", category: "ATTRACTION", locationId: 18194283, travelerPhotos: true },
+  // Things to do on the quote pages: Tripadvisor's listing for each place, for its photos only (photosOnly: the
+  // reviews call is skipped, since reviews of a place are not reviews of the tour we sell). Landmarks have no owner's
+  // photos, so travelers' photos are allowed (travelerPhotos), minus the ones of people (see usable()).
+  "chaophraya-cruise": { search: "The Chaophraya Cruise", country: "TH", category: "ATTRACTION", locationId: 3181688, travelerPhotos: true, photosOnly: true,
+    photos: [865578936, 865578935, 865578934, 865578939], // the cruise company's own photos (their caption lists charters, weddings included, so the filter would drop them)
+    skipPhotos: [135539866] },                              // only 500px wide
+  "floating-market": { search: "Damnoen Saduak Floating Market", country: "TH", category: "ATTRACTION", locationId: 317729, travelerPhotos: true, photosOnly: true,
+    skipPhotos: [622257716] },                              // a scan of a 1993 photo
+  "grand-palace": { search: "The Grand Palace", country: "TH", category: "ATTRACTION", locationId: 317603, travelerPhotos: true, photosOnly: true },
+  "ayutthaya": { search: "Historic City of Ayutthaya", country: "TH", category: "ATTRACTION", locationId: 549787, travelerPhotos: true, photosOnly: true },
+  "ayutthaya-park": { search: "Ayutthaya Historical Park", country: "TH", category: "ATTRACTION", locationId: 18194283, travelerPhotos: true, photosOnly: true },
 };
 
 const idCache = {};
@@ -196,7 +200,7 @@ export const handler = async (event) => {
     // 150ms apart rather than all three at once, so a page of hotels never bursts past the per-second limit
     const [detailsR, reviewsR, photosR] = await Promise.allSettled([
       ta(`/locations/${id}`, { locale: "en-US" }, until),
-      sleep(150).then(() => ta(`/locations/${id}/reviews`, { language: "en", sort_by: "MOST_RECENT", size: 3 }, until)),
+      h.photosOnly ? Promise.resolve({ data: [] }) : sleep(150).then(() => ta(`/locations/${id}/reviews`, { language: "en", sort_by: "MOST_RECENT", size: 3 }, until)),
       sleep(300).then(() => photosFor(id, until, probePage)),
     ]);
     let loc = detailsR.status === "fulfilled" ? detailsR.value : null;

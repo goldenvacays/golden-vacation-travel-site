@@ -836,7 +836,8 @@ html.pv-open{overflow:hidden}
         d.photos.forEach(function(p, i){ addPhoto(g, { src: p.url, alt: p.caption || (hotelName(card) + ', photo ' + (i + 1)), ta: true }); });
       }
     }
-    if (d.rating) {
+    var tour = card.classList.contains('tour'); // tours show the place's photos only: its reviews are not reviews of the tour
+    if (d.rating && !tour) {
       var area = card.querySelector('.area'), row = el('div', 'ta-mini');
       var sc = out(d.url || 'https://www.tripadvisor.com/', 'ta-score', '');
       if (d.ratingImage) sc.appendChild(img(d.ratingImage, d.rating + ' of 5 bubbles', 16));
@@ -847,7 +848,7 @@ html.pv-open{overflow:hidden}
       row.appendChild(lg);
       if (area) area.parentNode.insertBefore(row, area.nextSibling);
     }
-    if (d.reviews && d.reviews.length) {
+    if (d.reviews && d.reviews.length && !tour) {
       var det = el('details', 'ta-revs'); det.appendChild(el('summary', null, 'Recent reviews on Tripadvisor'));
       var list = el('div', 'ta-list');
       d.reviews.forEach(function(r){
