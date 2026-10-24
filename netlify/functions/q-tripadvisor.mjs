@@ -85,7 +85,8 @@ const review = (r) => ({
 /* A Terra photo is { id, caption, photo: { original_size_url, original_width, original_height }, source: { name:
    "Management" | "Traveler" }, user: { username, avatar_url: { url } }, cv_metadata?: { scene, attractiveness_score } }.
    Only photo.original_size_url is the picture: user.avatar_url is the uploader's profile picture (a selfie, a logo or
-   Tripadvisor's default art) and is never shown. The CDN resizes with ?w=<px>&h=-1 (the height follows the width). */
+   Tripadvisor's default art) and is never shown. The CDN resizes with ?w=<px>&h=-1 (the height follows the width): only
+   round widths work (w=799 or w=640 fail to load), and it never enlarges, so a smaller original comes back at its own size. */
 const PHOTO_W = 1000;
 const GOOD_SCENES = ["exterior", "view", "pool", "room", "common_area", "interior", "beach", "dining", "spa", "bathroom"];
 const NOT_THE_HOTEL = /\b(logos?|awards?|certificates?|certified|menus?|staff|team|chefs?|managers?|selfie|portrait|bride|groom|wedding)\b/i;
@@ -106,7 +107,7 @@ function photo(p) {
     id: p.id, w, h, caption: pick(p.caption),
     owner: /^management$/i.test(String((p.source && p.source.name) || "")),
     scene: String(cv.scene || "").toLowerCase(), score: Number(cv.attractiveness_score || 0),
-    url: sized(src, w ? Math.min(PHOTO_W, w) : PHOTO_W),
+    url: sized(src, PHOTO_W),
   };
 }
 

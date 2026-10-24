@@ -660,14 +660,20 @@ footer strong{color:var(--ink)}
   function paint(card, d){
     if (d.photos && d.photos.length) {
       var tile = card.querySelector('.tile');
-      var box = el('div', 'tile tile-photos'), strip = el('div', 'tp-strip');
-      d.photos.forEach(function(p, i){ var im = img(p.url, p.caption || ((d.name || 'Hotel') + ', photo ' + (i + 1))); im.loading = i ? 'lazy' : 'eager'; im.decoding = 'async'; strip.appendChild(im); });
+      var box = el('div', 'tile tile-photos'), strip = el('div', 'tp-strip'), n = el('span', 'tp-count');
+      var count = function(){ var all = strip.querySelectorAll('img').length; n.textContent = Math.min(Math.round(strip.scrollLeft / (strip.clientWidth || 1)) + 1, all) + '/' + all; n.style.display = all > 1 ? '' : 'none'; };
+      d.photos.forEach(function(p, i){
+        var im = img(p.url, p.caption || ((d.name || 'Hotel') + ', photo ' + (i + 1))); im.loading = i ? 'lazy' : 'eager'; im.decoding = 'async';
+        im.onerror = function(){ // a photo that will not load drops out; if none is left, the drawing comes back
+          if (im.parentNode) im.parentNode.removeChild(im);
+          if (strip.querySelector('img')) count(); else if (tile && box.parentNode) box.parentNode.replaceChild(tile, box);
+        };
+        strip.appendChild(im);
+      });
       box.appendChild(strip);
       box.appendChild(out(d.url || 'https://www.tripadvisor.com/', 'tp-credit', 'Photos from Tripadvisor'));
-      if (d.photos.length > 1) {
-        var n = el('span', 'tp-count', '1/' + d.photos.length); box.appendChild(n);
-        strip.addEventListener('scroll', function(){ n.textContent = (Math.round(strip.scrollLeft / strip.clientWidth) + 1) + '/' + d.photos.length; }, { passive: true });
-      }
+      box.appendChild(n); count();
+      strip.addEventListener('scroll', count, { passive: true });
       if (tile) tile.parentNode.replaceChild(box, tile);
     }
     if (d.rating) {
