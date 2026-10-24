@@ -300,6 +300,16 @@ footer strong{color:var(--ink)}
 .room-pics{display:flex;align-items:center;gap:6px;width:max-content;margin-top:7px;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
 .room-pics svg{color:var(--gold-deep)}
 .room-pics:hover{border-color:var(--gold)}
+.tours{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.tour{display:flex;flex-direction:column}
+.tour .hotel-head{flex-direction:column;padding:0 0 12px;gap:12px}
+.tour .hotel-body{padding:0 14px}
+.tour .tile{width:100%;height:auto;aspect-ratio:3/2;border-radius:0}
+.tour .hotel-name{font-size:18px}
+.tour .desc{font-size:14px}
+.tour-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:auto;padding:12px 14px 14px;border-top:1px solid var(--line)}
+.tour-foot .pp small{display:block;font-size:12px;color:var(--muted)}
+.tour-extra{display:block;font-style:normal;font-size:12px;color:var(--muted)}
 .stars{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--muted)}
 .stars-i{color:var(--gold);font-size:15px;letter-spacing:1px}
 /* Photo viewer: tap a photo to see it big, swipe or use the arrows to go through them */
@@ -646,6 +656,76 @@ html.pv-open{overflow:hidden}
     </div>
   </section>
 
+  <section aria-labelledby="tours-h">
+    <div class="sec-head"><h2 id="tours-h">Things to do</h2><p>Tours we can add to your trip. Prices are per person.</p></div>
+    <div class="tours">
+      <article class="hotel tour" id="t-cruise" data-ta="chaophraya-cruise">
+        <div class="hotel-head">
+          <a class="tile" href="https://www.google.com/maps/search/?api=1&amp;query=Chaophraya%20Cruise%20Asiatique%20Bangkok" target="_blank" rel="noopener" aria-label="See Dinner cruise on the Chao Phraya on Google Maps"><svg viewBox="0 0 200 140" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 98h152l-16 18H40z"/><path d="M44 98V80h112v18M66 80V66h68v14"/><path d="M60 89h80" opacity=".5"/><circle cx="164" cy="30" r="9"/><path d="M0 126q10 6 20 0t20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0" opacity=".6"/></svg><span class="tile-cta">See it on Google Maps</span></a>
+          <div class="hotel-body">
+            <span class="chip">Birthday night</span>
+            <h3 class="hotel-name">Dinner cruise on the Chao Phraya</h3>
+            <div class="area">From Asiatique pier · 2 hours, from 8 pm</div>
+            <div class="chips"><span class="chip">Buffet dinner</span><span class="chip">Thai dance and live music</span><span class="chip">Welcome drink</span></div>
+            <p class="desc">Two hours on the river after dark, past the lit-up temples and palaces, with dinner and a show on board. A lovely way to do the birthday night.</p>
+          </div>
+        </div>
+        <div class="tour-foot">
+          <span class="pp"><small>From</small><b>US$47</b><em>per person</em></span>
+          <a class="btn sm" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20For%20my%20Bangkok%20birthday%20trip%20%2821%E2%80%9328%20Jan%202027%29%2C%20I%E2%80%99d%20like%20to%20add%20the%20Chao%20Phraya%20dinner%20cruise." target="_blank" rel="noopener">Add to my trip</a>
+        </div>
+      </article>
+      <article class="hotel tour" id="t-market" data-ta="floating-market">
+        <div class="hotel-head">
+          <a class="tile" href="https://www.google.com/maps/search/?api=1&amp;query=Damnoen%20Saduak%20Floating%20Market" target="_blank" rel="noopener" aria-label="See Floating market and railway market on Google Maps"><svg viewBox="0 0 200 140" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 100h72l-8 11H20z"/><path d="M112 94h78l-8 11h-62z"/><path d="M34 100l12-16 12 16M140 94l12-16 12 16"/><path d="M60 86h18v14M168 80h14v14" opacity=".5"/><path d="M0 126q10 6 20 0t20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0" opacity=".6"/></svg><span class="tile-cta">See it on Google Maps</span></a>
+          <div class="hotel-body">
+            <span class="chip">Day trip</span>
+            <h3 class="hotel-name">Floating market and railway market</h3>
+            <div class="area">Damnoen Saduak and Maeklong · 7 to 8 hours</div>
+            <div class="chips"><span class="chip">Boat ride</span><span class="chip">Lunch</span><span class="chip">Small group, up to 15</span></div>
+            <p class="desc">Shop from boats along the canals at Damnoen Saduak, then watch the train roll right through the Maeklong market stalls. Starts from River City in Bangkok.</p>
+          </div>
+        </div>
+        <div class="tour-foot">
+          <span class="pp"><small>From</small><b>US$26</b><em>per person</em></span>
+          <a class="btn sm" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20For%20my%20Bangkok%20birthday%20trip%20%2821%E2%80%9328%20Jan%202027%29%2C%20I%E2%80%99d%20like%20to%20add%20the%20floating%20market%20and%20railway%20market%20tour." target="_blank" rel="noopener">Add to my trip</a>
+        </div>
+      </article>
+      <article class="hotel tour" id="t-temples" data-ta="grand-palace">
+        <div class="hotel-head">
+          <a class="tile" href="https://www.google.com/maps/search/?api=1&amp;query=The%20Grand%20Palace%20Bangkok" target="_blank" rel="noopener" aria-label="See Grand Palace, Wat Pho and Wat Arun on Google Maps"><svg viewBox="0 0 200 140" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M100 14l7 34h-14z"/><path d="M84 48h32l7 30H77z"/><path d="M66 78h68v34H66z"/><path d="M90 112V92h20v20"/><path d="M0 124h200"/><path d="M30 124V96l10-14 10 14v28M150 124V96l10-14 10 14v28" opacity=".5"/></svg><span class="tile-cta">See it on Google Maps</span></a>
+          <div class="hotel-body">
+            <span class="chip">Half day</span>
+            <h3 class="hotel-name">Grand Palace, Wat Pho and Wat Arun</h3>
+            <div class="area">Old town, by the river · about 4 hours</div>
+            <div class="chips"><span class="chip">Guided walk</span><span class="chip">Emerald Buddha</span><span class="chip">Reclining Buddha</span></div>
+            <p class="desc">A guided walk through the Grand Palace and the Emerald Buddha, the giant Reclining Buddha at Wat Pho, then across the river to Wat Arun.</p>
+          </div>
+        </div>
+        <div class="tour-foot">
+          <span class="pp"><small>From</small><b>US$13</b><em>per person</em><em class="tour-extra">Entry tickets about US$30 extra</em></span>
+          <a class="btn sm" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20For%20my%20Bangkok%20birthday%20trip%20%2821%E2%80%9328%20Jan%202027%29%2C%20I%E2%80%99d%20like%20to%20add%20the%20Grand%20Palace%2C%20Wat%20Pho%20and%20Wat%20Arun%20tour." target="_blank" rel="noopener">Add to my trip</a>
+        </div>
+      </article>
+      <article class="hotel tour" id="t-ayutthaya" data-ta="ayutthaya">
+        <div class="hotel-head">
+          <a class="tile" href="https://www.google.com/maps/search/?api=1&amp;query=Ayutthaya%20Historical%20Park" target="_blank" rel="noopener" aria-label="See Ayutthaya, the old capital on Google Maps"><svg viewBox="0 0 200 140" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M44 124V84l14-34 14 34v40"/><path d="M104 124V72l20-46 20 46v52"/><path d="M0 124h200"/><path d="M160 124v-26h22v26M16 124v-18h18v18" opacity=".5"/><path d="M114 96h20M114 108h20M52 100h12" opacity=".5"/></svg><span class="tile-cta">See it on Google Maps</span></a>
+          <div class="hotel-body">
+            <span class="chip">Day trip</span>
+            <h3 class="hotel-name">Ayutthaya, the old capital</h3>
+            <div class="area">North of Bangkok · 7.5 hours</div>
+            <div class="chips"><span class="chip">Four temples</span><span class="chip">Lunch</span><span class="chip">Guide</span></div>
+            <p class="desc">The temple ruins of Thailand’s old capital, a UNESCO World Heritage site, with entry to four temples, a guide and lunch.</p>
+          </div>
+        </div>
+        <div class="tour-foot">
+          <span class="pp"><small>From</small><b>US$34</b><em>per person</em></span>
+          <a class="btn sm" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20For%20my%20Bangkok%20birthday%20trip%20%2821%E2%80%9328%20Jan%202027%29%2C%20I%E2%80%99d%20like%20to%20add%20the%20Ayutthaya%20day%20trip." target="_blank" rel="noopener">Add to my trip</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
 </div>
 
 <footer>
@@ -786,9 +866,9 @@ html.pv-open{overflow:hidden}
       var foot = el('div', 'ta-foot');
       if (d.url) foot.appendChild(out(d.url, 'btn sm', 'More on Tripadvisor'));
       if (d.writeReview) foot.appendChild(out(d.writeReview, 'btn quiet sm', 'Write a review'));
-      foot.appendChild(el('p', null, 'Reviews are written by Tripadvisor travelers about the hotel, not about us.'));
+      foot.appendChild(el('p', null, 'Reviews are written by Tripadvisor travelers about the ' + (card.classList.contains('tour') ? 'place' : 'hotel') + ', not about us.'));
       det.appendChild(foot);
-      card.insertBefore(det, card.querySelector('.rates-head'));
+      card.insertBefore(det, card.querySelector('.rates-head, .tour-foot'));
     }
   }
   var CHEV = { '-1': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',

@@ -28,6 +28,14 @@ const HOTELS = {
   "avani-riverside": { search: "Avani+ Riverside Bangkok Hotel", country: "TH", lat: 13.70522, lng: 100.49111, locationId: 8822150 },
   "ramada-menam": { search: "Ramada Plaza Bangkok Menam Riverside", country: "TH", lat: 13.70757, lng: 100.50597, locationId: 305711,
     skipPhotos: [460450652, 460449226, 460449215, 460449250] }, // the 2020 hygiene set: masked staff cleaning rooms and at check-in
+
+  // Things to do on the quote pages: Tripadvisor's listing for each place, for its photos, rating and reviews. Landmarks
+  // have no owner's photos, so travelers' photos are allowed (travelerPhotos), minus the ones of people (see usable()).
+  "chaophraya-cruise": { search: "The Chaophraya Cruise", country: "TH", category: "ATTRACTION", locationId: 3181688, travelerPhotos: true },
+  "floating-market": { search: "Damnoen Saduak Floating Market", country: "TH", category: "ATTRACTION", locationId: 317729, travelerPhotos: true },
+  "grand-palace": { search: "The Grand Palace", country: "TH", category: "ATTRACTION", locationId: 317603, travelerPhotos: true },
+  "ayutthaya": { search: "Historic City of Ayutthaya", country: "TH", category: "ATTRACTION", locationId: 549787, travelerPhotos: true },
+  "ayutthaya-park": { search: "Ayutthaya Historical Park", country: "TH", category: "ATTRACTION", locationId: 18194283, travelerPhotos: true },
 };
 
 const idCache = {};
@@ -85,7 +93,7 @@ function pick(v) {
 async function locationIdFor(slug, h, until) {
   if (h.locationId) return String(h.locationId);
   if (idCache[slug]) return idCache[slug];
-  const body = await ta("/catalog/locations/search", { query: h.search, search_type: "NAME", country_code: h.country, category: "HOTEL", size: 3 }, until);
+  const body = await ta("/catalog/locations/search", { query: h.search, search_type: "NAME", country_code: h.country, category: h.category || "HOTEL", size: 3 }, until);
   const hits = (body.data || []).map((x) => x.location || x).filter((l) => l && l.id);
   if (!hits.length) return null;
   hits.sort((a, b) => km(a.coordinates, h) - km(b.coordinates, h));
@@ -139,11 +147,13 @@ function photo(p) {
 }
 
 // Pictures of the hotel itself: big enough for the card, no logos, menus or people shots.
+const TRAVELER_PEOPLE = /\b(me|us|my|our|we|family|friends?|kids?|daughter|son|wife|husband|girlfriend|boyfriend|mom|mum|dad)\b/i;
 function usable(p, h, minW = 800) {
   if (!p || !p.url) return false;
   if ((h.skipPhotos || []).includes(p.id)) return false;
   if (p.w && p.w < minW) return false;                         // logos and thumbnails are small
   if (NOT_THE_HOTEL.test(p.caption)) return false;
+  if (!p.owner && TRAVELER_PEOPLE.test(p.caption)) return false; // a traveler's "me at the palace" is a photo of people
   if (p.scene && !GOOD_SCENES.includes(p.scene)) return false; // Tripadvisor's own label says it is not the hotel ("other", "food", "menu"...)
   return true;
 }
@@ -159,7 +169,7 @@ function choosePhotos(list, h, max = 6) {
   const ok = all.filter((p) => usable(p, h));
   let pool = ok.filter((p) => p.owner);                                   // the hotel's own photos
   if (!pool.length) pool = all.filter((p) => p.owner && usable(p, h, 400) && p.w && Math.abs(p.w - p.h) > p.w * 0.1); // older, smaller ones, never square (logos are)
-  if (!pool.length) pool = ok.filter((p) => !p.owner && p.scene);         // travelers' only when the hotel has none, and only scenes Tripadvisor has labelled
+  if (!pool.length) pool = ok.filter((p) => !p.owner && (p.scene || h.travelerPhotos)); // travelers' only when the owner has none: at hotels only scenes Tripadvisor has labelled, at landmarks any (travelerPhotos)
   const pinned = (h.photos || []).map((id) => all.find((p) => p.id === id)).filter(Boolean);
   const rest = pool.filter((p) => !pinned.includes(p)).map((p, i) => ({ p, i }))
     .sort((a, b) => rank(a.p) - rank(b.p) || a.i - b.i).map((x) => x.p);
