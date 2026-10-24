@@ -23,7 +23,8 @@ const HOTELS = {
   "shangri-la-bangkok": { search: "Shangri-La Bangkok", country: "TH", lat: 13.72143, lng: 100.51424, locationId: 307155,
     skipPhotos: [459681138] }, // a member of staff greeting a guest: people, not the hotel
   "avani-riverside": { search: "Avani+ Riverside Bangkok Hotel", country: "TH", lat: 13.70522, lng: 100.49111, locationId: 8822150 },
-  "ramada-menam": { search: "Ramada Plaza Bangkok Menam Riverside", country: "TH", lat: 13.70757, lng: 100.50597, locationId: 305711 },
+  "ramada-menam": { search: "Ramada Plaza Bangkok Menam Riverside", country: "TH", lat: 13.70757, lng: 100.50597, locationId: 305711,
+    skipPhotos: [460450652, 460449226, 460449215, 460449250] }, // the 2020 hygiene set: masked staff cleaning rooms and at check-in
 };
 
 const idCache = {};
@@ -152,7 +153,8 @@ function choosePhotos(list, h, max = 6) {
   return { chosen: pinned.concat(rest).slice(0, max), all };
 }
 
-// The photos endpoint sends 5 at a time (asking for more still brought 5), so one call of 5.
+// The photos endpoint sends 5 at a time (asking for more still brought 5), so one call of 5; the handler asks for
+// the next 5 when fewer than 3 of these are usable.
 const photosFor = (id) => ta(`/locations/${id}/photos`, { locale: "en-US", size: 5 });
 
 export const handler = async (event) => {
@@ -164,16 +166,24 @@ export const handler = async (event) => {
   try {
     const id = await locationIdFor(slug, h);
     if (!id) return json(200, { ok: false, reason: "not found" });
+    // 150ms apart rather than all three at once, so a page of hotels never bursts past the per-second limit
     const [detailsR, reviewsR, photosR] = await Promise.allSettled([
       ta(`/locations/${id}`, { locale: "en-US" }),
-      ta(`/locations/${id}/reviews`, { language: "en", sort_by: "MOST_RECENT", size: 3 }),
-      photosFor(id),
+      sleep(150).then(() => ta(`/locations/${id}/reviews`, { language: "en", sort_by: "MOST_RECENT", size: 3 })),
+      sleep(300).then(() => photosFor(id)),
     ]);
     let loc = detailsR.status === "fulfilled" ? detailsR.value : null;
     if (!loc) loc = await ta(`/catalog/locations/${id}`, { locale: "en-US" }).catch(() => null);
     const s = loc ? summary(loc) : {};
     const reviews = reviewsR.status === "fulfilled" ? (reviewsR.value.data || []).slice(0, 3).map(review) : [];
-    const picked = photosR.status === "fulfilled" ? choosePhotos(photosR.value.data || [], h) : { chosen: [], all: [] };
+    let list = photosR.status === "fulfilled" ? photosR.value.data || [] : [];
+    let picked = choosePhotos(list, h);
+    if (photosR.status === "fulfilled" && picked.chosen.length < 3 && list.length >= 5) {
+      // the newest five were mostly unusable (people, logos): look one page further back
+      const more = await ta(`/locations/${id}/photos`, { locale: "en-US", size: 5, page: 1 }).catch(() => null);
+      const extra = ((more && more.data) || []).filter((p) => p && !list.some((q) => q.id === p.id));
+      if (extra.length) { list = list.concat(extra); picked = choosePhotos(list, h); }
+    }
     const photos = picked.chosen.map((p) => ({ url: p.url, caption: p.caption, owner: p.owner }));
     if (photosR.status === "rejected") console.warn("tripadvisor photos", slug, photosR.reason && photosR.reason.message);
     if (reviewsR.status === "rejected") console.warn("tripadvisor reviews", slug, reviewsR.reason && reviewsR.reason.message);
