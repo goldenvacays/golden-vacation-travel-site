@@ -712,10 +712,26 @@ footer strong{color:var(--ink)}
     }
   }
   var cards = Array.prototype.slice.call(document.querySelectorAll('.hotel[data-ta]'));
+  /* One hotel at a time, at least 600ms apart: Tripadvisor allows 10 calls a second and each hotel takes 3.
+     A hotel that comes back offline (rate limit, timeout) is asked once more, 2.5 seconds later. */
+  var queue = [], busy = false, last = 0;
+  function retry(job){ if (!job.again) setTimeout(function(){ queue.push({ card: job.card, again: true }); pump(); }, 2500); }
+  function pump(){
+    if (busy || !queue.length) return;
+    busy = true;
+    var job = queue.shift();
+    setTimeout(function(){
+      last = Date.now();
+      fetch(FN + encodeURIComponent(job.card.getAttribute('data-ta')), { cache: 'no-store' })
+        .then(function(r){ return r.json(); })
+        .then(function(d){ if (d && d.ok) { try { paint(job.card, d); } catch (e) {} } else if (d && d.reason === 'offline') retry(job); })
+        .catch(function(){ retry(job); })
+        .then(function(){ busy = false; pump(); });
+    }, Math.max(0, last + 600 - Date.now()));
+  }
   function load(card){
     if (card.getAttribute('data-ta-done')) return; card.setAttribute('data-ta-done', '1');
-    fetch(FN + encodeURIComponent(card.getAttribute('data-ta')), { cache: 'no-store' })
-      .then(function(r){ return r.json(); }).then(function(d){ if (d && d.ok) paint(card, d); }).catch(function(){});
+    queue.push({ card: card }); pump();
   }
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { load(e.target); io.unobserve(e.target); } }); }, { rootMargin: '400px 0px' });

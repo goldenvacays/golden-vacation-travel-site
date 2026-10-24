@@ -15,33 +15,42 @@ import { json } from "./_exp-shared.mjs";
 const BASE = process.env.TRIPADVISOR_API_BASE || "https://terra.tripadvisor.com/api";
 const VERSION = process.env.TRIPADVISOR_API_VERSION || "2";
 
-// Hotels the quote pages can ask for. Pin locationId once the log shows it, to skip the billed search.
+// Hotels the quote pages can ask for. Pin locationId once the log shows it, to skip the billed search (the search
+// endpoints only allow 1 call a second, so a page of unpinned hotels runs into Tripadvisor's limit).
 const HOTELS = {
-  "chatrium-riverside": { search: "Chatrium Hotel Riverside Bangkok", country: "TH", lat: 13.7069, lng: 100.5101, locationId: null },
-  "lebua-state-tower": { search: "lebua at State Tower", country: "TH", lat: 13.72156, lng: 100.51692, locationId: null },
-  "shangri-la-bangkok": { search: "Shangri-La Bangkok", country: "TH", lat: 13.72143, lng: 100.51424, locationId: null,
+  "chatrium-riverside": { search: "Chatrium Hotel Riverside Bangkok", country: "TH", lat: 13.7069, lng: 100.5101, locationId: 1315544 },
+  "lebua-state-tower": { search: "lebua at State Tower", country: "TH", lat: 13.72156, lng: 100.51692, locationId: 301007 },
+  "shangri-la-bangkok": { search: "Shangri-La Bangkok", country: "TH", lat: 13.72143, lng: 100.51424, locationId: 307155,
     skipPhotos: [459681138] }, // a member of staff greeting a guest: people, not the hotel
-  "avani-riverside": { search: "Avani+ Riverside Bangkok Hotel", country: "TH", lat: 13.70522, lng: 100.49111, locationId: null },
-  "ramada-menam": { search: "Ramada Plaza by Wyndham Bangkok Menam Riverside", country: "TH", lat: 13.70757, lng: 100.50597, locationId: null },
+  "avani-riverside": { search: "Avani+ Riverside Bangkok Hotel", country: "TH", lat: 13.70522, lng: 100.49111, locationId: 8822150 },
+  "ramada-menam": { search: "Ramada Plaza Bangkok Menam Riverside", country: "TH", lat: 13.70757, lng: 100.50597, locationId: 305711 },
 };
 
 const idCache = {};
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let pausedUntil = 0;
 
+/* Discover allows 10 calls a second. A 429 no longer fails the card: the call waits a moment and tries once more, and
+   other calls from the same instance wait out that moment instead of piling in. */
 async function ta(path, params = {}) {
   const key = process.env.TRIPADVISOR_API_KEY;
   if (!key) throw new Error("TRIPADVISOR_API_KEY is not set");
-  if (Date.now() < pausedUntil) { const e = new Error("paused after a rate limit"); e.status = 429; throw e; }
+  if (Date.now() < pausedUntil) await sleep(pausedUntil - Date.now());
   const q = new URLSearchParams();
   if (VERSION && !path.startsWith("/catalog/")) q.set("version", VERSION);
   for (const [k, v] of Object.entries(params)) if (v != null && v !== "") q.set(k, String(v));
   const go = async () => {
     const res = await fetch(`${BASE}${path}?${q}`, { headers: { "X-API-Key": key, Accept: "application/json" } });
     const body = await res.json().catch(() => ({}));
-    if (res.status === 429) pausedUntil = Date.now() + 60 * 1000;
     return { res, body };
   };
   let { res, body } = await go();
+  if (res.status === 429) {
+    const wait = 1200 + Math.round(Math.random() * 400);
+    pausedUntil = Math.max(pausedUntil, Date.now() + wait);
+    await sleep(wait);
+    ({ res, body } = await go());
+  }
   if (!res.ok && res.status === 400 && q.has("version") && /version/i.test(JSON.stringify(body))) { q.delete("version"); ({ res, body } = await go()); }
   if (res.ok) return body;
   const e = new Error([body.title, body.detail, body.message].filter(Boolean).join(" / ") || `Tripadvisor ${res.status}`); e.status = res.status; throw e;
@@ -140,9 +149,8 @@ function choosePhotos(list, h, max = 6) {
   return { chosen: pinned.concat(rest).slice(0, max), all };
 }
 
-// Enough photos to choose from; if the API turns the page size down, ask again for fewer.
-const photosFor = (id) => ta(`/locations/${id}/photos`, { locale: "en-US", size: 30 })
-  .catch((e) => (e.status === 400 ? ta(`/locations/${id}/photos`, { locale: "en-US", size: 10 }) : Promise.reject(e)));
+// The photos endpoint sends 5 at a time (asking for more still brought 5), so one call of 5.
+const photosFor = (id) => ta(`/locations/${id}/photos`, { locale: "en-US", size: 5 });
 
 export const handler = async (event) => {
   const qs = event.queryStringParameters || {};
