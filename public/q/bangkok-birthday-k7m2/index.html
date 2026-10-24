@@ -108,6 +108,8 @@ button{font-family:inherit}
   --chip:#21487D; --chip-ink:#E6EDF7; --gold-deep:#F2C75C}
 .fl-band .wrap{max-width:1240px;margin:0 auto;padding:0 24px}
 .fl-band .note{border:1px solid #24497C}
+.fl-bags{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:15px;font-weight:600;color:#F4F2EC}
+.fl-bags svg{flex:none;color:#F2B93B}
 
 /* Branch diagram */
 .route{background:var(--card);border:1px solid #24497C;border-radius:var(--radius);padding:18px 22px;margin-bottom:12px}
@@ -470,6 +472,7 @@ html.pv-open{overflow:hidden}
         </svg>
       </figure>
     </div>
+    <p class="fl-bags"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V4h6v3M9 11v5M15 11v5"/></svg>Bags included: 2 checked bags, 1 carry-on and 1 personal item each.</p>
     <details class="fl-times">
       <summary><span class="c">See flight times</span><span class="o">Hide flight times</span></summary>
       <div class="gv-fl-list">
@@ -509,7 +512,7 @@ html.pv-open{overflow:hidden}
 
 
   <section aria-labelledby="stay-h">
-    <div class="sec-head"><h2 id="stay-h">Pick your hotel</h2><p>Prices are per person, flights and hotel together, taxes included. Rates are subject to change until a deposit is paid.</p></div>
+    <div class="sec-head"><h2 id="stay-h">Pick your hotel</h2><p>Prices are per person for flights and hotel together, with taxes and daily breakfast included. Rates are subject to change until a deposit is paid. At check-in, the hotel holds a refundable security deposit on your card, released after you leave.</p></div>
     <div class="results">
       <div class="main">
         <article class="hotel" id="h-ramada" data-ta="ramada-menam">
@@ -881,6 +884,7 @@ html.pv-open{overflow:hidden}
       { room: 'Deluxe Room, river view', note: 'window seat', src: R + 'shangrila-deluxe-river-window.jpg' }
     ],
     'lebua-state-tower': [
+      { room: '2-Bedroom Standard Suite', note: 'living room', src: R + 'lebua-2br-suite-living.jpg' },
       { room: '2-Bedroom Standard Suite', note: 'bedroom', src: R + 'lebua-2br-suite-bedroom.jpg' }
     ]
   };

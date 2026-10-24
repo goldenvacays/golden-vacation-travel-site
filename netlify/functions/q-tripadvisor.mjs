@@ -166,13 +166,17 @@ function choosePhotos(list, h, max = 6) {
   return { chosen: pinned.concat(rest).slice(0, max), all };
 }
 
-// The photos endpoint gives 5 photos per hotel (asking for more, or for page 1, brought nothing new), so one call of 5.
-const photosFor = (id, until) => ta(`/locations/${id}/photos`, { locale: "en-US", size: 5 }, until);
+/* The photos endpoint gives 5 photos a call (asking for more brought nothing new). When fewer than 3 of the first five
+   are usable (Ramada's are mostly 2020 shots of staff in masks) and Tripadvisor's own page count says there are more,
+   the next page is asked for once (one more billed call, only for that hotel). ?why=1 shows the page counts, and
+   ?why=1&page=N asks for page N first, to check how the paging works. */
+const photosFor = (id, until, page) => ta(`/locations/${id}/photos`, { locale: "en-US", size: 5, page }, until);
 
 export const handler = async (event) => {
   const qs = event.queryStringParameters || {};
   const slug = qs.hotel || "";
   const why = qs.why === "1";
+  const probePage = why && /^\d{1,2}$/.test(qs.page || "") ? Number(qs.page) : undefined;
   const h = HOTELS[slug];
   if (!h) return json(404, { ok: false });
   const until = Date.now() + 7500; // everything Tripadvisor has to say, inside Netlify's 10 seconds
@@ -183,13 +187,21 @@ export const handler = async (event) => {
     const [detailsR, reviewsR, photosR] = await Promise.allSettled([
       ta(`/locations/${id}`, { locale: "en-US" }, until),
       sleep(150).then(() => ta(`/locations/${id}/reviews`, { language: "en", sort_by: "MOST_RECENT", size: 3 }, until)),
-      sleep(300).then(() => photosFor(id, until)),
+      sleep(300).then(() => photosFor(id, until, probePage)),
     ]);
     let loc = detailsR.status === "fulfilled" ? detailsR.value : null;
     if (!loc && until - Date.now() > 1500) loc = await ta(`/catalog/locations/${id}`, { locale: "en-US" }, until).catch(() => null);
     const s = loc ? summary(loc) : {};
     const reviews = reviewsR.status === "fulfilled" ? (reviewsR.value.data || []).slice(0, 3).map(review) : [];
-    const picked = choosePhotos(photosR.status === "fulfilled" ? photosR.value.data || [] : [], h);
+    let list = photosR.status === "fulfilled" ? photosR.value.data || [] : [];
+    const pg = (photosR.status === "fulfilled" && photosR.value.pagination) || {};
+    let picked = choosePhotos(list, h), extraPage = null;
+    if (picked.chosen.length < 3 && Number(pg.total_pages) > 1 && Number(pg.page) < Number(pg.total_pages) && until - Date.now() > 2000) {
+      extraPage = Number(pg.page) + 1; // the page Tripadvisor says it gave us, plus one
+      const more = await photosFor(id, until, extraPage).catch((e) => { console.warn("tripadvisor photos page", extraPage, slug, e.message); return null; });
+      const seen = new Set(list.map((p) => p && p.id));
+      if (more && Array.isArray(more.data)) { list = list.concat(more.data.filter((p) => p && !seen.has(p.id))); picked = choosePhotos(list, h); }
+    }
     const photos = picked.chosen.map((p) => ({ url: p.url, caption: p.caption, owner: p.owner }));
     if (photosR.status === "rejected") console.warn("tripadvisor photos", slug, photosR.reason && photosR.reason.message);
     if (reviewsR.status === "rejected") console.warn("tripadvisor reviews", slug, reviewsR.reason && reviewsR.reason.message);
@@ -202,6 +214,7 @@ export const handler = async (event) => {
       ...(why ? { why: [detailsR, reviewsR, photosR].filter((r) => r.status === "rejected").map((r) => r.reason && r.reason.message).join(" | "),
                   ms: 7500 - (until - Date.now()),
                   starRating: !loc ? "no details" : loc.accommodation ? (loc.accommodation.star_rating ?? "none sent") : "no accommodation block",
+                  photoPages: { asked: probePage ?? "default", page: pg.page ?? null, size: pg.size ?? null, total: pg.total_elements ?? null, pages: pg.total_pages ?? null, extraPage },
                   pool: picked.all.map((p) => [p.id, p.owner ? "hotel" : "traveler", p.scene || "-", p.score ? p.score.toFixed(2) : "-", `${p.w}x${p.h}`,
                     picked.chosen.includes(p) ? "SHOWN" : "", p.caption.slice(0, 50)].join(" · ")) } : {}),
     });
