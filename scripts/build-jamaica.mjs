@@ -234,6 +234,11 @@ function whoPicker(lang, id) {
     <input type="hidden" name="adults" value="2"><input type="hidden" name="children" value="0"><input type="hidden" name="rooms" value="1"><input type="hidden" name="child_ages" value=""><input type="hidden" name="split" value=""></div>`;
 }
 
+/* Netlify rewrites every Netlify form tag on deploy with single-quoted attributes and a backslash before each
+   apostrophe, which browsers do not read ("I'm" became "I\" and cut the WhatsApp intro short). So the form tag's
+   own attributes carry the typographic apostrophe instead. */
+const formAttr = (s) => esc(String(s).replace(/'/g, "’"));
+
 function planSection(pg) {
   const lang = pg.lang, T = J.i18n[lang], F = pg.form, L = T.form;
   const action = lang === "es" ? `${BASE}/es/enviado/` : `${BASE}/sent/`;
@@ -243,7 +248,7 @@ function planSection(pg) {
   return `<section class="jsec plan" id="plan" aria-labelledby="plan-h"><div class="wrap plan-grid">
   <div class="plan-copy"><span class="kicker">${esc(pg.label)}</span><h2 class="h2" id="plan-h">${esc(F.title)}</h2><p class="lead">${esc(F.sub)}</p>
     <ul class="plan-ticks">${T.why.map(([a, b]) => `<li>${icon("check", 16, 3)}<span><b>${esc(a)}</b> ${esc(b)}</span></li>`).join("")}</ul></div>
-  <form class="book jform" name="jamaica" method="POST" action="${action}" data-netlify="true" netlify-honeypot="bot-field" novalidate id="jform" data-intro="${esc(F.waIntro)}" data-ref="${pg.ref}" data-audience="${esc(pg.label)}">
+  <form class="book jform" name="jamaica" method="POST" action="${action}" data-netlify="true" netlify-honeypot="bot-field" novalidate id="jform" data-intro="${formAttr(F.waIntro)}" data-ref="${pg.ref}" data-audience="${formAttr(pg.label)}">
     <input type="hidden" name="form-name" value="jamaica">
     <input type="hidden" name="audience" value="${esc(pg.key)}">
     <input type="hidden" name="lang" value="${lang}">
