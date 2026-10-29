@@ -2,6 +2,10 @@
 /hotel-status-map     /map/index.html   200
 /hotel-status-map/    /map/index.html   200
 
+# Short address for flyers and ads: goldenvacays.com/teachers opens the Teachers' Day page
+/teachers             /teachers-day/    301
+/teachers/            /teachers-day/    301
+
 # The old single-page group form moved to the groups pages (folder to folder, never a file page)
 /group-inquiry        /groups/          301
 /group-inquiry/       /groups/          301
