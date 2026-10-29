@@ -29,7 +29,8 @@ export function briefLines(f) {
   } else if (b === "jamaica") {
     const es = f.lang === "es";
     const who = { usa: "from the USA", "coming-home": "coming home", es: "from the USA, in Spanish", "uk-canada": "from the UK or Canada, land only" }[f.audience] || "";
-    L.push([es ? "Solicitud" : "Enquiry", es ? "Viaje a Jamaica" : `Coming to Jamaica${who ? `, ${who}` : ""}`]);
+    /* the Teachers' Day page (/teachers-day/) uses this form too: a resort stay in Jamaica, usually for a local teacher */
+    L.push([es ? "Solicitud" : "Enquiry", es ? "Viaje a Jamaica" : f.audience === "teachers-day" ? "Teachers' Day resort stay" : `Coming to Jamaica${who ? `, ${who}` : ""}`]);
     const niceEs = (d) => { if (!d) return ""; const t = new Date(d + "T00:00:00"); return isNaN(t) ? d : t.toLocaleDateString("es", { day: "numeric", month: "short", year: "numeric" }); };
     L.push([es ? "Fechas" : "Dates", es ? (f.checkin || f.checkout ? `${niceEs(f.checkin)} a ${niceEs(f.checkout)}` : "") : dates("checkin", "checkout")]);
     if (f.rooms && Number(f.rooms) > 1) L.push([es ? "Habitaciones" : "Rooms", `${f.rooms}${f.split ? ` (${f.split})` : ""}`]);

@@ -2,6 +2,7 @@
    Every form: the team gets one readable email (layout in _notify.mjs) at FORMS_NOTIFY.
    The "groups" form also: the guest gets a confirmation with their reference and the brief we received.
    The "jamaica" form (Coming to Jamaica pages): the guest gets a confirmation in English or Spanish, with a GV-JAM reference.
+   The Teachers' Day page posts the same form (audience teachers-day, reference GV-TEACH) and gets its own wording.
    Netlify's own notification still goes out as configured until it is switched off in the Netlify UI.
 
    Needs, in Netlify env:
@@ -24,9 +25,12 @@ const SITE = process.env.URL || "https://goldenvacays.com";
 function jamaicaEmail(f) {
   const ref = f.ref || "", es = f.lang === "es";
   const lines = briefLines(f);
+  /* the Teachers' Day page sends this form too (audience teachers-day): its own wording and its own page in the sign-off */
+  const teach = f.audience === "teachers-day";
   const T = es
     ? { hi: `Hola ${f.name || ""},`, got: `Recibimos tu solicitud de viaje a Jamaica. Tu número de referencia es ${ref}.`, reply: "Te respondemos en horario de oficina con tu precio, por WhatsApp o por correo.", told: "Lo que nos contaste:", fix: "¿Ves un error? Responde a este correo con tu referencia y lo corregimos antes de cotizar.", sign: "Oficinas en Jamaica y Florida. Acreditados por IATA.", subject: `Tu solicitud de viaje a Jamaica ${ref}` }
-    : { hi: `Hi ${f.name || "there"},`, got: `We have your Jamaica trip request. Your reference is ${ref}.`, reply: "We reply within working hours with your price, on WhatsApp or by email.", told: "What you told us:", fix: "Spotted a mistake? Reply to this email with your reference and we fix it before quoting.", sign: "Offices in Jamaica and Florida. IATA-accredited.", subject: `Your Jamaica trip request ${ref}` };
+    : { hi: `Hi ${f.name || "there"},`, got: teach ? `We have your Teachers' Day request. Your reference is ${ref}.` : `We have your Jamaica trip request. Your reference is ${ref}.`, reply: "We reply within working hours with your price, on WhatsApp or by email.", told: "What you told us:", fix: "Spotted a mistake? Reply to this email with your reference and we fix it before quoting.", sign: "Offices in Jamaica and Florida. IATA-accredited.", subject: teach ? `Your Teachers' Day request ${ref}` : `Your Jamaica trip request ${ref}` };
+  const pagePath = es ? "/jamaica/es/" : teach ? "/teachers-day/" : "/jamaica/";
   const people = [f.adults ? `${f.adults} ${es ? (f.adults == 1 ? "adulto" : "adultos") : f.adults == 1 ? "adult" : "adults"}` : "", Number(f.children) ? `${f.children} ${es ? (f.children == 1 ? "niño" : "niños") : f.children == 1 ? "child" : "children"}${f.child_ages ? ` (${f.child_ages})` : ""}` : ""].filter(Boolean).join(", ");
   const rows = lines.map(([k, v]) => (k === "People" ? [es ? "Quién viaja" : "People", people] : [k, v]));
   const text = [T.hi, "", T.got, T.reply, "", T.told, ...rows.map(([k, v]) => `  ${k}: ${v}`), "", T.fix, "", "Golden Vacation & Travel", T.sign, `${es ? "Llama al" : "Call"} 876 817 3467`].join("\n");
@@ -37,7 +41,7 @@ function jamaicaEmail(f) {
   <p style="font-size:13px;font-weight:700;color:#A87A12;margin:24px 0 6px">${esc(T.told.replace(/:$/, "").toUpperCase())}</p>
   <table style="border-collapse:collapse;font-size:15px">${rows.map(([k, v]) => `<tr><td style="padding:4px 12px 4px 0;font-weight:700;vertical-align:top;white-space:nowrap">${esc(k)}</td><td style="padding:4px 0;color:#3C403A">${esc(v)}</td></tr>`).join("")}</table>
   <p style="font-size:14px;color:#5A5F57;margin-top:24px">${esc(T.fix)}</p>
-  <p style="font-size:14px;margin-top:24px"><b>Golden Vacation &amp; Travel</b><br>${esc(T.sign)}<br>${es ? "Llama al" : "Call"} 876 817 3467 · <a href="${SITE}${es ? "/jamaica/es/" : "/jamaica/"}" style="color:#A87A12">${SITE.replace(/^https?:\/\//, "")}${es ? "/jamaica/es" : "/jamaica"}</a></p>
+  <p style="font-size:14px;margin-top:24px"><b>Golden Vacation &amp; Travel</b><br>${esc(T.sign)}<br>${es ? "Llama al" : "Call"} 876 817 3467 · <a href="${SITE}${pagePath}" style="color:#A87A12">${SITE.replace(/^https?:\/\//, "")}${pagePath.replace(/\/$/, "")}</a></p>
 </div>`;
   return { subject: T.subject, text, html };
 }
