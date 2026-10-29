@@ -271,13 +271,15 @@
     "all": "All staycations",
     "allHref": "/hotel-status/",
     "feature": {
-      "kicker": "Heroes Weekend · 17 to 19 Oct",
-      "title": "Long weekend, sorted.",
-      "text": "Two nights, two adults, priced in J$. Ocho Rios, Montego Bay or Negril, all confirmed open.",
-      "textMobile": "2 nights, 2 adults, priced in J$",
-      "cta": "Quote my weekend",
-      "message": "Hi Golden Vacation! I'm looking at Heroes Weekend on your website. Please quote 2 nights, 17 to 19 October, 2 adults, priced in J$. Open to Ocho Rios, Montego Bay or Negril. Ref GV-STAY-HEROES",
-      "until": "2026-10-17"
+      "kicker": "Teachers' Day · 21 to 25 May 2027",
+      "title": "Class dismissed.",
+      "text": "Teachers' Day staycation deals at 29 resorts over the Labour Day weekend, from US$124 a night.",
+      "textMobile": "29 resorts, from US$124 a night",
+      "cta": "See the deals",
+      "href": "/teachers-day/",
+      "where": "teachers-day",
+      "message": "Hi Golden Vacation! I'm looking at the Teachers' Day deals on your website. Ref GV-TEACH",
+      "until": "2027-05-25"
     },
     "hotels": [
       {

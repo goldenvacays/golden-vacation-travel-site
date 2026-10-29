@@ -1,0 +1,131 @@
+{
+  "note": "The Teachers' Day page (/teachers-day/ and /teachers-day/sent/), built by scripts/build-teachers.mjs. The deals are Hana's May 2027 Teachers' Day flyer (21 to 25 May, per person per night, double occupancy): each one names its resort on the status map (public/map/resorts.js) by 'status', which gives the photo (python3 scripts/make-teacher-thumbs.py cuts the thumbnails) and any reopening date. Most teachers travel over the Labour Day weekend (2027: Fri 21 to Mon 24 or Sat 22 to Tue 25 May). Each year change the year, the hero, the deals, the dates block, form.popular and form.cardAsk, the meta and the first two questions. The request form posts to the shared 'jamaica' Netlify form with audience 'teachers-day', so the team email and the guest confirmation already know it.",
+  "path": "/teachers-day/",
+  "ref": "GV-TEACH",
+  "label": "Teachers' Day",
+  "meta": {
+    "title": "Teachers' Day Staycation Deals 2027 in Jamaica | Golden Vacation & Travel",
+    "description": "Teachers' Day staycation deals at 29 Jamaica resorts, from US$124 a night, for the Labour Day weekend, 21 to 25 May 2027. Staff trips for schools too.",
+    "published": "2026-10-29"
+  },
+  "hero": {
+    "img": "/jamaica/img/ocho-rios-hero-1600.jpg",
+    "imgSmall": "/teachers-day/img/hero-900.jpg",
+    "alt": "RIU Ocho Rios on Mammee Bay, from above",
+    "kicker": "Teachers' Day staycation deals 2027",
+    "title": "Class dismissed.",
+    "sub": "29 resorts over the Labour Day weekend, 21 to 25 May, from US$124 a night. Or bring the whole staff.",
+    "chips": ["From US$124 pp/night", "Pay in J$", "Staff trips, ten rooms or more"]
+  },
+  "deals": {
+    "kicker": "For teachers",
+    "title": "29 resorts. One long weekend.",
+    "sub": "Teachers' Day staycation deals for the Labour Day weekend, 21 to 25 May 2027. From-prices per person a night, double occupancy.",
+    "small": "Blackout dates may apply. Rates can change without notice, so your quote confirms the price. We check what's open before we quote.",
+    "window": "2027-05-21",
+    "windowEnd": "2027-05-25",
+    "listName": "Teachers' Day staycation deals, 21 to 25 May 2027",
+    "faqCheapest": "What are the cheapest Teachers' Day staycation deals?",
+    "faqKingston": "Which Teachers' Day deals are closest to Kingston?",
+    "nearKingston": "ocho",
+    "all": "All 29",
+    "areas": [["mobay", "Montego Bay"], ["negril", "Negril"], ["ocho", "Ocho Rios & Runaway Bay"], ["falmouth", "Falmouth & Trelawny"], ["hanover", "Hanover"]],
+    "items": [
+      { "name": "Seagarden", "status": "Sea Garden Hotel", "where": "Montego Bay", "area": "mobay", "usd": 124 },
+      { "name": "Bahia Principe Escape", "status": "Bahia Principe Escape Runaway Bay", "where": "Runaway Bay", "area": "ocho", "usd": 144 },
+      { "name": "Bahia Principe Explore", "status": "Bahia Principe Explore Jamaica", "where": "Runaway Bay", "area": "ocho", "usd": 144 },
+      { "name": "Grand Palladium Lady Hamilton", "status": "Grand Palladium Lady Hamilton Resort & Spa", "where": "Lucea, Hanover", "area": "hanover", "usd": 164 },
+      { "name": "Iberostar Waves Rose Hall", "status": "Iberostar Waves Rose Hall", "where": "Montego Bay", "area": "mobay", "usd": 166 },
+      { "name": "Grand Palladium Jamaica", "status": "Grand Palladium Jamaica Resort & Spa", "where": "Lucea, Hanover", "area": "hanover", "usd": 170 },
+      { "name": "Azul Beach Resort Negril", "status": "Azul Beach Resort Negril", "where": "Negril", "area": "negril", "usd": 172 },
+      { "name": "RIU Negril", "status": "RIU Negril", "where": "Negril", "area": "negril", "usd": 174 },
+      { "name": "Royalton Negril", "status": "Royalton Negril", "where": "Negril", "area": "negril", "usd": 178 },
+      { "name": "RIU Ocho Rios", "status": "RIU Ocho Rios", "where": "Ocho Rios", "area": "ocho", "usd": 180 },
+      { "name": "Hideaway at Royalton Blue Waters", "status": "Royalton Hideaway Blue Waters", "where": "Falmouth", "area": "falmouth", "usd": 190 },
+      { "name": "RIU Montego Bay", "status": "RIU Montego Bay", "where": "Montego Bay", "area": "mobay", "usd": 192 },
+      { "name": "Ocean Coral Spring", "status": "Ocean Coral Spring", "where": "Trelawny", "area": "falmouth", "usd": 200 },
+      { "name": "Princess Grand Jamaica", "status": "Princess Grand Jamaica", "where": "Green Island, Hanover", "area": "hanover", "usd": 202 },
+      { "name": "RIU Palace Tropical Bay", "status": "RIU Palace Tropical Bay", "where": "Negril", "area": "negril", "usd": 210 },
+      { "name": "RIU Reggae", "status": "RIU Reggae", "where": "Montego Bay", "area": "mobay", "usd": 210 },
+      { "name": "Ocean Eden Bay", "status": "Ocean Eden Bay", "where": "Trelawny", "area": "falmouth", "usd": 218 },
+      { "name": "Moon Palace Jamaica", "status": "Moon Palace Jamaica", "where": "Ocho Rios", "area": "ocho", "usd": 230 },
+      { "name": "Hideaway at Royalton Negril", "status": "Royalton Hideaway Negril", "where": "Negril", "area": "negril", "usd": 236 },
+      { "name": "Royalton Blue Waters", "status": "Royalton Blue Waters", "where": "Falmouth", "area": "falmouth", "usd": 236 },
+      { "name": "Iberostar Selection Rose Hall", "status": "Iberostar Selection Rose Hall", "where": "Montego Bay", "area": "mobay", "usd": 250 },
+      { "name": "RIU Palace Jamaica", "status": "RIU Palace Jamaica", "where": "Montego Bay", "area": "mobay", "usd": 252 },
+      { "name": "RIU Palace Aquarelle", "status": "RIU Palace Aquarelle", "where": "Falmouth", "area": "falmouth", "usd": 254 },
+      { "name": "Dreams Rose Hall", "status": "Dreams Rose Hall", "where": "Montego Bay", "area": "mobay", "usd": 272 },
+      { "name": "Princess Senses The Mangrove", "status": "Princess Senses The Mangrove", "where": "Green Island, Hanover", "area": "hanover", "usd": 280 },
+      { "name": "S Hotel Montego Bay", "status": "S Hotel Montego Bay", "where": "Montego Bay", "area": "mobay", "usd": 300 },
+      { "name": "Sandals Ochi", "status": "Sandals Ochi", "where": "Ocho Rios", "area": "ocho", "usd": 316 },
+      { "name": "JOIA Rose Hall", "status": "JOIA Rose Hall by Iberostar", "where": "Montego Bay", "area": "mobay", "usd": 352 },
+      { "name": "Breathless Montego Bay", "status": "Breathless Montego Bay", "where": "Montego Bay", "area": "mobay", "usd": 382 }
+    ]
+  },
+  "dates": {
+    "kicker": "Dates to know",
+    "title": "The weekend teachers want.",
+    "items": [
+      ["Fri 21 to Mon 24 May", "Labour Day weekend", "The dates most teachers ask for, so they go first. Ask early."],
+      ["Sat 22 to Tue 25 May", "Labour Day, a day later", "The other favourite. Three nights, with Labour Day in the middle."],
+      ["Wed 5 May", "Teachers' Day", "Always the first Wednesday in May."],
+      ["July and August", "Summer break", "The longest stretch off, and two of our busiest months. Ask early."]
+    ]
+  },
+  "schools": {
+    "kicker": "For schools",
+    "title": "Bring the whole staff.",
+    "sub": "Ten rooms or more gets group rates, for a staff weekend, a retreat or a Teachers' Day treat. Principals, boards and staff welfare committees send the dates and numbers, and we email the quote within one working day.",
+    "img": "rooms-resort",
+    "alt": "Rooms around the pool at a north coast resort, Jamaica",
+    "gets": [
+      ["Group rates", "For ten rooms or more, taxes included."],
+      ["Small deposits", "A little down holds the rooms, the rest on a plan around your dates."],
+      ["Pay by invoice", "For schools, boards and committees."]
+    ],
+    "chips": ["Staff weekend", "Staff retreat", "Teachers' Day treat", "End of term"],
+    "cta": ["Quote me", "/groups/enquire/?branch=groups"],
+    "small": "Your quote by email, within one working day. Under ten rooms? Use the form below."
+  },
+  "how": {
+    "kicker": "How it works",
+    "title": "Three steps, one price.",
+    "steps": [
+      ["Tell us your dates and who's coming", "Use the form or WhatsApp. Name the resort, or let us suggest one."],
+      ["Get your price", "One price for the stay, in J$ or US$, on WhatsApp or by email, within working hours."],
+      ["Hold it with a deposit", "Pay the deposit and your room is held. The balance date is on your quote."]
+    ]
+  },
+  "form": {
+    "kicker": "Teachers' Day",
+    "title": "Get your price",
+    "sub": "Tell us your dates and who's coming. We reply within working hours with your price, on WhatsApp or by email.",
+    "waIntro": "Hi Golden Vacation! I'm planning a Teachers' Day getaway.",
+    "cardAsk": "21 to 24 or 22 to 25 May",
+    "popularLabel": "Popular dates",
+    "popular": [["Fri 21 to Mon 24 May", "2027-05-21", "2027-05-24"], ["Sat 22 to Tue 25 May", "2027-05-22", "2027-05-25"]],
+    "needsLabel": "What matters most?",
+    "needs": ["Adults only", "Family friendly", "Water park", "Swim-up room"],
+    "areas": ["Montego Bay", "Negril", "Ocho Rios & Runaway Bay", "Falmouth & Trelawny", "Hanover"],
+    "occasion": ["Labour Day weekend", "Teachers' Day", "Summer break", "Staff trip, under ten rooms", "Just because"],
+    "currency": ["J$", "US$"],
+    "notesPh": "The resort you like"
+  },
+  "faq": [
+    ["When is Teachers' Day 2027?", "Wednesday 5 May 2027. In Jamaica, Teachers' Day is always the first Wednesday in May."],
+    ["Which dates do teachers pick?", "Most go Friday 21 to Monday 24 May, or Saturday 22 to Tuesday 25 May, over the Labour Day weekend. Those dates go first, so ask early."],
+    ["Is the price per person?", "Yes. Prices are per person a night, double occupancy, for stays between 21 and 25 May 2027. Blackout dates may apply and rates can change, so your quote confirms the price."],
+    ["Can we stay just two nights?", "Yes. Two nights is fine for resort stays in Jamaica."],
+    ["Can I pay in Jamaican dollars?", "Yes. Ask for your quote in J$ and pay in J$."],
+    ["Our school wants a staff trip. How does it work?", "Ten rooms or more gets group rates. Send the dates and numbers through our Groups page and we email the quote within one working day (over 20 rooms, up to five working days). Schools can pay by invoice."],
+    ["Fewer than ten rooms for the staff?", "That books like a regular stay. Use the form on this page or WhatsApp us, and we price the rooms together."],
+    ["Which resorts are open?", "We check what's open before we quote. Our resort status page has the latest."]
+  ],
+  "sent": {
+    "kicker": "Got it",
+    "title": "Your request is in",
+    "lead": "We reply within working hours with your price, on WhatsApp or by email. A confirmation with your reference is on its way to your inbox.",
+    "back": "Back to Teachers' Day",
+    "home": "Home"
+  }
+}
