@@ -316,8 +316,10 @@ function homePage() {
   // staycations
   const F = H.staycations.feature;
   const showFeature = !F.until || today <= F.until;
-  const feature = showFeature ? `<a class="feature" href="${wa(F.message)}" data-until="${F.until || ""}" data-where="heroes-weekend">
-    <div>${kicker(F.kicker, true)}<span class="hh">${esc(F.title)}</span><p>${longShort(F.text, F.textMobile)}</p></div>${biglink(F.cta, wa(F.message)).replace("<a ", "<span ").replace("</a>", "</span>")}${icon("arrow", 24, 2.4)}
+  /* a feature with an href opens that page (a deals page); without one it opens WhatsApp with its message */
+  const fHref = F.href || wa(F.message);
+  const feature = showFeature ? `<a class="feature" href="${fHref}" data-until="${F.until || ""}" data-where="${esc(F.where || "heroes-weekend")}">
+    <div>${kicker(F.kicker, true)}<span class="hh">${esc(F.title)}</span><p>${longShort(F.text, F.textMobile)}</p></div>${biglink(F.cta, fHref).replace("<a ", "<span ").replace("</a>", "</span>")}${icon("arrow", 24, 2.4)}
   </a>` : "";
   const scards = H.staycations.hotels.map((h) => {
     const r = findResort(h.match) || {};
