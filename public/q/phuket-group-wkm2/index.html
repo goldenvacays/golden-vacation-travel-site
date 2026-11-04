@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<title>Your group trip to Phuket – Golden Vacation</title>
+<meta name="description" content="Business class flights to Phuket, 6–24 January 2027, from Kingston, Miami and Toronto. Pick your fares and see your group total.">
+<meta property="og:title" content="Your group trip to Phuket">
+<meta property="og:description" content="Business class flights to Phuket, 6–24 January 2027. Pick your fares and see your group total.">
+<meta property="og:site_name" content="Golden Vacation">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+/* Modern group quote: white page, black bar, one big headline, flat grey city cards, navy/gold fare tabs, black total card */
+:root{
+  --bg:#FFFFFF; --surface:#F3F4F6; --surface-2:#E8EAED; --ink:#14171A; --muted:#5F6670; --line:#DFE2E6; --line-strong:#C3C8CF;
+  --gold:#C9A227; --gold-deep:#8A6A0E; --gold-soft:#FFF1C2; --gold-line:#EAD9A3;
+  --navy:#0B2342; --tile-price:#0B2342; --black:#0A0A0A; --on-dark:#FFFFFF; --on-dark-muted:#A9AFB7; --dark-line:#2A2D33;
+  --total-border:transparent;
+  --font:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --radius:24px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1013; --surface:#181B1F; --surface-2:#23272C; --ink:#F2F3F5; --muted:#A3AAB3; --line:#2A2F35; --line-strong:#3E444C;
+    --gold-deep:#E3C15A; --gold-soft:#332A0E; --gold-line:#5C4B17; --navy:#123563; --tile-price:#F2F3F5;
+    --black:#000000; --total-border:#2A2F35;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1013; --surface:#181B1F; --surface-2:#23272C; --ink:#F2F3F5; --muted:#A3AAB3; --line:#2A2F35; --line-strong:#3E444C;
+  --gold-deep:#E3C15A; --gold-soft:#332A0E; --gold-line:#5C4B17; --navy:#123563; --tile-price:#F2F3F5;
+  --black:#000000; --total-border:#2A2F35;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--black)}
+a{color:inherit}
+h1,h2,h3,p{margin:0}
+button{font:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.gutter{padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1200px;margin:0 auto}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* Top bar */
+.top{background:var(--black);color:var(--on-dark)}
+.top .wrap{height:60px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.wm{display:inline-flex;align-items:center;gap:9px;text-decoration:none;color:var(--on-dark)}
+.wm strong{font-weight:800;letter-spacing:.16em;font-size:15px}
+.wm span{background:var(--gold);color:#000;font-weight:800;font-size:12.5px;padding:3px 10px;border-radius:999px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font-weight:700;font-size:15px;padding:13px 20px;text-decoration:none;white-space:nowrap;border:0;cursor:pointer}
+.btn.gold{background:var(--gold);color:#000}
+.btn.gold:hover{background:#D8B23A}
+.btn.sm{padding:8px 14px;font-size:13.5px}
+
+/* Hero */
+.hero .wrap{padding-block:60px 44px}
+.eyebrow{font-size:14px;font-weight:600;color:var(--muted)}
+.hero h1{font-size:clamp(42px,7vw,78px);line-height:1;font-weight:800;letter-spacing:-.045em;margin-top:14px;max-width:11ch;text-wrap:balance}
+.lede{margin-top:20px;font-size:clamp(17px,2vw,20px);color:var(--muted);max-width:50ch;line-height:1.45}
+.lede b{color:var(--ink);font-weight:700}
+.facts{margin:40px 0 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.facts div{border-top:2px solid var(--ink);padding-top:12px;min-width:0}
+.facts dt{font-size:13.5px;color:var(--muted);font-weight:500}
+.facts dd{margin:4px 0 0;font-size:clamp(20px,2.3vw,26px);font-weight:800;letter-spacing:-.02em;line-height:1.2}
+.facts dd small{font-size:.62em;color:var(--muted);font-weight:600;letter-spacing:0;margin-left:5px}
+
+/* Fare picker */
+.pick{padding-block:20px 64px}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:8px 32px;flex-wrap:wrap;margin-bottom:20px}
+.sec-head h2{font-size:clamp(26px,3vw,34px);font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.sec-head p{color:var(--muted);max-width:56ch;font-size:15px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start}
+.cities{display:grid;gap:16px;min-width:0}
+
+.city{background:var(--surface);border-radius:var(--radius);padding:24px 26px 0;min-width:0;overflow:hidden;scroll-margin-top:16px}
+.city-head{display:flex;justify-content:space-between;align-items:center;gap:12px 20px;flex-wrap:wrap}
+.city-head h3{font-size:clamp(22px,2.4vw,28px);font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.city-head p{color:var(--muted);font-size:14.5px;margin-top:4px}
+.stepper{display:flex;align-items:center;gap:10px}
+.stepper-l{font-size:13.5px;color:var(--muted);font-weight:600}
+.pill{display:inline-flex;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:3px}
+.pill button{width:36px;height:36px;border-radius:50%;border:0;background:transparent;color:var(--ink);font-size:20px;font-weight:600;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.pill button:hover:not(:disabled){background:var(--surface-2)}
+.pill button:disabled{opacity:.3;cursor:default}
+.pill output{min-width:26px;text-align:center;font-weight:800;font-size:16px}
+
+.legs{margin-top:20px;padding-top:18px;border-top:1px solid var(--line);display:grid;gap:16px}
+.leg{display:grid;grid-template-columns:104px 84px minmax(0,1fr) 96px;gap:14px;align-items:center}
+.when b{display:block;font-size:15px;font-weight:700}
+.when span,.pt span{display:block;font-size:13.5px;color:var(--muted);margin-top:1px}
+.pt b{font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1;white-space:nowrap}
+.pt sup{font-size:12px;color:var(--gold-deep);font-weight:800;margin-left:2px;letter-spacing:0}
+.pt span{font-weight:600;letter-spacing:.04em}
+.pt.end{text-align:right}
+.mid{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;text-align:center}
+.dur{font-size:13.5px;font-weight:700}
+.stops{font-size:13px;color:var(--muted)}
+.line{position:relative;display:block;width:100%;height:2px;background:var(--line-strong);border-radius:2px}
+.line i{position:absolute;top:-4px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:var(--surface);border:2px solid var(--gold)}
+
+.more{margin-top:14px}
+.more summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--ink);padding:2px 0}
+.more summary::-webkit-details-marker{display:none}
+.more summary::after{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .15s ease}
+.more[open] summary::after{transform:translateY(1px) rotate(-135deg)}
+.segs{list-style:none;margin:12px 0 0;padding:2px 18px;background:var(--bg);border-radius:16px}
+.segs li{padding:10px 0;border-top:1px solid var(--line)}
+.segs li:first-child{border-top:0}
+.segs .seg-h{font-size:12px;font-weight:800;color:var(--gold-deep);text-transform:uppercase;letter-spacing:.08em;padding-top:14px}
+.seg-t{display:block;font-size:15px}
+.seg-t b{font-weight:800}
+.seg-t sup{font-size:11px;color:var(--gold-deep);font-weight:800}
+.seg-m{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.segs .wait{font-size:13px;color:var(--muted);padding-left:14px;position:relative}
+.segs .wait::before{content:"";position:absolute;left:0;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:var(--gold)}
+
+.fares{border:0;margin:18px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;min-width:0}
+.tile{position:relative;display:flex;flex-direction:column;gap:2px;min-width:0;border-radius:18px;padding:16px 18px;cursor:pointer;
+  background:var(--gold-soft);border:1.5px solid var(--gold-line);transition:background-color .15s ease,border-color .15s ease}
+.tile input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.t-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.t-name{font-size:12.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-deep)}
+.t-check{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--gold-line);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:transparent;flex:none}
+.t-price{font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1.15;color:var(--tile-price)}
+.t-price small{font-size:15px;font-weight:800;margin-right:3px;letter-spacing:0}
+.t-sub{font-size:13px;font-weight:600;color:var(--gold-deep)}
+.tile.on{background:var(--navy);border-color:var(--navy)}
+.tile.on .t-name,.tile.on .t-sub{color:#C9D3E3}
+.tile.on .t-price{color:var(--gold)}
+.tile.on .t-check{background:var(--gold);border-color:var(--gold);color:#000}
+.tile:hover:not(.on){border-color:var(--gold)}
+.tile:has(input:focus-visible){outline:3px solid var(--gold);outline-offset:2px}
+.solo{display:flex;align-items:center;font-size:14px;color:var(--muted);padding:4px}
+
+.city-note{margin-top:14px;font-size:14px;color:var(--muted);max-width:70ch}
+.city-note b{color:var(--ink)}
+.city-sub{margin:18px -26px 0;padding:14px 26px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:14px;color:var(--muted)}
+.city-sub b{font-size:18px;color:var(--ink);font-weight:800}
+
+/* Total and prep */
+.side{display:grid;gap:16px;position:sticky;top:calc(16px + env(safe-area-inset-top,0px))}
+.total{background:var(--black);color:var(--on-dark);border-radius:var(--radius);padding:24px;border:1px solid var(--total-border)}
+.total h2{font-size:18px;font-weight:800;margin-bottom:6px}
+.tl{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:11px 0;border-top:1px solid var(--dark-line);font-size:14px}
+.tl:first-child{border-top:0}
+.tl span:first-child{color:var(--on-dark-muted);min-width:0}
+.tl span:first-child b{display:block;color:var(--on-dark);font-size:15px}
+.tl span:last-child{font-weight:800;white-space:nowrap}
+.grand{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:6px;padding-top:14px;border-top:1px solid #3A3E44}
+.grand span{color:var(--on-dark-muted);font-weight:600}
+.grand b{font-size:34px;font-weight:800;letter-spacing:-.03em}
+.hint4{margin-top:8px;font-size:13.5px;color:var(--gold);font-weight:600}
+.hint4:empty{display:none}
+.total .btn{width:100%;margin-top:18px}
+.fine{margin-top:12px;font-size:12.5px;color:var(--on-dark-muted);line-height:1.5}
+.fine b{color:var(--on-dark)}
+.prep{background:var(--surface);border-radius:var(--radius);padding:22px 24px}
+.prep h2{font-size:17px;font-weight:800}
+.prep .for{font-size:13px;color:var(--muted);margin:2px 0 12px}
+.prep ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.prep li{font-weight:700;font-size:14.5px}
+.prep li span{display:block;font-weight:500;color:var(--muted);font-size:13.5px;margin-top:1px}
+
+footer .wrap{padding-block:24px 48px;border-top:1px solid var(--line);color:var(--muted);font-size:13px;line-height:1.6}
+footer strong{color:var(--ink)}
+
+.bar{display:none}
+
+@media (max-width:1000px){
+  .layout{grid-template-columns:1fr}
+  .side{position:static}
+}
+@media (max-width:720px){
+  .gutter{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .top .btn span{display:none}
+  .hero .wrap{padding-block:36px 28px}
+  .facts{grid-template-columns:1fr 1fr;gap:18px 16px;margin-top:28px}
+  .pick{padding-block:12px 40px}
+  .city{padding:20px 16px 0}
+  .city-sub{margin:16px -16px 0;padding:12px 16px}
+  .leg{grid-template-columns:76px minmax(0,1fr) 84px;grid-template-areas:"when when when" "dep mid arr";gap:6px 10px}
+  .leg .when{grid-area:when;display:flex;gap:8px;align-items:baseline}
+  .leg .when span{margin:0}
+  .leg .pt{grid-area:dep}
+  .leg .pt.end{grid-area:arr}
+  .leg .mid{grid-area:mid}
+  .pt b{font-size:23px}
+  .segs{padding:2px 14px}
+  .fares{gap:8px}
+  .tile{padding:12px 12px 13px}
+  .t-name{font-size:11px;letter-spacing:.05em}
+  .t-check{width:18px;height:18px;font-size:10px}
+  .t-price{font-size:22px}
+  .t-price small{font-size:12px}
+  .t-sub{font-size:12px}
+  .pp-x{display:none}
+  .total{padding:20px}
+  .bar{display:flex;align-items:center;gap:12px;position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--black);color:var(--on-dark);
+    padding-top:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));
+    padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .bar div{flex:1;min-width:0;font-size:13px;color:var(--on-dark-muted);line-height:1.3}
+  .bar b{display:block;font-size:20px;color:var(--on-dark);font-weight:800}
+  .bar .btn{padding:11px 18px}
+  body{padding-bottom:84px}
+}
+@media (prefers-reduced-motion:reduce){
+  .tile,.more summary::after{transition:none}
+}
+
+</style>
+</head>
+<body>
+<header class="top gutter">
+  <div class="wrap">
+    <a class="wm" href="https://goldenvacays.com" target="_blank" rel="noopener" aria-label="Golden Vacation"><strong>GOLDEN</strong><span>vacation</span></a>
+    <a class="btn gold sm" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%E2%80%99m%20looking%20at%20our%20Phuket%20group%20quote%20%286%E2%80%9324%20Jan%202027%29." target="_blank" rel="noopener" aria-label="Reply on WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><span>Reply on WhatsApp</span></a>
+  </div>
+</header>
+
+<section class="hero gutter">
+  <div class="wrap">
+    <p class="eyebrow">Group flight quote · Prepared 4 November 2026</p>
+    <h1>Your group trip to Phuket</h1>
+    <p class="lede"><b>Wed 6 Jan – Sun 24 Jan 2027.</b> Four travelers from Kingston, Miami and Toronto, with business class on all the long flights.</p>
+    <dl class="facts">
+      <div><dt>Everyone in Phuket by</dt><dd>Fri 8 Jan<small>19:50</small></dd></div>
+      <div><dt>First flight home</dt><dd>Sat 23 Jan<small>02:40</small></dd></div>
+      <div><dt id="days-l">Days to go</dt><dd id="days">63</dd></div>
+      <div><dt>Fares from</dt><dd>US$7,073<small>per person</small></dd></div>
+    </dl>
+  </div>
+</section>
+
+<main class="pick gutter">
+  <div class="wrap">
+    <div class="sec-head"><h2>Choose your fares</h2><p>Set how many are flying from each city and pick a fare. Prices are per person for the return flights, taxes included.</p></div>
+    <div class="layout">
+      <div class="cities"><article class="city" id="city-kin">
+      <div class="city-head">
+        <div><h3>From Kingston</h3><p>Etihad via New York and Abu Dhabi</p></div>
+        <div class="stepper"><span class="stepper-l" id="lbl-kin">Travelers</span>
+          <div class="pill" role="group" aria-labelledby="lbl-kin"><button type="button" id="m-kin" data-k="kin" data-d="-1" aria-label="One fewer from Kingston" disabled>−</button><output id="n-kin" aria-live="polite">1</output><button type="button" id="p-kin" data-k="kin" data-d="1" aria-label="One more from Kingston">+</button></div>
+        </div>
+      </div>
+      <div class="legs"><div class="leg" role="group" aria-label="Going: Kingston 05:01 Wed 6 Jan to Phuket 23:50 Thu 7 Jan, 2 stops">
+        <div class="when"><b>Going</b><span>Wed 6 Jan</span></div>
+        <div class="pt"><b>05:01</b><span>KIN</span></div>
+        <div class="mid"><span class="dur">30h 49m</span><span class="line"><i style="left:33%"></i><i style="left:67%"></i></span><span class="stops">2 stops · JFK, AUH</span></div>
+        <div class="pt end"><b>23:50<sup>+1</sup></b><span>HKT</span></div>
+      </div><div class="leg" role="group" aria-label="Home: Phuket 21:00 Sat 23 Jan to Kingston 16:05 Sun 24 Jan, 2 stops">
+        <div class="when"><b>Home</b><span>Sat 23 Jan</span></div>
+        <div class="pt"><b>21:00</b><span>HKT</span></div>
+        <div class="mid"><span class="dur">31h 05m</span><span class="line"><i style="left:33%"></i><i style="left:67%"></i></span><span class="stops">2 stops · AUH, JFK</span></div>
+        <div class="pt end"><b>16:05<sup>+1</sup></b><span>KIN</span></div>
+      </div></div>
+      <details class="more"><summary>Flight details</summary><ol class="segs"><li class="seg-h">Going</li><li><span class="seg-t"><b>05:01</b> Kingston KIN → <b>08:48</b> New York JFK</span><span class="seg-m">Wed 6 Jan · JetBlue B6 760 · Economy · 3h 47m</span></li><li class="wait">6h 12m stop in New York</li><li><span class="seg-t"><b>15:00</b> New York JFK → <b>12:30</b><sup>+1</sup> Abu Dhabi AUH</span><span class="seg-m">Wed 6 Jan · Etihad EY 2 · Business · 12h 30m</span></li><li class="wait">1h 45m stop in Abu Dhabi</li><li><span class="seg-t"><b>14:15</b> Abu Dhabi AUH → <b>23:50</b> Phuket HKT</span><span class="seg-m">Thu 7 Jan · Etihad EY 414 · Business · 6h 35m</span></li><li class="seg-h">Coming home</li><li><span class="seg-t"><b>21:00</b> Phuket HKT → <b>00:35</b><sup>+1</sup> Abu Dhabi AUH</span><span class="seg-m">Sat 23 Jan · Etihad EY 413 · Business · 6h 35m</span></li><li class="wait">3h 00m stop in Abu Dhabi</li><li><span class="seg-t"><b>03:35</b> Abu Dhabi AUH → <b>09:00</b> New York JFK</span><span class="seg-m">Sun 24 Jan · Etihad EY 1 · Business · 14h 25m</span></li><li class="wait">2h 59m stop in New York</li><li><span class="seg-t"><b>11:59</b> New York JFK → <b>16:05</b> Kingston KIN</span><span class="seg-m">Sun 24 Jan · JetBlue B6 1759 · Economy · 4h 06m</span></li></ol></details>
+      <fieldset class="fares"><legend class="sr">Fare for travelers from Kingston</legend><label class="tile on"><input type="radio" name="fare-kin" value="0" checked>
+          <span class="t-top"><span class="t-name">Business Value</span><span class="t-check" aria-hidden="true">✓</span></span>
+          <span class="t-price"><small>US$</small>11,317</span>
+          <span class="t-sub">Standard fare<span class="pp-x"> · per person</span></span></label><label class="tile"><input type="radio" name="fare-kin" value="1">
+          <span class="t-top"><span class="t-name">Business Comfort</span><span class="t-check" aria-hidden="true">✓</span></span>
+          <span class="t-price"><small>US$</small>12,142</span>
+          <span class="t-sub">More flexible fare<span class="pp-x"> · per person</span></span></label></fieldset>
+      <p class="city-note">Kingston ⇄ New York flights are on <b>JetBlue in Economy</b>; all Etihad flights are in Business.</p>
+      <div class="city-sub" id="s-kin"><span>1 traveler × US$11,317</span><b>US$11,317</b></div>
+    </article><article class="city" id="city-mia">
+      <div class="city-head">
+        <div><h3>From Miami</h3><p>Emirates via Dubai</p></div>
+        <div class="stepper"><span class="stepper-l" id="lbl-mia">Travelers</span>
+          <div class="pill" role="group" aria-labelledby="lbl-mia"><button type="button" id="m-mia" data-k="mia" data-d="-1" aria-label="One fewer from Miami" disabled>−</button><output id="n-mia" aria-live="polite">1</output><button type="button" id="p-mia" data-k="mia" data-d="1" aria-label="One more from Miami">+</button></div>
+        </div>
+      </div>
+      <div class="legs"><div class="leg" role="group" aria-label="Going: Miami 23:55 Wed 6 Jan to Phuket 19:50 Fri 8 Jan, 1 stop">
+        <div class="when"><b>Going</b><span>Wed 6 Jan</span></div>
+        <div class="pt"><b>23:55</b><span>MIA</span></div>
+        <div class="mid"><span class="dur">31h 55m</span><span class="line"><i style="left:50%"></i></span><span class="stops">1 stop · DXB</span></div>
+        <div class="pt end"><b>19:50<sup>+2</sup></b><span>HKT</span></div>
+      </div><div class="leg" role="group" aria-label="Home: Phuket 19:05 Sat 23 Jan to Miami 09:50 Sun 24 Jan, 1 stop">
+        <div class="when"><b>Home</b><span>Sat 23 Jan</span></div>
+        <div class="pt"><b>19:05</b><span>HKT</span></div>
+        <div class="mid"><span class="dur">26h 45m</span><span class="line"><i style="left:50%"></i></span><span class="stops">1 stop · DXB</span></div>
+        <div class="pt end"><b>09:50<sup>+1</sup></b><span>MIA</span></div>
+      </div></div>
+      <details class="more"><summary>Flight details</summary><ol class="segs"><li class="seg-h">Going</li><li><span class="seg-t"><b>23:55</b> Miami MIA → <b>23:10</b><sup>+1</sup> Dubai DXB</span><span class="seg-m">Wed 6 Jan · Emirates EK 214 · Business · 14h 15m</span></li><li class="wait">11h 25m stop in Dubai (overnight)</li><li><span class="seg-t"><b>10:35</b> Dubai DXB → <b>19:50</b> Phuket HKT</span><span class="seg-m">Fri 8 Jan · Emirates EK 396 · Business · 6h 15m</span></li><li class="seg-h">Coming home</li><li><span class="seg-t"><b>19:05</b> Phuket HKT → <b>22:40</b> Dubai DXB</span><span class="seg-m">Sat 23 Jan · Emirates EK 379 · Business · 6h 35m</span></li><li class="wait">3h 35m stop in Dubai</li><li><span class="seg-t"><b>02:15</b> Dubai DXB → <b>09:50</b> Miami MIA</span><span class="seg-m">Sun 24 Jan · Emirates EK 213 · Business · 16h 35m</span></li></ol></details>
+      <fieldset class="fares"><legend class="sr">Fare for travelers from Miami</legend><label class="tile on"><input type="radio" name="fare-mia" value="0" checked>
+          <span class="t-top"><span class="t-name">Business</span><span class="t-check" aria-hidden="true">✓</span></span>
+          <span class="t-price"><small>US$</small>7,757</span>
+          <span class="t-sub">Standard fare<span class="pp-x"> · per person</span></span></label><label class="tile"><input type="radio" name="fare-mia" value="1">
+          <span class="t-top"><span class="t-name">Business Flex</span><span class="t-check" aria-hidden="true">✓</span></span>
+          <span class="t-price"><small>US$</small>10,467</span>
+          <span class="t-sub">More flexible fare<span class="pp-x"> · per person</span></span></label></fieldset>
+      <p class="city-note"><b>Business class on every flight.</b> Overnight connection in Dubai on the way out.</p>
+      <div class="city-sub" id="s-mia"><span>1 traveler × US$7,757</span><b>US$7,757</b></div>
+    </article><article class="city" id="city-yyz">
+      <div class="city-head">
+        <div><h3>From Toronto</h3><p>Etihad via Abu Dhabi</p></div>
+        <div class="stepper"><span class="stepper-l" id="lbl-yyz">Travelers</span>
+          <div class="pill" role="group" aria-labelledby="lbl-yyz"><button type="button" id="m-yyz" data-k="yyz" data-d="-1" aria-label="One fewer from Toronto" disabled>−</button><output id="n-yyz" aria-live="polite">1</output><button type="button" id="p-yyz" data-k="yyz" data-d="1" aria-label="One more from Toronto">+</button></div>
+        </div>
+      </div>
+      <div class="legs"><div class="leg" role="group" aria-label="Going: Toronto 14:25 Wed 6 Jan to Phuket 06:50 Fri 8 Jan, 1 stop">
+        <div class="when"><b>Going</b><span>Wed 6 Jan</span></div>
+        <div class="pt"><b>14:25</b><span>YYZ</span></div>
+        <div class="mid"><span class="dur">28h 25m</span><span class="line"><i style="left:50%"></i></span><span class="stops">1 stop · AUH</span></div>
+        <div class="pt end"><b>06:50<sup>+2</sup></b><span>HKT</span></div>
+      </div><div class="leg" role="group" aria-label="Home: Phuket 02:40 Sat 23 Jan to Toronto 08:50 Sun 24 Jan, 1 stop">
+        <div class="when"><b>Home</b><span>Sat 23 Jan</span></div>
+        <div class="pt"><b>02:40</b><span>HKT</span></div>
+        <div class="mid"><span class="dur">42h 10m</span><span class="line"><i style="left:50%"></i></span><span class="stops">1 stop · AUH</span></div>
+        <div class="pt end"><b>08:50<sup>+1</sup></b><span>YYZ</span></div>
+      </div></div>
+      <details class="more"><summary>Flight details</summary><ol class="segs"><li class="seg-h">Going</li><li><span class="seg-t"><b>14:25</b> Toronto YYZ → <b>12:20</b><sup>+1</sup> Abu Dhabi AUH</span><span class="seg-m">Wed 6 Jan · Etihad EY 22 · Business · 12h 55m</span></li><li class="wait">9h 00m stop in Abu Dhabi</li><li><span class="seg-t"><b>21:20</b> Abu Dhabi AUH → <b>06:50</b><sup>+1</sup> Phuket HKT</span><span class="seg-m">Thu 7 Jan · Etihad EY 428 · Business · 6h 30m</span></li><li class="seg-h">Coming home</li><li><span class="seg-t"><b>02:40</b> Phuket HKT → <b>06:45</b> Abu Dhabi AUH</span><span class="seg-m">Sat 23 Jan · Etihad EY 415 · Business · 7h 05m</span></li><li class="wait">20h 35m stop in Abu Dhabi</li><li><span class="seg-t"><b>03:20</b> Abu Dhabi AUH → <b>08:50</b> Toronto YYZ</span><span class="seg-m">Sun 24 Jan · Etihad EY 21 · Business · 14h 30m</span></li></ol></details>
+      <fieldset class="fares"><legend class="sr">Fare for travelers from Toronto</legend><label class="tile on"><input type="radio" name="fare-yyz" value="0" checked>
+          <span class="t-top"><span class="t-name">Business</span><span class="t-check" aria-hidden="true">✓</span></span>
+          <span class="t-price"><small>US$</small>7,073</span>
+          <span class="t-sub">Standard fare<span class="pp-x"> · per person</span></span></label><span class="solo">This is the one business fare on this route.</span></fieldset>
+      <p class="city-note"><b>Business class on every flight.</b> The flight home leaves at 2:40 am on Saturday 23 January (Friday night), with a 20h 35m wait in Abu Dhabi.</p>
+      <div class="city-sub" id="s-yyz"><span>1 traveler × US$7,073</span><b>US$7,073</b></div>
+    </article></div>
+      <aside class="side">
+        <section class="total" aria-labelledby="tot-h">
+          <h2 id="tot-h">Your total</h2>
+          <div id="lines" aria-live="polite"><div class="tl"><span><b>Kingston</b>1 × Business Value</span><span>US$11,317</span></div><div class="tl"><span><b>Miami</b>1 × Business</span><span>US$7,757</span></div><div class="tl"><span><b>Toronto</b>1 × Business</span><span>US$7,073</span></div></div>
+          <div class="grand"><span id="grand-l">3 travelers</span><b id="grand">US$26,147</b></div>
+          <p class="hint4" id="hint4">The group is 4. Add the fourth traveler to their city.</p>
+          <a class="btn gold" id="tot-wa" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%E2%80%99m%20looking%20at%20our%20Phuket%20group%20quote%20%286%E2%80%9324%20Jan%202027%29." target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Send on WhatsApp</a>
+          <p class="fine"><b>Rates are subject to change without a full deposit.</b> Pay by card or bank transfer, in US$ or J$.</p>
+        </section>
+        <section class="prep">
+          <h2>Before you go</h2>
+          <p class="for">For Jamaican passports</p>
+          <ul>
+            <li>Thai e-Visa<span>Needed for Jamaican passports. Apply at thaievisa.go.th once booked and allow two weeks.</span></li>
+            <li>US visa<span>For anyone flying from Kingston, since those flights connect in New York.</span></li>
+            <li>Passports<span>Valid six months after you travel.</span></li>
+            <li>Arrival card<span>Thailand Digital Arrival Card, online in the three days before you land.</span></li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<footer class="gutter">
+  <div class="wrap">
+    <strong>Golden Vacation &amp; Travel Limited</strong><br>
+    IATA-accredited travel agency in Brown’s Town, St. Ann, Jamaica · <a href="https://goldenvacays.com" target="_blank" rel="noopener">goldenvacays.com</a>
+  </div>
+</footer>
+
+<div class="bar">
+  <div><span id="bar-l">3 travelers</span><b id="bar-total">US$26,147</b></div>
+  <a class="btn gold" id="bar-wa" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%E2%80%99m%20looking%20at%20our%20Phuket%20group%20quote%20%286%E2%80%9324%20Jan%202027%29." target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Send</a>
+</div>
+
+<script>
+(function(){
+  var days = Math.ceil((new Date(2027, 0, 6) - new Date()) / 86400000);
+  var dEl = document.getElementById('days'), lEl = document.getElementById('days-l');
+  if (days >= 1) { dEl.textContent = days; if (days === 1) lEl.textContent = 'Day to go'; }
+  else { lEl.textContent = 'Trip'; dEl.textContent = 'Enjoy Phuket'; }
+
+  var P = {"kin": [11317, 12142], "mia": [7757, 10467], "yyz": [7073]}, FN = {"kin": ["Business Value", "Business Comfort"], "mia": ["Business", "Business Flex"], "yyz": ["Business"]};
+  var names = {kin:'Kingston', mia:'Miami', yyz:'Toronto'}, order = ['kin','mia','yyz'];
+  var st = {n:{kin:1, mia:1, yyz:1}, f:{kin:0, mia:0, yyz:0}};
+  try {
+    var s = JSON.parse(localStorage.getItem('hkt-group-fares-v1') || 'null');
+    if (s) order.forEach(function(k){
+      if (s.n && s.n[k] >= 1 && s.n[k] <= 9) st.n[k] = s.n[k];
+      if (s.f && P[k][s.f[k]] !== undefined) st.f[k] = s.f[k];
+    });
+  } catch (e) {}
+  function fmt(v){ return 'US$' + v.toLocaleString('en-US'); }
+  function people(n){ return n + ' traveler' + (n === 1 ? '' : 's'); }
+  var base = 'https://wa.me/18763601567?text=';
+  function render(){
+    var total = 0, count = 0, lines = '', msg = [];
+    order.forEach(function(k){
+      var n = st.n[k], f = st.f[k], pp = P[k][f], sub = n * pp;
+      total += sub; count += n;
+      document.getElementById('n-' + k).textContent = n;
+      document.getElementById('m-' + k).disabled = n <= 1;
+      document.getElementById('p-' + k).disabled = n >= 9;
+      Array.prototype.forEach.call(document.querySelectorAll('input[name="fare-' + k + '"]'), function(r){
+        var on = Number(r.value) === f; r.checked = on; r.closest('.tile').classList.toggle('on', on);
+      });
+      var s = document.getElementById('s-' + k);
+      s.children[0].textContent = people(n) + ' × ' + fmt(pp);
+      s.children[1].textContent = fmt(sub);
+      lines += '<div class="tl"><span><b>' + names[k] + '</b>' + n + ' × ' + FN[k][f] + '</span><span>' + fmt(sub) + '</span></div>';
+      msg.push(names[k] + ' ' + n + ' × ' + FN[k][f]);
+    });
+    document.getElementById('lines').innerHTML = lines;
+    document.getElementById('grand').textContent = fmt(total);
+    document.getElementById('grand-l').textContent = people(count);
+    document.getElementById('bar-total').textContent = fmt(total);
+    document.getElementById('bar-l').textContent = people(count);
+    document.getElementById('hint4').textContent = count < 4 ? 'The group is 4. Add the fourth traveler to their city.' : '';
+    var href = base + encodeURIComponent('Hi Golden Vacation! For our Phuket group trip (6–24 Jan 2027) we’d like: ' + msg.join(', ') + '. Total ' + fmt(total) + ' for ' + people(count) + '.');
+    document.getElementById('tot-wa').href = href;
+    document.getElementById('bar-wa').href = href;
+    try { localStorage.setItem('hkt-group-fares-v1', JSON.stringify(st)); } catch (e) {}
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.pill button'), function(b){
+    b.addEventListener('click', function(){
+      var k = b.getAttribute('data-k'); st.n[k] = Math.max(1, Math.min(9, st.n[k] + Number(b.getAttribute('data-d')))); render();
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.fares input'), function(r){
+    r.addEventListener('change', function(){ st.f[r.name.slice(5)] = Number(r.value); render(); });
+  });
+  render();
+})();
+</script>
+
+</body>
+</html>
