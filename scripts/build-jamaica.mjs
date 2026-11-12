@@ -1,11 +1,13 @@
 /* Builds the Coming to Jamaica pages: /jamaica/ (the four doors), /jamaica/usa/, /jamaica/coming-home/,
-   /jamaica/es/ (Spanish), /jamaica/uk-canada/, and the two thank-you pages (/jamaica/sent/, /jamaica/es/enviado/).
+   /jamaica/es/ (Spanish), /jamaica/uk-canada/, /jamaica/mexico/ (Desde México, built by scripts/_mexico.mjs from
+   data/jamaica-mexico.json), and the two thank-you pages (/jamaica/sent/, /jamaica/es/enviado/).
    Copy lives in data/jamaica-pages.json. Resort prices come from data/staycations-resorts.json (the same from-prices
    the staycation pages show; visitors pay the same), tours and airport lounges from data/experiences.json, airport
    pickups from data/transfer-rates.json. node scripts/build-jamaica.mjs */
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { mexicoPage } from "./_mexico.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (f) => JSON.parse(fs.readFileSync(path.join(ROOT, f), "utf8"));
@@ -19,6 +21,7 @@ const tourHref = (href, lang) => { if (lang !== "es") return href; const m = Str
 const TR = read("data/transfer-rates.json");
 const TD = read("data/transfers.json");
 const DL = read("data/deals.json").deals || [];
+const M = read("data/jamaica-mexico.json");
 const V = Object.fromEntries(E.venues.map((v) => [v.slug, v]));
 const X = Object.fromEntries(J.extraResorts.map((r) => [r.slug, r]));
 const BASE = "/jamaica";
@@ -387,3 +390,5 @@ write("jamaica/index.html", chooser());
 for (const pg of J.pages) write(`${pg.path.replace(/^\//, "")}index.html`, page(pg));
 write("jamaica/sent/index.html", sent("en"));
 write("jamaica/es/enviado/index.html", sent("es"));
+/* the Desde México page (scripts/_mexico.mjs, copy in data/jamaica-mexico.json) */
+write("jamaica/mexico/index.html", mexicoPage({ J, R, V, TR, M, esc, icon, wa, card, whoPicker, formAttr, head, nav, footer, pageLd, crumbName, dealImg, venueFrom, tourHref, shortDrive, fromMbj, S, BASE, WHATSAPP, MONTHS }));
