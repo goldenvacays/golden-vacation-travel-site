@@ -45,6 +45,10 @@ export function mexicoPage(H) {
   const lowest = (n) => lowestIn("standard", n);
   const tourMxn = (usd) => up(usd * P.mxnPerUsd, 10);
   const DEF_N = P.defaultNights;
+  /* the cards run cheapest first for the default nights; mexico.js re-sorts them when the nights change */
+  const byPrice = (n) => M.resorts.map((s, i) => [s, i])
+    .sort((a, b) => PRICES[a[0]][n].mxn - PRICES[b[0]][n].mxn || PRICES[a[0]][n].usd - PRICES[b[0]][n].usd || a[1] - b[1])
+    .map(([s]) => s);
 
   /* ---------- small pieces ---------- */
   const intro = M.form.waIntro;
@@ -185,7 +189,7 @@ export function mexicoPage(H) {
 <section class="jsec jsec-gold" id="paquetes" aria-labelledby="pk-h"><div class="wrap">
   ${head2(M.packages.kicker, M.packages.title, M.packages.sub, "pk-h")}
   ${nightsSwitch()}
-  <div class="dgrid dgrid-4 mx-cards">${M.resorts.map((s) => pkgCard(s, DEF_N)).join("")}</div>
+  <div class="dgrid dgrid-4 mx-cards">${byPrice(DEF_N).map((s) => pkgCard(s, DEF_N)).join("")}</div>
   <p class="mx-fine">${esc(M.packages.fine)} <a class="inline-link" href="/hotel-status/">${esc(T.status)}</a></p>
 </div></section>
 <section class="jsec mx-inc-sec" id="incluye" aria-labelledby="inc-h"><div class="wrap">
