@@ -1,0 +1,308 @@
+{
+  "note": "Copy and settings for the Desde México page (/jamaica/mexico/), built by scripts/build-jamaica.mjs through scripts/_mexico.mjs. Package guide prices, per person in a double room = flight x (1 + flightMarkupPct) + the season's resort rate x (1 + hotelMarkupPct) x nights + transfer per person (pricing.transferPp, else the MBJ round-trip car from data/transfer-rates.json split between two), in US$, rounded up to $5; pesos = US$ x mxnPerUsd, rounded up to $100. Flights and resort rates come from the rate sheet: python3 scripts/import-mexico-rates.py <sheet.xlsx>, then node scripts/build-jamaica.mjs. Customer copy never names the airline.",
+  "path": "/jamaica/mexico/",
+  "ref": "GV-JAM-MX",
+  "label": "Desde México",
+  "pricing": {
+    "flightUsd": {
+      "standard": 631.0,
+      "easter": 631.0,
+      "summer": 680.0
+    },
+    "mxnPerUsd": 19.0,
+    "mxnNote": "House rate for the peso figures, set Nov 2026 (market about 18.8)",
+    "zones": {
+      "riu-montego-bay": "mobay",
+      "riu-reggae": "mobay",
+      "riu-palace-aquarelle": "falmouth",
+      "riu-ocho-rios": "ocho-rios",
+      "riu-negril": "negril",
+      "riu-palace-tropical-bay": "negril",
+      "princess-grand-jamaica": "negril",
+      "princess-senses-the-mangrove": "negril"
+    },
+    "nights": [
+      3,
+      4,
+      5,
+      7
+    ],
+    "defaultNights": 4,
+    "rates": {
+      "standard": {
+        "riu-negril": 141.0,
+        "riu-ocho-rios": 151.0,
+        "riu-palace-aquarelle": 203.0,
+        "riu-montego-bay": 156.0,
+        "riu-reggae": 170.0,
+        "riu-palace-tropical-bay": 173.0,
+        "princess-grand-jamaica": 129.0,
+        "princess-senses-the-mangrove": 204.0
+      },
+      "easter": {
+        "riu-negril": 193.0,
+        "riu-ocho-rios": 184.0,
+        "riu-palace-aquarelle": 216.0,
+        "riu-montego-bay": 202.0,
+        "riu-reggae": 242.0,
+        "riu-palace-tropical-bay": 247.0,
+        "princess-grand-jamaica": 148.0,
+        "princess-senses-the-mangrove": 210.0
+      },
+      "summer": {
+        "riu-negril": 177.0,
+        "riu-ocho-rios": 182.0,
+        "riu-palace-aquarelle": 181.57,
+        "riu-montego-bay": 190.0,
+        "riu-reggae": 218.0,
+        "riu-palace-tropical-bay": 213.0,
+        "princess-grand-jamaica": 141.0,
+        "princess-senses-the-mangrove": 227.0
+      }
+    },
+    "transferPp": {},
+    "hotelMarkupPct": 15,
+    "flightMarkupPct": 8,
+    "markupNote": "Golden Office's guest pricing (Admin: hotels +15%, flights +8%), applied because the sheet holds the booking systems' prices",
+    "ratesNote": "pricing.rates: lowest per person per night in a double room per season, from the rate sheet (scripts/import-mexico-rates.py); a resort with no standard rate falls back to its staycation from-price",
+    "ratesSource": "dino.xlsx, loaded 2026-11-12: 74 room prices"
+  },
+  "flight": {
+    "fromCode": "MEX",
+    "fromCity": "Ciudad de México",
+    "toCode": "MBJ",
+    "toCity": "Montego Bay",
+    "flightDays": [
+      4,
+      6,
+      0
+    ],
+    "start": "2027-03-18",
+    "lastLoaded": "2027-09-30",
+    "days": "Jue · Sáb · Dom",
+    "daysLong": "Jueves, sábados y domingos",
+    "startText": "18 mar 2027",
+    "duration": "Unas 4 h",
+    "arrive": "A primera hora de la tarde"
+  },
+  "nightsLabels": {
+    "3": "de jueves a domingo",
+    "4": "de domingo a jueves",
+    "5": "de sábado a jueves",
+    "6": "de domingo a sábado",
+    "7": "una semana, cualquier día de vuelo"
+  },
+  "resorts": [
+    "riu-negril",
+    "riu-ocho-rios",
+    "riu-palace-aquarelle",
+    "riu-montego-bay",
+    "riu-reggae",
+    "riu-palace-tropical-bay",
+    "princess-grand-jamaica",
+    "princess-senses-the-mangrove"
+  ],
+  "hero": {
+    "img": "/jamaica/img/palace-tropical-bay-hero-1600.jpg",
+    "alt": "Bloody Bay en Negril, desde el aire",
+    "kicker": "Desde México",
+    "title": "Jamaica, ahora en vuelo directo.",
+    "sub": "Vuelo desde la Ciudad de México, resort todo incluido y traslados en un solo precio, organizado por gente que vive aquí.",
+    "chips": [
+      "Vuelo directo desde la CDMX",
+      "Sin visa para mexicanos",
+      "Precios en pesos",
+      "Atención en español"
+    ]
+  },
+  "trustLine": "Agencia acreditada por IATA y registrada ante el Ministerio de Turismo de Jamaica.",
+  "why": [
+    [
+      "Acreditados por IATA",
+      "desde 2021"
+    ],
+    [
+      "Registrados ante el Ministerio",
+      "de Turismo de Jamaica"
+    ],
+    [
+      "Oficinas",
+      "en Jamaica y Florida"
+    ],
+    [
+      "Miles de viajeros",
+      "desde 2021"
+    ]
+  ],
+  "packages": {
+    "kicker": "Paquetes",
+    "title": "Vuelo, todo incluido y traslados.",
+    "sub": "Precio por persona en habitación doble para viajar de mediados de abril a junio o en septiembre, con vuelo redondo desde la CDMX, el resort todo incluido, los traslados y los impuestos. Semana Santa y verano tienen su precio abajo. Son precios de referencia: el exacto depende de tus fechas.",
+    "fine": "Revisamos qué está abierto antes de cotizar."
+  },
+  "seasons": {
+    "kicker": "Cuándo ir",
+    "title": "Días de vuelo, mes por mes.",
+    "sub": "Jueves, sábados y domingos, desde el 18 de marzo de 2027. Las franjas marcan las vacaciones escolares y el puente patrio.",
+    "items": [
+      {
+        "key": "semana-santa",
+        "name": "Semana Santa y Pascua",
+        "dates": "22 mar al 4 abr 2027",
+        "from": "2027-03-22",
+        "to": "2027-04-04",
+        "text": "Las vacaciones escolares de primavera. Es lo primero que se llena, así que conviene apartar con tiempo.",
+        "season": "easter",
+        "nights": 3
+      },
+      {
+        "key": "primavera",
+        "name": "Abril a junio",
+        "dates": "Desde mediados de abril",
+        "text": "Termina la temporada alta en Jamaica y bajan los precios. Ideal en pareja o para una luna de miel.",
+        "nights": 3,
+        "season": "standard"
+      },
+      {
+        "key": "verano",
+        "name": "Verano",
+        "dates": "10 jul a fines de agosto",
+        "from": "2027-07-10",
+        "to": "2027-08-31",
+        "text": "Las vacaciones de verano. Resorts con parque acuático y club para niños.",
+        "season": "summer",
+        "nights": 3
+      },
+      {
+        "key": "septiembre",
+        "name": "Puente patrio",
+        "dates": "16 al 19 sep 2027",
+        "from": "2027-09-16",
+        "to": "2027-09-19",
+        "text": "El 16 de septiembre cae en jueves: de jueves a domingo, justo en días de vuelo.",
+        "nights": 3,
+        "season": "standard"
+      }
+    ]
+  },
+  "includes": {
+    "kicker": "Qué incluye",
+    "title": "Un solo precio para todo.",
+    "items": [
+      [
+        "Vuelo redondo directo",
+        "Desde la Ciudad de México. Te decimos qué equipaje incluye tu tarifa."
+      ],
+      [
+        "Resort todo incluido",
+        "Comidas, bebidas y snacks, con los impuestos incluidos."
+      ],
+      [
+        "Traslados",
+        "Del aeropuerto de Montego Bay a tu hotel, y de regreso."
+      ],
+      [
+        "Atención en español",
+        "Por WhatsApp, antes y durante tu viaje, en horario de oficina."
+      ]
+    ],
+    "payTitle": "Cómo apartas",
+    "pay": [
+      [
+        "Apartas con el vuelo",
+        "Pagas el vuelo más US$50 para apartar tu viaje."
+      ],
+      [
+        "Plan de pagos",
+        "El resto lo puedes pagar en partes. La fecha límite viene en tu cotización."
+      ],
+      [
+        "Con tarjeta",
+        "Te mandamos un enlace de pago seguro por WhatsApp. Nuestros precios se fijan en dólares."
+      ],
+      [
+        "Tu precio, al apartar",
+        "Las tarifas pueden cambiar sin un depósito completo."
+      ]
+    ]
+  },
+  "how": [
+    [
+      "Elige tu resort y tus noches",
+      "Hay vuelo jueves, sábados y domingos. Escríbenos por WhatsApp o usa el formulario."
+    ],
+    [
+      "Recibe tu precio",
+      "Un solo precio con vuelo, hotel y traslados, por WhatsApp o por correo, en horario de oficina."
+    ],
+    [
+      "Aparta tu viaje",
+      "Pagas el vuelo más US$50 con tarjeta. La fecha para pagar el resto viene en tu cotización."
+    ]
+  ],
+  "do": {
+    "kicker": "Excursiones",
+    "title": "Para los días fuera del resort.",
+    "sub": "Agrégalas a tu paquete o resérvalas por separado.",
+    "venues": [
+      "mystic-mountain",
+      "jamwest",
+      "jamwest-catamaran",
+      "poko-loko"
+    ]
+  },
+  "faq": [
+    [
+      "¿Necesito visa para ir a Jamaica?",
+      "No. Con pasaporte mexicano entras a Jamaica sin visa, para estancias de hasta 90 días. Viaja con tu pasaporte vigente."
+    ],
+    [
+      "¿Qué días hay vuelo?",
+      "Jueves, sábados y domingos, desde el 18 de marzo de 2027. Sale de la CDMX por la mañana y llega a Montego Bay a primera hora de la tarde. Es una ruta nueva y está sujeta a la aprobación de las autoridades."
+    ],
+    [
+      "¿El precio es por persona?",
+      "Sí. Es por persona en habitación doble e incluye el vuelo redondo, el resort todo incluido, los traslados y los impuestos. Es un precio de referencia y el exacto depende de tus fechas."
+    ],
+    [
+      "¿Cómo pago?",
+      "Con tarjeta, con el enlace seguro que te mandamos por WhatsApp. Nuestros precios se fijan en dólares, así que tu banco hace la conversión y el monto en pesos puede variar un poco."
+    ],
+    [
+      "¿Hay diferencia de horario?",
+      "Sí. Jamaica va una hora adelante de la Ciudad de México todo el año."
+    ],
+    [
+      "¿Quién me recibe en el aeropuerto?",
+      "Tu chofer, en la salida de llegadas de Montego Bay, con un cartel con tu nombre. Seguimos tu vuelo, así que un retraso no significa perder el traslado."
+    ]
+  ],
+  "form": {
+    "title": "Cotizar mi viaje",
+    "sub": "Cuéntanos cuándo quieres ir y quién viaja. Te respondemos en horario de oficina con un solo precio para todo.",
+    "arrive": "Ida",
+    "leave": "Regreso",
+    "dayHint": "Hay vuelo jueves, sábados y domingos.",
+    "dayWarn": "Ese día no hay vuelo. Elige jueves, sábado o domingo.",
+    "needs": [
+      "Vuelo desde la CDMX",
+      "Resort todo incluido",
+      "Traslados",
+      "Excursiones",
+      "Club MoBay"
+    ],
+    "areas": [
+      "Montego Bay",
+      "Negril",
+      "Ocho Rios",
+      "Falmouth",
+      "Green Island"
+    ],
+    "notesPh": "El resort que te gusta, un cumpleaños o una luna de miel",
+    "waIntro": "¡Hola Golden Vacation! Quiero cotizar un viaje a Jamaica desde México."
+  },
+  "meta": {
+    "title": "Viajes a Jamaica desde México | Golden Vacation & Travel",
+    "description": "Vuelo directo desde la CDMX, resort todo incluido y traslados en un solo precio. Precios en pesos, sin visa para mexicanos y atención en español."
+  }
+}
