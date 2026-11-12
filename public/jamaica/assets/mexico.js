@@ -10,6 +10,17 @@
   var track = function (n, p) { try { if (window.gtag) gtag("event", n, p || {}); } catch (e) {} };
   var waLink = function (lines) { return X.wa + "?text=" + encodeURIComponent([X.intro].concat(lines.filter(Boolean)).concat(["Ref " + X.ref]).join("\n")); };
 
+  /* cards stay cheapest first: re-sorted by the price for the chosen nights (ties keep the page order) */
+  var box = $(".mx-cards");
+  $$(".dc-mx").forEach(function (c, i) { c.setAttribute("data-i", i); });
+  function sortCards(n) {
+    if (!box) return;
+    $$(".dc-mx", box).map(function (c) { return [c, +c.getAttribute("data-p" + n), +c.getAttribute("data-u" + n), +c.getAttribute("data-i")]; })
+      .sort(function (a, b) { return a[1] - b[1] || a[2] - b[2] || a[3] - b[3]; })
+      .forEach(function (x) { box.appendChild(x[0]); });
+    box.scrollLeft = 0;
+  }
+
   var nb = $("#mx-nights");
   if (nb) {
     $$("button", nb).forEach(function (b) {
@@ -22,6 +33,7 @@
           $(".mx-n", c).textContent = n;
           c.href = waLink(["Resort: " + c.getAttribute("data-name"), "Noches: " + n + " (" + (X.nightsHint[n] || "") + ")", "Con vuelo desde la CDMX"]);
         });
+        sortCards(n);
         track("mx_nights", { n: n });
       });
     });
