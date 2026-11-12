@@ -740,7 +740,13 @@
 
 <url>
   <loc>https://goldenvacays.com/jamaica/es/</loc>
-  <lastmod>2026-10-13T00:00:00+00:00</lastmod>
+  <lastmod>2026-11-12T00:00:00+00:00</lastmod>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://goldenvacays.com/jamaica/mexico/</loc>
+  <lastmod>2026-11-12T00:00:00+00:00</lastmod>
   <priority>0.8</priority>
 </url>
 
