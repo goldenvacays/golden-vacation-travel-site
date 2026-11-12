@@ -9,8 +9,8 @@
       "easter": 631.0,
       "summer": 680.0
     },
-    "mxnPerUsd": 19.0,
-    "mxnNote": "House rate for the peso figures, set Nov 2026 (market about 18.8)",
+    "mxnPerUsd": 19.5,
+    "mxnNote": "House rate for the peso figures: 19.5, set by Hana 12 Nov 2026 (was 19; market about 18.8)",
     "zones": {
       "riu-montego-bay": "mobay",
       "riu-reggae": "mobay",
