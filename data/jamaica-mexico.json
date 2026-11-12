@@ -93,14 +93,14 @@
     "7": "una semana, cualquier día de vuelo"
   },
   "resorts": [
+    "princess-grand-jamaica",
+    "princess-senses-the-mangrove",
     "riu-negril",
     "riu-ocho-rios",
     "riu-palace-aquarelle",
     "riu-montego-bay",
     "riu-reggae",
-    "riu-palace-tropical-bay",
-    "princess-grand-jamaica",
-    "princess-senses-the-mangrove"
+    "riu-palace-tropical-bay"
   ],
   "hero": {
     "img": "/jamaica/img/palace-tropical-bay-hero-1600.jpg",
