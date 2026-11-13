@@ -101,6 +101,8 @@
 .missing input, .missing .bf-trip span { border-color: #B3261E; box-shadow: inset 0 0 0 2px #B3261E; }
 .bf-saved { margin: 0; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--ok, #1F8A4C); }
 .bf-small { font-size: 13px; color: var(--muted); }
+.bf-contact-h { margin: -6px 0 0; }
+#bf-send:disabled { opacity: .6; cursor: default; }
 .bf-small a { text-decoration: underline; }
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 

@@ -194,11 +194,16 @@
     var miss = [];
     var trips = $(".bf-trips", form), okTrip = !!trip();
     trips.classList.toggle("missing", !okTrip); if (!okTrip) miss.push("what you're after");
-    [["checkin", "arriving date"], ["checkout", "leaving date"], ["name", "your name"], ["phone", "WhatsApp number"]].forEach(function (p) {
+    [["checkin", "arriving date"], ["checkout", "leaving date"], ["name", "your name"]].forEach(function (p) {
       var ok = !!val(p[0]); el(p[0]).closest(".bf-field").classList.toggle("missing", !ok); if (!ok) miss.push(p[1]);
     });
     if (val("checkin") && val("checkout") && val("checkout") <= val("checkin")) { miss.push("leaving after arriving"); el("checkout").closest(".bf-field").classList.add("missing"); }
-    if (val("phone") && val("phone").replace(/\D/g, "").length < 7) { miss.push("the full WhatsApp number"); el("phone").closest(".bf-field").classList.add("missing"); }
+    /* a way to reach them: their WhatsApp number or their email, either will do */
+    var ph = val("phone"), em = val("email"), fp = el("phone").closest(".bf-field"), fe = el("email").closest(".bf-field");
+    fp.classList.remove("missing"); fe.classList.remove("missing");
+    if (!ph && !em) { miss.push(form.getAttribute("data-err-contact") || "your WhatsApp number or email"); fp.classList.add("missing"); fe.classList.add("missing"); }
+    if (ph && ph.replace(/\D/g, "").length < 7) { miss.push("the full WhatsApp number"); fp.classList.add("missing"); }
+    if (em && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { miss.push("a full email address"); fe.classList.add("missing"); }
     return miss;
   }
   go.addEventListener("click", function (ev) {
@@ -212,13 +217,40 @@
       return;
     }
     err.hidden = true;
+    el("via").value = "whatsapp";
     save();
+    $("span", saved).textContent = form.getAttribute("data-saved-wa") || "";
     saved.hidden = false;
-    track("bf_dates_saved", { trip: trip(), state: el("state").value });
+    track("bf_dates_saved", { trip: trip(), state: el("state").value, via: "whatsapp" });
     track("whatsapp_click", { where: "bf-form", visit: window.GV_VISIT || "" });
     try { if (typeof window.GV_WA_EXIT === "function") window.GV_WA_EXIT({ ref: REF, where: "bf-form", context: m.text }); } catch (e) {}
   });
   form.addEventListener("submit", function (ev) { ev.preventDefault(); go.click(); });
+
+  /* or send them here: the same list, no WhatsApp (for people who would rather use email) */
+  var send = $("#bf-send"), sendLabel = send ? send.textContent : "";
+  function showErr(miss) {
+    err.textContent = (form.getAttribute("data-err") || "") + miss.join(", ") + ".";
+    err.hidden = false; saved.hidden = true;
+    try { err.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (e) {}
+  }
+  if (send) {
+    send.addEventListener("click", function () {
+      sync();
+      var miss = check();
+      if (miss.length) { showErr(miss); return; }
+      err.hidden = true;
+      el("via").value = "site";
+      save();
+      $("span", saved).textContent = form.getAttribute(live() ? "data-saved-site-live" : "data-saved-site-soon") || "";
+      saved.hidden = false;
+      send.disabled = true; send.textContent = form.getAttribute("data-sent") || "Sent";
+      track("bf_dates_saved", { trip: trip(), state: el("state").value, via: "site" });
+      track("generate_lead", { lead_source: "form", where: "bf-form" });
+    });
+    /* changed something after sending: they can send again */
+    form.addEventListener("input", function () { if (send.disabled) { send.disabled = false; send.textContent = sendLabel; } });
+  }
 
   /* a rate tile without its Black Friday price yet fills the form with that trip */
   $$("[data-pick-trip]").forEach(function (a) {
