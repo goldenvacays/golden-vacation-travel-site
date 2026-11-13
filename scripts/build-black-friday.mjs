@@ -149,6 +149,8 @@ const perks = `<section class="bf-sec" aria-labelledby="bf-perks-h">
    the who's-travelling picker is the site's usual one, a room at a time */
 const F = P.form;
 const req = `<span class="req" aria-hidden="true">*</span>`;
+/* the cheapest-dates option starts at this many nights (they change it with + and -) */
+const NIGHTS = Math.max(1, Math.min(21, parseInt(F.nightsDefault, 10) || 3));
 const formSec = `<section class="bf-sec" id="first-pick" aria-labelledby="bf-form-h"${show("soon live")}>
   <div class="bf-sec-in bf-form-grid">
     <div class="bf-form-copy">
@@ -157,7 +159,7 @@ const formSec = `<section class="bf-sec" id="first-pick" aria-labelledby="bf-for
       <p class="bf-lead"><span${show("soon")}>${esc(F.soon)}</span><span${show("live")}>${esc(F.live)}</span></p>
       <ul class="bf-ticks">${F.ticks.map((t) => `<li>${ic("check", 18, 3)}<span>${esc(t)}</span></li>`).join("")}</ul>
     </div>
-    <form class="bf-form" id="bf-form" name="bf-early" method="POST" action="${P.path}" data-netlify="true" netlify-honeypot="bot-field" novalidate data-ref="GV-BF" data-err="${esc(F.errPre)}" data-err-contact="${esc(F.errContact)}" data-saved-wa="${esc(F.saved)}" data-saved-site-soon="${esc(F.savedSiteSoon)}" data-saved-site-live="${esc(F.savedSiteLive)}" data-sent="${esc(F.sent)}" data-wa-soon="${esc(F.waSoon.replace(/'/g, "’"))}" data-wa-live="${esc(F.waLive.replace(/'/g, "’"))}">
+    <form class="bf-form" id="bf-form" name="bf-early" method="POST" action="${P.path}" data-netlify="true" netlify-honeypot="bot-field" novalidate data-ref="GV-BF" data-err="${esc(F.errPre)}" data-err-contact="${esc(F.errContact)}" data-saved-site-soon="${esc(F.savedSiteSoon)}" data-saved-site-live="${esc(F.savedSiteLive)}" data-saved-cheap-soon="${esc(F.savedCheapSoon.replace(/'/g, "’"))}" data-saved-cheap-live="${esc(F.savedCheapLive.replace(/'/g, "’"))}" data-err-months="${esc(F.errMonths.replace(/'/g, "’"))}" data-sent="${esc(F.sent)}">
       <input type="hidden" name="form-name" value="bf-early">
       <p class="hp" aria-hidden="true"><label>Leave this field empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
       <input type="hidden" name="state" value="${STATE}"><input type="hidden" name="nights" value=""><input type="hidden" name="ref" value="GV-BF"><input type="hidden" name="via" value="">
@@ -165,11 +167,22 @@ const formSec = `<section class="bf-sec" id="first-pick" aria-labelledby="bf-for
         <div class="bf-trip-row">${F.trips.map((t, i) => `<label class="bf-trip"><input type="radio" name="trip" value="${esc(t)}" id="bf-trip-${i}"><span>${esc(t)}</span></label>`).join("")}</div>
       </fieldset>
       <div class="bf-field"><label for="bf-where">${esc(F.whereLabel)}</label><input id="bf-where" type="text" name="where" list="bf-places" placeholder="${esc(F.wherePh)}" autocomplete="off"><datalist id="bf-places">${F.places.map((p) => `<option value="${esc(p)}"></option>`).join("")}</datalist></div>
-      <div class="bf-2">
-        <div class="bf-field"><label for="bf-in">${esc(F.arrive)}${req}</label><input id="bf-in" type="date" name="checkin" data-req="1"></div>
-        <div class="bf-field"><label for="bf-out">${esc(F.leave)}${req}</label><input id="bf-out" type="date" name="checkout" data-req="1"></div>
+      <fieldset class="bf-field bf-when"><legend>${esc(F.whenLabel)}</legend>
+        <div class="bf-trip-row"><label class="bf-trip"><input type="radio" name="when" value="My dates" checked><span>${esc(F.whenSet)}</span></label><label class="bf-trip"><input type="radio" name="when" value="Cheapest dates"><span>${esc(F.whenCheap)}</span></label></div>
+      </fieldset>
+      <div class="bf-when-set" data-when="set">
+        <div class="bf-2">
+          <div class="bf-field"><label for="bf-in">${esc(F.arrive)}${req}</label><input id="bf-in" type="date" name="checkin" data-req="1"></div>
+          <div class="bf-field"><label for="bf-out">${esc(F.leave)}${req}</label><input id="bf-out" type="date" name="checkout" data-req="1"></div>
+        </div>
+        <label class="bf-check"><input type="checkbox" name="flexible" value="yes" id="bf-flex"><span>${esc(F.flex)}</span></label>
       </div>
-      <label class="bf-check"><input type="checkbox" name="flexible" value="yes" id="bf-flex"><span>${esc(F.flex)}</span></label>
+      <div class="bf-when-cheap" data-when="cheap" data-nights="${NIGHTS}" hidden>
+        <fieldset class="bf-field bf-months"><legend>${esc(F.monthsLabel)}${req}</legend><div class="bf-month-row" id="bf-months"></div></fieldset>
+        <div class="bf-field bf-nights"><span id="bf-nights-l">${esc(F.nightsLabel)}</span><span class="who-step"><button type="button" data-n="-1" aria-label="One night fewer">−</button><output aria-live="polite" aria-labelledby="bf-nights-l">${NIGHTS}</output><button type="button" data-n="1" aria-label="One night more">+</button></span></div>
+        <p class="bf-hint">${esc(F.cheapHint)}</p>
+        <input type="hidden" name="months" value="">
+      </div>
       <div class="bf-field who-field who" data-who><span class="who-label" id="bf-who-l">Who's travelling</span><button type="button" class="who-btn" id="bf-who" aria-labelledby="bf-who-l bf-who" aria-expanded="false" aria-controls="bf-who-pop">2 adults</button>
         <div class="who-pop" id="bf-who-pop" hidden><div class="who-party"></div><button type="button" class="who-add" hidden>+ Add room</button><p class="who-hint">Ages at the time of travel.</p><button type="button" class="btn btn-black btn-sm who-done">Done</button></div>
         <input type="hidden" name="adults" value="2"><input type="hidden" name="children" value="0"><input type="hidden" name="rooms" value="1"><input type="hidden" name="child_ages" value=""></div>
@@ -180,9 +193,8 @@ const formSec = `<section class="bf-sec" id="first-pick" aria-labelledby="bf-for
       </div>
       <p class="bf-hint bf-contact-h" id="bf-contact-h">${esc(F.contactHint)}</p>
       <p class="bf-err" id="bf-err" role="alert" hidden></p>
-      <a class="btn btn-black btn-lg btn-full" id="bf-go" href="${esc(wa(`${F.waSoon} Ref GV-BF`))}" data-base="https://wa.me/${S.whatsapp}" target="_blank" rel="noopener" data-where="bf-form" data-wa="1"><span${show("soon")}>${esc(F.btnSoon)}</span><span${show("live")}>${esc(F.btnLive)}</span>${ic("chat", 18)}</a>
-      <button type="button" class="btn btn-outline btn-lg btn-full" id="bf-send">${esc(F.btnSite)}</button>
-      <p class="bf-saved" id="bf-saved" role="status" hidden>${ic("check", 18, 3)}<span>${esc(F.saved)}</span></p>
+      <button type="button" class="btn btn-black btn-lg btn-full" id="bf-send">${esc(F.btnSite)}${ic("arrow", 18)}</button>
+      <p class="bf-saved" id="bf-saved" role="status" hidden>${ic("check", 18, 3)}<span></span></p>
       <p class="bf-small">${esc(F.small)} <a href="/privacy/">Privacy</a></p>
     </form>
   </div>
