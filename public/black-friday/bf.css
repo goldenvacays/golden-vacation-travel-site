@@ -106,6 +106,22 @@
 .bf-small a { text-decoration: underline; }
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
+/* when: their own dates, or the cheapest dates in the months they tap */
+.bf-when-set, .bf-when-cheap { display: flex; flex-direction: column; gap: 14px; }
+.bf-when-set[hidden], .bf-when-cheap[hidden] { display: none; }
+.bf-month-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.bf-month { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 52px; padding: 6px 4px; border: 0; border-radius: 12px; box-shadow: inset 0 0 0 1.5px var(--line); background: var(--white); color: var(--ink); font: inherit; cursor: pointer; }
+.bf-month b { font-size: 15px; font-weight: 800; line-height: 1.1; }
+.bf-month small { font-size: 11px; font-weight: 700; line-height: 1.1; color: var(--muted); }
+.bf-month:hover { box-shadow: inset 0 0 0 2px var(--ink); }
+.bf-month[aria-pressed=true] { background: var(--ink); color: var(--white); box-shadow: none; }
+.bf-month[aria-pressed=true] small { color: rgba(255,255,255,.75); }
+.bf-month:focus-visible { outline: 2px solid var(--gold-txt); outline-offset: 2px; }
+.missing .bf-month { box-shadow: inset 0 0 0 2px #B3261E; }
+.bf-nights { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; min-height: 52px; padding: 6px 8px 6px 14px; border: 1.5px solid var(--line); border-radius: 12px; }
+.bf-nights > span:first-child { font-size: 15px; font-weight: 700; }
+.bf-when-cheap .bf-hint { margin: -4px 0 0; }
+
 /* who's travelling: the site's picker, a room at a time */
 .who { position: relative; }
 .who-field .who-btn { min-height: 48px; width: 100%; text-align: left; padding: 0 14px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--white); font: inherit; font-size: 16px; font-weight: 700; color: var(--ink); cursor: pointer; }
@@ -147,6 +163,7 @@
 
 @media (min-width: 640px) {
   .bf-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bf-month-row { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .bf-form { padding: 24px; }
   .bf-perks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .bf-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }

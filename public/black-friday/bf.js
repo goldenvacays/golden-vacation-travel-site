@@ -46,9 +46,9 @@
   });
 })();
 
-/* The dates form: who's travelling (the site's picker, a room at a time), the WhatsApp message built from
-   what was typed, and a copy of each request saved to the Netlify form bf-early as the visitor taps through,
-   so the team has the list with dates even if someone never presses send in WhatsApp. */
+/* The dates form: who's travelling (the site's picker, a room at a time), their own dates or the cheapest
+   dates in the months they tap for the nights they want, saved to the Netlify form bf-early when they press
+   Save my dates. The team replies by WhatsApp or email. */
 (function () {
   "use strict";
   var form = document.getElementById("bf-form");
@@ -57,7 +57,7 @@
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var track = function (n, p) { try { if (typeof window.gtag === "function") window.gtag("event", n, p || {}); } catch (e) {} };
   var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  var go = $("#bf-go"), err = $("#bf-err"), saved = $("#bf-saved");
+  var err = $("#bf-err"), saved = $("#bf-saved");
   var el = function (n) { return form.elements[n]; };
   var val = function (n) { var e = el(n); return e && e.value ? String(e.value).trim() : ""; };
   var fmt = function (s) { if (!s) return ""; var d = new Date(s + "T00:00:00"); return isNaN(d) ? s : d.getDate() + " " + MON[d.getMonth()] + " " + d.getFullYear(); };
@@ -151,28 +151,55 @@
   document.addEventListener("click", function (ev) { if (!pop.hidden && !pop.contains(ev.target) && ev.target !== wbtn) open(false); });
   document.addEventListener("keydown", function (ev) { if (ev.key === "Escape" && !pop.hidden) { open(false); wbtn.focus(); } });
 
-  /* the WhatsApp message, rebuilt as they type */
-  function message() {
-    var a = val("checkin"), b = val("checkout"), n = a && b ? Math.round((new Date(b) - new Date(a)) / 864e5) : 0;
-    var t = (form.getAttribute(live() ? "data-wa-live" : "data-wa-soon") || "").replace(/’/g, "'");
-    if (trip()) t += "\nTrip: " + trip();
-    if (val("where")) t += "\nWhere: " + val("where");
-    if (a) t += "\nDates: " + fmt(a) + (b ? " → " + fmt(b) : "") + (n > 0 ? " (" + n + (n === 1 ? " night" : " nights") + ")" : "") + (el("flexible").checked ? ", can move a little" : "");
-    t += "\nWho: " + whoText();
-    var ag = agesText(); if (ag) t += " (ages " + ag.replace(/;/g, " /") + ")";
-    if (val("name")) t += "\nName: " + val("name");
-    t += "\nRef " + REF;
-    return { text: t, nights: n };
+  /* when: their own dates, or the cheapest dates in the months they tap, for the nights they want */
+  var setBox = $("[data-when=set]", form), cheapBox = $("[data-when=cheap]", form), mrow = $("#bf-months", form);
+  var cheap = function () { var c = $("input[name=when]:checked", form); return !!c && c.value === "Cheapest dates"; };
+  var picked = function () { return $$(".bf-month", mrow).filter(function (b) { return b.getAttribute("aria-pressed") === "true"; }).map(function (b) { return b.getAttribute("data-m"); }); };
+  var NMIN = 1, NMAX = 21, want = parseInt(cheapBox.getAttribute("data-nights"), 10) || 3;
+  (function () {
+    var d = new Date(); d.setDate(1);
+    for (var i = 0; i < 12; i++, d.setMonth(d.getMonth() + 1)) {
+      var b = document.createElement("button"), m = document.createElement("b"), y = document.createElement("small");
+      b.type = "button"; b.className = "bf-month"; b.setAttribute("aria-pressed", "false");
+      b.setAttribute("data-m", MON[d.getMonth()] + " " + d.getFullYear());
+      m.textContent = MON[d.getMonth()]; y.textContent = String(d.getFullYear());
+      b.appendChild(m); b.appendChild(y); mrow.appendChild(b);
+      b.addEventListener("click", function () {
+        this.setAttribute("aria-pressed", this.getAttribute("aria-pressed") === "true" ? "false" : "true");
+        $(".bf-months", form).classList.remove("missing");
+        sync(); touched();
+      });
+    }
+  })();
+  var nOut = $(".bf-nights output", form), nBtns = $$(".bf-nights button", form);
+  function setNights(n) {
+    want = Math.max(NMIN, Math.min(NMAX, n));
+    nOut.textContent = String(want);
+    nBtns.forEach(function (b) { b.disabled = +b.getAttribute("data-n") < 0 ? want <= NMIN : want >= NMAX; });
+  }
+  nBtns.forEach(function (b) { b.addEventListener("click", function () { setNights(want + +b.getAttribute("data-n")); sync(); touched(); }); });
+  function mode() {
+    var c = cheap();
+    setBox.hidden = c; cheapBox.hidden = !c;
+    ["checkin", "checkout", "flexible"].forEach(function (n) { el(n).disabled = c; });
+    el("months").disabled = !c;
+    $$(".missing", c ? setBox : cheapBox).forEach(function (f) { f.classList.remove("missing"); });
+    sync();
+  }
+  $$("input[name=when]", form).forEach(function (r) { r.addEventListener("change", mode); });
+
+  function nights() {
+    var a = val("checkin"), b = val("checkout");
+    return a && b ? Math.round((new Date(b) - new Date(a)) / 864e5) : 0;
   }
   function sync() {
     if (val("checkin")) el("checkout").min = val("checkin");
-    var m = message();
-    el("nights").value = m.nights > 0 ? String(m.nights) : "";
+    var c = cheap(), n = c ? want : nights();
+    el("nights").value = n > 0 ? String(n) : "";
+    el("months").value = c ? picked().join(", ") : "";
     el("state").value = document.documentElement.getAttribute("data-bf") || "soon";
     el("adults").value = tot("a"); el("children").value = tot("k"); el("rooms").value = party.length; el("child_ages").value = agesText();
     el("ref").value = REF;
-    go.href = go.getAttribute("data-base") + "?text=" + encodeURIComponent(m.text);
-    return m;
   }
   form.addEventListener("input", sync);
   form.addEventListener("change", function (ev) {
@@ -194,10 +221,16 @@
     var miss = [];
     var trips = $(".bf-trips", form), okTrip = !!trip();
     trips.classList.toggle("missing", !okTrip); if (!okTrip) miss.push("what you're after");
-    [["checkin", "arriving date"], ["checkout", "leaving date"], ["name", "your name"]].forEach(function (p) {
-      var ok = !!val(p[0]); el(p[0]).closest(".bf-field").classList.toggle("missing", !ok); if (!ok) miss.push(p[1]);
-    });
-    if (val("checkin") && val("checkout") && val("checkout") <= val("checkin")) { miss.push("leaving after arriving"); el("checkout").closest(".bf-field").classList.add("missing"); }
+    if (cheap()) {
+      var okM = picked().length > 0;
+      $(".bf-months", form).classList.toggle("missing", !okM); if (!okM) miss.push(form.getAttribute("data-err-months") || "the months that work");
+    } else {
+      [["checkin", "arriving date"], ["checkout", "leaving date"]].forEach(function (p) {
+        var ok = !!val(p[0]); el(p[0]).closest(".bf-field").classList.toggle("missing", !ok); if (!ok) miss.push(p[1]);
+      });
+      if (val("checkin") && val("checkout") && val("checkout") <= val("checkin")) { miss.push("leaving after arriving"); el("checkout").closest(".bf-field").classList.add("missing"); }
+    }
+    var okN = !!val("name"); el("name").closest(".bf-field").classList.toggle("missing", !okN); if (!okN) miss.push("your name");
     /* a way to reach them: their WhatsApp number or their email, either will do */
     var ph = val("phone"), em = val("email"), fp = el("phone").closest(".bf-field"), fe = el("email").closest(".bf-field");
     fp.classList.remove("missing"); fe.classList.remove("missing");
@@ -206,29 +239,8 @@
     if (em && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { miss.push("a full email address"); fe.classList.add("missing"); }
     return miss;
   }
-  go.addEventListener("click", function (ev) {
-    var m = sync();
-    var miss = check();
-    if (miss.length) {
-      ev.preventDefault();
-      err.textContent = (form.getAttribute("data-err") || "") + miss.join(", ") + ".";
-      err.hidden = false; saved.hidden = true;
-      try { err.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (e) {}
-      return;
-    }
-    err.hidden = true;
-    el("via").value = "whatsapp";
-    save();
-    $("span", saved).textContent = form.getAttribute("data-saved-wa") || "";
-    saved.hidden = false;
-    track("bf_dates_saved", { trip: trip(), state: el("state").value, via: "whatsapp" });
-    track("whatsapp_click", { where: "bf-form", visit: window.GV_VISIT || "" });
-    try { if (typeof window.GV_WA_EXIT === "function") window.GV_WA_EXIT({ ref: REF, where: "bf-form", context: m.text }); } catch (e) {}
-  });
-  form.addEventListener("submit", function (ev) { ev.preventDefault(); go.click(); });
-
-  /* or send them here: the same list, no WhatsApp (for people who would rather use email) */
-  var send = $("#bf-send"), sendLabel = send ? send.textContent : "";
+  /* save the dates: the list the team works from on Nov 19, no WhatsApp step */
+  var send = $("#bf-send"), sendHTML = send ? send.innerHTML : "";
   function showErr(miss) {
     err.textContent = (form.getAttribute("data-err") || "") + miss.join(", ") + ".";
     err.hidden = false; saved.hidden = true;
@@ -242,15 +254,19 @@
       err.hidden = true;
       el("via").value = "site";
       save();
-      $("span", saved).textContent = form.getAttribute(live() ? "data-saved-site-live" : "data-saved-site-soon") || "";
+      $("span", saved).textContent = form.getAttribute((cheap() ? "data-saved-cheap-" : "data-saved-site-") + (live() ? "live" : "soon")) || "";
       saved.hidden = false;
       send.disabled = true; send.textContent = form.getAttribute("data-sent") || "Sent";
-      track("bf_dates_saved", { trip: trip(), state: el("state").value, via: "site" });
+      track("bf_dates_saved", { trip: trip(), state: el("state").value, via: "site", when: cheap() ? "cheapest" : "dates" });
       track("generate_lead", { lead_source: "form", where: "bf-form" });
     });
     /* changed something after sending: they can send again */
-    form.addEventListener("input", function () { if (send.disabled) { send.disabled = false; send.textContent = sendLabel; } });
+    form.addEventListener("input", touched);
+    form.addEventListener("change", touched);
   }
+  function touched() { if (send && send.disabled) { send.disabled = false; send.innerHTML = sendHTML; } }
+
+  form.addEventListener("submit", function (ev) { ev.preventDefault(); if (send) send.click(); });
 
   /* a rate tile without its Black Friday price yet fills the form with that trip */
   $$("[data-pick-trip]").forEach(function (a) {
@@ -261,9 +277,11 @@
       $(".bf-trips", form).classList.remove("missing");
       sync();
       track("bf_tile", { deal: a.getAttribute("data-name") || w || "", priced: "no" });
-      setTimeout(function () { try { el("checkin").focus({ preventScroll: true }); } catch (e) {} }, 700);
+      setTimeout(function () { try { (cheap() ? $(".bf-month", mrow) : el("checkin")).focus({ preventScroll: true }); } catch (e) {} }, 700);
     });
   });
+  setNights(want);
+  mode();
   draw();
 })();
 
