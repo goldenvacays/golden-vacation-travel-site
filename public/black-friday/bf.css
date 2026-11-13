@@ -161,6 +161,13 @@
 .bf-end-in h2 { font-size: 38px; }
 .bf-end-in p { font-size: 15px; max-width: 520px; }
 
+/* between 900 and 1280px the header has no room for the menu links and the WhatsApp button together:
+   the menu button shows instead, as on the front page */
+@media (min-width: 900px) and (max-width: 1279px) {
+  .bf .nav-links { display: none; }
+  .bf .nav .menu-btn.mob { display: inline-flex !important; }
+  .bf .menu.mob.open { display: flex !important; }
+}
 @media (min-width: 640px) {
   .bf-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .bf-month-row { grid-template-columns: repeat(6, minmax(0, 1fr)); }
