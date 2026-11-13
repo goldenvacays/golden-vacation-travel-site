@@ -1,9 +1,12 @@
-<!-- Golden Vacation & Travel: the Black Friday countdown bar.
-     Netlify: Project configuration > Build & deploy > Post processing > Snippet injection > Add snippet,
-     name it "Black Friday bar", choose "Insert before </body>", paste everything below this comment, Save.
-     It shows on every page except the Black Friday page itself and the quote, sent and booked pages,
-     counts down to Thu Nov 19, 8am Jamaica time, then to Mon Nov 30, 11:59pm, then removes itself,
-     so it can stay in place until you delete it in December. Same times as data/black-friday.json. -->
+<!-- Golden Vacation & Travel: Black Friday across the site (the countdown bar, the menu link, the front-page band).
+     Netlify: Project configuration > Build & deploy > Post processing > Snippet injection, snippet "Black Friday bar",
+     "Insert before </body>". Paste everything below this comment, Save. It takes effect at once, no deploy.
+     1. A gold Black Friday link first in the menu on every page (marked as the current page on /black-friday/).
+     2. A Black Friday band on the front page, right under the search box, with the countdown.
+     3. The countdown bar at the top of every page except the Black Friday page itself.
+     None of it shows on the quote, review, sent and booked pages. It counts down to Thu Nov 19, 8am Jamaica time,
+     then to Mon Nov 30, 11:59pm, then all of it removes itself, so it can stay in place until you delete it in
+     December. Same times as data/black-friday.json. -->
 <style>
 .gvbf{position:relative;z-index:30;background:#0E0F0E;color:#fff;border-bottom:2px solid #F2B93B;font-family:Archivo,"Helvetica Neue",Helvetica,Arial,sans-serif}
 .gvbf a.gvbf-a{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px 10px;min-height:40px;padding:6px 46px 6px 14px;color:#fff;text-decoration:none;font-size:13px;line-height:1.25;text-align:center}
@@ -16,38 +19,161 @@
 .gvbf-x:hover{opacity:1}
 @media (max-width:389px){.gvbf u{display:none}}
 @media (min-width:900px){.gvbf a.gvbf-a{font-size:14px;gap:14px}}
+.nav-links a.gvbf-nav{display:inline-flex;align-items:center;padding:6px 13px;margin:-6px 0;border-radius:999px;background:#0E0F0E;color:#F2B93B;font-weight:800}
+.nav-links a.gvbf-nav:hover{color:#fff}
+.nav-links.gvbf-in{gap:20px}
+.menu a.gvbf-nav{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.menu a.gvbf-nav i{font-style:normal;font-size:12px;font-weight:800;line-height:1;padding:6px 10px;border-radius:999px;background:#F2B93B;color:#0E0F0E;white-space:nowrap}
+.gvbf-band{padding:20px var(--pad,20px) 4px}
+.gvbf-card{display:grid;gap:18px;padding:24px 20px;border-radius:22px;background:#0E0F0E;color:#fff;border-bottom:4px solid #F2B93B}
+.gvbf-k{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#F2B93B}
+.gvbf-h{margin:6px 0 0;font-size:38px;color:#fff}
+.gvbf-s{margin:10px 0 0;font-size:15px;line-height:1.45;color:rgba(255,255,255,.8);max-width:560px}
+.gvbf-c{display:flex;flex-direction:column;gap:12px}
+.gvbf-cl{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.gvbf-cells{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.gvbf-cell{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 4px 10px;border-radius:14px;background:#1E201E}
+.gvbf-cell b{font-size:30px;font-weight:900;line-height:1;color:#F2B93B;font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+.gvbf-cell span{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.65)}
+.gvbf-btns{display:flex;flex-wrap:wrap;gap:10px}
+.gvbf-btns a{flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 20px;border-radius:999px;font-size:16px;font-weight:800;text-decoration:none;white-space:nowrap}
+.gvbf-btns a.gvbf-go{background:#F2B93B;color:#0E0F0E}
+.gvbf-btns a.gvbf-go:hover{background:#fff}
+.gvbf-btns a.gvbf-pick{box-shadow:inset 0 0 0 2px rgba(255,255,255,.6);color:#fff}
+.gvbf-btns a.gvbf-pick:hover{box-shadow:inset 0 0 0 2px #fff}
+@media (min-width:900px){
+  .gvbf-band{padding:40px var(--pad,56px) 8px}
+  .gvbf-card{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:center;gap:48px;padding:40px 48px;border-radius:30px}
+  .gvbf-h{font-size:64px}
+  .gvbf-s{font-size:17px}
+  .gvbf-cell b{font-size:44px}
+  .gvbf-cell{padding:16px 6px 12px;border-radius:18px}
+}
 </style>
 <script>
 (function () {
   var OPEN = Date.parse("2026-11-19T13:00:00Z"), END = Date.parse("2026-12-01T04:59:59Z"), p = location.pathname;
   if (Date.now() > END) return;
-  if (/^\/(black-friday|q|review)(\/|$)/.test(p) || /\/(quote|sent|booked)(\/|\.html|$)/.test(p)) return;
-  try { if (sessionStorage.getItem("gvbf-x")) return; } catch (e) {}
-  var bar = document.createElement("div");
-  bar.className = "gvbf";
-  bar.setAttribute("role", "region");
-  bar.setAttribute("aria-label", "Black Friday");
-  bar.innerHTML = '<a class="gvbf-a" href="/black-friday/"><b>BLACK FRIDAY</b><span class="gvbf-w"></span><span class="gvbf-t"></span><u></u></a>' +
-    '<button class="gvbf-x" type="button" aria-label="Close the Black Friday bar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>';
-  document.body.insertBefore(bar, document.body.firstChild);
-  var w = bar.querySelector(".gvbf-w"), t = bar.querySelector(".gvbf-t"), u = bar.querySelector("u"), iv;
-  function pad(n) { return (n < 10 ? "0" : "") + n; }
-  function tick() {
-    var now = Date.now(), live = now >= OPEN, ms = (live ? END : OPEN) - now;
-    if (ms <= 0 && live) { clearInterval(iv); bar.remove(); return; }
-    var s = Math.max(0, Math.floor(ms / 1000)), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
-    w.textContent = live ? "is on · ends in" : "opens in";
-    t.textContent = (d ? d + "d " : "") + pad(h) + "h " + pad(m) + "m " + pad(s % 60) + "s";
-    u.textContent = live ? "See the deals" : "Get first pick";
+  if (/^\/(q|review)(\/|$)/.test(p) || /\/(quote|sent|booked)(\/|\.html|$)/.test(p)) return;
+  var onBF = /^\/black-friday(\/|$)/.test(p);
+  var live = function () { return Date.now() >= OPEN; };
+  var ga = function (n, x) { try { if (typeof window.gtag === "function") window.gtag("event", n, x || {}); } catch (e) {} };
+  var pad = function (n) { return (n < 10 ? "0" : "") + n; };
+  var left = function () {
+    var s = Math.max(0, Math.floor(((live() ? END : OPEN) - Date.now()) / 1000));
+    return { d: Math.floor(s / 86400), h: Math.floor(s % 86400 / 3600), m: Math.floor(s % 3600 / 60), s: s % 60 };
+  };
+
+  /* 1. Black Friday first in the menu, on every page. In a header with no room left for it (some pages
+     between 900 and 1280px wide) the link stays out of the top row, and the bar carries it there. */
+  var pills = [];
+  Array.prototype.forEach.call(document.querySelectorAll(".nav-links, #menu.menu"), function (nav) {
+    if (nav.querySelector(".gvbf-nav")) return;
+    var a = document.createElement("a");
+    a.href = "/black-friday/"; a.className = "gvbf-nav"; a.textContent = "Black Friday";
+    if (nav.id === "menu") { var i = document.createElement("i"); i.textContent = "Nov 19 to 30"; a.appendChild(i); }
+    if (onBF) a.setAttribute("aria-current", "page");
+    a.addEventListener("click", function () { ga("bf_nav_click", { page: p }); });
+    nav.insertBefore(a, nav.firstChild);
+    if (nav.classList.contains("nav-links")) pills.push(a);
+  });
+  /* no room: the row overflows, or a link comes within 14px of the wordmark or the buttons beside it */
+  function clash(nav) {
+    var row = nav.closest(".nav, .ga-nav, header") || nav.parentNode, M = 14;
+    if (!nav.getBoundingClientRect().width) return false;
+    if (row.scrollWidth > row.clientWidth + 1) return true;
+    var others = row.querySelectorAll(".wordmark, .nav-l *, .nav-r > *"), links = nav.children;
+    for (var j = 0; j < links.length; j++) {
+      var r = links[j].getBoundingClientRect();
+      if (!r.width) continue;
+      for (var i = 0; i < others.length; i++) {
+        var o = others[i], q = o.getBoundingClientRect();
+        if (nav.contains(o) || o.contains(nav) || !q.width || !q.height) continue;
+        if (q.left < r.right + M && q.right > r.left - M && q.top < r.bottom - 1 && q.bottom > r.top + 1) return true;
+      }
+    }
+    return false;
   }
-  tick();
-  iv = setInterval(tick, 1000);
-  bar.querySelector(".gvbf-x").addEventListener("click", function () {
-    clearInterval(iv); bar.remove();
-    try { sessionStorage.setItem("gvbf-x", "1"); } catch (e) {}
-  });
-  bar.querySelector(".gvbf-a").addEventListener("click", function () {
-    try { if (typeof window.gtag === "function") window.gtag("event", "bf_bar_click", { state: Date.now() >= OPEN ? "live" : "soon", page: p }); } catch (e) {}
-  });
+  function fit() {
+    pills.forEach(function (a) {
+      var nav = a.parentNode;
+      a.style.display = ""; nav.classList.add("gvbf-in"); /* the site's own 20px spacing, as below 1340px */
+      if (clash(nav)) { a.style.display = "none"; nav.classList.remove("gvbf-in"); }
+    });
+  }
+  if (pills.length) {
+    fit();
+    window.addEventListener("resize", fit);
+    window.addEventListener("load", fit);
+    try { document.fonts.ready.then(fit); } catch (e) {}
+  }
+
+  /* 2. the band on the front page, right under the search box */
+  var band = null, cells = null;
+  if (p === "/" || p === "/index.html") {
+    var before = document.querySelector(".doors-sec") || document.getElementById("getaways");
+    if (before && before.parentNode) {
+      band = document.createElement("section");
+      band.className = "gvbf-band wrap";
+      band.setAttribute("aria-label", "Black Friday");
+      band.innerHTML = '<div class="gvbf-card"><div><span class="gvbf-k">Golden Vacation · Nov 19 to 30</span>' +
+        '<h2 class="gvbf-h hh">Black Friday at Golden</h2><p class="gvbf-s"></p></div>' +
+        '<div class="gvbf-c"><span class="gvbf-cl"></span><div class="gvbf-cells">' +
+        '<span class="gvbf-cell"><b>00</b><span>days</span></span><span class="gvbf-cell"><b>00</b><span>hrs</span></span>' +
+        '<span class="gvbf-cell"><b>00</b><span>min</span></span><span class="gvbf-cell"><b>00</b><span>sec</span></span></div>' +
+        '<div class="gvbf-btns"><a class="gvbf-go" href="/black-friday/#deals" data-w="rates">See the rates<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>' +
+        '<a class="gvbf-pick" href="/black-friday/#first-pick" data-w="pick"></a></div></div></div>';
+      before.parentNode.insertBefore(band, before);
+      cells = band.querySelectorAll(".gvbf-cell b");
+      Array.prototype.forEach.call(band.querySelectorAll(".gvbf-btns a"), function (a) {
+        a.addEventListener("click", function () { ga("bf_band_click", { which: a.getAttribute("data-w"), state: live() ? "live" : "soon" }); });
+      });
+    }
+  }
+
+  /* 3. the countdown bar at the top of every page, except the Black Friday page itself */
+  var bar = null, bw, bt, bu;
+  var shut = false;
+  try { shut = !!sessionStorage.getItem("gvbf-x"); } catch (e) {}
+  if (!onBF && !shut) {
+    bar = document.createElement("div");
+    bar.className = "gvbf";
+    bar.setAttribute("role", "region");
+    bar.setAttribute("aria-label", "Black Friday countdown");
+    bar.innerHTML = '<a class="gvbf-a" href="/black-friday/"><b>BLACK FRIDAY</b><span class="gvbf-w"></span><span class="gvbf-t"></span><u></u></a>' +
+      '<button class="gvbf-x" type="button" aria-label="Close the Black Friday bar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>';
+    document.body.insertBefore(bar, document.body.firstChild);
+    bw = bar.querySelector(".gvbf-w"); bt = bar.querySelector(".gvbf-t"); bu = bar.querySelector("u");
+    bar.querySelector(".gvbf-x").addEventListener("click", function () {
+      bar.remove(); bar = null;
+      try { sessionStorage.setItem("gvbf-x", "1"); } catch (e) {}
+    });
+    bar.querySelector(".gvbf-a").addEventListener("click", function () { ga("bf_bar_click", { state: live() ? "live" : "soon", page: p }); });
+  }
+
+  var iv;
+  function tick() {
+    if (Date.now() > END) {
+      clearInterval(iv);
+      if (bar) bar.remove();
+      if (band) band.remove();
+      return;
+    }
+    var on = live(), t = left();
+    if (bar) {
+      bw.textContent = on ? "is on · ends in" : "opens in";
+      bt.textContent = (t.d ? t.d + "d " : "") + pad(t.h) + "h " + pad(t.m) + "m " + pad(t.s) + "s";
+      bu.textContent = on ? "See the deals" : "Get first pick";
+    }
+    if (band) {
+      band.querySelector(".gvbf-s").textContent = on
+        ? "Black Friday rates are on, to Monday, Nov 30 at 11:59pm Jamaica time. Plus free airport transfers, a free day tour on getaways and US$50 to hold your resort stay."
+        : "Lower rates on Jamaica resorts, trips to Jamaica and getaways abroad. Opens Thursday, Nov 19 at 8am Jamaica time.";
+      band.querySelector(".gvbf-cl").textContent = on ? "Ends in" : "Opens in";
+      band.querySelector(".gvbf-pick").textContent = on ? "Get my price" : "Get first pick";
+      cells[0].textContent = pad(t.d); cells[1].textContent = pad(t.h); cells[2].textContent = pad(t.m); cells[3].textContent = pad(t.s);
+    }
+  }
+  if (bar || band) { tick(); iv = setInterval(tick, 1000); }
 })();
 </script>
