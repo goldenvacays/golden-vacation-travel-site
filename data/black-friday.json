@@ -1,0 +1,283 @@
+{
+  "_about": "The Black Friday page, /black-friday/, built by scripts/build-black-friday.mjs. Times are UTC: the sale opens Thu Nov 19, 2026, 8am Jamaica time (13:00Z) and ends Mon Nov 30, 11:59pm Jamaica time (04:59:59Z on Dec 1). The countdown on the page and the bar snippet (snippets/bf-countdown-bar.html) use the same two times. Deals go in the deals list as the hotels release them; until then the page shows the lanes with 'Deals land Nov 19'. A deal: name, img (site path), alt, was (the usual from-price, US$), from (the Black Friday from-price, US$, null until known: the tile then shows the usual price and 'Black Friday rate Nov 19'), trip and where (they fill the dates form when an unpriced tile is tapped), basis (e.g. 'per person per night'), line, lane (staycations | visitors | getaways), wa (the WhatsApp message) or href, until (YYYY-MM-DD, optional, Jamaica date: the tile drops off after it). The form (form) saves to the Netlify form bf-early and opens WhatsApp with the details and Ref GV-BF.",
+  "path": "/black-friday/",
+  "opensAt": "2026-11-19T13:00:00Z",
+  "endsAt": "2026-12-01T04:59:59Z",
+  "title": "Black Friday at Golden, Nov 19 to 30 | Golden Vacation & Travel",
+  "description": "Black Friday rates on Jamaica resort stays, trips to Jamaica and getaways abroad, Nov 19 to 30. Plus free airport transfers, a free day tour on getaways and US$50 to hold your resort stay.",
+  "ogImage": "/black-friday/img/og.jpg",
+  "hero": {
+    "kicker": "Golden Vacation · Nov 19 to Nov 30",
+    "soon": "Lower rates on Jamaica resorts, trips to Jamaica and getaways abroad. Opens Thursday, Nov 19 at 8am Jamaica time. Runs to Monday, Nov 30.",
+    "live": "Black Friday rates are on. The deals run to Monday, Nov 30 at 11:59pm Jamaica time.",
+    "over": "Black Friday has ended. Thank you for shopping with us.",
+    "wa": "Hi Golden Vacation! Put me on the Black Friday early list, I want first pick. Ref GV-BF"
+  },
+  "perks": [
+    {
+      "icon": "car",
+      "title": "Free airport transfers",
+      "text": "Round trip, on Montego Bay resorts, for stays of 4 nights or more."
+    },
+    {
+      "icon": "compass",
+      "title": "A free day tour on getaways",
+      "text": "The Panama Canal or an Emberá village day in Panama, buggies in Punta Cana, a city walk in Lima."
+    },
+    {
+      "icon": "wallet",
+      "title": "US$50 holds your resort stay",
+      "text": "Then pay the rest in parts, in US$ or J$, before your balance date."
+    },
+    {
+      "icon": "gift",
+      "title": "Plus the resorts' own extras",
+      "text": "As each resort releases its Black Friday extras, we add them here."
+    }
+  ],
+  "lanes": [
+    {
+      "title": "Jamaica resorts",
+      "text": "Resort stays across the island.",
+      "img": "/assets/img/exp/ocs-beach-umbrellas.jpg",
+      "alt": "Beach umbrellas on a Jamaica resort beach from the air",
+      "href": "/#staycations"
+    },
+    {
+      "title": "Coming to Jamaica",
+      "text": "Resort stays for visitors, with the airport ride sorted.",
+      "img": "/assets/img/coming-home.jpg",
+      "alt": "The VIP arrivals lounge at Montego Bay airport",
+      "href": "/#coming"
+    },
+    {
+      "title": "Getaways abroad",
+      "text": "Panama, Punta Cana, Lima and Medellín, flights included.",
+      "img": "/assets/img/tile-medellin.jpg",
+      "alt": "Medellín, Colombia, from the air",
+      "href": "/getaways/"
+    }
+  ],
+  "steps": [
+    {
+      "title": "Tell us your dates",
+      "text": "Use the form above, or message BLACK FRIDAY to us on WhatsApp. We message you the minute the deals open."
+    },
+    {
+      "title": "Pick your deal, Nov 19 to 30",
+      "text": "Resort stays, trips to Jamaica and getaways abroad. The prices go up on this page on the day."
+    },
+    {
+      "title": "A small deposit holds it",
+      "text": "US$50 holds a resort stay. Then pay the rest in parts."
+    }
+  ],
+  "fine": "Black Friday deals are for bookings made Nov 19 to Nov 30, 2026, Jamaica time. Prices are starting prices, and yours depends on your dates. Rates are subject to change without a full deposit. Free airport transfers: round trip, on Montego Bay resorts, for stays of 4 nights or more. Free day tour: with getaway packages, and the tour depends on the destination.",
+  "deals": [
+    {
+      "name": "RIU Ocho Rios",
+      "lane": "staycations",
+      "trip": "Jamaica resort stay",
+      "where": "RIU Ocho Rios",
+      "img": "/assets/img/deal-riu-ocho-rios.jpg",
+      "alt": "RIU Ocho Rios on the north coast from the air",
+      "was": 134,
+      "from": null,
+      "basis": "per person per night",
+      "line": "St Ann, about 2 h from Kingston"
+    },
+    {
+      "name": "Princess Grand Jamaica",
+      "lane": "staycations",
+      "trip": "Jamaica resort stay",
+      "where": "Princess Grand Jamaica",
+      "img": "/assets/img/deal-princess-grand.jpg",
+      "alt": "Princess Grand Jamaica's rooms above the pool",
+      "was": 191,
+      "from": null,
+      "basis": "per person per night",
+      "line": "Hanover. 2 kids free to Dec 21"
+    },
+    {
+      "name": "Panama · Riu Plaza",
+      "lane": "getaways",
+      "trip": "Getaway abroad",
+      "where": "Panama, Riu Plaza",
+      "img": "/assets/img/deal-panama.jpg",
+      "alt": "Casco Viejo, Panama City",
+      "was": 760,
+      "from": null,
+      "basis": "per person, flights included",
+      "line": "4 nights from Kingston, free day tour"
+    },
+    {
+      "name": "Punta Cana · Riu Republica",
+      "lane": "getaways",
+      "trip": "Getaway abroad",
+      "where": "Punta Cana, Riu Republica",
+      "img": "/assets/img/deal-punta-cana.jpg",
+      "alt": "Punta Cana beach at sunrise",
+      "was": 690,
+      "from": null,
+      "basis": "per person, flights included",
+      "line": "3 nights all-inclusive from Kingston, free day tour"
+    },
+    {
+      "name": "RIU Montego Bay + free transfer",
+      "lane": "visitors",
+      "trip": "Coming to Jamaica",
+      "where": "RIU Montego Bay",
+      "img": "/assets/img/coming-usa.jpg",
+      "alt": "Welcome to Montego Bay sign in the airport arrivals hall",
+      "was": 156,
+      "from": null,
+      "basis": "per person per night",
+      "line": "Free round-trip airport transfer on 4 nights or more"
+    },
+    {
+      "name": "RIU Negril",
+      "lane": "staycations",
+      "trip": "Jamaica resort stay",
+      "where": "RIU Negril",
+      "img": "/assets/img/deal-riu-negril.jpg",
+      "alt": "Rooms with their own pools at RIU Negril",
+      "was": 130,
+      "from": null,
+      "basis": "per person per night",
+      "line": "Negril"
+    },
+    {
+      "name": "RIU Palace Aquarelle",
+      "lane": "staycations",
+      "trip": "Jamaica resort stay",
+      "where": "RIU Palace Aquarelle",
+      "img": "/assets/img/deal-riu-palace-aquarelle.jpg",
+      "alt": "RIU Palace Aquarelle on the beach",
+      "was": 154,
+      "from": null,
+      "basis": "per person per night",
+      "line": "Trelawny, family friendly"
+    },
+    {
+      "name": "RIU Montego Bay",
+      "lane": "staycations",
+      "trip": "Jamaica resort stay",
+      "where": "RIU Montego Bay",
+      "img": "/assets/img/deal-riu-montego-bay.jpg",
+      "alt": "Water slides and pool at RIU Montego Bay",
+      "was": 156,
+      "from": null,
+      "basis": "per person per night",
+      "line": "Montego Bay, adults only, 18 years and older"
+    },
+    {
+      "name": "RIU Palace Tropical Bay",
+      "lane": "staycations",
+      "trip": "Jamaica resort stay",
+      "where": "RIU Palace Tropical Bay",
+      "img": "/assets/img/deal-riu-palace-tropical-bay.jpg",
+      "alt": "RIU Palace Tropical Bay and its beach from the air",
+      "was": 168,
+      "from": null,
+      "basis": "per person per night",
+      "line": "Negril"
+    },
+    {
+      "name": "RIU Reggae",
+      "lane": "staycations",
+      "trip": "Jamaica resort stay",
+      "where": "RIU Reggae",
+      "img": "/assets/img/deal-riu-reggae.jpg",
+      "alt": "RIU Reggae and its beach from the air",
+      "was": 174,
+      "from": null,
+      "basis": "per person per night",
+      "line": "Montego Bay"
+    },
+    {
+      "name": "Lima · Suites del Bosque",
+      "lane": "getaways",
+      "trip": "Getaway abroad",
+      "where": "Lima, Suites del Bosque",
+      "img": "/assets/img/deal-lima.jpg",
+      "alt": "Miraflores and the cliffs of Lima",
+      "was": 620,
+      "from": null,
+      "basis": "per person, flights included",
+      "line": "3 nights from Montego Bay, free day tour"
+    },
+    {
+      "name": "Lima + Panama",
+      "lane": "getaways",
+      "trip": "Getaway abroad",
+      "where": "Lima and Panama",
+      "img": "/assets/img/deal-panama-peru.jpg",
+      "alt": "A traveller on a glass deck above Panama City",
+      "was": 949,
+      "from": null,
+      "basis": "per person, flights included",
+      "line": "6 nights, two countries, free day tour"
+    }
+  ],
+  "form": {
+    "kicker": "Get first pick",
+    "title": "Tell us your dates",
+    "soon": "Tell us where and when. On Nov 19 at 8am we message you on WhatsApp with the deals for your dates.",
+    "live": "Tell us where and when, and we send you the Black Friday price for your dates on WhatsApp.",
+    "ticks": [
+      "First pick before the deals go public",
+      "The price for your own dates, not a guess",
+      "No card now. US$50 holds a resort stay"
+    ],
+    "trips": [
+      "Jamaica resort stay",
+      "Coming to Jamaica",
+      "Getaway abroad"
+    ],
+    "tripLabel": "What are you after?",
+    "whereLabel": "Where? (optional)",
+    "wherePh": "A resort, an area or a country",
+    "places": [
+      "RIU Ocho Rios",
+      "RIU Negril",
+      "RIU Palace Aquarelle",
+      "RIU Montego Bay",
+      "RIU Palace Tropical Bay",
+      "RIU Reggae",
+      "Princess Grand Jamaica",
+      "Princess Senses The Mangrove",
+      "Iberostar Rose Hall",
+      "Royalton",
+      "Moon Palace Jamaica",
+      "Bahia Principe Runaway Bay",
+      "Negril",
+      "Montego Bay",
+      "Ocho Rios",
+      "Runaway Bay",
+      "Panama",
+      "Punta Cana",
+      "Lima",
+      "Medellín"
+    ],
+    "arrive": "Arriving",
+    "leave": "Leaving",
+    "flex": "My dates can move a little",
+    "name": "Your name",
+    "phone": "WhatsApp number",
+    "phonePh": "+1 876",
+    "email": "Email (optional)",
+    "emailHint": "Handy if you live overseas.",
+    "btnSoon": "Save my dates on WhatsApp",
+    "btnLive": "Get my price on WhatsApp",
+    "small": "No card now. Rates are subject to change without a full deposit.",
+    "saved": "Saved. Press send in WhatsApp so we have your number.",
+    "errPre": "To save your dates we still need: ",
+    "waSoon": "Hi Golden Vacation! Put me on the Black Friday early list.",
+    "waLive": "Hi Golden Vacation! I'd like the Black Friday price for this trip."
+  },
+  "ratesTitle": "Black Friday rates",
+  "ratesLeadSoon": "What's on sale. The Black Friday rates go up here at 8am on Nov 19. Tap one to get first pick.",
+  "ratesLeadPriced": "Starting prices. Yours depends on your dates. Tap a deal to book it on WhatsApp.",
+  "perksTitle": "On top of the rates",
+  "ratesLeadLive": "Tap one and tell us your dates. We send your Black Friday rate on WhatsApp."
+}
