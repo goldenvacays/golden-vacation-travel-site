@@ -68,17 +68,15 @@ const footer = `<footer class="foot" role="contentinfo"><div class="wrap" style=
 /* ---------- the page ---------- */
 const jsonld = {
   "@context": "https://schema.org",
-  "@type": "SaleEvent",
+  "@type": "WebPage",
+  "@id": `${URL_}#webpage`,
+  url: URL_,
   name: "Black Friday at Golden Vacation & Travel",
   description: P.description,
-  url: URL_,
-  image: `${S.origin}${P.ogImage}`,
-  startDate: "2026-11-19T08:00:00-05:00",
-  endDate: "2026-11-30T23:59:59-05:00",
-  eventStatus: "https://schema.org/EventScheduled",
-  eventAttendanceMode: "https://schema.org/OnlineEventAttendanceMode",
-  location: { "@type": "VirtualLocation", url: URL_ },
-  organizer: { "@id": `${S.origin}/#organization`, "@type": "TravelAgency", name: "Golden Vacation and Travel", url: S.origin },
+  inLanguage: "en",
+  isPartOf: { "@id": `${S.origin}/#website` },
+  publisher: { "@id": `${S.origin}/#organization` },
+  primaryImageOfPage: { "@type": "ImageObject", url: `${S.origin}${P.ogImage}` },
 };
 
 const head = `<!DOCTYPE html>
