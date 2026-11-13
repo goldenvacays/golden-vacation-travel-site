@@ -793,4 +793,12 @@
 </url>
 <!-- /teachers-day -->
 
+<!-- black-friday -->
+<url>
+  <loc>https://goldenvacays.com/black-friday/</loc>
+  <lastmod>2026-11-13T00:00:00+00:00</lastmod>
+  <priority>0.8</priority>
+</url>
+<!-- /black-friday -->
+
 </urlset>
