@@ -504,9 +504,9 @@ body.jmd .jmd-v { display: inline; }
    from 1280px up, so below that they sit behind the menu button those pages have. It used to say 1200px,
    which was 80px optimistic and left the wordmark sitting under "Getaways" between 1200 and 1280. */
 @media (min-width: 900px) and (max-width: 1279px) {
-  .home .nav-links, .exp .nav-links, .legal-page .nav-links { display: none; }
-  .home .nav .menu-btn.mob, .exp .nav .menu-btn.mob, .legal-page .nav .menu-btn.mob { display: inline-flex !important; }
-  .home .menu.mob.open, .exp .menu.mob.open, .legal-page .menu.mob.open { display: flex !important; }
+  .home .nav-links, .exp .nav-links, .legal-page .nav-links, .st-page .nav-links { display: none; }
+  .home .nav .menu-btn.mob, .exp .nav .menu-btn.mob, .legal-page .nav .menu-btn.mob, .st-page .nav .menu-btn.mob { display: inline-flex !important; }
+  .home .menu.mob.open, .exp .menu.mob.open, .legal-page .menu.mob.open, .st-page .menu.mob.open { display: flex !important; }
   .menu .curr { display: none; } /* the nav already shows the currency switch from 900px up */
 }
 @media (min-width: 1200px) {
