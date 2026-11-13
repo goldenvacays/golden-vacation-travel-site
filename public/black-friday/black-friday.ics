@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Golden Vacation and Travel//Black Friday//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:black-friday-2026@goldenvacays.com
+DTSTAMP:20261112T130000Z
+DTSTART:20261119T130000Z
+DTEND:20261119T140000Z
+SUMMARY:Golden Vacation Black Friday opens
+DESCRIPTION:The deals open at 8am Jamaica time and run to Monday\, Nov 30. https://goldenvacays.com/black-friday/
+URL:https://goldenvacays.com/black-friday/
+LOCATION:https://goldenvacays.com/black-friday/
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Golden Vacation Black Friday opens
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+END:VCALENDAR
