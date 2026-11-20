@@ -268,8 +268,8 @@
     "kicker": "Staycations",
     "title": "Enjoy Jamaica.",
     "sub": "A weekend away without going away. Jamaica's resorts, priced and paid in J$, and we check what's open before we quote.",
-    "all": "All staycations",
-    "allHref": "/hotel-status/",
+    "all": "All resorts",
+    "allHref": "/resorts/",
     "feature": {
       "kicker": "Teachers' Day · 21 to 25 May 2027",
       "title": "Class dismissed.",

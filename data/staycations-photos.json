@@ -1,0 +1,110 @@
+{
+ "princess-senses": {
+  "hero": "2462_Overwater Aerial view.jpg",
+  "gallery": [
+   "413_002. PSM_Overwater Aerial View.jpg",
+   "2559_Swim Out Deluxe Junior Suite.jpg",
+   "403_001. PSM_Deluxe Jr Suite.jpg",
+   "2564_The Pearl.jpeg",
+   "129_002. PSM-PGJ_Topaz.jpg",
+   "2376_003. PSM-PGJ_Spa Princess.jpg",
+   "2343_002.b. PSM_Beach.jpg",
+   "2460_003. PSM_Lobby.jpg",
+   "2347_001.a. PSM-PGJ_Gym.jpg"
+  ]
+ },
+ "aquarelle": {
+  "hero": "XAQ_24_001_-_USP.jpg",
+  "gallery": [
+   "XAQ_24_025_-_Children_s_pool_with_slides.jpg",
+   "XAQ_24_014_-_Swim-up_Junior_Suite_Ocean_View.jpg",
+   "XAQ_24_115_-_Standard_Junior_Suite.jpg",
+   "XAQ_24_004_-_Main_restaurant.jpg",
+   "XAQ_24_036_-_Lobby_Reception.jpg",
+   "XAQ_24_042_-_Spa.jpg",
+   "XAQ_24_072_-_Splash_Water_World.jpg",
+   "XAQ_24_043_-_RiuLand.jpg",
+   "XAQ_24_049_-_Lounge_bar.jpg"
+  ]
+ },
+ "montego-bay": {
+  "hero": "MBA_20_003 - USP.jpg",
+  "gallery": [
+   "MBA_20_008 - Pools.jpg",
+   "MBA_20_004 - Beach activities.jpg",
+   "MBA_20_007 - Swim-up bar.jpg",
+   "MBA_20_100 - Suite.jpg",
+   "MBA_20_055 - Double room ocean view.jpg",
+   "MBA_20_075 - Family room lateral ocean view.jpg",
+   "MBA_20_033 - Asian restaurant.jpg",
+   "MBA_20_019 - Lobby.jpg",
+   "MBA_20_052 - Spa.jpg"
+  ]
+ },
+ "negril": {
+  "hero": "NEG_24_008 - USP.jpg",
+  "gallery": [
+   "NEG_24_025 - Pools.jpg",
+   "NEG_24_034 - Beach bar.jpg",
+   "NEG_24_028 - Swim-up bar.jpg",
+   "NEG_24_094 - Double room.jpg",
+   "NEG_24_210 - 2 bedroom Family room Ocean View.jpg",
+   "NEG_24_073 - Italian restaurant.jpg",
+   "NEG_24_052 - Lobby.jpg",
+   "NEG_24_047 - Spa.jpg",
+   "NEG_24_050 - RiuLand.jpg"
+  ]
+ },
+ "ocho-rios": {
+  "hero": "ORI_20_161 - USP.jpg",
+  "gallery": [
+   "ORI_19_050 - Pools.jpg",
+   "ORI_19_115 - Beach bar.jpg",
+   "ORI_19_034 - Junior suite.jpg",
+   "ORI_19_030 - Double room lateral sea view.jpg",
+   "ORI_19_025 - Family room.jpg",
+   "ORI_19_014 - Gourmet restaurant.jpg",
+   "ORI_19_007 - Lobby.jpg",
+   "ORI_19_019 - Spa.jpg",
+   "ORI_19_111 - Splash water world.jpg"
+  ]
+ },
+ "princess-grand": {
+  "hero": "2733_001.c.PGJ_Aerial View.jpg",
+  "gallery": [
+   "125_001.a. PGJ_Waterpark.jpg",
+   "2456_001. PGJ_Platinum_Pool.jpg",
+   "123_002. PGJ_Kids Club.jpg",
+   "405_Swim Out Deluxe Junior Suite.jpeg",
+   "347_Fusion 360.jpeg",
+   "343_El Delirio.jpeg",
+   "2457_002. PGJ_Platinum_Lounge.jpg",
+   "2347_001.a. PSM-PGJ_Gym.jpg",
+   "110_001. PSM-PGJ_DreamIsland.jpg"
+  ]
+ },
+ "reggae": {
+  "hero": "RGE_17_001 - USP.jpg",
+  "gallery": [
+   "RGE_16_005 - Pools.jpg",
+   "RGE_16_062 - Junior suite.jpg",
+   "RGE_16_049 - Double room.jpg",
+   "RGE_16_054 - Family room.jpg",
+   "RGE_16_033 - Main restaurant.jpg",
+   "RGE_16_029 - Lobby.jpg",
+   "RGE_16_044 - Spa.jpg",
+   "RGE_16_020 - Swim up bar.jpg",
+   "RGE_16_032 - Steakhouse.jpg"
+  ]
+ },
+ "palace-tropical-bay": {
+  "hero": "XBA_18_002 - USP.jpg",
+  "gallery": [
+   "XBA_18_007 - Pools.jpg",
+   "XBA_18_080 - Suite.jpg",
+   "XBA_18_040 - Japanese restaurant.jpg",
+   "XBA_18_031 - Lobby bar.jpg",
+   "XBA_18_004 - USP.jpg"
+  ]
+ }
+}

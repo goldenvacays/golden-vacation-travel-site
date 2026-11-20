@@ -354,7 +354,10 @@ function homePage() {
     const r = findResort(h.match) || {};
     const status = r.status === "Open" ? "Open" : r.status === "Reopening" ? `Reopening ${r.when || ""}`.trim() : r.status || "";
     const msg = `Hi Golden Vacation! I'd like a staycation quote for ${h.name}, priced in J$. Ref GV-STAY-${h.name.replace(/[^A-Za-z]/g, "").slice(0, 6).toUpperCase()}`;
-    return `<a class="scard" href="${wa(msg)}" data-where="staycation-card">
+    /* the card opens the resort's own page (prices, rooms, status) when there is one, else WhatsApp */
+    const page = `/resorts/${String(h.match).toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}/`;
+    const href = fs.existsSync(path.join(ROOT, "public", page, "index.html")) ? page : wa(msg);
+    return `<a class="scard" href="${href}" data-where="staycation-card">
       <span class="scard-photo">${pic(h.img, h.alt)}${status ? tag(status, "black") : ""}</span>
       <span class="scard-t"><span class="h">${esc(h.name)}</span><small>${longShort(h.sub, h.subMobile)}</small></span>
       <span class="scard-p">Per night <b>${esc(H.staycations.priceLine)}</b></span>
