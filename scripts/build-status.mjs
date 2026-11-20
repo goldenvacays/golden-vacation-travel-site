@@ -11,6 +11,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { nearBlock } from "./lib-status-near.mjs";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const arg = (k) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : ""; };
 const today = new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10);
@@ -91,6 +92,10 @@ const reAreas = [...new Set(rt.filter((r) => r.status === "Reopening").flatMap((
 const areaList = reAreas.length > 1 ? `${reAreas.slice(0, -1).join(", ")} and ${reAreas[reAreas.length - 1]}` : reAreas[0] || "Jamaica";
 swap(/\b\d+ resorts are reopening (?:across|between|in|on) [^.<"]*\./g, () => `${reopening} resorts are reopening ${span}, in ${areaList}.`, "the reopening FAQ answer");
 h = h.replace(/Each resort(&#x27;|')s confirmed reopening date is listed above and in the A–Z below\./g, (m, q) => `Each resort${q}s reopening date is in the reopening table and the A–Z below.`);
+/* 6. "Things to do near your resort": links from every open resort to its near page (scripts/lib-status-near.mjs) */
+const nb = nearBlock(listed.map((r) => ({ name: r.name, area: areaOf(r), status: r.status })), ROOT);
+if (/<!-- near-links -->[\s\S]*?<!-- \/near-links -->\n?/.test(h)) h = h.replace(/<!-- near-links -->[\s\S]*?<!-- \/near-links -->\n?/, () => nb);
+else swap(/<p class="st-note">/, (m) => `${nb}${m}`, "the note under the A to Z (to place the near links)");
 h = h.replace(/"dateModified":"\d{4}-\d{2}-\d{2}"/g, `"dateModified":"${DAY}"`);
 fs.writeFileSync(p, h);
 console.log(`status page: ${listed.length} resorts, ${open} open, ${reopening} reopening, updated ${shortDate}; ${byAZ.filter((r) => { const c = (CFG.az || {})[r.name]; return c && c.status === r.status; }).length} written answers kept`);
