@@ -57,7 +57,7 @@ const nav = `<header class="nav wrap" role="banner">
 const footer = `<footer class="foot" role="contentinfo"><div class="wrap" style="display:flex;flex-direction:column;gap:32px">
   <div class="foot-grid">
     <div class="foot-brand"><a class="wordmark hh" href="/">GOLDEN VACATION</a><p>${esc(S.footerAddress)}<br>WhatsApp ${esc(S.whatsappDisplay)} · Call ${esc(S.phone)}<br>${esc(S.iata)}</p></div>
-    <div class="foot-col"><span>Book</span><a href="/getaways/">Getaways from Jamaica</a><a href="/#staycations">Staycations</a><a href="/hotel-status/">Jamaica resorts, what's open</a><a href="/experiences/">Golden Experiences</a><a href="/transfers/">Airport transfers</a><a href="/groups/">Group travel</a></div>
+    <div class="foot-col"><span>Book</span><a href="/getaways/">Getaways from Jamaica</a><a href="/resorts/">Staycations</a><a href="/hotel-status/">Jamaica resorts, what's open</a><a href="/experiences/">Golden Experiences</a><a href="/transfers/">Airport transfers</a><a href="/groups/">Group travel</a></div>
     <div class="foot-col"><span>Black Friday</span><a href="${P.path}">Nov 19 to Nov 30</a><a href="#first-pick">Tell us your dates</a><a href="${P.path}black-friday.ics" data-bf-cal="ics">Add to calendar</a></div>
     <div class="foot-col"><span>Help</span><a href="/about/">About us</a><a href="/getaways/visa-free-countries/">Visa-free countries</a><a href="/hotel-status/">Resort status</a><a href="/getaways/#questions">Deposits &amp; payments</a><a href="${WA_NAV}">Contact us</a></div>
   </div>
