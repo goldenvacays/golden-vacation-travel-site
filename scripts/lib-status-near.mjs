@@ -20,7 +20,7 @@ export function nearBlock(rows, root) {
     return `<div class="nrgrp"><h3>${esc(a)}</h3><ul>${links}</ul></div>`;
   }).join("\n");
   return `<!-- near-links -->
-<section class="nrseo" aria-label="Things to do near your Jamaica resort">
+<section class="nrseo" id="near" aria-label="Things to do near your Jamaica resort">
 <h2 class="hh">Things to do near your resort</h2>
 <p class="azlead">Staying at one of the open resorts? Each page lists the tours, day trips and day passes closest to it, with the drive time from your hotel and whether hotel pickup is included. Or see <a href="/experiences/">every Jamaica tour</a>.</p>
 <style>.nrseo{display:flex;flex-direction:column}.nrseo h2{font-size:clamp(28px,3.4vw,42px);line-height:1.02;margin-bottom:14px}.nrseo .azlead a{font-weight:700}.nrgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px 44px}.nrgrp h3{font-size:15px;font-weight:800;margin:0 0 8px}.nrgrp ul{list-style:none;margin:0;padding:0}.nrgrp li{padding:7px 0;border-top:1px solid var(--line);font-size:14.5px;line-height:1.4}.nrgrp a{color:inherit;text-decoration:underline;text-underline-offset:3px}.nrgrp a:hover{color:var(--ink-2)}</style>

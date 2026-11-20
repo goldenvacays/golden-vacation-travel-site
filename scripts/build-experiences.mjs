@@ -923,7 +923,10 @@ function airportRows(h) {
 const onTransfers = (h) => !!zoneFor(h) && !(T.site.hide || []).includes(h.name);
 
 /* the days out from a place, nearest first, lounges and the place itself left out */
-const daysOut = (h) => X.venues.filter((v) => !isLounge(v) && !samePlace(h, v)).map((v) => ({ v, min: driveMin(h, v) })).filter((r) => r.min != null).sort((a, b) => a.min - b.min || a.v.name.localeCompare(b.v.name));
+/* a day pass at a resort that is closed right now (JOIA before it reopens, say) is left off the near pages until
+   resorts.js says it's open again (npm run status rebuilds them) */
+const venueShut = (v) => { const r = RES_BY_NAME[v.name]; return !!r && !["Open", "New", "Closing soon"].includes(r.status); };
+const daysOut = (h) => X.venues.filter((v) => !isLounge(v) && !samePlace(h, v) && !venueShut(v)).map((v) => ({ v, min: driveMin(h, v) })).filter((r) => r.min != null).sort((a, b) => a.min - b.min || a.v.name.localeCompare(b.v.name));
 /* one pin per site: the three Rose Hall resorts, the two Ocean resorts and the two JamWest parks share one each */
 function mapGroups(rows) {
   const at = new Map();
