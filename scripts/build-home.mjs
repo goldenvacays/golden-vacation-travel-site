@@ -232,6 +232,35 @@ function transfersBlock(today) {
   </div>`;
 }
 
+/* the business itself (TravelAgency): on the home page and the about page, so either page answers "who is this" on its own */
+function orgLd() {
+  return (
+    {
+      "@context": "https://schema.org", "@type": "TravelAgency", "@id": `${S.origin}/#organization`,
+      name: "Golden Vacation and Travel", alternateName: ["Golden Vacation & Travel", "Golden Vacays"], legalName: "Golden Vacation and Travel Limited", url: S.origin,
+      logo: { "@type": "ImageObject", url: `${S.origin}/android-chrome-512x512.png`, width: 512, height: 512 },
+      image: `${S.origin}${img(H.meta.ogImage)}`,
+      telephone: S.phoneTel, email: H.footer.email,
+      description: H.meta.description,
+      /* the business address in full (the NAP on the Google and Bing listings); customer copy keeps saying "St Ann" */
+      address: { "@type": "PostalAddress", streetAddress: "Shop 3, Enfield Plaza, Lot 31 Enfield", addressLocality: "Brown's Town", addressRegion: "Saint Ann", addressCountry: "JM" },
+      /* office hours are for search engines only: the pages themselves just say "within working hours" */
+      openingHoursSpecification: [
+        { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "08:00", closes: "17:00" },
+        { "@type": "OpeningHoursSpecification", dayOfWeek: ["Saturday", "Sunday"], opens: "08:00", closes: "12:00" },
+      ],
+      identifier: { "@type": "PropertyValue", propertyID: "IATA", name: "IATA agency code", value: S.iata.replace(/\D/g, "") },
+      hasCredential: { "@type": "EducationalOccupationalCredential", credentialCategory: "accreditation", name: "IATA accredited travel agency", recognizedBy: { "@type": "Organization", name: "International Air Transport Association (IATA)", url: "https://www.iata.org/" } },
+      areaServed: [{ "@type": "Country", name: "Jamaica" }, { "@type": "Country", name: "United States" }, { "@type": "Country", name: "United Kingdom" }, { "@type": "Country", name: "Canada" }],
+      sameAs: [S.instagram, S.facebook, "https://x.com/goldenvacays"],
+      contactPoint: [
+        { "@type": "ContactPoint", telephone: S.phoneTel, contactType: "reservations", areaServed: ["JM", "US", "GB", "CA"], availableLanguage: ["en", "es"] },
+        { "@type": "ContactPoint", telephone: `+${S.whatsapp}`, contactType: "customer service", description: "WhatsApp", areaServed: ["JM", "US", "GB", "CA"], availableLanguage: ["en", "es"] },
+      ],
+    }
+  );
+}
+
 function homePage() {
   const today = new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10) /* today in Jamaica (UTC-5 all year), never the UTC date, which runs ahead in the evening */;
 
@@ -405,29 +434,7 @@ function homePage() {
 </section>`;
 
   const jsonld = [
-    {
-      "@context": "https://schema.org", "@type": "TravelAgency", "@id": `${S.origin}/#organization`,
-      name: "Golden Vacation and Travel", alternateName: ["Golden Vacation & Travel", "Golden Vacays"], legalName: "Golden Vacation and Travel Limited", url: S.origin,
-      logo: { "@type": "ImageObject", url: `${S.origin}/android-chrome-512x512.png`, width: 512, height: 512 },
-      image: `${S.origin}${img(H.meta.ogImage)}`,
-      telephone: S.phoneTel, email: H.footer.email,
-      description: H.meta.description,
-      /* the business address in full (the NAP on the Google and Bing listings); customer copy keeps saying "St Ann" */
-      address: { "@type": "PostalAddress", streetAddress: "Shop 3, Enfield Plaza, Lot 31 Enfield", addressLocality: "Brown's Town", addressRegion: "Saint Ann", addressCountry: "JM" },
-      /* office hours are for search engines only: the pages themselves just say "within working hours" */
-      openingHoursSpecification: [
-        { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "08:00", closes: "17:00" },
-        { "@type": "OpeningHoursSpecification", dayOfWeek: ["Saturday", "Sunday"], opens: "08:00", closes: "12:00" },
-      ],
-      identifier: { "@type": "PropertyValue", propertyID: "IATA", name: "IATA agency code", value: S.iata.replace(/\D/g, "") },
-      hasCredential: { "@type": "EducationalOccupationalCredential", credentialCategory: "accreditation", name: "IATA accredited travel agency", recognizedBy: { "@type": "Organization", name: "International Air Transport Association (IATA)", url: "https://www.iata.org/" } },
-      areaServed: [{ "@type": "Country", name: "Jamaica" }, { "@type": "Country", name: "United States" }, { "@type": "Country", name: "United Kingdom" }, { "@type": "Country", name: "Canada" }],
-      sameAs: [S.instagram, S.facebook, "https://x.com/goldenvacays"],
-      contactPoint: [
-        { "@type": "ContactPoint", telephone: S.phoneTel, contactType: "reservations", areaServed: ["JM", "US", "GB", "CA"], availableLanguage: ["en", "es"] },
-        { "@type": "ContactPoint", telephone: `+${S.whatsapp}`, contactType: "customer service", description: "WhatsApp", areaServed: ["JM", "US", "GB", "CA"], availableLanguage: ["en", "es"] },
-      ],
-    },
+    orgLd(),
     { "@context": "https://schema.org", "@type": "WebSite", "@id": `${S.origin}/#website`, url: S.origin, name: "Golden Vacation & Travel", publisher: { "@id": `${S.origin}/#organization` } },
   ];
 
@@ -625,6 +632,7 @@ ${scripts()}
 </body></html>`;
   const jsonld = [
     { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: `${S.origin}/` }, { "@type": "ListItem", position: 2, name: "About us", item: url }] },
+    orgLd(),
     { "@context": "https://schema.org", "@type": "AboutPage", "@id": `${url}#webpage`, url, name: A.h1, description: A.description, inLanguage: "en", isPartOf: { "@id": `${S.origin}/#website` }, mainEntity: { "@id": `${S.origin}/#organization` }, publisher: { "@id": `${S.origin}/#organization` } },
   ];
   return head({ title: A.title, description: A.description, pathname: "/about/", image: H.meta.ogImage, jsonld, bodyClass: "legal-page" }) + body;

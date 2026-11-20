@@ -104,6 +104,26 @@ const slugify = (s) => String(s).toLowerCase().replace(/&/g, " and ").replace(/[
 const ZONE_OVERRIDE = T.site.hotelZones || {}; // a hotel that prices in a different zone from its region (the sheet's own rows)
 const RATE_KEY_BY_NAME = {};
 for (const [key, h] of Object.entries(R.hotels)) for (const n of h.matches || []) RATE_KEY_BY_NAME[n] = key;
+/* the one-way prices and drive times as a plain table: the search above draws prices only after a choice, so this is
+   what search engines and AI answers can read and quote. Lowest one-way price per vehicle (car, up to 3 people). */
+function rateTable() {
+  const AIR = [["MBJ", "From Montego Bay airport (MBJ)"], ["KIN", "From Kingston airport (KIN)"], ["OCJ", "From Ocho Rios airport (OCJ)"]];
+  const cell = (a, z) => {
+    const r = ((R.zones[z] || {})[a] || {}).in;
+    if (!r || !r.length) return "<td>—</td>";
+    const usd = Math.min(...r.map((x) => x[3]));
+    const d = (T.drive[a] || {})[z];
+    return `<td>US$${usd}${d ? `<small>${esc(d)}</small>` : ""}</td>`;
+  };
+  const rows = T.zones.filter((z) => !z.hidden).map((z) => `<tr><th scope="row">${esc(z.name)}</th>${AIR.map(([a]) => cell(a, z.key)).join("")}</tr>`).join("");
+  return `<section class="tr-rates wrap" id="rates" aria-labelledby="rates-h">
+<h2 class="hh" id="rates-h">Jamaica airport transfer prices</h2>
+<p class="tr-rates-lead">Golden Vacation &amp; Travel private airport transfers, one way, from the price for a car (up to 3 people), per vehicle, taxes included, with the usual drive time. Larger vans and return trips are priced in the search above. ${esc(T.driveNote)}</p>
+<style>.tr-rates{padding-top:28px;padding-bottom:28px}.tr-rates h2{font-size:clamp(26px,3vw,38px);line-height:1.05;margin-bottom:10px}.tr-rates-lead{color:var(--ink-2);max-width:820px;line-height:1.55;margin-bottom:14px}.tr-rt{width:100%;border-collapse:collapse;font-size:14.5px}.tr-rt th,.tr-rt td{text-align:left;padding:10px 12px 10px 0;border-top:1px solid var(--line);vertical-align:top}.tr-rt thead th{font-size:12.5px;color:var(--ink-3);font-weight:700;border-top:0}.tr-rt td{font-weight:800;font-variant-numeric:tabular-nums}.tr-rt small{display:block;font-weight:500;color:var(--ink-3);font-size:12.5px}@media(max-width:640px){.tr-rt{font-size:13.5px}.tr-rt th,.tr-rt td{padding-right:8px}}</style>
+<div style="overflow-x:auto"><table class="tr-rt"><thead><tr><th scope="col">Going to</th>${AIR.map(([, l]) => `<th scope="col">${l}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>
+</section>`;
+}
+
 function zoneOf(r) {
   for (const z of T.zones) {
     const rule = z.rule;
@@ -351,6 +371,8 @@ ${nav()}
   ${RS.shared ? `<div class="rt-block rt-shared"><div class="rt-block-h"><b>${esc(RS.shared)}</b><span class="tag tag-white">Not ready yet</span></div><p class="rt-shared-p">${esc(RS.sharedNote)} ${btn("Ask on WhatsApp", waHome, "outline", "sm", "chat", ' id="r-shared-wa"')}</p></div>` : ""}
   <p class="pf-hint rt-fine">${esc(RS.fine)} ${esc(T.driveNote)}</p>
 </section>
+
+${rateTable()}
 
 <section class="tr-why wrap" id="why">
   <div class="how-sec"><div class="sec-head why-head"><div>${kicker(P.why.kicker)}<h2 class="hh">${esc(P.why.title)}</h2></div></div><div class="hsteps five">${why}</div></div>
