@@ -11,7 +11,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { nearBlock } from "./lib-status-near.mjs";
+import { nearBlock, slugify } from "./lib-status-near.mjs";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const arg = (k) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : ""; };
 const today = new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10);
@@ -59,7 +59,7 @@ const swap = (re, fn, what) => { const before = h; h = h.replace(re, fn); if (h 
 const hotels = listed.map((r) => ({ n: r.name, f: r.formerly || "", a: areaOf(r), cat: r.category || "All-inclusive", s: r.status, w: r.when || "", note: r.note || "", wh: r.happening || "", bi: r.bookInstead || "", v: r.verifiedOn || "" }));
 swap(/const HOTELS\s*=\s*\[[\s\S]*?\];/, () => `const HOTELS = ${JSON.stringify(hotels)};`, "the HOTELS list");
 /* 2. the A to Z */
-swap(/<div class="az-list">[\s\S]*?<\/div>\n<\/section>/, () => `<div class="az-list">\n${byAZ.map((r) => `<p class="azrow">${answerFor(r)}</p>`).join("\n")}\n</div>\n</section>`, "the A to Z list");
+swap(/<div class="az-list">[\s\S]*?<\/div>\n<\/section>/, () => `<div class="az-list">\n${byAZ.map((r) => `<p class="azrow">${answerFor(r).replace(/^<strong>([\s\S]*?)<\/strong>/, (m, q) => `<a href="/resorts/${slugify(r.name)}/"><strong>${q}</strong></a>`)}</p>`).join("\n")}\n</div>\n</section>`, "the A to Z list");
 /* 3. ItemList schema */
 swap(/<script type="application\/ld\+json">\{"@context":"https:\/\/schema\.org","@type":"ItemList"[\s\S]*?<\/script>/, () => `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "ItemList", name: "Jamaica all-inclusive resort status", numberOfItems: byAZ.length, itemListElement: byAZ.map((r, i) => ({ "@type": "ListItem", position: i + 1, name: `${r.name}: ${r.status}` })) })}</script>`, "the ItemList schema");
 /* 4. counts and dates */

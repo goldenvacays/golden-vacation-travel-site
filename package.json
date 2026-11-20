@@ -7,8 +7,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "build:getaways": "node scripts/build-getaways.mjs",
-    "status": "node scripts/build-status.mjs && node scripts/build-experiences.mjs && node scripts/build-transfers.mjs && node scripts/build-home.mjs && node scripts/sitemap-dates.mjs",
-    "sitemap": "node scripts/sitemap-dates.mjs"
+    "status": "node scripts/build-status.mjs && node scripts/build-experiences.mjs && node scripts/build-staycations.mjs && node scripts/build-resort-status.mjs && node scripts/build-transfers.mjs && node scripts/build-home.mjs && node scripts/sitemap-dates.mjs",
+    "sitemap": "node scripts/sitemap-dates.mjs",
+    "resorts": "node scripts/build-staycations.mjs && node scripts/build-resort-status.mjs"
   },
   "dependencies": {
     "react": "^18.2.0",
