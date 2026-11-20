@@ -105,3 +105,18 @@ export function faqs(r, { booking = false } = {}) {
 }
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 export const faqLd = (list) => ({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: list.map(([q, t]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: t } })) });
+
+/* the resort itself as schema.org Resort: name, place, photo, status line, and a from-price when we have one */
+export function resortLd(r, { url, image, fromUsd = null, rooms = null } = {}) {
+  const o = { "@context": "https://schema.org", "@type": "Resort", name: r.name, url, description: answer(r).line,
+    address: { "@type": "PostalAddress", addressLocality: areaName(r), addressCountry: "JM" } };
+  if (r.lat) o.geo = { "@type": "GeoCoordinates", latitude: r.lat, longitude: r.lng };
+  if (image) o.image = image;
+  if (r.formerly) o.alternateName = r.formerly;
+  if (rooms) o.numberOfRooms = rooms;
+  if (fromUsd) o.priceRange = `From US$${fromUsd} per person per night`;
+  if (isOpen(r)) o.makesOffer = { "@type": "Offer", url, priceCurrency: "USD", ...(fromUsd ? { price: fromUsd } : {}), offeredBy: { "@id": "https://goldenvacays.com/#organization" } };
+  return o;
+}
+/* titles under 70 characters and descriptions of 160 or less (Bing's limits): first candidate that fits */
+export const fit = (max, ...c) => c.find((x) => x && x.length <= max) || c[c.length - 1].slice(0, max - 1).replace(/\s+\S*$/, "") + "…";

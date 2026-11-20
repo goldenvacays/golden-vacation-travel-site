@@ -68,9 +68,10 @@ function page(r) {
   const altTitle = open ? `More open resorts near ${esc(r.name)}` : `${alts.length} open resorts like ${esc(r.name)}`;
   const altCards = alts.map((x) => `<a class="alt" href="/resorts/${x.slug}/"><img src="${F.photoOf(x.r)}" alt="${esc(x.r.name)}" loading="lazy"><div><span class="ok-tag">Open now</span><b>${esc(x.r.name)}</b><small>${esc(F.areaName(x.r))} · ${esc(x.away)}</small><p>${esc(x.r.note)}</p><span class="go">${BOOKING.has(x.slug) ? "See prices and rooms" : "See the resort"}${ARR}</span></div></a>`).join("");
   const trRows = tr.map((t) => `<tr><th>From ${esc(t.label)}</th><td style="color:var(--muted);font-weight:600">${esc(t.drive)}</td><td>US$${t.usd}</td></tr>`).join("");
-  const title = open ? `Is ${r.name} open? Yes, open now | Golden Vacation` : `Is ${r.name} open? ${r.status === "Reopening" && /\d/.test(r.when) ? `Reopening ${r.when}` : r.status} | Golden Vacation`;
-  const desc = `${a.big} ${a.line} Checked ${F.CHECKED}.${!open && alts.length ? ` Open resorts like it nearby: ${alts.map((x) => x.r.name).join(", ")}.` : ""}`.slice(0, 300);
-  const ld = [F.faqLd(q), { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Resort status", item: `${ORIGIN}/hotel-status/` }, { "@type": "ListItem", position: 2, name: r.name, item: `${ORIGIN}/resorts/${slug}/` }] }];
+  const st = open ? "Yes, open now" : r.status === "Reopening" && /\d/.test(r.when) ? `Reopening ${r.when}` : r.status;
+  const title = F.fit(70, `Is ${r.name} open? ${st} | Golden Vacation`, `Is ${r.name} open? ${st}`, `${r.name}: ${st}`);
+  const desc = F.fit(160, `${a.big} ${a.line} Checked ${F.CHECKED}.${!open && alts.length ? ` Open nearby: ${alts.map((x) => x.r.name).join(", ")}.` : ""}`, `${a.big} ${a.line} Checked ${F.CHECKED}.${!open ? " See open resorts like it nearby." : ""}`, `${a.line} Checked ${F.CHECKED}.`);
+  const ld = [F.resortLd(r, { url: `${ORIGIN}/resorts/${slug}/`, image: r.photo ? `${ORIGIN}${F.photoOf(r)}` : null }), F.faqLd(q), { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Resort status", item: `${ORIGIN}/hotel-status/` }, { "@type": "ListItem", position: 2, name: r.name, item: `${ORIGIN}/resorts/${slug}/` }] }];
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
