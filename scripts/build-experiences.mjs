@@ -150,12 +150,12 @@ const ticker = (items) => { const one = items.map((it) => `<span class="t hh">${
 const longShort = (long, short) => `<span class="long">${esc(long)}</span><span class="short">${esc(short || long)}</span>`;
 const dual = (n) => `<span class="usd-v">${usd(n)}</span><span class="jmd-v">${jmdOf(n)}</span>`;
 
-const NAV = [["Getaways", "/getaways/"], ["Staycations", "/#staycations"], ["Jamaica", "/#coming"], ["Experiences", `${BASE}/`], ["Transfers", "/transfers/"], ["Groups", "/groups/"], ["Resort status", "/hotel-status/"]];
+const NAV = [["Getaways", "/getaways/"], ["Staycations", "/resorts/"], ["Jamaica", "/#coming"], ["Experiences", `${BASE}/`], ["Transfers", "/transfers/"], ["Groups", "/groups/"], ["Resort status", "/hotel-status/"]];
 const CATS = Object.fromEntries(X.hub.categories);
 const AREAS = Object.fromEntries(X.hub.areas);
 const venueBySlug = Object.fromEntries(X.venues.map((v) => [v.slug, v]));
 const areaName = (k) => (LANG === "es" && ES && ES.areas && ES.areas[k]) || AREAS[k];
-const NAV_ES = [["Escapadas", "/getaways/"], ["Resorts", "/#staycations"], ["Jamaica", "/jamaica/es/"], ["Excursiones", "/jamaica/es/#do"], ["Traslados", "/transfers/"], ["Grupos", "/groups/"], ["Estado de resorts", "/hotel-status/"]];
+const NAV_ES = [["Escapadas", "/getaways/"], ["Resorts", "/resorts/"], ["Jamaica", "/jamaica/es/"], ["Excursiones", "/jamaica/es/#do"], ["Traslados", "/transfers/"], ["Grupos", "/groups/"], ["Estado de resorts", "/hotel-status/"]];
 /* Bing's limits: titles under 70 characters, descriptions 160 or less. fit() returns the first candidate that fits
    (the last one if none do); clauses() cuts a blurb back at its last comma or "with" that fits, never mid-phrase. */
 const fit = (max, ...c) => c.find((s) => s && s.length <= max) || c[c.length - 1];
@@ -360,7 +360,7 @@ function footer() {
 /* the Spanish pages' footer: the same layout, with the four Coming to Jamaica pages instead of WhatsApp links */
 function footerEs() {
   const col = (t, items) => `<div class="foot-col"><span>${esc(t)}</span>${items.map(([l, h]) => `<a href="${h}">${esc(l)}</a>`).join("")}</div>`;
-  const book = [["Viajes desde Jamaica", "/getaways/"], ["Resorts en Jamaica", "/#staycations"], ["Qué está abierto en Jamaica", "/hotel-status/"], ["Excursiones", "/jamaica/es/#do"], ["Traslados desde el aeropuerto", "/transfers/"], ["Viajes en grupo", "/groups/"]];
+  const book = [["Viajes desde Jamaica", "/getaways/"], ["Resorts en Jamaica", "/resorts/"], ["Qué está abierto en Jamaica", "/hotel-status/"], ["Excursiones", "/jamaica/es/#do"], ["Traslados desde el aeropuerto", "/transfers/"], ["Viajes en grupo", "/groups/"]];
   const coming = [["Desde EE. UU.", "/jamaica/usa/"], ["De vuelta a casa", "/jamaica/coming-home/"], ["En español", "/jamaica/es/"], ["Reino Unido y Canadá", "/jamaica/uk-canada/"]];
   const help = [["Estado de los resorts", "/hotel-status/"], ["Mapa de resorts", "/hotel-status-map"], ["Depósitos y pagos", "/getaways/#questions"], ["Escríbenos", waHomeEs]];
   return `<footer class="foot" role="contentinfo"><div class="wrap" style="display:flex;flex-direction:column;gap:32px">
@@ -1134,7 +1134,7 @@ ${nav()}
 <section class="nr-hero" aria-labelledby="nr-h1">
   <div class="wrap nr-hero-in">
     <div class="nr-hero-t">
-      ${h.port ? `<span class="nr-hotel">${chip}</span>` : `<a class="nr-hotel" href="/hotel-status/">${chip}</a>`}
+      ${h.port ? `<span class="nr-hotel">${chip}</span>` : `<a class="nr-hotel" href="/resorts/${h.slug}/">${chip}</a>`}
       <h1 class="hh" id="nr-h1">${h.port ? `In port for the day? Things to do from ${esc(h.name)}.` : `Things to do near ${esc(h.name)}.`}</h1>
       <p class="nr-lead">${esc(lead)}</p>
       <div class="nr-btns">${btn(h.port ? "Plan my ship day" : "Plan my day out", waPlan, "gold", "", "chat")}${h.port ? btn("Browse from this port", `${BASE}/?hotel=${h.slug}`, "line", "", "arrow") : `<a class="btn btn-line" href="#getting-here">Airport pickup${icon("car", 18)}</a>`}</div>

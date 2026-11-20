@@ -12,6 +12,7 @@
 
 - [Jamaica all-inclusive resort status](https://goldenvacays.com/hotel-status/): which Jamaica all-inclusive resorts are open, reopening (with dates), new or closed after Hurricane Melissa, updated by Golden Vacation & Travel. Search by current or former resort name.
 - [Jamaica resort map](https://goldenvacays.com/map/): the same resorts on a map, by coast.
+- [Jamaica resorts](https://goldenvacays.com/resorts/): one page per resort with whether it is open, prices and rooms where bookable, open resorts like it, airport transfers and tours nearby.
 
 ## Book
 

@@ -38,7 +38,7 @@ const usd = (n) => `US$${Number(n).toLocaleString("en-US")}`;
 const wa = (text) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`;
 
 /* the site's links: the bar carries the four a teacher is most likely to want, the menu and footer the rest */
-const NAV = [["Staycations", "/#staycations"], ["Getaways", "/getaways/"], ["Groups", "/groups/"], ["Resort status", "/hotel-status/"]];
+const NAV = [["Staycations", "/resorts/"], ["Getaways", "/getaways/"], ["Groups", "/groups/"], ["Resort status", "/hotel-status/"]];
 const MORE = [["Home", "/"], ["Experiences", "/experiences/"], ["Airport transfers", "/transfers/"], ["Coming to Jamaica", "/jamaica/"]];
 
 /* ---------- structured data: breadcrumb, the page itself, and its questions ---------- */
