@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RIU Ocho Rios | Open now · prices &amp; booking (preview B)</title>
+<meta name="description" content="Live status of Jamaica's all-inclusive resorts after Hurricane Melissa: open, reopening (with dates), new or closed. Search by current or former resort name.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://goldenvacays.com/hotel-status/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Golden Vacation & Travel">
+<meta property="og:title" content="Jamaica All-Inclusive Resort Status 2026: Open & Reopening Hotels">
+<meta property="og:description" content="Which Jamaica all-inclusives are open, reopening (with dates), or closed after Hurricane Melissa. Search by current or former resort name.">
+<meta property="og:url" content="https://goldenvacays.com/hotel-status/">
+<meta property="og:image" content="https://goldenvacays.com/map/photos/riu-ocho-rios.jpg">
+<meta property="og:image:alt" content="Jamaica all-inclusive resort, Golden Vacation and Travel">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jamaica All-Inclusive Resort Status 2026">
+<meta name="twitter:description" content="Live: which Jamaica resorts are open, reopening, or closed. Search by current or former name.">
+<meta name="twitter:image" content="https://goldenvacays.com/map/photos/riu-ocho-rios.jpg">
+<meta name="theme-color" content="#0E0F0E">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<style>@font-face{font-family:'Archivo';font-style:normal;font-display:swap;font-weight:100 900;font-stretch:62% 125%;src:url(/assets/fonts/archivo.woff2) format('woff2-variations')}</style>
+<link rel="stylesheet" href="/getaways/assets/getaways.css">
+<link rel="stylesheet" href="/assets/home.css">
+<style>
+:root { --ink-2: rgba(14,15,14,.74); --ink-3: rgba(14,15,14,.55); --res: #1F8A4C; --open-bg: #E6F3EA; --soon-bg: #FBEFCF; --soon: #8A6D12; --shut-bg: #ECECE6; --shut: #5A5F57; }
+.nav-links a[] { color: var(--gold-txt); }
+.st { padding: 0 var(--pad) 88px; display: flex; flex-direction: column; gap: 26px; }
+.st-hero { display: flex; flex-direction: column; gap: 14px; padding-top: 30px; max-width: 920px; }
+.st-hero h1 { font-size: clamp(36px, 5.4vw, 64px); line-height: .98; }
+.st-lead { font-size: 17px; line-height: 1.55; color: var(--ink-2); max-width: 780px; }
+.st-lead b { color: var(--ink); }
+.st-meta { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 4px; }
+.st-updated { display: inline-flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 700; background: var(--alt); border-radius: 999px; padding: 9px 15px; }
+.st-live { width: 8px; height: 8px; border-radius: 50%; background: var(--res); box-shadow: 0 0 0 4px rgba(31,138,76,.18); }
+.st-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.st-stat { border-radius: 22px; padding: 20px 22px; display: flex; flex-direction: column; gap: 6px; background: var(--alt); }
+.st-stat .n { font-weight: 900; font-stretch: 112%; font-size: 48px; line-height: 1; letter-spacing: -.02em; }
+.st-stat .l { font-weight: 700; font-size: 14px; }
+.st-stat.o { background: var(--open-bg); } .st-stat.o .n { color: var(--res); }
+.st-stat.s { background: var(--soon-bg); } .st-stat.s .n { color: var(--soon); }
+.st-stat.n2 { background: var(--ink); color: #fff; } .st-stat.n2 .n { color: var(--gold); }
+.st-stat.c { background: var(--shut-bg); } .st-stat.c .n { color: var(--shut); }
+.st-controls { display: flex; flex-direction: column; gap: 12px; padding: 18px; background: var(--alt); border-radius: 24px; }
+.st-search { width: 100%; box-sizing: border-box; font: inherit; font-size: 16px; font-weight: 600; padding: 14px 20px; border: 2px solid var(--ink); border-radius: 999px; background: #fff; color: var(--ink); }
+.st-search:focus { outline: 3px solid var(--gold); outline-offset: 2px; }
+.st-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.st-chip { font: inherit; font-weight: 700; font-size: 14px; height: 38px; padding: 0 16px; border: 2px solid var(--ink); border-radius: 999px; background: #fff; color: var(--ink); cursor: pointer; }
+.st-chip.on { background: var(--ink); color: #fff; }
+.st-chip:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.st-showing { font-size: 13px; font-weight: 700; color: var(--ink-3); min-height: 1px; }
+.st-grp { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
+.st-grphd { font-weight: 800; font-size: 21px; display: flex; align-items: center; gap: 10px; letter-spacing: -.01em; }
+.st-gc { font-size: 13px; font-weight: 800; min-width: 30px; height: 30px; padding: 0 9px; border-radius: 999px; display: inline-grid; place-items: center; }
+.st-gc.o, .st-pill.o { background: var(--open-bg); color: var(--res); }
+.st-gc.s, .st-pill.s { background: var(--soon-bg); color: var(--soon); }
+.st-gc.n, .st-pill.n { background: var(--ink); color: var(--gold); }
+.st-gc.c, .st-pill.c { background: var(--shut-bg); color: var(--shut); }
+.st-rows { display: flex; flex-direction: column; gap: 8px; }
+.st-row { border: 2px solid var(--line); border-radius: 18px; background: #fff; transition: border-color .15s; }
+.st-row:hover, .st-row[open] { border-color: var(--ink); }
+.st-row summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) auto 128px; gap: 16px; align-items: center; padding: 15px 18px; }
+.st-row summary::-webkit-details-marker { display: none; }
+.st-name > b { font-weight: 800; font-size: 17px; }
+.st-aka { font-size: 13px; color: var(--ink-3); margin-top: 1px; }
+.st-sub { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13px; color: var(--ink-2); margin-top: 5px; }
+.st-area { font-weight: 700; font-size: 12px; padding: 3px 10px; border-radius: 999px; background: var(--alt); color: var(--ink); }
+.st-pill { font-weight: 800; font-size: 13px; padding: 7px 13px; border-radius: 999px; white-space: nowrap; }
+.st-when { font-weight: 800; font-size: 15px; text-align: right; }
+.st-x { padding: 2px 18px 18px; display: flex; flex-direction: column; gap: 10px; border-top: 2px solid var(--line); margin: 0 18px; padding-left: 0; padding-right: 0; padding-top: 14px; }
+.st-kv { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 10px; font-size: 14px; line-height: 1.5; }
+.st-kv b { color: var(--ink-3); font-weight: 700; }
+.st-x .btn { align-self: flex-start; margin-top: 4px; }
+.st-near { align-self: flex-start; font-size: 14px; font-weight: 700; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.st-near:hover { color: var(--ink-2); }
+.st-empty { padding: 24px; border-radius: 18px; background: var(--alt); font-weight: 700; }
+.st-cta { background: var(--ink); color: #fff; border-radius: 28px; padding: 34px 36px; display: flex; justify-content: space-between; align-items: center; gap: 22px; flex-wrap: wrap; margin: 6px 0 10px; }
+.st-cta h2 { color: #fff; font-size: clamp(26px, 3.2vw, 38px); line-height: 1.02; }
+.st-cta p { color: rgba(255,255,255,.72); margin-top: 8px; max-width: 580px; font-size: 16px; line-height: 1.5; }
+.faqseo, .azseo { display: flex; flex-direction: column; }
+.faqseo h2, .azseo h2 { font-size: clamp(28px, 3.4vw, 42px); line-height: 1.02; margin-bottom: 14px; max-width: 900px; }
+.faqrow { padding: 18px 0; border-top: 2px solid var(--line); max-width: 900px; }
+.faqrow h3 { font-size: 18px; font-weight: 800; letter-spacing: -.01em; }
+.faqrow p { margin-top: 6px; color: var(--ink-2); line-height: 1.6; }
+.azlead { color: var(--ink-2); line-height: 1.6; max-width: 820px; margin-bottom: 10px; }
+.az-list { columns: 2; column-gap: 44px; }
+.azrow { break-inside: avoid; padding: 11px 0; border-top: 1px solid var(--line); font-size: 14.5px; line-height: 1.5; color: var(--ink-2); margin: 0; }
+.azrow strong { color: var(--ink); }
+.st-note { font-size: 13px; line-height: 1.55; color: var(--ink-3); max-width: 860px; }
+@media (max-width: 900px) { .st-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } .az-list { columns: 1; } }
+@media (max-width: 640px) {
+  .st-stat { padding: 16px; border-radius: 18px; } .st-stat .n { font-size: 36px; }
+  .st-row summary { grid-template-columns: minmax(0, 1fr) auto; padding: 14px; gap: 10px; }
+  .st-when { grid-column: 1 / -1; text-align: left; font-size: 13px; color: var(--ink-2); margin-top: -4px; }
+  .st-kv { grid-template-columns: 1fr; gap: 2px; } .st-x { margin: 0 14px; }
+  .st-cta { padding: 26px 22px; border-radius: 22px; }
+}
+</style>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-WK85CEZFXT');
+addEventListener('load',function(){setTimeout(function(){var s=document.createElement('script');s.async=1;s.src='https://www.googletagmanager.com/gtag/js?id=G-WK85CEZFXT';document.head.appendChild(s);},1200);});</script>
+<meta name="robots" content="noindex,nofollow">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is RIU Ocho Rios open?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. RIU Ocho Rios is open and taking bookings. Golden Vacation & Travel checked this on 20 November 2026."}}, {"@type": "Question", "name": "Is RIU Ocho Rios good for kids?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. It is the family RIU in Jamaica, with a water park, a slide pool, RiuLand kids club for ages 4 to 12 and a teens club. Swim-up bars are over 18s only."}}, {"@type": "Question", "name": "Which airport is closest to RIU Ocho Rios?", "acceptedAnswer": {"@type": "Answer", "text": "Ian Fleming (OCJ) is about 20 minutes away. Most international flights land at Montego Bay (MBJ), about 1 hour 45 minutes away. A Golden Vacation & Travel private transfer from MBJ is US$125 one way for up to 3 people."}}, {"@type": "Question", "name": "Can Jamaica residents book RIU Ocho Rios in J$?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Golden Vacation & Travel quotes staycations for Jamaica residents in J$."}}]}</script>
+<style>
+.rp{padding:0 var(--pad) 72px}.rp *{box-sizing:border-box}
+.rp .k{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-txt)}
+.rp h2{font-size:clamp(26px,3.2vw,40px);line-height:1.04;margin:0 0 14px;font-weight:900;letter-spacing:-.02em}
+.rp .rsec{margin-top:56px}
+.rp .pill{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;font-weight:800;font-size:14px;color:#fff}
+.rp .pill i{width:8px;height:8px;border-radius:50%;background:#fff;opacity:.9}
+.rp .btn{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:999px;font-weight:800;text-decoration:none;font-size:15.5px;border:2px solid var(--ink)}
+.rp .btn.blk{background:var(--ink);color:#fff}.rp .btn.gold{background:var(--gold);border-color:var(--gold);color:var(--ink)}.rp .btn.out{background:transparent;color:var(--ink)}
+.rp .btn.sm{padding:10px 16px;font-size:14px}
+.rp .alts{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+.rp .alt{border-radius:20px;overflow:hidden;background:var(--alt);display:flex;flex-direction:column;text-decoration:none;color:inherit}
+.rp .alt img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block}
+.rp .alt div{padding:16px 18px 18px;display:flex;flex-direction:column;gap:6px;flex:1}
+.rp .alt b{font-size:18px;font-weight:900}.rp .alt small{color:var(--muted);font-weight:700;font-size:13px}.rp .alt p{margin:0;color:var(--muted);line-height:1.45;font-size:14.5px}
+.rp .alt .go{margin-top:auto;padding-top:10px;font-weight:800;display:flex;align-items:center;gap:8px}
+.rp .ok-tag{align-self:flex-start;font-size:12px;font-weight:800;color:#1F8A4C;background:#E5F3EA;padding:4px 10px;border-radius:999px}
+.rp table.tt{width:100%;border-collapse:collapse;font-size:15px}.rp table.tt td,.rp table.tt th{padding:12px 12px 12px 0;border-top:1px solid var(--line);text-align:left}
+.rp table.tt td:last-child{font-weight:900;text-align:right;padding-right:0}.rp table.tt th{font-weight:700}
+.rp .faq details{border-top:1px solid var(--line);padding:16px 0}.rp .faq summary{font-weight:800;cursor:pointer;font-size:16.5px;list-style:none}.rp .faq summary::-webkit-details-marker{display:none}.rp .faq p{margin:10px 0 0;color:var(--muted);line-height:1.6;max-width:760px}
+.rp .two{display:grid;grid-template-columns:1fr;gap:40px}@media(min-width:900px){.rp .two{grid-template-columns:1fr 1fr;gap:56px}}
+.rp .checked{font-size:13px;color:var(--muted);font-weight:600}
+.rp .incl{display:grid;grid-template-columns:1fr;gap:10px;margin:0;padding:0;list-style:none}@media(min-width:700px){.rp .incl{grid-template-columns:1fr 1fr}}
+.rp .incl li{display:flex;gap:10px;align-items:flex-start;line-height:1.45}.rp .incl svg{color:#1F8A4C;flex:none;margin-top:2px}
+.rp .crumb{display:inline-flex;gap:6px;font-size:13.5px;font-weight:700;color:var(--muted);text-decoration:none;margin:18px 0 0}
+.B-top{display:grid;grid-template-columns:1fr;gap:28px;margin-top:22px;align-items:center}@media(min-width:900px){.B-top{grid-template-columns:1.25fr 1fr;gap:48px}}
+.B-q{font-size:clamp(22px,2.6vw,30px);font-weight:800;line-height:1.15;margin:12px 0 10px;color:var(--ink)}
+.B-big{font-size:clamp(56px,9vw,120px);line-height:.9;font-weight:900;letter-spacing:-.04em;margin:0;color:#1F8A4C}
+.B-sub{font-size:18px;line-height:1.55;color:var(--muted);margin:16px 0 22px;max-width:620px}
+.B-photo{border-radius:24px;overflow:hidden;aspect-ratio:4/3;background:var(--ph);position:relative}.B-photo img{width:100%;height:100%;object-fit:cover}
+.B-photo figcaption{position:absolute;left:14px;bottom:14px;background:#fff;border-radius:999px;padding:7px 12px;font-weight:800;font-size:13px}
+.B-bar{height:8px;border-radius:99px;background:#1F8A4C;margin:0 0 6px;width:72px}
+.B-facts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:40px}@media(min-width:800px){.B-facts{grid-template-columns:repeat(4,1fr)}}
+.B-facts div{background:var(--alt);border-radius:18px;padding:18px}.B-facts b{display:block;font-size:34px;font-weight:900}.B-facts span{color:var(--muted);font-weight:700}
+.B-altp{color:var(--muted);margin:-6px 0 18px}.B-btns{display:flex;flex-wrap:wrap;gap:10px}</style>
+</head>
+<body class="st-page"><div style="background:#FFF4D6;border-bottom:1px solid #F2B93B;padding:10px 20px;font:700 14px/1.4 Archivo,sans-serif;text-align:center">Preview B · Answer first &nbsp;·&nbsp; <a href="/resorts/preview/">all versions</a> &nbsp;·&nbsp; <a href='b-jewel-grande-montego-bay.html'>closed example</a> · <b>open example</b></div>
+<header class="nav wrap" role="banner">
+  <div class="nav-l"><a class="wordmark hh" href="/" aria-label="Golden Vacation, home">GOLDEN VACATION</a></div>
+  <nav class="nav-links" aria-label="Main"><a href="/getaways/">Getaways</a><a href="/#staycations">Staycations</a><a href="/#coming">Jamaica</a><a href="/experiences/">Experiences</a><a href="/transfers/">Transfers</a><a href="/groups/">Groups</a><a href="/hotel-status/" >Resort status</a></nav>
+  <div class="nav-r">
+    <a class="icon-btn icon-btn-black mob" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%27m%20looking%20at%20the%20resort%20status%20page%20and%20I%27d%20like%20help%20finding%20an%20open%20resort%20for%20my%20dates.%20Ref%20GV-STATUS" aria-label="WhatsApp us" data-where="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></a>
+    <button class="icon-btn menu-btn mob" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block"><path d="M3 12h18M3 6h18M3 18h18"></path></svg></button>
+    <a class="desk btn btn-black btn-sm" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%27m%20looking%20at%20the%20resort%20status%20page%20and%20I%27d%20like%20help%20finding%20an%20open%20resort%20for%20my%20dates.%20Ref%20GV-STATUS" data-where="nav">WhatsApp<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></a>
+  </div>
+</header>
+<nav id="menu" class="menu mob" aria-label="Menu"><a href="/getaways/">Getaways</a><a href="/#staycations">Staycations</a><a href="/#coming">Jamaica</a><a href="/experiences/">Experiences</a><a href="/transfers/">Transfers</a><a href="/groups/">Groups</a><a href="/hotel-status/" >Resort status</a></nav>
+<main class="rp wrap"><a class="crumb" href="/hotel-status/">‹ Jamaica resort status</a>
+<div class="B-top"><div><span class="k">Resort status · checked 20 Nov 2026</span><h1 class="B-q">Is RIU Ocho Rios open?</h1><div class="B-bar"></div><p class="B-big">Yes, it’s open.</p><p class="B-sub">Taking bookings now. Families and first-timers. Big, busy, great beach.</p><div class="B-btns"><a class="btn blk" href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%27d%20like%20a%20quote%20for%20RIU%20Ocho%20Rios.%20Ref%20GV-RESORT-RIU-OCHO-R">Get a quote for RIU Ocho Rios<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div></div>
+<figure class="B-photo" style="margin:0"><img src="/jamaica/img/ocho-rios-hero-1600.jpg" alt="RIU Ocho Rios"><figcaption>RIU Ocho Rios · Mammee Bay, Ocho Rios</figcaption></figure></div><div class="B-facts"><div><b>6</b><span>restaurants</span></div><div><b>6</b><span>pools</span></div><div><b>24 h</b><span>all-inclusive</span></div><div><b>4–12</b><span>RiuLand kids club</span></div></div><div class="rsec"><span class="k">Included</span><h2>What the price includes</h2><ul class="incl"><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>All meals, snacks and drinks, 24 hours</span></li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Splash Water World water park</span></li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>RiuLand kids club (4–12) and Riu4U teens club</span></li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Kayaks, paddleboards, snorkel gear and a small catamaran</span></li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Free WiFi throughout</span></li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Live music and shows</span></li></ul></div><div class="two rsec">
+<div><span class="k">Getting there</span><h2>Airport transfers</h2><table class="tt"><tr><th>From Ocho Rios airport (OCJ)</th><td style="color:var(--muted);font-weight:600">about 20 min</td><td>US$90</td></tr><tr><th>From Montego Bay airport (MBJ)</th><td style="color:var(--muted);font-weight:600">about 1 h 45</td><td>US$125</td></tr><tr><th>From Kingston airport (KIN)</th><td style="color:var(--muted);font-weight:600">about 2 h</td><td>US$185</td></tr></table><p class="checked" style="margin-top:10px">Private car for up to 3 people, one way, taxes included. <a href="/transfers/">Bigger groups and return trips</a></p></div>
+<div><span class="k">Close by</span><h2>Things to do nearby</h2><table class="tt"><tr><th>Mystic Mountain</th><td style="color:var(--muted);font-weight:600">about 15 min</td><td>from US$80</td></tr><tr><th>Poko Loko Floating Bar</th><td style="color:var(--muted);font-weight:600">about 25 min</td><td>from US$140</td></tr><tr><th>Dunn&#x27;s River Falls</th><td style="color:var(--muted);font-weight:600">about 20 min</td><td>ask us</td></tr></table><p class="checked" style="margin-top:10px"><a href="/experiences/near/riu-ocho-rios">Every tour near RIU Ocho Rios</a></p></div>
+</div>
+<div class="rsec faq"><span class="k">Questions</span><h2>RIU Ocho Rios: quick answers</h2><details><summary>Is RIU Ocho Rios open?</summary><p>Yes. RIU Ocho Rios is open and taking bookings. Golden Vacation &amp; Travel checked this on 20 November 2026.</p></details><details><summary>Is RIU Ocho Rios good for kids?</summary><p>Yes. It is the family RIU in Jamaica, with a water park, a slide pool, RiuLand kids club for ages 4 to 12 and a teens club. Swim-up bars are over 18s only.</p></details><details><summary>Which airport is closest to RIU Ocho Rios?</summary><p>Ian Fleming (OCJ) is about 20 minutes away. Most international flights land at Montego Bay (MBJ), about 1 hour 45 minutes away. A Golden Vacation &amp; Travel private transfer from MBJ is US$125 one way for up to 3 people.</p></details><details><summary>Can Jamaica residents book RIU Ocho Rios in J$?</summary><p>Yes. Golden Vacation &amp; Travel quotes staycations for Jamaica residents in J$.</p></details></div></main>
+<footer class="foot" role="contentinfo"><div class="wrap" style="display:flex;flex-direction:column;gap:32px">
+  <div class="foot-grid">
+    <div class="foot-brand"><a class="wordmark hh" href="/">GOLDEN VACATION</a><p>Shop 3, Enfield Plaza, Brown's Town, St Ann, Jamaica<br>WhatsApp +1 876 360 1567 · Call 876-817-3467<br>IATA-accredited · 85500310</p></div>
+    <div class="foot-col"><span>Book</span><a href="/getaways/">Getaways from Jamaica</a><a href="/#staycations">Staycations</a><a href="/hotel-status/">Jamaica resorts, what's open</a><a href="/experiences/">Golden Experiences</a><a href="/transfers/">Airport transfers</a><a href="/groups/">Group travel</a></div>
+    <div class="foot-col"><span>Coming to Jamaica</span><a href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation!%20I'm%20coming%20to%20Jamaica%20from%20the%20USA%20and%20I'd%20like%20a%20quote%20for%20a%20hotel%20or%20land%20package.%20Ref%20GV-JAM-USA">From the USA</a><a href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation!%20I'm%20coming%20home%20to%20Jamaica%20for%20a%20visit%20and%20I'd%20like%20a%20quote%20for%20a%20hotel%20or%20package.%20Ref%20GV-JAM-HOME">Coming home</a><a href="https://wa.me/18763601567?text=%C2%A1Hola%20Golden%20Vacation!%20Quiero%20cotizar%20un%20viaje%20a%20Jamaica.%20Ref%20GV-JAM-ES">En español</a><a href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation!%20I'm%20coming%20to%20Jamaica%20from%20the%20UK%20or%20Canada%20and%20I'd%20like%20a%20land-only%20quote%20(hotel%20and%20transfers).%20Ref%20GV-JAM-UKCA">From the UK</a><a href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation!%20I'm%20coming%20to%20Jamaica%20from%20the%20UK%20or%20Canada%20and%20I'd%20like%20a%20land-only%20quote%20(hotel%20and%20transfers).%20Ref%20GV-JAM-UKCA">From Canada</a></div>
+    <div class="foot-col"><span>Help</span><a href="/about/">About us</a><a href="/getaways/visa-free-countries/">Visa-free countries</a><a href="/hotel-status/">Resort status</a><a href="/hotel-status-map">Resort map</a><a href="/getaways/#questions">Deposits &amp; payments</a><a href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%27m%20looking%20at%20the%20resort%20status%20page%20and%20I%27d%20like%20help%20finding%20an%20open%20resort%20for%20my%20dates.%20Ref%20GV-STATUS">Contact us</a></div>
+  </div>
+  <div class="foot-links mob"><a href="/getaways/">Getaways</a><a href="/#staycations">Staycations</a><a href="/#coming">Jamaica</a><a href="/experiences/">Experiences</a><a href="/transfers/">Transfers</a><a href="/groups/">Groups</a><a href="/hotel-status/">Resort status</a><a href="/getaways/visa-free-countries/">Visa-free countries</a><a href="/about/">About us</a><a href="https://wa.me/18763601567?text=Hi%20Golden%20Vacation%21%20I%27m%20looking%20at%20the%20resort%20status%20page%20and%20I%27d%20like%20help%20finding%20an%20open%20resort%20for%20my%20dates.%20Ref%20GV-STATUS">Contact</a></div>
+  <div class="foot-bot"><span>© 2026 Golden Vacation &amp; Travel Limited · St Ann, Jamaica · <a href="/terms/">Terms</a> · <a href="/privacy/">Privacy</a></span><span><a href="https://www.instagram.com/goldenvacays/" rel="noopener">Instagram</a> · <a href="https://www.facebook.com/goldenvacays/" rel="noopener">Facebook</a></span></div>
+</div></footer>
+<script src="/assets/chrome.js?v=4ecb7cde" defer></script>
+</body></html>
