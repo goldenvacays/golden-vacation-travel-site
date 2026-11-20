@@ -159,7 +159,7 @@ function hub() {
         <p>${esc(sentence(r.oneLine))}</p>
         <div class="res-foot"><span class="res-rooms">${esc(r.roomList.length)} room types</span>${r.fromUsd ? `<span class="res-price"><small>From</small><b>${usd(r.fromUsd)}</b><small>per person per night</small></span>` : `<span class="res-price"><small>Price</small><b>On request</b></span>`}<span class="btn btn-sm">See rooms</span></div>
       </div></a>`;
-  return `${head({ title: "Jamaica all-inclusive resorts from US$130 a night | Golden Vacation", description: "Pick the resort, tell us your dates and who's coming, and we reply within 10 minutes with your price.", pathname: `${BASE}/`, image: "aquarelle-hero-1600" })}
+  return `${head({ title: "Jamaica all-inclusive resorts from US$130 a night | Golden Vacation", jsonld: [{ "@context": "https://schema.org", "@type": "ItemList", name: "Jamaica all-inclusive resorts", numberOfItems: F.RESORTS.length, itemListElement: F.RESORTS.map((x, i) => ({ "@type": "ListItem", position: i + 1, name: `${x.name}: ${x.status}`, url: `${S.origin}${BASE}/${F.slugify(x.name)}/` })) }], description: "Pick the resort, tell us your dates and who's coming, and we reply within 10 minutes with your price.", pathname: `${BASE}/`, image: "aquarelle-hero-1600" })}
 <body class="groups stay">
 ${nav()}
 <main>
@@ -261,7 +261,7 @@ function resort(r) {
       <p class="small">No card now. A deposit holds the room once you have the price. <a href="/privacy/" style="text-decoration:underline">Privacy</a></p>
       <p class="small trust">IATA accredited since 2021 · Offices in Jamaica and Florida · Pay in J$ or US$</p>
     </form>`;
-  return `${head({ title: `${r.name}: prices, rooms and status | Golden Vacation`, description: metaDesc(r), pathname: `${BASE}/${r.slug}/`, image: `${r.folder}-hero-1600`, jsonld: F.byName(r.name) ? [F.faqLd(F.faqs(F.byName(r.name), { booking: true }))] : [] })}
+  return `${head({ title: (() => { const st = F.byName(r.name) && F.isOpen(F.byName(r.name)) ? "open now" : F.byName(r.name) ? F.byName(r.name).status.toLowerCase() : ""; return F.fit(70, `${r.name}: ${st}, prices and rooms | Golden Vacation`, `${r.name}: ${st}, prices and rooms`, `${r.name}: prices and rooms`); })(), description: metaDesc(r), pathname: `${BASE}/${r.slug}/`, image: `${r.folder}-hero-1600`, jsonld: F.byName(r.name) ? [F.resortLd(F.byName(r.name), { url: `${S.origin}${BASE}/${r.slug}/`, image: `${S.origin}${IMG}/${r.folder}-hero-1600.jpg`, fromUsd: r.fromUsd, rooms: parseInt(r.rooms) || null }), F.faqLd(F.faqs(F.byName(r.name), { booking: true }))] : [] })}
 <body class="groups stay stay-resort">
 ${nav(true)}
 <section class="stay-strip"><div class="wrap">
