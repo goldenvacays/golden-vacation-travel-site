@@ -52,8 +52,29 @@ const CSS = `
 .rp .note{font-size:13.5px;color:var(--muted);margin-top:10px}.rp .note a,.rp .np a{color:inherit;font-weight:700}
 .rp .np{line-height:1.6;color:var(--muted);margin:0 0 10px;font-size:16px}
 .rp .two{display:grid;grid-template-columns:1fr;gap:40px}@media(min-width:900px){.rp .two{grid-template-columns:1fr 1fr;gap:56px}}
+.rp .qbox{border:2px solid var(--ink);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px;background:#fff}
+.rp .qbox h2{font-size:24px;margin:0}.rp .qbox .qs{color:var(--muted);margin:-6px 0 4px;font-size:14.5px}
+.rp .qrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.rp .qbox label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:700}
+.rp .qbox input{font:inherit;font-size:15px;padding:11px 12px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);width:100%;box-sizing:border-box}
+.rp .qbox input:focus{outline:2px solid var(--ink);outline-offset:1px}.rp .qbox .btn{justify-content:center}.rp .qbox .qsmall{font-size:12.5px;color:var(--muted);margin:0}.rp .qbox .hp{position:absolute;left:-9999px}
 .rp .faq details{border-top:1px solid var(--line);padding:16px 0}.rp .faq summary{font-weight:800;cursor:pointer;font-size:16.5px}.rp .faq p{margin:10px 0 0;color:var(--muted);line-height:1.6;max-width:760px}
 `;
+
+/* the quote box for an open resort with no booking page yet: the same Netlify form as the booking pages (staycation) */
+function quoteBox(r, ref) {
+  return `<form class="qbox" name="staycation" method="POST" action="/resorts/sent/" data-netlify="true" netlify-honeypot="bot-field">
+<input type="hidden" name="form-name" value="staycation"><input type="hidden" name="resort" value="${esc(r.name)}"><input type="hidden" name="subject" value="Resort quote · ${esc(r.name)} · ${ref}">
+<p class="hp" aria-hidden="true"><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+<h2>Get your price</h2><p class="qs">Golden Vacation &amp; Travel replies on WhatsApp within working hours, in J$ or US$.</p>
+<div class="qrow"><label>Check-in<input type="date" name="checkin" required></label><label>Check-out<input type="date" name="checkout" required></label></div>
+<div class="qrow"><label>Adults<input type="number" name="adults" min="1" max="20" value="2" inputmode="numeric" required></label><label>Children<input type="number" name="children" min="0" max="10" value="0" inputmode="numeric"></label></div>
+<label>Children's ages, rooms or anything else<input type="text" name="notes" placeholder="e.g. kids 6 and 9, one room"></label>
+<label>Your name<input type="text" name="name" autocomplete="name" required></label>
+<div class="qrow"><label>WhatsApp<input type="tel" name="phone" autocomplete="tel" inputmode="tel" required></label><label>Email<input type="email" name="email" autocomplete="email" inputmode="email"></label></div>
+<button type="submit" class="btn blk">Request my price${ARR}</button>
+<a class="btn out" href="${wa(`Hi Golden Vacation! I'd like a quote for ${r.name}. Ref ${ref}`)}">WhatsApp instead${ARR}</a>
+<p class="qsmall">No card now. A deposit holds the room once you have your price. <a href="/privacy/" style="color:inherit">Privacy</a></p></form>`;
+}
 
 function page(r) {
   const slug = slugify(r.name), a = F.answer(r), col = TONE[a.tone], open = F.isOpen(r);
@@ -61,7 +82,7 @@ function page(r) {
   const ref = `GV-RESORT-${slug.slice(0, 10).toUpperCase()}`;
   const dated = /\d/.test(r.when || "") && !open && r.status !== "Closed" && r.status !== "Permanently closed";
   const btns = open
-    ? `<a class="btn blk" href="${wa(`Hi Golden Vacation! I'd like a quote for ${r.name}. Ref ${ref}`)}">Get a quote for ${esc(r.name)}${ARR}</a>`
+    ? ""
     : `<a class="btn blk" href="${wa(`Hi Golden Vacation! I'm looking at ${r.name} on your website. Can you suggest an open resort for my dates? Ref ${ref}`)}">Find me an open resort for my dates${ARR}</a>${dated ? `<a class="btn out" href="${wa(`Hi Golden Vacation! I'd like to book ${r.name} for when it opens (${r.when}). Ref ${ref}`)}">Book it for ${r.status === "Reopening" ? "after" : "from"} ${esc(r.when)}${ARR}</a>` : ""}`;
   const extra = !open && r.happening ? ` ${r.happening}` : open && r.happening ? ` ${r.happening}` : "";
   const altHead = open ? `Also open close by` : r.status === "Permanently closed" ? `Open resorts close by` : `Travelling before ${dated ? esc(r.when) : "it opens"}?`;
@@ -90,7 +111,8 @@ ${ga}
 ${bodyOpen}<main class="rp wrap">
 <a class="crumb" href="/hotel-status/">‹ Jamaica resort status</a>
 <div class="top"><div><span class="k">Resort status · checked ${F.CHECKED}</span><h1 class="q">Is ${esc(r.name)} open?</h1><div class="bar" style="background:${col}"></div><p class="big" style="color:${col}">${esc(a.big)}</p><p class="sub">${esc(a.line + extra)}${r.formerly ? ` Formerly ${esc(r.formerly)}.` : ""}</p><div class="btns">${btns}</div></div>
-${r.photo ? `<figure class="photo"><img src="${F.photoOf(r)}" alt="${esc(r.name)}" fetchpriority="high"><figcaption>${esc(r.name)} · ${esc(F.areaName(r))}</figcaption></figure>` : ""}</div>
+${open ? quoteBox(r, ref) : r.photo ? `<figure class="photo"><img src="${F.photoOf(r)}" alt="${esc(r.name)}" fetchpriority="high"><figcaption>${esc(r.name)} · ${esc(F.areaName(r))}</figcaption></figure>` : ""}</div>
+${open && r.photo ? `<figure class="photo rsec" style="aspect-ratio:21/9"><img src="${F.photoOf(r)}" alt="${esc(r.name)}" loading="lazy"><figcaption>${esc(r.name)} · ${esc(F.areaName(r))}</figcaption></figure>` : ""}
 ${alts.length ? `<div class="rsec"><span class="k">${altHead}</span><h2>${altTitle}</h2>${open ? "" : `<p class="alead">The same coast and the same kind of stay, open and taking bookings now.</p>`}<div class="alts">${altCards}</div></div>` : ""}
 <div class="two rsec">
 ${trRows ? `<div><span class="k">Getting there</span><h2>Airport transfers</h2><table class="tt">${trRows}</table><p class="note">Golden Vacation &amp; Travel private car for up to 3 people, one way, taxes included. <a href="/transfers/">Bigger groups and return trips</a></p></div>` : ""}
