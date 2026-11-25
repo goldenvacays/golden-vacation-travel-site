@@ -210,11 +210,15 @@ function factsBoxes(r) {
 
 /* every resort we track, by coast, each linking to its own page (status pages for the ones not bookable here yet) */
 function allResorts() {
-  const order = ["Montego Bay", "Falmouth", "Lucea / Green Island", "Negril", "Ocho Rios & Runaway Bay", "South Coast"];
-  const areas = [...new Set(F.RESORTS.map((r) => r.area))].sort((a, b) => (order.indexOf(a) + 1 || 9) - (order.indexOf(b) + 1 || 9));
+  const order = ["Montego Bay", "Falmouth", "Lucea / Green Island", "Negril", "Ocho Rios & Runaway Bay", "South Coast", "Kingston", "Portland"];
   const pill = (r) => { const a = F.answer(r); return `<span class="ar-st ar-${a.tone}">${esc(r.status === "Reopening" && /\d/.test(r.when) ? `Reopening ${r.when}` : r.status)}</span>`; };
-  return `<section class="wrap all-resorts" id="all"><div class="box"><div class="box-head"><b>Every Jamaica resort we track</b><span class="small">Open, reopening or closed, checked ${F.CHECKED}. Tap one for its status, open resorts like it and transfer prices.</span></div>
-<div class="ar-grid">${areas.map((a) => `<div><h3 class="ar-h">${esc(a)}</h3><ul>${F.RESORTS.filter((r) => r.area === a).sort((x, y) => x.name.localeCompare(y.name)).map((r) => `<li><a href="${BASE}/${F.slugify(r.name)}/">${esc(r.name)}</a>${pill(r)}</li>`).join("")}</ul></div>`).join("")}</div></div></section>`;
+  const grid = (list) => { const areas = [...new Set(list.map((r) => r.area))].sort((a, b) => (order.indexOf(a) + 1 || 9) - (order.indexOf(b) + 1 || 9));
+    return `<div class="ar-grid">${areas.map((a) => `<div><h3 class="ar-h">${esc(a)}</h3><ul>${list.filter((r) => r.area === a).sort((x, y) => x.name.localeCompare(y.name)).map((r) => `<li><a href="${BASE}/${F.slugify(r.name)}/">${esc(r.name)}</a>${pill(r)}</li>`).join("")}</ul></div>`).join("")}</div>`; };
+  const ai = F.RESORTS.filter(F.isAllInclusive), hotels = F.RESORTS.filter((r) => !F.isAllInclusive(r));
+  return `<section class="wrap all-resorts" id="all"><div class="box"><div class="box-head"><b>Every Jamaica all-inclusive we track</b><span class="small">Open, reopening or closed, checked ${F.CHECKED}. Tap one for its status, open resorts like it and transfer prices.</span></div>
+${grid(ai)}</div></section>${hotels.length ? `
+<section class="wrap all-resorts" id="hotels"><div class="box"><div class="box-head"><b>Hotels, villas and boutique stays</b><span class="small">Room-only and small hotels across Jamaica, checked ${F.CHECKED}. Tap one for its status, places like it and transfer prices.</span></div>
+${grid(hotels)}</div></section>` : ""}`;
 }
 
 function resort(r) {
