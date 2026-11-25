@@ -79,15 +79,16 @@ function quoteBox(r, ref) {
 function page(r) {
   const slug = slugify(r.name), a = F.answer(r), col = TONE[a.tone], open = F.isOpen(r);
   const alts = F.alternatives(r), tr = F.transfers(r), near = F.nearby(slug), q = F.faqs(r);
+  const noun = F.isAllInclusive(r) ? "resorts" : "places to stay";
   const ref = `GV-RESORT-${slug.slice(0, 10).toUpperCase()}`;
   const dated = /\d/.test(r.when || "") && !open && r.status !== "Closed" && r.status !== "Permanently closed";
   const btns = open
     ? ""
     : `<a class="btn blk" href="${wa(`Hi Golden Vacation! I'm looking at ${r.name} on your website. Can you suggest an open resort for my dates? Ref ${ref}`)}">Find me an open resort for my dates${ARR}</a>${dated ? `<a class="btn out" href="${wa(`Hi Golden Vacation! I'd like to book ${r.name} for when it opens (${r.when}). Ref ${ref}`)}">Book it for ${r.status === "Reopening" ? "after" : "from"} ${esc(r.when)}${ARR}</a>` : ""}`;
   const extra = !open && r.happening ? ` ${r.happening}` : open && r.happening ? ` ${r.happening}` : "";
-  const altHead = open ? `Also open close by` : r.status === "Permanently closed" ? `Open resorts close by` : `Travelling before ${dated ? esc(r.when) : "it opens"}?`;
-  const altTitle = open ? `More open resorts near ${esc(r.name)}` : `${alts.length} open resorts like ${esc(r.name)}`;
-  const altCards = alts.map((x) => `<a class="alt" href="/resorts/${x.slug}/"><img src="${F.photoOf(x.r)}" alt="${esc(x.r.name)}" loading="lazy"><div><span class="ok-tag">Open now</span><b>${esc(x.r.name)}</b><small>${esc(F.areaName(x.r))} · ${esc(x.away)}</small><p>${esc(x.r.note)}</p><span class="go">${BOOKING.has(x.slug) ? "See prices and rooms" : "See the resort"}${ARR}</span></div></a>`).join("");
+  const altHead = open ? `Also open close by` : r.status === "Permanently closed" ? `Open ${noun} close by` : `Travelling before ${dated ? esc(r.when) : "it opens"}?`;
+  const altTitle = open ? `More open ${noun} near ${esc(r.name)}` : `${alts.length} open ${noun} like ${esc(r.name)}`;
+  const altCards = alts.map((x) => `<a class="alt" href="/resorts/${x.slug}/">${x.r.photo ? `<img src="${F.photoOf(x.r)}" alt="${esc(x.r.name)}" loading="lazy">` : ""}<div><span class="ok-tag">Open now</span><b>${esc(x.r.name)}</b><small>${esc(F.areaName(x.r))} · ${esc(x.away)}</small><p>${esc(x.r.note)}</p><span class="go">${BOOKING.has(x.slug) ? "See prices and rooms" : F.isAllInclusive(x.r) ? "See the resort" : "See the hotel"}${ARR}</span></div></a>`).join("");
   const trRows = tr.map((t) => `<tr><th>From ${esc(t.label)}</th><td style="color:var(--muted);font-weight:600">${esc(t.drive)}</td><td>US$${t.usd}</td></tr>`).join("");
   const st = open ? "Yes, open now" : r.status === "Reopening" && /\d/.test(r.when) ? `Reopening ${r.when}` : r.status;
   const title = F.fit(70, `Is ${r.name} open? ${st} | Golden Vacation`, `Is ${r.name} open? ${st}`, `${r.name}: ${st}`);

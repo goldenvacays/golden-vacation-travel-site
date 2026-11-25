@@ -50,10 +50,12 @@ export function answer(r) {
 
 /* open resorts like it, closest first: same kind of stay (adults only or not) counts more than the coast */
 const km = (a, b) => { const R = 6371, t = Math.PI / 180, dLa = (b.lat - a.lat) * t, dLo = (b.lng - a.lng) * t; const x = Math.sin(dLa / 2) ** 2 + Math.cos(a.lat * t) * Math.cos(b.lat * t) * Math.sin(dLo / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(x)); };
+/* all-inclusive resorts and plain hotels / villas are different stays: suggestions stay with the same kind */
+export const isAllInclusive = (r) => !/hotel/i.test(r.category || "All-inclusive");
 export function alternatives(r, n = 3) {
   if (!r.lat) return [];
-  const cands = RESORTS.filter((x) => x !== r && x.status === "Open" && x.show !== "No" && x.lat && x.photo)
-    .map((x) => ({ x, d: km(r, x), s: km(r, x) + (adultsOnly(x) !== adultsOnly(r) ? 200 : 0) + (x.region !== r.region ? 25 : 0) }))
+  const cands = RESORTS.filter((x) => x !== r && x.status === "Open" && x.show !== "No" && x.lat && (x.photo || !isAllInclusive(x)))
+    .map((x) => ({ x, d: km(r, x), s: km(r, x) + (adultsOnly(x) !== adultsOnly(r) ? 200 : 0) + (isAllInclusive(x) !== isAllInclusive(r) ? 150 : 0) + (x.region !== r.region ? 25 : 0) }))
     .sort((p, q) => p.s - q.s);
   /* a brand people stay loyal to (Sandals, Couples, RIU...) leads with its own nearest open resort */
   const brand = (x) => x.name.split(/\s+/)[0].toLowerCase();
@@ -99,7 +101,7 @@ export function faqs(r, { booking = false } = {}) {
   const list = [[`Is ${n} open?`, `${a.big} ${a.line} Golden Vacation & Travel checked this on ${CHECKED_LONG}.`]];
   if (!isOpen(r) && r.status !== "Permanently closed" && altNames.length) list.push([`Where can I stay instead of ${n}?`, `The closest open resorts like it are ${altNames.slice(0, -1).join(", ")} and ${altNames[altNames.length - 1]}. Golden Vacation & Travel can quote any of them for your dates.`]);
   if (r.status === "Reopening" && dated(r.when)) list.push([`Can I book ${n} for after it reopens?`, `Yes. Golden Vacation & Travel can quote stays from ${longWhen(r.when)}. If the date moves, we move your booking.`]);
-  if (tr.length) list.push([`How far is ${n} from the airport?`, `${tr.map((t) => `${cap(t.drive)} from ${t.label}`).join(", and ")}. A Golden Vacation & Travel private transfer for up to 3 people starts at US$${tr[0].usd} one way, taxes included.`]);
+  if (tr.length) list.push([`How far is ${n} from the airport?`, `${tr.map((t, i) => `${i ? t.drive : cap(t.drive)} from ${t.label}`).join(", and ")}. A Golden Vacation & Travel private transfer for up to 3 people starts at US$${tr[0].usd} one way, taxes included.`]);
   if (isOpen(r)) list.push([`Can Jamaica residents book ${n} in J$?`, `Yes. Golden Vacation & Travel quotes ${n} in J$ or US$, and you can pay in either.`]);
   return list;
 }
@@ -108,7 +110,7 @@ export const faqLd = (list) => ({ "@context": "https://schema.org", "@type": "FA
 
 /* the resort itself as schema.org Resort: name, place, photo, status line, and a from-price when we have one */
 export function resortLd(r, { url, image, fromUsd = null, rooms = null } = {}) {
-  const o = { "@context": "https://schema.org", "@type": "Resort", name: r.name, url, description: answer(r).line,
+  const o = { "@context": "https://schema.org", "@type": isAllInclusive(r) ? "Resort" : "Hotel", name: r.name, url, description: answer(r).line,
     address: { "@type": "PostalAddress", addressLocality: areaName(r), addressCountry: "JM" } };
   if (r.lat) o.geo = { "@type": "GeoCoordinates", latitude: r.lat, longitude: r.lng };
   if (image) o.image = image;
