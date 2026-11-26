@@ -85,7 +85,17 @@ export function transfers(r) {
 const toMin = (s) => { const h = /(\d+) h(?: (\d+))?/.exec(s); if (h) return +h[1] * 60 + (+h[2] || 0); const m = /(\d+)(?: to \d+)? min/.exec(s); return m ? +m[1] : 999; };
 
 /* the tours near it: the first sentence of its near page's lead */
+const AREA_PAGE = { negril: "negril", lucea: "lucea", mobay: "montego-bay", falmouth: "falmouth", ocho: "ocho-rios", south: "south-coast" };
 export function nearby(slug) {
+  const r = RESORTS.find((x) => slugify(x.name) === slug);
+  if (r && !isAllInclusive(r)) {
+    /* hotels and villas: their tours live on the area page */
+    const a = AREA_PAGE[r.region]; if (!a) return null;
+    const f = path.join(ROOT, "public/experiences/area", `${a}.html`); if (!fs.existsSync(f)) return null;
+    const m = /class="nr-lead">([\s\S]*?)<\/p>/.exec(fs.readFileSync(f, "utf8")); if (!m) return null;
+    const text = m[1].replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
+    return { text: (text.match(/^[^.]+\./) || [text])[0], href: `/experiences/area/${a}` };
+  }
   const f = path.join(ROOT, "public/experiences/near", `${slug}.html`);
   if (!fs.existsSync(f)) return null;
   const h = fs.readFileSync(f, "utf8"); const m = /class="nr-lead">([\s\S]*?)<\/p>/.exec(h);

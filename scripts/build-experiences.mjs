@@ -173,7 +173,9 @@ const ZONE_REGION = { negril: "negril", mobay: "mobay", "mobay-nonai": "mobay", 
 const ZONE_POINT = { negril: [18.27, -78.34], mobay: [18.49, -77.92], "mobay-nonai": [18.49, -77.9], "rose-hall": [18.51, -77.83], lucea: [18.45, -78.17], "hanover-villas": [18.45, -78.0], falmouth: [18.49, -77.65], "runaway-bay": [18.45, -77.33], "ocho-rios": [18.41, -77.11], "south-coast": [18.07, -77.95], "treasure-beach": [17.88, -77.76] };
 const ZONE_AREA = { negril: "Negril", mobay: "Montego Bay", "mobay-nonai": "Montego Bay", "rose-hall": "Rose Hall", lucea: "Hanover", "hanover-villas": "Hanover", falmouth: "Trelawny", "runaway-bay": "Runaway Bay", "ocho-rios": "Ocho Rios", "south-coast": "South Coast", "treasure-beach": "Treasure Beach" };
 const sameHotel = (a, b) => { const k = (x) => String(x).toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9 ]/g, " ").replace(/\b(the|hotel|resort|resorts|and|spa|villas?|inn|jamaica|negril)\b/g, " ").replace(/\s+/g, " ").trim(); return k(a) === k(b); };
-const RESORT_HOTELS = RESORTS.filter((r) => r.status !== "Permanently closed" && r.region && X.regions[r.region] && r.lat && r.lng)
+/* only the all-inclusives get a near page of their own; hotels, villas and boutique stays fold into their area page */
+const isAllInclusive = (r) => !/hotel/i.test(r.category || "All-inclusive");
+const RESORT_HOTELS = RESORTS.filter((r) => isAllInclusive(r) && r.status !== "Permanently closed" && r.region && X.regions[r.region] && r.lat && r.lng)
   .map((r) => ({ name: r.name, slug: slugify(r.name), region: r.region, lat: r.lat, lng: r.lng, status: r.status, area: r.area }));
 /* transfers-list names that are a resort already on the status list under its newer name */
 const SAME_AS_RESORT = new Set(["Braco Village", "Bahia Principe Grand Jamaica", "Jewel Paradise Cove"]);
@@ -181,7 +183,7 @@ const SMALL_HOTELS = [];
 for (const z of T_ZONES) for (const name of z.places || []) {
   const region = ZONE_REGION[z.key];
   if (!region || !X.regions[region] || !ZONE_POINT[z.key] || SAME_AS_RESORT.has(name)) continue;
-  if (RESORTS.some((r) => sameHotel(r.name, name) || (r.formerly && sameHotel(r.formerly, name))) || SMALL_HOTELS.some((h) => sameHotel(h.name, name))) continue;
+  if (RESORTS.some((r) => isAllInclusive(r) && sameHotel(r.name, name) || (r.formerly && sameHotel(r.formerly, name))) || SMALL_HOTELS.some((h) => sameHotel(h.name, name))) continue;
   SMALL_HOTELS.push({ name, slug: slugify(name), region, lat: ZONE_POINT[z.key][0], lng: ZONE_POINT[z.key][1], status: "Open", area: ZONE_AREA[z.key] || X.regions[region].label, small: true });
 }
 const HOTELS = RESORT_HOTELS.concat(SMALL_HOTELS)
