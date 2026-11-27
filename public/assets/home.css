@@ -1,5 +1,5 @@
 /* Golden Vacation & Travel — front page. Loads after /getaways/assets/getaways.css (the Bold system). */
-:root { --ok: #1F8A4C; --new: #2F5BEA; }
+:root { --ok: #1A7A43; --new: #2F5BEA; }
 
 /* nav: mobile menu */
 .menu-btn { display: inline-flex; }

@@ -1,5 +1,5 @@
 /* Golden Experiences. Loads after getaways.css (Bold tokens) and home.css (nav, doors, strips, steps, faqs). */
-:root { --res: #1F8A4C; --warn-bg: #FFF4E5; --warn: #8A6D12;
+:root { --res: #1A7A43; --warn-bg: #FFF4E5; --warn: #8A6D12;
   /* three levels of text: ink for what matters, then two steps of the same ink at lower opacity, so hierarchy reads without extra colours */
   --ink-2: rgba(14,15,14,.74); --ink-3: rgba(14,15,14,.55);
   --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .5 0'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='.55'/></svg>"); }
@@ -630,3 +630,6 @@
   .nav .curr.lang { display: inline-flex; padding: 3px; }
   .nav .curr.lang a { height: 28px; min-width: 34px; padding: 0 8px; font-size: 12px; }
 }
+
+/* Phones: with more than eight photos the dots wrap over the photo count, so the count alone stays */
+@media (max-width: 599px) { .hero-dots:has(button:nth-child(9)) { display: none; } }

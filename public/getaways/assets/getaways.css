@@ -1,6 +1,6 @@
 /* Golden Vacation & Travel — Getaways. Bold system. Generated pages read this file. */
 :root {
-  --ink: #0E0F0E; --gold: #F2B93B; --gold-txt: #A87A12; --alt: #F3F3EF; --line: #E4E4DF;
+  --ink: #0E0F0E; --gold: #F2B93B; --gold-txt: #8A640E; --alt: #F3F3EF; --line: #E4E4DF;
   --muted: #63685F; --ph: #E6E6E1; --ph-d: #2A2C29; --white: #FFFFFF;
   --pad: 20px; --radius: 20px;
   --font: Archivo, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -663,3 +663,18 @@ body.jmd .jmd-v { display: inline; }
 .dr-clear:hover { border-color: var(--ink); }
 .dr-clear[hidden] { display: none; }
 .dr-done { border: 0; background: var(--ink); color: #fff; }
+
+/* Phones: form text at 16px, so iPhones do not zoom the page when a box is tapped */
+@media (max-width: 759px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea { font-size: 16px !important; }
+}
+
+/* Quote page: no empty box when the destination has no hotel list */
+.qsel:has(> .qsel-t[hidden]) { display: none; }
+
+/* Footer: the call number is a link */
+.foot-brand p a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.foot-brand p a:hover { color: var(--gold); }
+
+/* Quote page on phones: a long destination name ends in dots rather than a hard cut */
+@media (max-width: 759px) { .qsel select { text-overflow: ellipsis; } }

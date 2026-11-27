@@ -349,7 +349,7 @@ function footer() {
   const coming = F.coming.map(([l, k]) => [l, comingHref(k)]);
   return `<footer class="foot" role="contentinfo"><div class="wrap" style="display:flex;flex-direction:column;gap:32px">
   <div class="foot-grid">
-    <div class="foot-brand"><a class="wordmark hh" href="/">GOLDEN VACATION</a><p>${esc(S.footerAddress)}<br>WhatsApp ${esc(S.whatsappDisplay)} · Call ${esc(S.phone)}<br>${esc(S.iata)}</p></div>
+    <div class="foot-brand"><a class="wordmark hh" href="/">GOLDEN VACATION</a><p>${esc(S.footerAddress)}<br>WhatsApp ${esc(S.whatsappDisplay)} · <a href="tel:+1${String(S.phone).replace(/\D/g, "")}">Call ${esc(S.phone)}</a><br>${esc(S.iata)}</p></div>
     ${col("Book", book)}
     ${col("Coming to Jamaica", coming)}
     ${col("Help", help)}

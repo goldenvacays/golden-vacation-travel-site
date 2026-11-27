@@ -288,3 +288,6 @@ body.jmd .ck-tot-v b .jmd-v, body.jmd .ck-tot-v > span .jmd-v { display: inline;
   .tr-row-main { grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, .7fr); }
   .tr-row-main .tr-f-hotel, .tr-row-main .tr-f-airport, .tr-row-main .tr-f-trip, .tr-row-main .tr-f-people { grid-column: auto; }
 }
+
+/* The shared calendar (daterange.js) owns the date boxes; the page's older date button stays out of the way */
+.tr-search .dr-btn ~ .date-btn { display: none; }
