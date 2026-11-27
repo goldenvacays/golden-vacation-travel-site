@@ -12,6 +12,13 @@ import fs from "node:fs";
 import path from "node:path";
 import { ROOT, DATA, OUT, IMG_SRC, S, BASE, args, BUNDLE, NOINDEX, ARTIFACT, esc, fmt, usd, jmd, price, replyLine, img, usedImages, pic, heroPic, ICONS, icon, wa, waGeneric, btn, tag, kicker, biglink, check, faqItem, currency, ticker, stars, head, nav, footer, bottomBar, scripts } from "./_getaways-chrome.mjs";
 
+/* Hub photos: phones and small cards take the 960px copy (name-m.jpg) when one sits beside the original */
+const picHub = (file, alt) => {
+  const m = String(file).replace(/\.jpg$/, "-m.jpg");
+  if (m === file || !fs.existsSync(path.join(ROOT, "public/getaways/img", m))) return pic(file, alt);
+  return pic(file, alt, "", ` srcset="${img(m)} 960w, ${img(file)} 2000w" sizes="(min-width: 900px) 34vw, 92vw"`);
+};
+
 /* hotel pages built by scripts/build-hotels.mjs (run it first); a package hotel row links to its page when one exists */
 const HOTEL_PAGES_FILE = path.join(ROOT, "data/hotel-pages.json");
 const HOTEL_PAGES = fs.existsSync(HOTEL_PAGES_FILE) ? JSON.parse(fs.readFileSync(HOTEL_PAGES_FILE, "utf8")) : [];
@@ -51,7 +58,7 @@ function hubPage() {
 
   const proof = `<div class="proof">${stars()}<span>${esc(H.proof)}</span></div>`;
 
-  const tiles = dests.map((d, i) => `<a class="tile${i === 0 ? " span2" : ""}" href="${BASE}/${d.slug}/">${pic(d.tileImg, d.tileAlt)}${tag(d.tileTag, "gold")}
+  const tiles = dests.map((d, i) => `<a class="tile${i === 0 ? " span2" : ""}" href="${BASE}/${d.slug}/">${picHub(d.tileImg, d.tileAlt)}${tag(d.tileTag, "gold")}
       <div class="tile-in"><div><span class="hh">${esc(d.name)}</span><small class="tile-note">${esc(d.tileNote)}</small><small class="mob">from <strong>${usd(d.from)}</strong></small></div><div class="from desk"><span>from</span><b class="hh">${usd(d.from)}</b></div></div></a>`).join("");
   const onreq = `<a class="onreq" href="${BASE}/quote/">${tag("On request", "black").replace('class="tag', 'class="desk tag')}<div><b>${esc(H.onRequest.title)}</b><small>${esc(H.onRequest.text)}</small></div>${icon("arrow", 20, 2.4)}<span class="biglink desk">Ask for a quote${icon("arrow", 20, 2.4)}</span></a>`;
   const destinations = `<section id="destinations" class="sec wrap">
@@ -63,14 +70,14 @@ function hubPage() {
   const combos = `<section class="sec wrap sec-tight" id="combos">
     <div class="sec-head"><div>${kicker("Two countries, one trip")}<h2 class="hh">${esc(H.combosTitle)}</h2><p class="sec-sub">${esc(H.combosSub)}</p></div></div>
     <div class="combos-grid">
-      <a class="combo-big" href="${BASE}/${c1.slug}/">${pic(c1.tile.img, c1.tile.alt)}<div class="tags">${c1.tile.tags.map((t, i) => tag(t, i ? "white" : "gold")).join("")}</div>
+      <a class="combo-big" href="${BASE}/${c1.slug}/">${picHub(c1.tile.img, c1.tile.alt)}<div class="tags">${c1.tile.tags.map((t, i) => tag(t, i ? "white" : "gold")).join("")}</div>
         <div class="in"><div><span class="hh">${esc(c1.name)}</span><br><small class="combo-sub"><span class="long">${esc(c1.tile.sub)}</span><span class="short">${esc(c1.tile.subShort)}</span></small></div><div class="from"><span>from</span><b class="hh">${usd(c1.price)}</b></div></div></a>
-      <a class="combo-row" href="${BASE}/${c2.slug}/">${pic(c2.tile.img, c2.tile.alt)}<div class="t"><div><b class="hh">${esc(c2.name)}</b><small class="combo-sub"><span class="long">${esc(c2.tile.sub)}</span><span class="short">${esc(c2.tile.subShort)}</span></small></div><span class="biglink">See the trip${icon("arrow", 20, 2.4)}</span></div>${icon("arrow", 22, 2.4)}</a>
+      <a class="combo-row" href="${BASE}/${c2.slug}/">${picHub(c2.tile.img, c2.tile.alt)}<div class="t"><div><b class="hh">${esc(c2.name)}</b><small class="combo-sub"><span class="long">${esc(c2.tile.sub)}</span><span class="short">${esc(c2.tile.subShort)}</span></small></div><span class="biglink">See the trip${icon("arrow", 20, 2.4)}</span></div>${icon("arrow", 22, 2.4)}</a>
     </div>
   </section>`;
 
   const pkgCard = (d) => `<article class="pkg">
-    <a class="pkg-photo" href="${BASE}/${d.slug}/">${pic(d.card.img, d.card.alt)}<div class="tags">${d.card.tags.map((t, i) => tag(t, i ? "white" : "gold")).join("")}</div></a>
+    <a class="pkg-photo" href="${BASE}/${d.slug}/">${picHub(d.card.img, d.card.alt)}<div class="tags">${d.card.tags.map((t, i) => tag(t, i ? "white" : "gold")).join("")}</div></a>
     <div class="pkg-t"><a class="h" href="${BASE}/${d.slug}/">${esc(d.name)}</a><b>${esc(d.card.sub)}</b><p>${esc(d.card.meta)}</p></div>
     <div class="pkg-b"><div class="price-blk"><span class="lbl">from, per person</span><b class="hh">${price(d.card.price)}</b><small>${esc(d.card.priceNote)}</small></div>${btn("Get a quote", `${BASE}/quote/?d=${d.slug}`)}</div>
     <span class="pkg-foot">Your dates · quoted on WhatsApp · deposit holds it</span>

@@ -360,7 +360,7 @@ function homePage() {
     return `<a class="scard" href="${href}" data-where="staycation-card">
       <span class="scard-photo">${pic(h.img, h.alt)}${status ? tag(status, "black") : ""}</span>
       <span class="scard-t"><span class="h">${esc(h.name)}</span><small>${longShort(h.sub, h.subMobile)}</small></span>
-      <span class="scard-p">Per night <b>${esc(H.staycations.priceLine)}</b></span>
+      <span class="scard-p">${h.from ? `From <b>${esc(h.from)}</b> per person per night` : `Per night <b>${esc(H.staycations.priceLine)}</b>`}</span>
     </a>`;
   }).join("");
   const staycations = `<section class="stay-sec" id="staycations" aria-labelledby="stay-h"><div class="wrap" style="display:flex;flex-direction:column;gap:inherit">

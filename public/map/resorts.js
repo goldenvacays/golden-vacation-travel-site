@@ -648,7 +648,7 @@ window.RESORTS = [
   "lng": -77.0669
  },
  {
-  "name": "FDR — Franklyn D. Resort",
+  "name": "FDR, Franklyn D. Resort",
   "formerly": "",
   "area": "Ocho Rios & Runaway Bay",
   "category": "All-inclusive",

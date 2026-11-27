@@ -288,23 +288,26 @@
         "img": "stay-riu-ocho-rios.jpg",
         "alt": "RIU Ocho Rios on Mammee Bay, from above",
         "sub": "Ocho Rios · all-inclusive",
-        "subMobile": "Ocho Rios"
+        "subMobile": "Ocho Rios",
+        "from": "US$134"
       },
       {
-        "name": "Iberostar Waves Rose Hall",
-        "match": "Iberostar Waves Rose Hall",
-        "img": "stay-iberostar-waves.jpg",
-        "alt": "The pool and beach at Iberostar Waves Rose Hall",
-        "sub": "Montego Bay · adults-only from 1 Nov",
-        "subMobile": "Montego Bay"
+        "name": "RIU Montego Bay",
+        "match": "RIU Montego Bay",
+        "img": "stay-riu-montego-bay.jpg",
+        "alt": "RIU Montego Bay and its water park, from above",
+        "sub": "Montego Bay · adults only",
+        "subMobile": "Montego Bay",
+        "from": "US$156"
       },
       {
-        "name": "Royalton Negril",
-        "match": "Royalton Negril",
-        "img": "stay-royalton-negril.jpg",
-        "alt": "The swim-up bar at Royalton Negril",
+        "name": "RIU Negril",
+        "match": "RIU Negril",
+        "img": "stay-riu-negril.jpg",
+        "alt": "RIU Negril on Bloody Bay, from above",
         "sub": "Negril · all-inclusive",
-        "subMobile": "Negril"
+        "subMobile": "Negril",
+        "from": "US$130"
       }
     ],
     "priceLine": "quoted in J$"
