@@ -1,7 +1,7 @@
 /* Golden Vacation & Travel — Groups. Light register of the site's Bold system: photos carry the page, gold only on prices and buttons, 20px radii, the footer the only dark block. Mobile first. */
 :root {
-  --ink: #0E0F0E; --gold: #F2B93B; --gold-txt: #A87A12; --gold-deep: #8F6708; --alt: #F7F3E8; --warm-tint: #F7F3E8; --line: #E4E4DF; --line-2: #D9D9D2;
-  --muted: #5A5F57; --body: #3C403A; --warm: #1B1D19; --green: #1F8A4C; --white: #FFFFFF;
+  --ink: #0E0F0E; --gold: #F2B93B; --gold-txt: #8A640E; --gold-deep: #8F6708; --alt: #F7F3E8; --warm-tint: #F7F3E8; --line: #E4E4DF; --line-2: #D9D9D2;
+  --muted: #5A5F57; --body: #3C403A; --warm: #1B1D19; --green: #1A7A43; --white: #FFFFFF;
   --pad: 16px; --r: 20px; --r-s: 14px;
   --font: Archivo, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -445,3 +445,8 @@ fieldset.fs[hidden] { display: none; }
   .menu-btn, .g-menu { display: none !important; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* Phones: form text at 16px, so iPhones do not zoom the page when a box is tapped */
+@media (max-width: 759px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea { font-size: 16px !important; }
+}

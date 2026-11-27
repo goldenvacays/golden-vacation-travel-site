@@ -131,7 +131,7 @@ export function footer() {
   const col = (t, items) => `<div class="foot-col"><span>${esc(t)}</span>${items.map(([l, h]) => `<a href="${h}">${esc(l)}</a>`).join("")}</div>`;
   return `<footer class="foot" role="contentinfo"><div class="wrap" style="display:flex;flex-direction:column;gap:32px">
   <div class="foot-grid">
-    <div class="foot-brand"><a class="wordmark hh" href="/">GOLDEN VACATION</a><p>${esc(S.footerAddress)}<br>WhatsApp ${esc(S.whatsappDisplay)} · Call ${esc(S.phone)}<br>${esc(S.iata)}</p></div>
+    <div class="foot-brand"><a class="wordmark hh" href="/">GOLDEN VACATION</a><p>${esc(S.footerAddress)}<br>WhatsApp ${esc(S.whatsappDisplay)} · <a href="tel:+1${String(S.phone).replace(/\D/g, "")}">Call ${esc(S.phone)}</a><br>${esc(S.iata)}</p></div>
     ${col("Destinations", [...DATA.destinations.map((d) => [d.name, `${BASE}/${d.slug}/`]), ["Cancún · Brazil, on request", `${BASE}/quote/`]])}
     ${col("Two countries", DATA.combos.map((c) => [c.name, `${BASE}/${c.slug}/`]))}
     ${col("Also from Golden", [["Visa-free countries", `${BASE}/visa-free-countries/`], ["Jamaica hotels & staycations", "/"], ["What's open in Jamaica", "/hotel-status/"], ["Resort map", "/hotel-status-map"], ["About us", "/about/"]])}

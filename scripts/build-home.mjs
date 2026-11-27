@@ -157,7 +157,7 @@ function footer() {
   const coming = F.coming.map(([l, k]) => [l, comingHref(k)]);
   return `<footer class="foot" role="contentinfo"><div class="wrap" style="display:flex;flex-direction:column;gap:32px">
   <div class="foot-grid">
-    <div class="foot-brand"><a class="wordmark hh" href="/">GOLDEN VACATION</a><p>${esc(S.footerAddress)}<br>WhatsApp ${esc(S.whatsappDisplay)} · Call ${esc(S.phone)}<br>${esc(S.iata)}</p></div>
+    <div class="foot-brand"><a class="wordmark hh" href="/">GOLDEN VACATION</a><p>${esc(S.footerAddress)}<br>WhatsApp ${esc(S.whatsappDisplay)} · <a href="tel:+1${String(S.phone).replace(/\D/g, "")}">Call ${esc(S.phone)}</a><br>${esc(S.iata)}</p></div>
     ${col("Book", F.book)}
     ${col("Coming to Jamaica", coming)}
     ${col("Help", help)}
@@ -360,7 +360,7 @@ function homePage() {
     return `<a class="scard" href="${href}" data-where="staycation-card">
       <span class="scard-photo">${pic(h.img, h.alt)}${status ? tag(status, "black") : ""}</span>
       <span class="scard-t"><span class="h">${esc(h.name)}</span><small>${longShort(h.sub, h.subMobile)}</small></span>
-      <span class="scard-p">Per night <b>${esc(H.staycations.priceLine)}</b></span>
+      <span class="scard-p">${h.from ? `From <b>${esc(h.from)}</b> per person per night` : `Per night <b>${esc(H.staycations.priceLine)}</b>`}</span>
     </a>`;
   }).join("");
   const staycations = `<section class="stay-sec" id="staycations" aria-labelledby="stay-h"><div class="wrap" style="display:flex;flex-direction:column;gap:inherit">

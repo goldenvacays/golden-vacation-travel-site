@@ -28,7 +28,7 @@ const GOOGLE_REVIEW = "https://g.page/r/CfN6fme0tuU1EBM/review";
 
 /* ---------- every hotel a review link can name: slug -> [name, place, kind] (kind j = Jamaica, g = getaway) ---------- */
 const HOTELS = {};
-/* names shown on the page carry no long dashes: "FDR — Franklyn D. Resort" reads "FDR, Franklyn D. Resort", as on the near pages */
+/* names shown on the page carry no long dashes: "FDR, Franklyn D. Resort" reads "FDR, Franklyn D. Resort", as on the near pages */
 const disp = (n) => String(n).replace(/\s*[—–]\s*/g, ", ");
 const add = (slug, name, place, kind) => { if (slug && !HOTELS[slug]) HOTELS[slug] = [disp(name), disp(place), kind]; };
 DATA.destinations.forEach((d) => {

@@ -194,7 +194,7 @@ body.stay-resort { padding-bottom: 76px; }
 .st-answer { border-width: 2px; }
 .st-answer .box-head b { font-size: 19px; }
 .st-answer em { font-style: normal; }
-.st-ok { border-color: #1F8A4C; } .st-ok em { color: #1F8A4C; }
+.st-ok { border-color: #1F8A4C; } .st-ok em { color: #1A7A43; }
 .st-warn { border-color: #C7861A; } .st-warn em { color: #A86A08; }
 .st-no { border-color: #B3261E; } .st-no em { color: #B3261E; }
 .st-new { border-color: #2F5BEA; } .st-new em { color: #2F5BEA; }
@@ -216,4 +216,23 @@ body.stay-resort { padding-bottom: 76px; }
 .ar-grid li a { color: inherit; font-weight: 700; text-decoration: none; }
 .ar-grid li a:hover { text-decoration: underline; }
 .ar-st { flex: none; font-size: 11.5px; font-weight: 800; padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
-.ar-ok { background: #E5F3EA; color: #1F8A4C; } .ar-warn { background: #FBF0DA; color: #8A5A06; } .ar-no { background: #F8E3E1; color: #B3261E; } .ar-new { background: #E6ECFD; color: #2F5BEA; }
+.ar-ok { background: #E5F3EA; color: #1A7A43; } .ar-warn { background: #FBF0DA; color: #8A5A06; } .ar-no { background: #F8E3E1; color: #B3261E; } .ar-new { background: #E6ECFD; color: #2F5BEA; }
+
+/* Phones: the availability table becomes one compact row per room, so the price and Select are always in view */
+@media (max-width: 759px) {
+  .av-wrap { overflow-x: visible; }
+  .av, .av tbody { display: block; width: 100%; }
+  .av thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .av tbody tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "room price" "sleeps price" "opts cta"; column-gap: 12px; row-gap: 6px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .av tbody tr:first-child { padding-top: 2px; }
+  .av tbody tr:last-child { border-bottom: 0; padding-bottom: 2px; }
+  .av td { display: block; padding: 0; border-bottom: 0; }
+  .av-room { grid-area: room; min-width: 0; }
+  .av-sleeps { grid-area: sleeps; min-width: 0; }
+  .av-opts { grid-area: opts; align-self: end; min-width: 0; }
+  .av-opts span { white-space: normal; }
+  .av-price { grid-area: price; min-width: 0; max-width: 128px; text-align: right; }
+  .av-price b { font-size: 16px; }
+  .av-cta { grid-area: cta; align-self: end; }
+  .av-cta .btn { min-height: 44px; padding-left: 20px; padding-right: 20px; }
+}

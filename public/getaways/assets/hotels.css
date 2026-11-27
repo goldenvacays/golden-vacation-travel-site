@@ -138,3 +138,6 @@ button.hp-room-img:focus-visible { outline: 3px solid var(--gold); outline-offse
 .hp-quote { margin: 0; padding: 16px 18px; background: var(--alt); border-radius: 16px; display: flex; flex-direction: column; gap: 8px; }
 .hp-quote blockquote { margin: 0; font-size: 16px; line-height: 1.5; }
 .hp-quote figcaption { font-size: 13px; font-weight: 700; color: var(--muted); }
+
+/* Phones: with more than eight photos the dots wrap over the photo count, so the count alone stays */
+@media (max-width: 599px) { .hero-dots:has(button:nth-child(9)) { display: none; } }
