@@ -678,3 +678,15 @@ body.jmd .jmd-v { display: inline; }
 
 /* Quote page on phones: a long destination name ends in dots rather than a hard cut */
 @media (max-width: 759px) { .qsel select { text-overflow: ellipsis; } }
+
+/* Getaways pages on phones: the site menu (the button and list are added by getaways.js) */
+.ga-menu { display: none; }
+@media (max-width: 899px) {
+  .ga-nav .menu-btn.mob { display: inline-flex !important; }
+  .ga-menu.open { display: flex; flex-direction: column; padding: 8px var(--pad) 18px; background: #fff; border-bottom: 2px solid var(--line); }
+  .ga-menu a { padding: 12px 0; font-size: 17px; font-weight: 800; border-bottom: 2px solid var(--line); }
+  .ga-menu a:last-child { border-bottom: 0; }
+}
+/* Narrow phones: inner pages have the back arrow to Getaways, so the Getaways tag gives its place to the menu button */
+@media (max-width: 479px) { .ga-nav .nav-l .icon-btn + .wordmark + .tag { display: none; } }
+@media (max-width: 389px) { .ga-nav .nav-l .tag { display: none; } }

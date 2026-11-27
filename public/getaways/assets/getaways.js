@@ -571,4 +571,20 @@
     });
     window.GV_WA_OBS.observe(document.documentElement, { childList: true, subtree: true });
   }
+  /* ---- Getaways pages on phones: the same site menu the front page has (the header had no menu) ---- */
+  (function () {
+    var head = $("header.ga-nav"); if (!head || $(".menu-btn", head)) return;
+    var right = $(".nav-r", head); if (!right) return;
+    var btn = document.createElement("button"); btn.type = "button"; btn.className = "icon-btn menu-btn mob";
+    btn.setAttribute("aria-label", "Menu"); btn.setAttribute("aria-expanded", "false"); btn.setAttribute("aria-controls", "ga-menu");
+    btn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block"><path d="M3 12h18M3 6h18M3 18h18"></path></svg>';
+    var menu = document.createElement("nav"); menu.id = "ga-menu"; menu.className = "ga-menu"; menu.setAttribute("aria-label", "Menu");
+    [["Getaways", "/getaways/"], ["Staycations", "/resorts/"], ["Jamaica", "/#coming"], ["Experiences", "/experiences/"], ["Transfers", "/transfers/"], ["Groups", "/groups/"], ["Resort status", "/hotel-status/"]].forEach(function (l) {
+      var a = document.createElement("a"); a.href = l[1]; a.textContent = l[0]; menu.appendChild(a);
+    });
+    right.appendChild(btn); head.parentNode.insertBefore(menu, head.nextSibling);
+    btn.addEventListener("click", function () {
+      var open = !menu.classList.contains("open"); menu.classList.toggle("open", open); btn.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  })();
 })();
