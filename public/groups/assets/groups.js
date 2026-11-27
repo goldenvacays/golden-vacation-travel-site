@@ -518,3 +518,35 @@
     }
   }
 })();
+
+/* ---- phone menu: every page offers the site's main sections. Links the page's own menu lacks are added,
+   and a page with no menu at all (a resort page) gets the button and the list ---- */
+(function () {
+  var MAIN = [["Getaways", "/getaways/"], ["Staycations", "/resorts/"], ["Jamaica", "/jamaica/"], ["Experiences", "/experiences/"], ["Transfers", "/transfers/"], ["Groups", "/groups/"], ["Resort status", "/hotel-status/"]];
+  var head = document.querySelector("header.g-nav"); if (!head) return;
+  var menu = document.querySelector(".g-menu"), made = false;
+  var norm = function (h) { return String(h || "").split("#")[0].split("?")[0].replace(/\/+$/, "") || "/"; };
+  if (!menu) {
+    var right = head.querySelector(".nav-r"); if (!right) return;
+    var btn = document.createElement("button"); btn.type = "button"; btn.className = "menu-btn";
+    btn.setAttribute("aria-label", "Menu"); btn.setAttribute("aria-expanded", "false"); btn.setAttribute("aria-controls", "menu");
+    btn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h18M3 6h18M3 18h18"></path></svg>';
+    menu = document.createElement("nav"); menu.id = "menu"; menu.className = "g-menu"; menu.setAttribute("aria-label", "Menu");
+    right.appendChild(btn); head.parentNode.insertBefore(menu, head.nextSibling); made = true;
+    btn.addEventListener("click", function () {
+      var open = !menu.classList.contains("open"); menu.classList.toggle("open", open); btn.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  }
+  var have = {}; Array.prototype.forEach.call(menu.querySelectorAll("a"), function (a) { have[norm(a.getAttribute("href"))] = 1; });
+  var here = norm(location.pathname), before = menu.querySelector(".curr");
+  var add = function (label, href, dim) {
+    var a = document.createElement("a"); if (dim) a.className = "dim"; a.href = href; a.textContent = label;
+    if (before) menu.insertBefore(a, before); else menu.appendChild(a);
+  };
+  MAIN.forEach(function (l) {
+    var p = norm(l[1]); if (have[p]) return;
+    if (!made && (here === p || here.indexOf(p + "/") === 0)) return; /* the page's own section already leads its menu */
+    add(l[0], l[1], !made);
+  });
+  if (made) add("Home", "/", true);
+})();
