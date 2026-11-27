@@ -1,6 +1,7 @@
 /* Netlify runs a function named submission-created after every verified form submission.
    Every form: the team gets one readable email (layout in _notify.mjs) at FORMS_NOTIFY.
    The "groups" form also: the guest gets a confirmation with their reference and the brief we received.
+   The "staycation" form (Request price on a resort page) also: the guest gets a copy with a GV-STAY reference.
    The "jamaica" form (Coming to Jamaica pages): the guest gets a confirmation in English or Spanish, with a GV-JAM reference.
    The Teachers' Day page posts the same form (audience teachers-day, reference GV-TEACH) and gets its own wording.
    Netlify's own notification still goes out as configured until it is switched off in the Netlify UI.
@@ -76,6 +77,41 @@ function guestEmail(f) {
   return { subject: `Your group enquiry ${ref}: quote within ${TURNAROUND}`, text, html };
 }
 
+/* The "staycation" form (Request price on a resort page): the guest gets a copy of what they asked for, a GV-STAY reference
+   and the same promise the sent page makes. */
+function stayEmail(f) {
+  const ref = f.ref || "";
+  const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const iso = (v) => /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v || ""));
+  const day = (v) => { const m = iso(v); return m ? `${Number(m[3])} ${MON[Number(m[2]) - 1]} ${m[1]}` : String(v || ""); };
+  const nights = iso(f.checkin) && iso(f.checkout) ? Math.round((Date.parse(f.checkout) - Date.parse(f.checkin)) / 864e5) : 0;
+  const people = [f.adults ? `${f.adults} ${f.adults == 1 ? "adult" : "adults"}` : "", Number(f.children) ? `${f.children} ${f.children == 1 ? "child" : "children"}${f.child_ages ? ` (${f.child_ages})` : ""}` : ""].filter(Boolean).join(", ");
+  const rows = [
+    ["Resort", f.resort],
+    ["Dates", f.checkin && f.checkout ? `${day(f.checkin)} to ${day(f.checkout)}${nights > 0 ? `, ${nights} ${nights === 1 ? "night" : "nights"}` : ""}` : ""],
+    ["People", people],
+    ["Rooms", Number(f.rooms) > 1 ? String(f.rooms) : ""],
+    ["Room type", f.room],
+    ["Notes", f.notes],
+  ].filter(([, v]) => String(v || "").trim() !== "");
+  const hi = `Hi ${f.name ? String(f.name).trim().split(/\s+/)[0] : "there"},`;
+  const got = `We have your request${f.resort ? ` for ${f.resort}` : ""}. Your reference is ${ref}.`;
+  const reply = "Within 10 minutes you'll have your price, the deposit and the balance date, by email or WhatsApp.";
+  const fix = "Spotted a mistake? Reply to this email with your reference and we fix it before quoting.";
+  const sign = "Offices in Jamaica and Florida. IATA-accredited.";
+  const text = [hi, "", got, reply, "", "What you told us:", ...rows.map(([k, v]) => `  ${k}: ${v}`), "", fix, "", "Golden Vacation & Travel", sign, "Call 876 817 3467"].join("\n");
+  const html = `<div style="font-family:Archivo,Helvetica,Arial,sans-serif;color:#0E0F0E;max-width:560px;line-height:1.5">
+  <p style="font-size:16px">${esc(hi)}</p>
+  <p style="font-size:16px">${esc(got).replace(esc(ref), `<b style="background:#F2B93B;padding:2px 8px;border-radius:999px">${esc(ref)}</b>`)}</p>
+  <p style="font-size:16px">${esc(reply)}</p>
+  <p style="font-size:13px;font-weight:700;color:#8A640E;margin:24px 0 6px">WHAT YOU TOLD US</p>
+  <table style="border-collapse:collapse;font-size:15px">${rows.map(([k, v]) => `<tr><td style="padding:4px 12px 4px 0;font-weight:700;vertical-align:top;white-space:nowrap">${esc(k)}</td><td style="padding:4px 0">${esc(v)}</td></tr>`).join("")}</table>
+  <p style="font-size:14px;color:#5A5F57;margin-top:24px">${esc(fix)}</p>
+  <p style="font-size:14px;margin-top:24px"><b>Golden Vacation &amp; Travel</b><br>${esc(sign)}<br>Call 876 817 3467 · <a href="${SITE}/resorts/" style="color:#8A640E">${SITE.replace(/^https?:\/\//, "")}/resorts</a></p>
+</div>`;
+  return { subject: `Your price request${f.resort ? ` for ${f.resort}` : ""} ${ref}`.trim(), text, html };
+}
+
 async function send(key, msg) {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -94,7 +130,13 @@ export const handler = async (event) => {
   if (!key) { console.log(form, f.ref, "no RESEND_API_KEY, no emails sent"); return { statusCode: 200, body: "no sender configured" }; }
   /* the Jamaica pages send GV-JAM-USA, GV-JAM-HOME, GV-JAM-ES or GV-JAM-UKCA; each request gets its own number on the end */
   if (form === "jamaica") { f.branch = "jamaica"; f.ref = `${f.ref || "GV-JAM"}-${String(payload.number || Date.now()).slice(-4)}`; }
+  /* Request price on a resort page: its own GV-STAY number, shown to the guest and on the team email */
+  if (form === "staycation") f.ref = f.ref || `GV-STAY-${String(payload.number || Date.now()).slice(-4)}`;
   const jobs = [];
+  if (form === "staycation" && f.email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email)) {
+    const g = stayEmail(f);
+    jobs.push(send(key, { from: FROM, to: [f.email], reply_to: REPLY_TO, subject: g.subject, text: g.text, html: g.html }));
+  }
   if (form === "jamaica" && f.email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email)) {
     const g = jamaicaEmail(f);
     jobs.push(send(key, { from: FROM, to: [f.email], reply_to: REPLY_TO, subject: g.subject, text: g.text, html: g.html }));
